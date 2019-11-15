@@ -118,6 +118,8 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
 
   private EcdeTestDocument ecde;
 
+  private final int NB_DOCUMENTS_PAR_PAGE = 100;
+
   @BeforeClass
   public static void beforeClass() throws IOException {
     init = false;
@@ -380,6 +382,9 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
       InvalidPagmsCombinaisonException, CaptureExistingUuuidException,
       UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
+    // On utilise la date du jour plusieurs fois
+    final Calendar aujourdhui = Calendar.getInstance();
+    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     // insertion d'un document
     ecde = ecdeTestTools
         .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -410,7 +415,7 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
     metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
     metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
     metadatas.add(new UntypedMetadata("NbPages", "2"));
-    metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+    metadatas.add(new UntypedMetadata("DateCreation", format.format(aujourdhui.getTime())));
     metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
     final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
     metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
@@ -451,7 +456,7 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
     final UntypedMetadata uMeta = new UntypedMetadata("Titre", titreUnique);
     fixedMetadatas.add(uMeta);
 
-    final Calendar aujourdhui = Calendar.getInstance();
+
     aujourdhui.add(Calendar.DATE, -1);
     final String dateMin = Integer.toString(aujourdhui.get(Calendar.YEAR))
         + String.format("%02d", aujourdhui.get(Calendar.MONTH) + 1)
@@ -465,7 +470,7 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
                                                                           dateMin,
                                                                           dateMax);
 
-    final int nbDocumentsParPage = 10;
+    final int nbDocumentsParPage = NB_DOCUMENTS_PAR_PAGE;
     final String pageId = null;
 
     final PaginatedUntypedDocuments documents2 = saeSearchService.searchPaginated(
@@ -591,7 +596,7 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
     final UntypedMetadata metaFiltre = new UntypedMetadata("Titre", titreUnique);
     filters.add(metaFiltre);
 
-    final int nbDocumentsParPage = 10;
+    final int nbDocumentsParPage = NB_DOCUMENTS_PAR_PAGE;
     final String pageId = null;
     final List<String> listeDesiredMetadata = new ArrayList<>();
 
@@ -705,7 +710,7 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
     final UntypedMetadata metaFiltre = new UntypedMetadata("Titre", titreUnique);
     filters.add(metaFiltre);
 
-    final int nbDocumentsParPage = 10;
+    final int nbDocumentsParPage = NB_DOCUMENTS_PAR_PAGE;
     final String pageId = null;
     final List<String> listeDesiredMetadata = new ArrayList<>();
     listeDesiredMetadata.add("Note");
@@ -782,7 +787,7 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
     filters.add(metaFiltre);
     filters.add(metaFiltre);
 
-    final int nbDocumentsParPage = 10;
+    final int nbDocumentsParPage = NB_DOCUMENTS_PAR_PAGE;
     final String pageId = null;
     final List<String> listeDesiredMetadata = new ArrayList<>();
 
