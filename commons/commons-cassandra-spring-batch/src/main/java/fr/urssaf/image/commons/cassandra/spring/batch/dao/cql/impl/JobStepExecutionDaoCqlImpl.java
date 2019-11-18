@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
@@ -37,6 +39,8 @@ import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 @Repository
 public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long> implements IJobStepExecutionDaoCql {
 
+   private static final Logger LOGGER = LoggerFactory.getLogger(JobStepExecutionDaoCqlImpl.class);
+	
    @Autowired
    @Qualifier("stepexecutionidgeneratorcql")
    private IdGenerator idGenerator;
@@ -67,6 +71,9 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
 
    @Override
    public final void addStepExecutions(final JobExecution jobExecution) {
+	  if(LOGGER.isDebugEnabled()) {
+		  LOGGER.debug("addStepExecutions");
+	  }
       Assert.notNull(jobExecution, "JobExecution cannot be null.");
       Assert.notNull(jobExecution.getId(), "JobExecution Id cannot be null.");
       final long jobExecutionId = jobExecution.getId();
@@ -93,6 +100,9 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
    @Override
    public final StepExecution getStepExecution(final JobExecution jobExecution,
                                                final Long stepExecutionId) {
+	  if(LOGGER.isDebugEnabled()) {
+		  LOGGER.debug("getStepExecution");
+	  }
       final Optional<JobStepCql> opt = this.findWithMapperById(stepExecutionId);
       if (opt.isPresent()) {
          final JobStepCql stepCql = opt.get();
@@ -288,5 +298,13 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
       }
       return stepNames;
    }
-
+   
+   /**
+    * @return the logger
+    */
+   @Override
+   public Logger getLogger() {
+      return LOGGER;
+   }
+   
 }

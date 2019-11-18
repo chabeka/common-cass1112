@@ -12,6 +12,8 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -44,9 +46,15 @@ import fr.urssaf.image.commons.cassandra.spring.batch.utils.ExecutionContextCode
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
+/**
+ * Classe DAO de {@link JobExecutionCql}
+ *
+ */
 @Repository
 public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long> implements IJobExecutionDaoCql {
 
+   private static final Logger LOGGER = LoggerFactory.getLogger(JobExecutionDaoCqlImpl.class);
+   
    /**
     * le nom de la colonne indexée dals la table d'index JobExecutionsRunning
     */
@@ -98,6 +106,11 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
     */
    @Override
    public void saveJobExecution(final JobExecution jobExecution) {
+	  
+	  if( LOGGER.isDebugEnabled()) {
+		  LOGGER.debug("saveJobExecution");
+	  }
+	  
       Assert.notNull(jobExecution, "JobExecution cannot be null.");
 
       validateJobExecution(jobExecution);
@@ -464,5 +477,12 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       }
 
    }
-
+ 
+   /**
+    * @return the logger
+    */
+   @Override
+   public Logger getLogger() {
+      return LOGGER;
+   }
 }

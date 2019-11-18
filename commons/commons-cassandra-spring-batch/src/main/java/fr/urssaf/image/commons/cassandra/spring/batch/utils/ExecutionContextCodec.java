@@ -1,6 +1,4 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
+
 package fr.urssaf.image.commons.cassandra.spring.batch.utils;
 
 import java.nio.ByteBuffer;

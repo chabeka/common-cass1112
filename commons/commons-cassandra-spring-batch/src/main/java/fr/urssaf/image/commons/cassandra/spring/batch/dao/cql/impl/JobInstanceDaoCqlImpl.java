@@ -11,6 +11,8 @@ import java.util.Optional;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
@@ -43,6 +45,8 @@ import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 @Repository
 public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> implements IJobInstanceDaoCql {
 
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(JobInstanceDaoCqlImpl.class);
   /**
    *
    */
@@ -98,6 +102,9 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
 
   @Override
   public JobInstance createJobInstance(final String jobName, final JobParameters jobParameters) {
+	if (LOGGER.isDebugEnabled()) {
+		LOGGER.debug("createJobInstance");
+	}
     Assert.notNull(jobName, "Job name must not be null.");
     Assert.notNull(jobParameters, "JobParameters must not be null.");
 
@@ -332,5 +339,13 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
     }
     return listJobIThrift;
   }
-
+  
+  /**
+   * @return the logger
+   */
+  @Override
+  public Logger getLogger() {
+     return LOGGER;
+  }
+  
 }
