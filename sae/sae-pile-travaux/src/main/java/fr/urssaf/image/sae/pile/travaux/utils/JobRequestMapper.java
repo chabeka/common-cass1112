@@ -66,46 +66,46 @@ public class JobRequestMapper {
 
       final JobRequest jobRequestThrift = new JobRequest();
 
-      jobRequestThrift.setIdJob(jobRequestThrift.getIdJob());
+      jobRequestThrift.setIdJob(jobRequestcql.getIdJob());
 
-      jobRequestThrift.setType(jobRequestThrift.getType());
+      jobRequestThrift.setType(jobRequestcql.getType());
 
-      jobRequestThrift.setParameters(jobRequestThrift.getParameters());
+      jobRequestThrift.setParameters(jobRequestcql.getParameters());
 
-      jobRequestThrift.setState(JobState.valueOf(jobRequestThrift.getState().name()));
+      jobRequestThrift.setState(JobState.valueOf(jobRequestcql.getState()));
 
-      jobRequestThrift.setReservedBy(jobRequestThrift.getReservedBy());
+      jobRequestThrift.setReservedBy(jobRequestcql.getReservedBy());
 
-      jobRequestThrift.setCreationDate(jobRequestThrift.getCreationDate());
+      jobRequestThrift.setCreationDate(jobRequestcql.getCreationDate());
 
-      jobRequestThrift.setReservationDate(jobRequestThrift.getReservationDate());
+      jobRequestThrift.setReservationDate(jobRequestcql.getReservationDate());
 
-      jobRequestThrift.setStartingDate(jobRequestThrift.getStartingDate());
+      jobRequestThrift.setStartingDate(jobRequestcql.getStartingDate());
 
-      jobRequestThrift.setEndingDate(jobRequestThrift.getEndingDate());
+      jobRequestThrift.setEndingDate(jobRequestcql.getEndingDate());
 
-      jobRequestThrift.setMessage(jobRequestThrift.getMessage());
+      jobRequestThrift.setMessage(jobRequestcql.getMessage());
 
-      jobRequestThrift.setSaeHost(jobRequestThrift.getSaeHost());
+      jobRequestThrift.setSaeHost(jobRequestcql.getSaeHost());
 
-      jobRequestThrift.setClientHost(jobRequestThrift.getClientHost());
+      jobRequestThrift.setClientHost(jobRequestcql.getClientHost());
 
-      jobRequestThrift.setPid(jobRequestThrift.getPid());
+      jobRequestThrift.setPid(jobRequestcql.getPid());
 
-      jobRequestThrift.setDocCount(jobRequestThrift.getDocCount());
+      jobRequestThrift.setDocCount(jobRequestcql.getDocCount());
 
-      jobRequestThrift.setDocCountTraite(jobRequestThrift.getDocCountTraite());
+      jobRequestThrift.setDocCountTraite(jobRequestcql.getDocCountTraite());
 
-      jobRequestThrift.setToCheckFlag(jobRequestThrift.getToCheckFlag());
+      jobRequestThrift.setToCheckFlag(jobRequestcql.getToCheckFlag());
 
       jobRequestThrift
-                      .setToCheckFlagRaison(jobRequestThrift.getToCheckFlagRaison());
+                      .setToCheckFlagRaison(jobRequestcql.getToCheckFlagRaison());
 
-      jobRequestThrift.setVi(jobRequestThrift.getVi());
+      jobRequestThrift.setVi(jobRequestcql.getVi());
 
-      jobRequestThrift.setJobParameters(jobRequestThrift.getJobParameters());
+      jobRequestThrift.setJobParameters(jobRequestcql.getJobParameters());
 
-      jobRequestThrift.setJobKey(jobRequestThrift.getJobKey());
+      jobRequestThrift.setJobKey(jobRequestcql.getJobKey());
 
       return jobRequestThrift;
 

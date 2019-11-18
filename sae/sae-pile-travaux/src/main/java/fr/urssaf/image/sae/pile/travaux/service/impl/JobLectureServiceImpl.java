@@ -51,14 +51,8 @@ public class JobLectureServiceImpl implements JobLectureService {
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       final JobRequestCql jobRequestCql = jobLectureCqlService.getJobRequest(jobRequestUUID);
       // Vérifier que le job existe
-      if (jobRequestCql == null) {
-        try {
-          throw new JobInexistantException(jobRequestUUID);
-        }
-        catch (final JobInexistantException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
+      if (jobRequestCql != null) {
+    	  return JobRequestMapper.mapJobRequestCqlToJobRequestThrift(jobRequestCql);
       }
       return JobRequestMapper.mapJobRequestCqlToJobRequestThrift(jobRequestCql);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
