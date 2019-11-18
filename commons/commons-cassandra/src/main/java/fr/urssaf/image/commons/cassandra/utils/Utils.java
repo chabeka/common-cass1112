@@ -11,7 +11,7 @@ import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationExcepti
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 
 /**
- * TODO (AC75095028) Description du type
+ *  Classe utilitaire
  */
 public class Utils {
 

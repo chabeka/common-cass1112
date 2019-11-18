@@ -9,6 +9,11 @@ import org.springframework.util.Assert;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
+/**
+ * Classe permettanr de faire des operation specifique sur les colonnes 
+ * d'une table (Colunm Family). La colonne de la table étant consideré comme 
+ * un attribut de la classe qui lui est associé.
+ */
 public class ColumnUtil {
 
    /**
@@ -82,9 +87,13 @@ public class ColumnUtil {
    }
 
    /**
+    * Retourne la liste des {@link Field} en fonction de l'annotation
     * @param object
+    * 		L'objet contenant les {@link Field}
     * @param annotation
-    * @return
+    * 		L'annotation se trouvant sur le {@link Field}
+    * @return 
+    * 		La liste des {@link Field}
     */
    @SuppressWarnings("unchecked")
    public static List<Field> getField(final Class object, final Class annotation) {
@@ -98,6 +107,7 @@ public class ColumnUtil {
    }
 
    /**
+    * Retourne le nom de la colunm Family associé à un modele
     * @param object
     * @return
     */

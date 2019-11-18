@@ -29,7 +29,16 @@ import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Implementation des methodes commune de toutes les classes de DAO.
+ * La classe implemente toutes les methodes communes 
+ * de base à savoir les methodes de CRUD. Pour les modeles de type index, se referer 
+ * à la classe {@link GenericIndexDAOImpl}
+ *
+ * @param <T>
+ *          Type de d'objet contenue dans le registre
+ * @param <ID>
+ *          Identifiant de l'objet
+ *
  */
 
 public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {

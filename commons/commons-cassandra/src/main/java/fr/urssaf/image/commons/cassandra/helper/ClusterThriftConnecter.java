@@ -14,6 +14,11 @@ import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.factory.HFactory;
 
+/**
+ * Classe permettant de se connecter au cluster en mode Thrift avec 
+ * chargement des jeux de tests dans la base
+ *
+ */
 public class ClusterThriftConnecter {
 
 	private static final Logger LOG = LoggerFactory.getLogger(ClusterThriftConnecter.class);

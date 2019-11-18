@@ -30,6 +30,11 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 
+/**
+ * Classe permettant de se connecter au cluster en mode CQL avec 
+ * chargement des jeux de tests dans la base
+ *
+ */
 public class ClusterCQLConnecter {
 
   private static final Logger LOG = LoggerFactory.getLogger(ClusterCQLConnecter.class);
@@ -196,7 +201,13 @@ public class ClusterCQLConnecter {
 
     return existKeyspace;
   }
-
+ /**
+  * Charger les données dans les tables à partir des jeux de données
+  * @param dropAndCreateKeyspace 
+  * 	indique si le keyspace recréé ou pas
+  * @param newDataSets
+  * 	Les jeux de données à charger
+  */
   public void loadDataSetToServer(final boolean dropAndCreateKeyspace, final String... newDataSets) {
     // On inject les jeux de données
     if (newDataSets != null && newDataSets.length > 0) {
