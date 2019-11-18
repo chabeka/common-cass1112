@@ -12,15 +12,42 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
 
 /**
- * TODO (AC75095028) Description du type
+ * Interface DAO de {@link JobInstanceCql}
+ * 
+ * @param <JobInstanceCql>
+ *          Type de d'objet contenue dans le registre
+ * @param <Long>
+ *          le type d'Identifiant de l'objet
  */
 public interface IJobInstanceDaoCql extends IGenericDAO<JobInstanceCql, Long>, SearchableJobInstanceDao {
 
+	/**
+	 * Suppression d'une instance de Jod en fonction de son id
+	 * @param instanceId
+	 * 			L'id de l'instance
+	 */
    public void deleteJobInstance(final Long instanceId);
 
+	/**
+	 * Reservation d'un Job sur serveur donné
+	 * @param instanceId
+	 * 			L'id de l'instance
+	 * @param	serverName
+	 * 			le nom du serveur
+	 */
    public void reserveJob(long instanceId, String serverName);
 
+	/**
+	 * Retourne le nom du serveur qui reserve le Job d'identifiant donné
+	 * @param instanceId
+	 * 			L'id de l'instance
+	 * @return
+	 * 			le nom du serveur
+	 */
    public String getReservingServer(long instanceId);
 
+	/**
+	 * Retourne la liste des Job non reservé
+	 */
    public List<JobInstance> getUnreservedJobInstances();
 }

@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepsDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.ISequencesDaoCql;
 
 /**
- * 
+ * Classe implémentant le DAO  {@link ISequencesDaoCql}
  */
 @Repository
 public class SequencesDaoCqlImpl extends GenericDAOImpl<SequencesCql, String> implements ISequencesDaoCql {

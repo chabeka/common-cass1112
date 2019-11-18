@@ -7,7 +7,12 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericIndexDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceToJobExecutionCql;
 
 /**
- * TODO (AC75095028) Description du type
+ * Interface DAO de {@link JobInstanceToJobExecutionCql}
+ * 
+ * @param <JobInstancesByNameCql>
+ *          Type de d'objet contenue dans le registre
+ * @param <Long>
+ *          le type d'Identifiant de l'objet
  */
 public interface IJobInstanceToJobExecutionDaoCql extends IGenericIndexDAO<JobInstanceToJobExecutionCql, Long> {
 

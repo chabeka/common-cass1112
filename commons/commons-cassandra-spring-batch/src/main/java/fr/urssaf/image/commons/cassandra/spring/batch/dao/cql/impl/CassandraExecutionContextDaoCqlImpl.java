@@ -15,7 +15,12 @@ import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCq
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe implémentant ExecutionContextDao, qui utilise cassandra.
+ * L'implémentation est inspirée de
+ * org.springframework.batch.core.repository.dao.JdbcExecutionContextDao
+ * 
+ * @see org.springframework.batch.core.repository.dao.JdbcExecutionContextDao
+ * 
  */
 @Component
 public class CassandraExecutionContextDaoCqlImpl implements ExecutionContextDao {

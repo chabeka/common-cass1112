@@ -30,6 +30,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstancesByNameCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionToJobStepDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstancesByNameDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
@@ -40,7 +41,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobParametersCodec;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe implémentant le DAO  {@link IJobInstanceDaoCql}
  */
 @Repository
 public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> implements IJobInstanceDaoCql {

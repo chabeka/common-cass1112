@@ -10,7 +10,12 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepCql;
 
 /**
- * TODO (AC75095028) Description du type
+ * Interface DAO de {@link JobStepCql}
+ * 
+ * @param <JobStepCql>
+ *          Type de d'objet contenue dans le registre
+ * @param <Long>
+ *          le type d'Identifiant de l'objet
  */
 public interface IJobStepExecutionDaoCql extends IGenericDAO<JobStepCql, Long>, SearchableStepExecutionDao {
 

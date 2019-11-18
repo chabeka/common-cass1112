@@ -13,10 +13,12 @@ import com.datastax.driver.core.querybuilder.Select;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericIndexDAOImpl;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionsDaoCql;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe implémentant le DAO  {@link IJobExecutionsDaoCql}
+ *
  */
 @Repository
 public class JobExecutionsDaoCqlImpl extends GenericIndexDAOImpl<JobExecutionsCql, String> implements IJobExecutionsDaoCql {

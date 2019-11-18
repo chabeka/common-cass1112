@@ -47,7 +47,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
 /**
- * Classe DAO de {@link JobExecutionCql}
+ * Classe implémentant le DAO  {@link IJobExecutionDaoCql}
  *
  */
 @Repository
