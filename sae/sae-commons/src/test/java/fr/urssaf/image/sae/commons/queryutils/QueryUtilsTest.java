@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -25,6 +27,8 @@ import junit.framework.Assert;
  * TODO (AC75095028) Description du type
  */
 public class QueryUtilsTest {
+
+   private static final Logger LOGGER = LoggerFactory.getLogger(QueryUtilsTest.class);
 
    @Test
    public void get_simple_key_field_name() {
@@ -63,6 +67,9 @@ public class QueryUtilsTest {
    @Test
    public void get_all_fields_of_entity() {
       final List<Field> fields = Utils.getEntityFileds(Test1.class);
+      for (final Field field : fields) {
+         LOGGER.info("Champ de Test1 : {}", field.getName());
+      }
       Assert.assertEquals(7, fields.size());
       //
       final List<Field> fields2 = Utils.getEntityFileds(Test2.class);
@@ -91,6 +98,7 @@ public class QueryUtilsTest {
    }
 }
 
+@Table(name = "test1")
 class Test1 {
 
    @PartitionKey
@@ -104,7 +112,7 @@ class Test1 {
 
    private String contratService;
 
-   private final List<String> pagms = new ArrayList<String>();
+   private final List<String> pagms = new ArrayList<>();
 
    private Map<String, Object> infos;
 
@@ -148,7 +156,7 @@ class TestAvecCompsiteKey {
 
    private String contratService;
 
-   private final List<String> pagms = new ArrayList<String>();
+   private final List<String> pagms = new ArrayList<>();
 
    private Map<String, Object> infos;
 
