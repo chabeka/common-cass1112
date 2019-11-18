@@ -77,10 +77,7 @@ public class SearchObjectClassUtil {
             }
           }
         }
-        catch (final IllegalAccessException e) {
-          e.printStackTrace();
-        }
-        catch (final IllegalArgumentException e) {
+        catch (final IllegalAccessException | IllegalArgumentException e) {
           e.printStackTrace();
         }
       }
