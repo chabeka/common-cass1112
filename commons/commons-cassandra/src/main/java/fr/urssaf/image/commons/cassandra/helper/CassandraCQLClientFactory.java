@@ -120,11 +120,11 @@ public final class CassandraCQLClientFactory implements DisposableBean {
             try {
                cassandraServer.init();
             } catch (final Exception e) {
-               e.printStackTrace();
+            	LOG.error("Problème de demarrage ou de réinitialistaion de la base cassandra");
             }
          }
 
-         initCassandra(cassandraServer, keyspaceName, userName, password);
+         initCassandra(cassandraServer, keyspaceName, 	userName, password);
          // TODO charger le mode API
       } else {
          // on est dans le cas ou la connexion de transfert n'est pas

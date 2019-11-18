@@ -28,8 +28,17 @@ import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
 import fr.urssaf.image.commons.cassandra.utils.Utils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Interface commune de toutes les classes de DAO.
+ * La classe implemente toutes les methodes communes 
+ * de base à savoir les methodes de CRUD
+ *
+ * @param <T>
+ *          Type de d'objet contenue dans le registre
+ * @param <ID>
+ *          Identifiant de l'objet
+ *
  */
+
 public interface ICommonDAO<T, ID> {
    /**
     * Retourne le nom du pojo ou la valeur de l'attribut "name" de l'annotation
@@ -73,7 +82,7 @@ public interface ICommonDAO<T, ID> {
       QueryUtils.createInsert(fields, insert, entity);
       getCcf().getSession().execute(insert);
       if (getLogger().isDebugEnabled()) {
-         getLogger().info(insert.toString());
+         getLogger().debug(insert.toString());
       }
       return entity;
    }
@@ -87,6 +96,9 @@ public interface ICommonDAO<T, ID> {
     */
    public default Iterator<T> findAllWithMapper() {
       final Statement st = QueryBuilder.select().from(getCcf().getKeyspace(), getTypeArgumentsName());
+      if (getLogger().isDebugEnabled()) {
+          getLogger().debug(st.toString());
+      }
       return getMapper().map(getSession().execute(st)).iterator();
    }
 
@@ -137,6 +149,9 @@ public interface ICommonDAO<T, ID> {
     */
    public default Iterator<T> findAll() {
       final Statement st = QueryBuilder.select().from(getCcf().getKeyspace(), getTypeArgumentsName());
+      if (getLogger().isDebugEnabled()) {
+          getLogger().debug(st.toString());
+      }
       return (Iterator<T>) getSession().execute(st).iterator();
    }
 
@@ -145,6 +160,9 @@ public interface ICommonDAO<T, ID> {
     */
    public default void deleteAll() {
       final Truncate truncate = QueryBuilder.truncate(getCcf().getKeyspace(), getTypeArgumentsName());
+      if (getLogger().isDebugEnabled()) {
+          getLogger().debug(truncate.toString());
+      }
       getSession().execute(truncate);
    }
 
@@ -162,6 +180,9 @@ public interface ICommonDAO<T, ID> {
       if (row != null) {
          count = row.getLong("count");
       }
+      if (getLogger().isDebugEnabled()) {
+          getLogger().debug(query);
+      }
       return count.intValue();
    }
 
@@ -174,8 +195,9 @@ public interface ICommonDAO<T, ID> {
    public default Iterator<T> findAllByCFName(final String cfName, final String keyspace) {
       final String query = "SELECT * FROM " + keyspace + ".\"" + cfName + "\"";
       if (getLogger().isDebugEnabled()) {
-         getLogger().info(query);
+         getLogger().debug(query);
       }
+
       return (Iterator<T>) getSession().execute(query).iterator();
    }
 
@@ -183,6 +205,9 @@ public interface ICommonDAO<T, ID> {
     * {@inheritDoc}
     */
    public default void insertWithBatchStatement(final BatchStatement statement) {
+      if (getLogger().isDebugEnabled()) {
+          getLogger().debug(statement.toString());
+      }
       getSession().execute(statement);
    }
 
@@ -194,6 +219,9 @@ public interface ICommonDAO<T, ID> {
 
    public default void insertWithBatch(final Iterable<T> entities) {
       final String batch = QueryUtils.createInsertBatch(getDaoType(), entities, getTypeArgumentsName());
+      if (getLogger().isDebugEnabled()) {
+          getLogger().debug(batch);
+      }
       getSession().execute(batch);
    }
 
@@ -209,6 +237,9 @@ public interface ICommonDAO<T, ID> {
          final List<Field> fields = Utils.getEntityFileds(getDaoType());
          QueryUtils.createInsert(fields, insert, entity);
          statement.add(insert);
+      }
+      if (getLogger().isDebugEnabled()) {
+          getLogger().debug(statement.toString());
       }
       getSession().execute(statement);
    }
@@ -226,14 +257,14 @@ public interface ICommonDAO<T, ID> {
    /**
     * @return le type T fournie en paramètre de la classe
     */
-   Class<? extends T> getDaoType();
+   public Class<? extends T> getDaoType();
 
    /**
     * Retourne l'instance de la classe {@link CassandraCQLClientFactory}
     *
     * @return
     */
-   CassandraCQLClientFactory getCcf();
+    public CassandraCQLClientFactory getCcf();
 
    /**
     *  initialise l'instance de la classe {@link CassandraCQLClientFactory}

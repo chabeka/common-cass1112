@@ -20,7 +20,13 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
 /**
+ * Classe d'implementation mère de toutes les classes DAO de type index
+ * Elle implemente les opérations specifiques aux tables d'index
  * @param <T>
+ *          Type de d'objet contenue dans le registre
+ * @param <ID>
+ *          Identifiant de l'objet
+ *
  */
 public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
 

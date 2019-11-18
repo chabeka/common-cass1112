@@ -6,17 +6,19 @@ package fr.urssaf.image.commons.cassandra.cql.dao;
 import java.util.Iterator;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+
 import com.datastax.driver.core.ResultSet;
 
-/**
- * TODO (AC75095028) Description du type
- */
 
 /**
  * Classe abstraite pour les DAO CASSANDRA
  *
  * @param <T>
+ *          Type de d'objet contenue dans le registre
  * @param <ID>
+ *          Identifiant de l'objet
+ *
  */
 public interface IGenericDAO<T, ID> extends ICommonDAO<T, ID> {
 

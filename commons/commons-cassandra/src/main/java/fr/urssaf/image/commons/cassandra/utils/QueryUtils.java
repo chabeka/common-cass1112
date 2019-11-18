@@ -8,6 +8,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.BatchStatement;
@@ -19,17 +20,14 @@ import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe utilitaire pour le requetage dans la base cassandra
  */
 public class QueryUtils {
-  /**
-   * TODO (AC75095028) Description du champ
-   */
+
+  public static final Logger LOG = Logger.getLogger(QueryUtils.class);
+  
   private static final String END_BATCH = " APPLY BATCH";
 
-  /**
-   * TODO (AC75095028) Description du champ
-   */
   private static final String BEGIN_BATCH = "BEGIN BATCH ";
 
   /**
@@ -58,7 +56,7 @@ public class QueryUtils {
         }
       }
       catch (final Exception e) {
-        e.printStackTrace();
+    	  LOG.error("Une erreur est survenue lors de l'insertion de la requete" + insert.toString());
       }
     }
   }
@@ -97,7 +95,7 @@ public class QueryUtils {
           }
         }
         catch (final Exception e) {
-          e.printStackTrace();
+        	LOG.error("Une erreur est survenue lors de l'exécution de la requete" + delete.toString());
         }
       }
     }
@@ -164,7 +162,7 @@ public class QueryUtils {
           }
         }
         catch (final Exception e) {
-          e.printStackTrace();
+        	LOG.error("Une erreur est survenue lors de l'exécution de la requete" + select.toString());
         }
       }
     }
