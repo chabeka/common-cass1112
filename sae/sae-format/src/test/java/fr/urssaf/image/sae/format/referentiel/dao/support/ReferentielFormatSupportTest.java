@@ -5,6 +5,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,6 +33,9 @@ public class ReferentielFormatSupportTest {
 
   @Autowired
   private JobClockSupport jobClock;
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ReferentielFormatSupportTest.class);
 
   private static final String FIND_MESSAGE_INCORRECT = "FIND - Erreur : Le message de l'exception est incorrect";
 
@@ -86,7 +91,7 @@ public class ReferentielFormatSupportTest {
       refFormatSupport.delete("lambda", jobClock.currentCLock());
     }
     catch (final UnknownFormatException e) {
-      e.printStackTrace();
+      LOGGER.info("Erreur lors de la suppression du format lambda (thrift)  : {}", e.getMessage());
     }
     final List<FormatFichier> listRefFormatTrouve = refFormatSupport.findAll();          
     Assert.assertNotNull(listRefFormatTrouve);  

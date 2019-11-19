@@ -10,6 +10,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -46,6 +48,11 @@ public class ReferentielFormatCqlSupportTest {
 
   private static final String FIND_MESSAGE_INCORRECT = "FIND - Erreur : Le message de l'exception est incorrect";
 
+
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ReferentielFormatCqlSupportTest.class);
+
   @Before
   public void before() throws Exception {
     if (server.getStartLocal()) {
@@ -64,7 +71,7 @@ public class ReferentielFormatCqlSupportTest {
         refFormatSupport.delete("lambda");
       }
       catch (final UnknownFormatException e) {
-        e.printStackTrace();
+        LOGGER.error("Erreur sur la suppression du format lambda {}", e.getMessage());
       }
       final int taille = listFormatFichierBase.size();
       GestionModeApiUtils.setModeApiCql(Constantes.CF_REFERENTIEL_FORMAT);
@@ -89,7 +96,7 @@ public class ReferentielFormatCqlSupportTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
 
