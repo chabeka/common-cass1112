@@ -105,7 +105,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
   private final TraceDestinataireCqlSupport destCqlSupport;
 
-  private final String cfNameDestinataire = "tracedestinatairecql";
+  private final String cfNameDestinataire = "tracedestinataire";
 
   private final TraceRegSecuriteSupport secuSupport;
 

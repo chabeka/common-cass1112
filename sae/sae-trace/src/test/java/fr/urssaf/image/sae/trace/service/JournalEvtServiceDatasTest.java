@@ -26,6 +26,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -61,6 +63,9 @@ public class JournalEvtServiceDatasTest {
     INFOS.put(KEY, VALUE);
   }
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(JournalEvtServiceDatasTest.class);
+
   @Autowired
   private JournalEvtService service;
 
@@ -82,7 +87,6 @@ public class JournalEvtServiceDatasTest {
   @After
   public void after() throws Exception {
     server.resetDataOnly();
-    //server.resetDataOnly();
   }
 
   @Test
@@ -95,7 +99,7 @@ public class JournalEvtServiceDatasTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
 

@@ -59,7 +59,7 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
   private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_TOUTES_INFOS";
 
-  private final String cfNameDestinataire = "tracedestinatairecql";
+  private final String cfNameDestinataire = "tracedestinataire";
 
   @Before
   public void start() throws Exception {

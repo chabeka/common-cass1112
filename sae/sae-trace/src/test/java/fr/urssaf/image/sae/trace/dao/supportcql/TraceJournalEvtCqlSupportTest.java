@@ -21,6 +21,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -58,6 +60,9 @@ public class TraceJournalEvtCqlSupportTest {
 
   private static final String DATE_FORMAT = "yyyyMMdd";
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(TraceJournalEvtCqlSupportTest.class);
+
   static {
     INFOS = new HashMap<>();
     INFOS.put(KEY, VALUE);
@@ -84,10 +89,9 @@ public class TraceJournalEvtCqlSupportTest {
         server.resetData();
       }
       Assert.assertTrue(true);
-
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du reset cassandra: {}", e.getMessage());
     }
   }
   @Test
@@ -163,7 +167,7 @@ public class TraceJournalEvtCqlSupportTest {
     try {
       datej = dateFormat.parse(journee);
     } catch (final ParseException e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du parse de la date du jour: {} ", e.getMessage());
     }
     return datej;
   }

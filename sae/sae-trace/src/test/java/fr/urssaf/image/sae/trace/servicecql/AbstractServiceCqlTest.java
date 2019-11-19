@@ -11,6 +11,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -28,6 +30,7 @@ import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractServiceCqlTest {
+
   @Autowired
   protected CassandraServerBean server;
 
@@ -36,6 +39,9 @@ public abstract class AbstractServiceCqlTest {
   TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
   protected static boolean init = false;
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(AbstractServiceCqlTest.class);
 
   @BeforeClass
   public static void init() {
@@ -79,7 +85,7 @@ public abstract class AbstractServiceCqlTest {
       Assert.assertTrue(true);
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du reset de cassandra: {}", e.getMessage());
     }
   }
 

@@ -9,6 +9,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.Column;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
@@ -18,6 +21,8 @@ import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
  * TODO (AC75095351) Description du type
  */
 public class TraceDestinataireCqlUtils {
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(TraceDestinataireCqlUtils.class);
 
   public static List<TraceDestinataire> convertRowsToTraceDestinataires(final List<Row> list) {
     final List<TraceDestinataire> listTraceDestinataires = new ArrayList<>();
@@ -40,7 +45,7 @@ public class TraceDestinataireCqlUtils {
       }
     }
     catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors de la conversion des TraceDestinataires: {}", e.getMessage());
     }
 
     return listTraceDestinataires;

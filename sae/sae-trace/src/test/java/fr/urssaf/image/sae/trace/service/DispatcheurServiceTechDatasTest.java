@@ -55,7 +55,7 @@ public class DispatcheurServiceTechDatasTest {
 
   private static final String MESSAGE_ERREUR = "l'argument ${0} est obligatoire dans le registre ${1}";
 
-  private final String cfNameDestinataire = "tracedestinatairecql";
+  private final String cfNameDestinataire = "tracedestinataire";
 
   @Autowired
   private DispatcheurService service;

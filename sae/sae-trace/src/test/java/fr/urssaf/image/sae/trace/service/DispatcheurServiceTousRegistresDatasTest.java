@@ -57,7 +57,7 @@ public class DispatcheurServiceTousRegistresDatasTest {
 
   private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_TOUS";
 
-  private final String cfNameDestinataire = "tracedestinatairecql";
+  private final String cfNameDestinataire = "tracedestinataire";
 
   @Autowired
   private DispatcheurService service;

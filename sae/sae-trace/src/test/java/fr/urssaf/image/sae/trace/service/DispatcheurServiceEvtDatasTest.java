@@ -19,6 +19,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -66,7 +68,10 @@ public class DispatcheurServiceEvtDatasTest {
 
   private static final String MESSAGE_ERREUR = "l'argument ${0} est obligatoire dans le journal ${1}";
 
-  private final String cfNameDestinataire = "tracedestinatairecql";
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(DispatcheurServiceEvtDatasTest.class);
+
+  private final String cfNameDestinataire = "tracedestinataire";
 
   @Autowired
   private DispatcheurService service;
@@ -103,7 +108,7 @@ public class DispatcheurServiceEvtDatasTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
   @Test

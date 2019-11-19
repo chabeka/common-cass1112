@@ -18,6 +18,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -60,6 +62,9 @@ public class TraceRegTechniqueCqlSupportTest {
     INFOS.put(KEY, VALUE);
   }
 
+  private static final Logger LOGGER = LoggerFactory
+                                                    .getLogger(TraceRegTechniqueCqlSupportTest.class);
+
   @Autowired
   private TraceRegTechniqueCqlSupport support;
 
@@ -84,7 +89,7 @@ public class TraceRegTechniqueCqlSupportTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du reset du cassandra: {}", e.getMessage());
     }
   }
 

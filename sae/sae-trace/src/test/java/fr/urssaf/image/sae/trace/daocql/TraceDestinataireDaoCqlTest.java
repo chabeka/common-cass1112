@@ -16,6 +16,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -44,9 +46,11 @@ public class TraceDestinataireDaoCqlTest {
   @Autowired
   TimeUUIDEtTimestampSupport timeuuid;
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(TraceDestinataireDaoCqlTest.class);
+
   @After
   public void after() throws Exception {
-    // server.resetDataOnly();
     server.resetData();
   }
 
@@ -55,13 +59,12 @@ public class TraceDestinataireDaoCqlTest {
     try {
       if (server.isCassandraStarted()) {
         server.resetData();
-        // server.resetData(true, MODE_API.DATASTAX);
       }
       Assert.assertTrue(true);
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
   @Test(expected = TraceRuntimeException.class)

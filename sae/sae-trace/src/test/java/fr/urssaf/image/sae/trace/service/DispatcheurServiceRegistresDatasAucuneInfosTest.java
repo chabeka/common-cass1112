@@ -58,7 +58,7 @@ public class DispatcheurServiceRegistresDatasAucuneInfosTest {
 
   private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_AUCUNE_INFO";
 
-  private final String cfNameDestinataire = "tracedestinatairecql";
+  private final String cfNameDestinataire = "tracedestinataire";
 
 
 

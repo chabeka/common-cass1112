@@ -65,12 +65,6 @@ public class TraceRegSecuriteCqlSupportTest {
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-  /*
-   * @After
-   * public void before() throws Exception {
-   * server.resetDataOnly();
-   * }
-   */
 
   @After
   public void after() throws Exception {
