@@ -13,7 +13,6 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -22,7 +21,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.cache.LoadingCache;
 
-import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.sae.trace.commons.TraceDestinataireEnum;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
@@ -37,156 +35,167 @@ import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 @Service
 public class TraceDestinataireCqlSupport {
 
-   private static final int LIFE_DURATION = 10;
+  private static final int LIFE_DURATION = 10;
 
-   @Autowired
-   ITraceDestinataireCqlDao destinatairecqldao;
+  @Autowired
+  ITraceDestinataireCqlDao destinatairecqldao;
 
-   private LoadingCache<String, TraceDestinataire> traces;
+  private LoadingCache<String, TraceDestinataire> traces;
 
-   /**
-    * Constructeur
-    *
-    * @param dao
-    *           DAO des traces destinataires
-    */
+  /**
+   * Constructeur
+   *
+   * @param dao
+   *           DAO des traces destinataires
+   */
 
-   public TraceDestinataireCqlSupport() {
-      traces = CacheBuilder.newBuilder()
-                           .expireAfterWrite(LIFE_DURATION,
-                                             TimeUnit.MINUTES)
-                           .build(
-                                  new CacheLoader<String, TraceDestinataire>() {
+  public TraceDestinataireCqlSupport() {
+    traces = CacheBuilder.newBuilder()
+        .expireAfterWrite(LIFE_DURATION,
+                          TimeUnit.MINUTES)
+        .build(
+               new CacheLoader<String, TraceDestinataire>() {
 
-                                     @Override
-                                     public TraceDestinataire load(final String identifiant) {
-                                        return findById(identifiant);
-                                     }
+                 @Override
+                 public TraceDestinataire load(final String identifiant) {
+                   return findById(identifiant);
+                 }
 
-                                  });
-   }
+               });
+  }
 
-   public TraceDestinataireCqlSupport(CassandraCQLClientFactory ccf) {
-	   
-		ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl();
-		dao.setCcf(ccf);
-		this.destinatairecqldao = dao;
-   }
-   /**
-    * Création d'une trace destinataire
-    *
-    * @param trace
-    *           trace à créer
-    * @param clock
-    *           horloge de la création
-    */
-   public void create(final TraceDestinataire trace, final long clock) {
-      saveOrUpdate(trace);
-   }
+  /**
+   * Utilisé dans le cas d'une construction manuel de l'instance de la classe
+   * 
+   * @param ccf
+   *          le connecteur à cassandra
+   */
+  public TraceDestinataireCqlSupport(final CassandraCQLClientFactory ccf) {
 
-   /**
-    * Méthode de suppression d'une trace destinataire
-    *
-    * @param code
-    *           identifiant de la trace
-    * @param clock
-    *           horloge de suppression
-    */
-   public void delete(final String code, final long clock) {
-      Assert.notNull(code, "le code ne peut etre null");
-      destinatairecqldao.deleteById(code);
+    final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl();
+    dao.setCcf(ccf);
+    destinatairecqldao = dao;
+  }
+  /**
+   * Création d'une trace destinataire
+   *
+   * @param trace
+   *           trace à créer
+   * @param clock
+   *           horloge de la création
+   */
+  public void create(final TraceDestinataire trace, final long clock) {
+    saveOrUpdate(trace);
+  }
 
-   }
+  /**
+   * Méthode de suppression d'une trace destinataire
+   *
+   * @param code
+   *           identifiant de la trace
+   * @param clock
+   *           horloge de suppression
+   */
+  public void delete(final String code, final long clock) {
+    Assert.notNull(code, "le code ne peut etre null");
+    destinatairecqldao.deleteById(code);
 
-   /**
-    * Recherche et retourne l'enregistrement de la trace destinataire en
-    * fonction du code fourni
-    *
-    * @param code
-    *           code de la trace destinataire
-    * @return l'enregistrement de la trace destinataire correspondante
-    */
-   public final TraceDestinataire find(final String code) {
-      try {
-         return this.traces.getUnchecked(code);
+  }
 
+  /**
+   * Recherche et retourne l'enregistrement de la trace destinataire en
+   * fonction du code fourni
+   *
+   * @param code
+   *           code de la trace destinataire
+   * @return l'enregistrement de la trace destinataire correspondante
+   */
+  public final TraceDestinataire find(final String code) {
+    try {
+      return traces.getUnchecked(code);
+
+    }
+    catch (final InvalidCacheLoadException exception) {
+      throw new TraceRuntimeException(exception);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public TraceDestinataire findById(final String code) {
+    Assert.notNull(code, "le code ne peut etre null");
+    return destinatairecqldao.findWithMapperById(code).orElse(null);
+
+  }
+
+  /**
+   * Sauvegarde ou update d'une {@link TraceDestinataire} dans la base
+   * 
+   * @param trace
+   *          la trace à Sauvegarder/updater
+   */
+  private void saveOrUpdate(final TraceDestinataire trace) {
+    Assert.notNull(trace, "l'objet traceDestinataire ne peut etre null");
+
+    boolean isValidCode = true;
+    String errorKey = "";
+
+    if (MapUtils.isNotEmpty(trace.getDestinataires())) {
+      for (final String key : trace.getDestinataires().keySet()) {
+        if (!EnumUtils.isValidEnum(TraceDestinataireEnum.class, key)) {
+          errorKey = key;
+          isValidCode = false;
+        }
+        break;
       }
-      catch (final InvalidCacheLoadException exception) {
-         throw new TraceRuntimeException(exception);
-      }
-   }
+    }
 
-   /**
-    * {@inheritDoc}
-    */
-   public TraceDestinataire findById(final String code) {
-      Assert.notNull(code, "le code ne peut etre null");
-      return destinatairecqldao.findWithMapperById(code).orElse(null);
+    if (isValidCode) {
+      Map<String, List<String>> destinatairesFromDB;
 
-   }
+      // recuperation de l'objet ayant le meme codeevt dans la base cassandra. S'il en existe un, on l'update
+      // sinon on en cré un nouveau
+      final Optional<TraceDestinataire> traceOpt = destinatairecqldao.findWithMapperById(trace.getCodeEvt());
+      if (traceOpt.isPresent()) {
+        final TraceDestinataire traceFromBD = traceOpt.get();
+        destinatairesFromDB = traceFromBD.getDestinataires();
 
-   /**
-    * @param trace
-    */
-   private void saveOrUpdate(final TraceDestinataire trace) {
-      Assert.notNull(trace, "l'objet traceDestinataire ne peut etre null");
-
-      boolean isValidCode = true;
-      String errorKey = "";
-
-      if (MapUtils.isNotEmpty(trace.getDestinataires())) {
-         for (final String key : trace.getDestinataires().keySet()) {
-            if (!EnumUtils.isValidEnum(TraceDestinataireEnum.class, key)) {
-               errorKey = key;
-               isValidCode = false;
-            }
-            break;
-         }
-      }
-
-      if (isValidCode) {
-         Map<String, List<String>> destinatairesFromDB;
-
-         // recuperation de l'objet ayant le meme codeevt dans la base cassandra. S'il en existe un, on l'update
-         // sinon on en cré un nouveau
-         final Optional<TraceDestinataire> traceOpt = destinatairecqldao.findWithMapperById(trace.getCodeEvt());
-         if (traceOpt.isPresent()) {
-            final TraceDestinataire traceFromBD = traceOpt.get();
-            destinatairesFromDB = traceFromBD.getDestinataires();
-
-            // nouveau destinataires à ajouter
-            final Map<String, List<String>> newDestinataires = trace.getDestinataires();
-            if (MapUtils.isNotEmpty(newDestinataires)) {
-               for (final String key : newDestinataires.keySet()) {
-                  final List<String> desti = newDestinataires.get(key);
-                  // On ecrase l'existant avec le nouveau s'il y en un avec la meme clé "key"
-                  destinatairesFromDB.put(key, desti);
-               }
-            }
-            traceFromBD.setDestinataires(destinatairesFromDB);
-            destinatairecqldao.saveWithMapper(traceFromBD);
-         } else {
-            destinatairecqldao.saveWithMapper(trace);
-         }
+        // nouveau destinataires à ajouter
+        final Map<String, List<String>> newDestinataires = trace.getDestinataires();
+        if (MapUtils.isNotEmpty(newDestinataires)) {
+          for (final String key : newDestinataires.keySet()) {
+            final List<String> desti = newDestinataires.get(key);
+            // On ecrase l'existant avec le nouveau s'il y en un avec la meme clé "key"
+            destinatairesFromDB.put(key, desti);
+          }
+        }
+        traceFromBD.setDestinataires(destinatairesFromDB);
+        destinatairecqldao.saveWithMapper(traceFromBD);
       } else {
-         throw new TraceRuntimeException(
-                                         "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                               + errorKey + " n'est pas supportée");
+        destinatairecqldao.saveWithMapper(trace);
       }
+    } else {
+      throw new TraceRuntimeException(
+                                      "Impossible de créer l'enregistrement demandé. " + "La clé "
+                                          + errorKey + " n'est pas supportée");
+    }
 
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   public List<TraceDestinataire> findAll() {
-      final Iterator<TraceDestinataire> it = destinatairecqldao.findAllWithMapper();
-      final List<TraceDestinataire> list = new ArrayList<TraceDestinataire>();
-      while (it.hasNext()) {
+  /**
+   * Renvoie la liste de toutes les {@link TraceDestinataire} de la base
+   * 
+   * @return liste de {@link TraceDestinataire}
+   */
+  public List<TraceDestinataire> findAll() {
+    final Iterator<TraceDestinataire> it = destinatairecqldao.findAllWithMapper();
+    final List<TraceDestinataire> list = new ArrayList<>();
+    while (it.hasNext()) {
 
-         list.add(it.next());
+      list.add(it.next());
 
-      }
-      return list;
-   }
+    }
+    return list;
+  }
 }

@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe de modèle de la CF tracejournalevtcql
  */
 @Table(name = "tracejournalevtcql")
 public class TraceJournalEvtCql extends Trace {

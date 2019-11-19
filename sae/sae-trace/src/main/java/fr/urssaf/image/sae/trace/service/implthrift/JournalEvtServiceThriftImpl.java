@@ -29,7 +29,6 @@ import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
 import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
-import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.service.JournalEvtServiceThrift;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.service.support.TraceFileSupport;
@@ -37,7 +36,7 @@ import fr.urssaf.image.sae.trace.utils.StaxUtils;
 import javanet.staxutils.IndentingXMLEventWriter;
 
 /**
- * Classe d'implémentation du support {@link JournalEvtService}. Cette classe
+ * Classe d'implémentation du support {@link JournalEvtServiceThrift}. Cette classe
  * est un singleton et peut être accessible par le mécanisme d'injection IOC
  * avec l'annotation @Autowired
  */

@@ -9,9 +9,15 @@ import com.datastax.driver.mapping.annotations.Table;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 
+/**
+ * Classe de modèle de la CF tracejournalevtindexdoccql
+ */
 @Table(name = "tracejournalevtindexdoccql")
 public class TraceJournalEvtIndexDocCql extends TraceIndex {
 
+  /**
+   * Clé de partitionnement associé à la colonne du même nom dans la CF tracejournalevtindexdoccql
+   */
   @PartitionKey
   @Column(name = "identifiantindex")
   private UUID identifiantIndex;
@@ -46,8 +52,8 @@ public class TraceJournalEvtIndexDocCql extends TraceIndex {
    */
   public TraceJournalEvtIndexDocCql(final TraceJournalEvtCql traceJournal) {
     super(traceJournal);
-    this.contexte = traceJournal.getContexte();
-    this.contratService = traceJournal.getContratService();
+    contexte = traceJournal.getContexte();
+    contratService = traceJournal.getContratService();
   }
 
   /**

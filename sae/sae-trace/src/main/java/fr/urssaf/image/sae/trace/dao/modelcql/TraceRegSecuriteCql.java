@@ -1,6 +1,4 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
+
 package fr.urssaf.image.sae.trace.dao.modelcql;
 
 import java.util.Date;
@@ -19,7 +17,7 @@ import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe de modèle de la CF traceregsecuritecql
  */
 @Table(name = "traceregsecuritecql")
 public class TraceRegSecuriteCql extends Trace {
@@ -66,14 +64,14 @@ public class TraceRegSecuriteCql extends Trace {
                              final UUID idTrace, final Date timestamp) {
 
     super(trace, listInfos, idTrace, timestamp);
-    this.contexte = trace.getContexte();
+    contexte = trace.getContexte();
 
     if (CollectionUtils.isNotEmpty(listInfos)
         && MapUtils.isNotEmpty(trace.getInfos())) {
-      this.infos = new HashMap<String, String>();
+      infos = new HashMap<>();
       for (final String info : listInfos) {
         if (trace.getInfos().get(info) != null) {
-          this.infos.put(info, trace.getInfos().get(info).toString());
+          infos.put(info, trace.getInfos().get(info).toString());
         }
       }
 

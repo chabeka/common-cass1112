@@ -1,6 +1,4 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
+
 package fr.urssaf.image.sae.trace.service.implcql;
 
 import java.io.File;
@@ -17,10 +15,8 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
@@ -42,156 +38,156 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.TraceUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Implementation de l'intreface ({@link JournalEvtServiceCql}) Services du journal des événements du SAE
  */
 @Component
 public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
 
-   private static final String FIN_LOG = "{} - Fin";
+  private static final String FIN_LOG = "{} - Fin";
 
-   private static final String DEBUT_LOG = "{} - Début";
+  private static final String DEBUT_LOG = "{} - Début";
 
-   private static final Logger LOGGER = LoggerFactory
-                                                     .getLogger(JournalEvtCqlServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(JournalEvtCqlServiceImpl.class);
 
-   private static final String PATTERN_DATE = "yyyyMMdd";
+  private static final String PATTERN_DATE = "yyyyMMdd";
 
-   private TraceJournalEvtCqlSupport supportcql;
+  private final TraceJournalEvtCqlSupport supportcql;
 
-   private final LoggerSupport loggerSupport;
+  private final LoggerSupport loggerSupport;
 
-   private final TraceFileSupport traceFileSupport;
+  private final TraceFileSupport traceFileSupport;
 
-   /**
-    * @param support
-    *           Support de la classe DAO TraceJournalEvtDao
-    * @param clockSupport
-    *           JobClockSupport
-    * @param loggerSupport
-    *           Support pour l'écriture des traces applicatives
-    * @param traceFileSupport
-    *           Classe de support pour la création des fichiers de traces
-    */
-   @Autowired
-   public JournalEvtCqlServiceImpl(final TraceJournalEvtCqlSupport support, final JobClockSupport clockSupport, final LoggerSupport loggerSupport,
-                                   final TraceFileSupport traceFileSupport) {
-      super();
-      this.supportcql = support;
-      this.loggerSupport = loggerSupport;
-      this.traceFileSupport = traceFileSupport;
-   }
-   
-   public JournalEvtCqlServiceImpl(CassandraCQLClientFactory ccf) {
+  /**
+   * @param support
+   *           Support de la classe DAO TraceJournalEvtDao
+   * @param clockSupport
+   *           JobClockSupport
+   * @param loggerSupport
+   *           Support pour l'écriture des traces applicatives
+   * @param traceFileSupport
+   *           Classe de support pour la création des fichiers de traces
+   */
+  @Autowired
+  public JournalEvtCqlServiceImpl(final TraceJournalEvtCqlSupport support, final JobClockSupport clockSupport, final LoggerSupport loggerSupport,
+                                  final TraceFileSupport traceFileSupport) {
+    super();
+    supportcql = support;
+    this.loggerSupport = loggerSupport;
+    this.traceFileSupport = traceFileSupport;
+  }
 
-		ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl();
-		dao.setCcf(ccf);
-		ITraceJournalEvtIndexCqlDao indexdao = new TraceJournalEvtIndexCqlDaoImpl();
-		indexdao.setCcf(ccf);
-		ITraceJournalEvtIndexDocCqlDao indexdocdao = new TraceJournalEvtIndexDocDaoCqlImpl();
-		indexdocdao.setCcf(ccf);
-		
-		TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
-		TraceJournalEvtCqlSupport support = new TraceJournalEvtCqlSupport(dao, indexdao, indexdocdao, timeUUIDSupport);
-	    this.supportcql = support;
-	    this.loggerSupport = new LoggerSupport();
-		this.traceFileSupport = new TraceFileSupport();
-   }
+  public JournalEvtCqlServiceImpl(final CassandraCQLClientFactory ccf) {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public String export(final Date date, final String repertoire, final String idJournalPrecedent, final String hashJournalPrecedent) {
+    final ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl();
+    dao.setCcf(ccf);
+    final ITraceJournalEvtIndexCqlDao indexdao = new TraceJournalEvtIndexCqlDaoImpl();
+    indexdao.setCcf(ccf);
+    final ITraceJournalEvtIndexDocCqlDao indexdocdao = new TraceJournalEvtIndexDocDaoCqlImpl();
+    indexdocdao.setCcf(ccf);
 
-      final String trcPrefix = "export()";
-      LOGGER.debug(DEBUT_LOG, trcPrefix);
+    final TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
+    final TraceJournalEvtCqlSupport support = new TraceJournalEvtCqlSupport(dao, indexdao, indexdocdao, timeUUIDSupport);
+    supportcql = support;
+    loggerSupport = new LoggerSupport();
+    traceFileSupport = new TraceFileSupport();
+  }
 
-      final List<TraceJournalEvtIndexCql> listTraces = getSupport().findByDate(date, null);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String export(final Date date, final String repertoire, final String idJournalPrecedent, final String hashJournalPrecedent) {
 
-      String path = null;
-      final String sDate = DateFormatUtils.format(date, PATTERN_DATE);
-      if (CollectionUtils.isNotEmpty(listTraces)) {
+    final String trcPrefix = "export()";
+    LOGGER.debug(DEBUT_LOG, trcPrefix);
 
-         LOGGER.info(
-                     "{} - Nombre de traces trouvées pour la journée du {} : {}",
-                     new Object[] {
-                                    trcPrefix,
-                                    new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                                                                                     .format(date),
-                                    listTraces.size() });
+    final List<TraceJournalEvtIndexCql> listTraces = getSupport().findByDate(date, null);
 
-         File file, directory;
-         directory = new File(repertoire);
-         try {
-            file = File.createTempFile(sDate, ".xml", directory);
+    String path = null;
+    final String sDate = DateFormatUtils.format(date, PATTERN_DATE);
+    if (CollectionUtils.isNotEmpty(listTraces)) {
 
-         }
-         catch (final IOException exception) {
-            throw new TraceRuntimeException(exception);
-         }
+      LOGGER.info(
+                  "{} - Nombre de traces trouvées pour la journée du {} : {}",
+                  new Object[] {
+                                trcPrefix,
+                                new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
+                                .format(date),
+                                listTraces.size() });
 
-         path = file.getAbsolutePath();
-         TraceUtils.writeTraces(file,
-                                listTraces,
-                                idJournalPrecedent,
-                                hashJournalPrecedent,
-                                date,
-                                traceFileSupport,
-                                supportcql);
+      File file, directory;
+      directory = new File(repertoire);
+      try {
+        file = File.createTempFile(sDate, ".xml", directory);
 
-      } else {
-         LOGGER.info("{} - Aucune trace trouvée pour la journée du {}",
-                     new Object[] {
-                                    trcPrefix,
-                                    new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                                                                                     .format(date) });
+      }
+      catch (final IOException exception) {
+        throw new TraceRuntimeException(exception);
       }
 
-      LOGGER.debug(FIN_LOG, trcPrefix);
-      return path;
+      path = file.getAbsolutePath();
+      TraceUtils.writeTraces(file,
+                             listTraces,
+                             idJournalPrecedent,
+                             hashJournalPrecedent,
+                             date,
+                             traceFileSupport,
+                             supportcql);
 
-   }
+    } else {
+      LOGGER.info("{} - Aucune trace trouvée pour la journée du {}",
+                  new Object[] {
+                                trcPrefix,
+                                new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
+                                .format(date) });
+    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public GenericAbstractTraceCqlSupport<TraceJournalEvtCql, TraceJournalEvtIndexCql> getSupport() {
-      return supportcql;
-   }
+    LOGGER.debug(FIN_LOG, trcPrefix);
+    return path;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public LoggerSupport getLoggerSupport() {
-      return loggerSupport;
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public Logger getLogger() {
-      return LOGGER;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public GenericAbstractTraceCqlSupport<TraceJournalEvtCql, TraceJournalEvtIndexCql> getSupport() {
+    return supportcql;
+  }
 
-   /**
-    * Récupération de la liste des traces par identifiant unique du document.
-    *
-    * @param idDoc
-    *           Identifiant du document
-    * @return Liste des traces
-    */
-   public final List<TraceJournalEvtIndexDocCql> getTraceJournalEvtByIdDoc(
-                                                                           final UUID idDoc) {
-      return supportcql.findByIdDoc(idDoc);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public LoggerSupport getLoggerSupport() {
+    return loggerSupport;
+  }
 
-   @Override
-   public TraceJournalEvtCql lecture(final UUID identifiant) {
-      final Optional<TraceJournalEvtCql> traceOpt = this.supportcql.find(identifiant);
-      return traceOpt.orElse(null);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Logger getLogger() {
+    return LOGGER;
+  }
+
+  /**
+   * Récupération de la liste des traces par identifiant unique du document.
+   *
+   * @param idDoc
+   *           Identifiant du document
+   * @return Liste des traces
+   */
+  public final List<TraceJournalEvtIndexDocCql> getTraceJournalEvtByIdDoc(
+                                                                          final UUID idDoc) {
+    return supportcql.findByIdDoc(idDoc);
+  }
+
+  @Override
+  public TraceJournalEvtCql lecture(final UUID identifiant) {
+    final Optional<TraceJournalEvtCql> traceOpt = supportcql.find(identifiant);
+    return traceOpt.orElse(null);
+  }
 
 }
