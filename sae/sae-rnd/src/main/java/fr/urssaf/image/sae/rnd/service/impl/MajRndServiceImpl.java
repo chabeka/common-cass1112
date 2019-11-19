@@ -60,7 +60,7 @@ public class MajRndServiceImpl implements MajRndService {
     final String trcPrefix = "lancer";
     LOGGER.debug(DEBUT_LOG, trcPrefix);
 
-    LOGGER.info("{} - Début de la synchronisation avec l'ADRN", trcPrefix);
+    LOGGER.info("{} - Début de la synchronisation avec l'ADRN : {}", trcPrefix);
 
     // Récupération de la version en cours dans le SAE
     // -----------------------------------------------
@@ -71,7 +71,7 @@ public class MajRndServiceImpl implements MajRndService {
     catch (final SaeBddRuntimeException e) {
       LOGGER
       .error(
-             "Une erreur s'est produite lors de la récupération de la version en cours dans le SAE",
+                   "Une erreur s'est produite lors de la récupération de la version en cours dans le SAE: {}",
              e);
       throw new MajRndException(e);
     }
