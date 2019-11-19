@@ -6,11 +6,14 @@ package fr.urssaf.image.sae.droit.service;
 import java.util.Arrays;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -25,7 +28,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceExceptio
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.utils.Constantes;
-import junit.framework.Assert;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -50,6 +53,9 @@ public class SaePagmaServiceDatasTest {
 
   private final String cfName = Constantes.CF_DROIT_PAGMA;
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SaePagmaServiceDatasTest.class);
+
   @Before
   public void start() throws Exception {
     GestionModeApiUtils.setModeApiThrift(cfName);
@@ -57,7 +63,6 @@ public class SaePagmaServiceDatasTest {
 
   @After
   public void end() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.HECTOR);
     cassandraServer.resetDataOnly();
   }
 
@@ -71,7 +76,7 @@ public class SaePagmaServiceDatasTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
   @Test(expected = PagmaReferenceException.class)

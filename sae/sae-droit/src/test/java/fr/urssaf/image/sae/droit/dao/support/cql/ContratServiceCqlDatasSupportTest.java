@@ -13,6 +13,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -38,6 +40,9 @@ public class ContratServiceCqlDatasSupportTest {
 
   private static final String ID_PKI = "id_pki";
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ContratServiceCqlDatasSupportTest.class);
+
   @Autowired
   private CassandraServerBean cassandraServer;
 
@@ -54,7 +59,7 @@ public class ContratServiceCqlDatasSupportTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors de l'init de cassandra", e.getMessage());
     }
   }
   @After

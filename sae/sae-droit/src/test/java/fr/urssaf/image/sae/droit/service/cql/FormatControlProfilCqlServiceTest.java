@@ -10,6 +10,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -40,6 +42,9 @@ public class FormatControlProfilCqlServiceTest {
 
   public String cfName = Constantes.CF_DROIT_FORMAT_CONTROL_PROFIL;
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(FormatControlProfilCqlServiceTest.class);
+
   @Autowired
   private FormatControlProfilService formControlProfilService;
 
@@ -54,10 +59,7 @@ public class FormatControlProfilCqlServiceTest {
 
   @After
   public void end() throws Exception {
-
-    // cassandraServer.resetData(true, MODE_API.DATASTAX);
     cassandraServer.resetDataOnly();
-
   }
 
   @Test
@@ -70,7 +72,7 @@ public class FormatControlProfilCqlServiceTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
 

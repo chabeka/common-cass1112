@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.droit.dao.support.facade;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +34,9 @@ public class FormatControlProfilSupportFacade implements ISupportFacade<FormatCo
   private final FormatControlProfilCqlSupport formatControlProfilCqlSupport;
 
   private final JobClockSupport clockSupport;
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(FormatControlProfilSupportFacade.class);
 
   /**
    * constructeur
@@ -161,8 +166,7 @@ public class FormatControlProfilSupportFacade implements ISupportFacade<FormatCo
 
     }
     catch (final FormatControlProfilNotFoundException e) {
-
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
     }
 
 

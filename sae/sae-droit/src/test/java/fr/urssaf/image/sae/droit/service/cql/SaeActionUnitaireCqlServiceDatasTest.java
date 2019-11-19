@@ -10,6 +10,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,6 +31,9 @@ import fr.urssaf.image.sae.droit.utils.Constantes;
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SaeActionUnitaireCqlServiceDatasTest {
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SaeActionUnitaireCqlServiceDatasTest.class);
 
   @Autowired
   private SaeActionUnitaireService service;
@@ -60,7 +65,7 @@ public class SaeActionUnitaireCqlServiceDatasTest {
       Assert.assertTrue(true);
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
   @Test(expected = DroitRuntimeException.class)

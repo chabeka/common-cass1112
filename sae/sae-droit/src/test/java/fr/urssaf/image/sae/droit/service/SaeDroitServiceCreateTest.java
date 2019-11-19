@@ -15,6 +15,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -84,10 +86,12 @@ public class SaeDroitServiceCreateTest {
   @Autowired
   private CassandraServerBean cassandraServer;
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SaeDroitServiceCreateTest.class);
+
   @After
   public void end() throws Exception {
     cassandraServer.resetData(true, MODE_API.HECTOR);
-    // cassandraServer.resetData();
   }
 
   @Test
@@ -101,7 +105,7 @@ public class SaeDroitServiceCreateTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
 

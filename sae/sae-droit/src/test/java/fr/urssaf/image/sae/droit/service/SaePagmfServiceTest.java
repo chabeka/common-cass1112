@@ -8,6 +8,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -38,6 +40,9 @@ public class SaePagmfServiceTest {
 
   private static final String DESCRIPTION = "description";
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SaePagmfServiceTest.class);
+
   @Autowired
   private SaePagmfService saePagmfService;
 
@@ -62,14 +67,12 @@ public class SaePagmfServiceTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
     }
   }
 
   @Test
   public void getPagmfSuccess() throws Exception {
-
-    // cassandraServer.resetData(true, MODE_API.HECTOR);
 
     final Pagmf pagmf = saePagmfService.getPagmf(CODE_DROIT_PAGMF);
 
@@ -85,7 +88,7 @@ public class SaePagmfServiceTest {
 
   @Test
   public void getPagmfNotFound() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.HECTOR);
+
     try {
       saePagmfService.getPagmf(CODE_DROIT_PAGMF_ERREUR);
     } catch (final PagmfNotFoundException except) {
@@ -99,7 +102,7 @@ public class SaePagmfServiceTest {
 
   @Test(expected = DroitRuntimeException.class)
   public void addPagmfFailureFormatControlProfilInexistant() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.HECTOR);
+
     final Pagmf pagmf = new Pagmf();
     pagmf.setDescription(DESCRIPTION);
     pagmf.setCodePagmf("codePagmf");
@@ -112,8 +115,6 @@ public class SaePagmfServiceTest {
   @Test
   public void addPagmfSuccess() throws Exception {
 
-    // cassandraServer.resetData(true, MODE_API.DATASTAX);
-    // cassandraServer.resetData(false, MODE_API.HECTOR);
     final Pagmf pagmf = new Pagmf();
     pagmf.setDescription(DESCRIPTION);
     pagmf.setCodePagmf("codePagmf");
@@ -136,7 +137,7 @@ public class SaePagmfServiceTest {
   @Test
   public void deletePagmfSuccess()
       throws Exception {
-    // cassandraServer.resetData();
+
     final Pagmf pagmf = new Pagmf();
     pagmf.setDescription(DESCRIPTION);
     pagmf.setCodePagmf("codePagmf2");
@@ -158,7 +159,7 @@ public class SaePagmfServiceTest {
 
   @Test
   public void deletePagmfFailure() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.HECTOR);
+
     try {
       saePagmfService.deletePagmf("codePagmf2");
     } catch (final PagmfNotFoundException except) {

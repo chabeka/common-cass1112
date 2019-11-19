@@ -16,6 +16,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -122,8 +124,11 @@ public class SaeDroitServiceDataTest {
 
   private static final String ID_PKI = "pki";
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SaeDroitServiceDataTest.class);
+
+
   @Autowired
-  // @Qualifier("saeDroitServiceFacadeImpl")
   private SaeDroitService service;
 
   @Autowired
@@ -168,7 +173,7 @@ public class SaeDroitServiceDataTest {
       Assert.assertTrue(true);
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors du reset de cassandra: {}", e.getMessage());
     }
   }
 

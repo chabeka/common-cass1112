@@ -6,6 +6,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,6 +35,9 @@ public class ParamPagmfTest {
   private static final String MESSAGE_EXCEPT = "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : ";
   private static final String CODE_PAGMF = "[codePagmf].";
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ParamPagmfTest.class);
+
   @Autowired
   private PagmfSupport pagmfSupport;
 
@@ -55,7 +60,7 @@ public class ParamPagmfTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Une erreur s'est produite lors de l'init du cassandra", e.getMessage());
     }
   }
 
