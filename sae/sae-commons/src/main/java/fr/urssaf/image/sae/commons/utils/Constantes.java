@@ -88,7 +88,7 @@ public final class Constantes {
   // Traces
   public static final String CF_TRACE_JOURNAL_EVT = "tracejournalevt";
 
-  public static final String CF_TRACE_DESTINATAIRE = "tracedestinatairecql";
+  public static final String CF_TRACE_DESTINATAIRE = "tracedestinataire";
 
   public static final String CF_TRACE_REG_TECHNIQUE = "traceregtechnique";
 

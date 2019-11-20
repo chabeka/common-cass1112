@@ -4,8 +4,12 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-public class SearchObjectClassUtil {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class SearchObjectClassUtil {
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SearchObjectClassUtil.class);
   /**
    * Méthode utilitaire permettant de retrouver une classe dans un object à
    * analyser. Cette utilitaire ne gère pas les type primitifs.
@@ -78,10 +82,10 @@ public class SearchObjectClassUtil {
           }
         }
         catch (final IllegalAccessException e) {
-          e.printStackTrace();
+          LOGGER.error(e.getMessage());
         }
         catch (final IllegalArgumentException e) {
-          e.printStackTrace();
+          LOGGER.error(e.getMessage());
         }
       }
     }

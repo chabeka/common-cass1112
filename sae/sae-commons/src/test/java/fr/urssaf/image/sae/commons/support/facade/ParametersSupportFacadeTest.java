@@ -6,6 +6,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,6 +31,8 @@ import fr.urssaf.image.sae.commons.utils.Constantes;
 
 public class ParametersSupportFacadeTest {
 
+  private static final Logger LOGGER = LoggerFactory
+                                                    .getLogger(ParametersSupportFacadeTest.class);
 
   @Autowired
   private CassandraServerBean cassandraServer;
@@ -57,7 +61,7 @@ public class ParametersSupportFacadeTest {
 
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
     }
   }
 

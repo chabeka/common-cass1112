@@ -5,11 +5,13 @@ package fr.urssaf.image.sae.commons.dao.cql.impl;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.extras.codecs.enums.EnumNameCodec;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.sae.commons.bo.ParameterRowType;
 import fr.urssaf.image.sae.commons.bo.ParameterType;
 import fr.urssaf.image.sae.commons.bo.cql.ParameterCql;
@@ -21,6 +23,14 @@ import fr.urssaf.image.sae.commons.utils.ObjectCodec;
  */
 @Repository
 public class ParametersCqlDaoImpl extends GenericDAOImpl<ParameterCql, String> implements IParametersDaoCql {
+  /**
+   * @param ccf
+   */
+  @Autowired
+  public ParametersCqlDaoImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
+
   @PostConstruct
   public void setRegister() {
     if (ccf != null) {
