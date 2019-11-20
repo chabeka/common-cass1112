@@ -10,12 +10,13 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionCql;
 
 /**
- * Interface DAO de {@link JobExecutionCql}
- * 
- * @param JobExecutionCql
- *          Type de d'objet contenue dans le registre
- * @param Long
- *          Le type d'Identifiant de l'objet
+ * Interface DAO de {@link JobExecutionCql}<br>
+ * Les parametre:<br>
+ * <b>JobExecutionCql</b>
+ * Type de d'objet contenue dans le registre<br>
+ * <br>
+ * <b>Long</b>
+ * Le type d'Identifiant de l'objet<br>
  */
 public interface IJobExecutionDaoCql extends IGenericDAO<JobExecutionCql, Long>, SearchableJobExecutionDao {
   /**

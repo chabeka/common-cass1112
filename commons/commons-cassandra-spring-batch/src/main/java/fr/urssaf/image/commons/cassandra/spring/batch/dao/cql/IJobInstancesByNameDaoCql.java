@@ -7,16 +7,16 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericIndexDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstancesByNameCql;
 
 /**
- * Interface DAO de {@link JobInstancesByNameCql}
- * 
- * @param JobInstancesByNameCql
- *          Type de d'objet contenue dans le registre
- * @param String
- *          le type d'Identifiant de l'objet
+ * Interface DAO de {@link JobInstancesByNameCql}<br>
+ * Les parametres:<br>
+ * <b> JobInstancesByNameCql</b>
+ * Type de d'objet contenue dans le registre<br>
+ * <b> String</b>
+ * le type d'Identifiant de l'objet
  */
 public interface IJobInstancesByNameDaoCql extends IGenericIndexDAO<JobInstancesByNameCql, String> {
 
-	/**
+  /**
    * Supprimer le {@link JobInstancesByNameCql} en fonction de l'id
    * 
    * @param id
