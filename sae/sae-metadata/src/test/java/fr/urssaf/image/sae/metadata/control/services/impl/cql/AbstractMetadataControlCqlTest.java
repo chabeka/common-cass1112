@@ -71,7 +71,7 @@ public abstract class AbstractMetadataControlCqlTest {
   public void setup() throws Exception {
     final HashMap<String, String> modesApiTest = new HashMap<>();
     modesApiTest.put(Constantes.CF_METADATA, ModeGestionAPI.MODE_API.DATASTAX);
-    modesApiTest.put("tracedestinatairecql", ModeGestionAPI.MODE_API.DATASTAX);
+    modesApiTest.put("tracedestinataire", ModeGestionAPI.MODE_API.DATASTAX);
     modesApiTest.put("traceregtechnique", ModeGestionAPI.MODE_API.DATASTAX);
     ModeGestionAPI.setListeCfsModes(modesApiTest);
     if (server.getStartLocal()) {
