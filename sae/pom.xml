@@ -46,7 +46,7 @@
 
 		<!-- ========================================== commons-cassandra-spring-batch 
 			========================================== -->
-		<commons.cassandra.spring.batch>2.0.2</commons.cassandra.spring.batch>
+		<commons.cassandra.spring.batch>2.0.3</commons.cassandra.spring.batch>
 
 		<!-- ========================================== commons-dfce ========================================== -->
 		<commons.dfce>1.11.0</commons.dfce>
