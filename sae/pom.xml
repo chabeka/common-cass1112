@@ -42,7 +42,7 @@
 
 
 		<!-- ========================================== commons-cassandra ========================================== -->
-		<commons.cassandra>2.0.2</commons.cassandra>
+		<commons.cassandra>2.0.3</commons.cassandra>
 
 		<!-- ========================================== commons-cassandra-spring-batch 
 			========================================== -->
