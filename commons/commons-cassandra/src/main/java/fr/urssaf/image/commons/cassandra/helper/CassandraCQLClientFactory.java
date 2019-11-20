@@ -38,7 +38,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
   private static final Logger LOG = LoggerFactory.getLogger(CassandraCQLClientFactory.class);
 
   public static final String KEYSPACE_TU = "keyspace_tu";
-  
+
   public static final String DFCE_KEYSPACE_NAME = "dfce";
 
   private final static String SAE_CONFIG_CASSANDRA_TRANSFERT_CONFIG = "sae.cassandra.transfert.cheminFichierConfig";
@@ -132,7 +132,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
           cassandraServer.init();
         }
         catch (final Exception e) {
-          e.printStackTrace();
+          LOG.error("Une erreur s'est produite lors de l'initialisation:", e.getMessage());
         }
       }
 
@@ -204,35 +204,35 @@ public final class CassandraCQLClientFactory implements DisposableBean {
           .withPoolingOptions(poolingOptions)
           .withQueryOptions(qo)
           .build();
-      
+
       try{
-     	 // on se connect au keyspace si il existe
-     	 session = cluster.connect('\"' + keyspaceName + '\"');
-     	 
-      } catch (Exception e){
-     	 // utilser seulement dans le cas de SAE
-     	 if (cluster.getMetadata().getKeyspace('\"' +keyspaceName+ '\"') == null){
-	        	 // on un keyspace SAE vide dans le cas ou il n'a pas encore créée
-	             // Le facteur de réplication utilisé est le même que celui utilisé pour
-	             // le keyspace "Docubase", soit
-	             // 3 pour l'environnement de production, et de 1 à 3 pour les autres.
-	        	
-				Map<String, String> dfcereplicator = cluster.getMetadata().getKeyspace(DFCE_KEYSPACE_NAME).getReplication();
-	        	 Map<String, Object> replicator = new HashMap<>();
-	        	 for ( Map.Entry<String,String> entry: dfcereplicator.entrySet()){
-	        		 replicator.put(entry.getKey(), entry.getValue());
-	        	 }
-	        	 CreateKeyspace createK = SchemaBuilder.createKeyspace('\"' + keyspaceName + '\"').ifNotExists();
-	        	 SchemaStatement stmnt = createK.with().replication(replicator);
-	        	 
-	        	 // la connection au dfce permet d'avoir une session pour exécuter la requete de 
-	        	 // création de la base SAE
-	        	 session = cluster.connect(DFCE_KEYSPACE_NAME);
-	        	 // création du keyspace SAE et connection
-	        	 session.execute(stmnt);
-	        	 session = cluster.connect('\"' + keyspaceName + '\"');
-     	 }
-     	 
+        // on se connect au keyspace si il existe
+        session = cluster.connect('\"' + keyspaceName + '\"');
+
+      } catch (final Exception e){
+        // utilser seulement dans le cas de SAE
+        if (cluster.getMetadata().getKeyspace('\"' +keyspaceName+ '\"') == null){
+          // on un keyspace SAE vide dans le cas ou il n'a pas encore créée
+          // Le facteur de réplication utilisé est le même que celui utilisé pour
+          // le keyspace "Docubase", soit
+          // 3 pour l'environnement de production, et de 1 à 3 pour les autres.
+
+          final Map<String, String> dfcereplicator = cluster.getMetadata().getKeyspace(DFCE_KEYSPACE_NAME).getReplication();
+          final Map<String, Object> replicator = new HashMap<>();
+          for ( final Map.Entry<String,String> entry: dfcereplicator.entrySet()){
+            replicator.put(entry.getKey(), entry.getValue());
+          }
+          final CreateKeyspace createK = SchemaBuilder.createKeyspace('\"' + keyspaceName + '\"').ifNotExists();
+          final SchemaStatement stmnt = createK.with().replication(replicator);
+
+          // la connection au dfce permet d'avoir une session pour exécuter la requete de 
+          // création de la base SAE
+          session = cluster.connect(DFCE_KEYSPACE_NAME);
+          // création du keyspace SAE et connection
+          session.execute(stmnt);
+          session = cluster.connect('\"' + keyspaceName + '\"');
+        }
+
       }
       this.keyspaceName = '\"' + keyspaceName + '\"';
     }

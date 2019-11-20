@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.ResultSet;
@@ -35,7 +34,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GenericDAOImpl.class);
 
-  @Autowired
+  // @Autowired
   protected CassandraCQLClientFactory ccf;
 
   protected Class<? extends T> daoType;
@@ -44,10 +43,11 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
 
   protected Mapper<T> mapper;
 
-  public GenericDAOImpl() {
+  public GenericDAOImpl(final CassandraCQLClientFactory ccf) {
     final Type t = getClass().getGenericSuperclass();
     final ParameterizedType pt = (ParameterizedType) t;
     daoType = (Class) pt.getActualTypeArguments()[0];
+    this.ccf = ccf;
   }
 
   /**

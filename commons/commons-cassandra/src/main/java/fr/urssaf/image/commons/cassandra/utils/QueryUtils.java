@@ -8,6 +8,8 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.BatchStatement;
@@ -37,6 +39,8 @@ public class QueryUtils {
    */
   private static final String BACKSLASH = "\"";
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(QueryUtils.class);
+
   /**
    * create an insert query with fields and associated value of fields
    *
@@ -58,7 +62,7 @@ public class QueryUtils {
         }
       }
       catch (final Exception e) {
-        e.printStackTrace();
+        LOGGER.error(e.getMessage());
       }
     }
   }
@@ -97,7 +101,7 @@ public class QueryUtils {
           }
         }
         catch (final Exception e) {
-          e.printStackTrace();
+          LOGGER.error(e.getMessage());
         }
       }
     }
@@ -164,7 +168,7 @@ public class QueryUtils {
           }
         }
         catch (final Exception e) {
-          e.printStackTrace();
+          LOGGER.error(e.getMessage());
         }
       }
     }
