@@ -21,14 +21,12 @@ import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
 /**
- * DAO de la colonne famille <code>JobsQueue</code>
+ * DAO de la colonne famille {@link JobsQueue}
  */
 @Repository
 public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> implements IJobsQueueDaoCql {
 
-   /**
-    * TODO (AC75095028) Description du champ
-    */
+
    private static final String JOB_ID = "idjob";
 
    private static final String JOBS_WAITING_KEY = "jobsWaiting";

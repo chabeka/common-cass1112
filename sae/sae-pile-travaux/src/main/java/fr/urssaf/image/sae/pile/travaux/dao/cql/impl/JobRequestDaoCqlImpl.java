@@ -21,14 +21,12 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
- * DAO de la colonne famille <code>JobRequest</code>
+ * DAO de la colonne famille {@link JobRequest}
  */
 @Repository
 public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> implements IJobRequestDaoCql {
 
-   /**
-    * TODO (AC75095028) Description du champ
-    */
+ 
    private static final String JOBKEY2 = "jobkey";
 
    /**
