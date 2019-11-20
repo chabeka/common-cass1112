@@ -24,6 +24,7 @@ import com.datastax.driver.core.querybuilder.Select;
 
 import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstancesByNameCql;
@@ -42,6 +43,14 @@ import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
  */
 @Repository
 public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> implements IJobInstanceDaoCql {
+
+  /**
+   * @param ccf
+   */
+  @Autowired
+  public JobInstanceDaoCqlImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
 
   /**
    *
@@ -77,10 +86,10 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    */
   @PostConstruct
   public void setRegister() {
-	  if(ccf != null) {
-	    ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-	    ccf.getCluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
-	  }
+    if(ccf != null) {
+      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+      ccf.getCluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
+    }
 
   }
 

@@ -14,6 +14,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -27,9 +29,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobExecutionDaoThrift;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobInstanceDaoThrift;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraStepExecutionDaoThrift;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.StepExecutionIdGenerator;
@@ -53,6 +52,8 @@ public class CassandraStepExecutionDAOThriftTest {
 
   private CuratorFramework zkClient;
 
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(CassandraStepExecutionDAOThriftTest.class);
   @Autowired
   private CassandraServerBean server;
 
@@ -84,7 +85,7 @@ public class CassandraStepExecutionDAOThriftTest {
     try {
       zkServer.close();
     } catch (final IOException e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
     }
   }
 

@@ -12,6 +12,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -30,6 +32,9 @@ public class JobExecutionIdGeneratorTest {
   private TestingServer zkServer;
 
   private CuratorFramework zkClient;
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(JobExecutionIdGeneratorTest.class);
 
   @Autowired
   private CassandraServerBean server;
@@ -54,14 +59,14 @@ public class JobExecutionIdGeneratorTest {
     try {
       zkServer.close();
     } catch (final IOException e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
     }
     try {
       server.resetData(true, MODE_API.HECTOR);
     }
     catch (final Exception e) {
-      e.printStackTrace();
-    } // EC
+      LOGGER.error(e.getMessage());
+    }
   }
 
   private void initZookeeperServer() throws Exception {
