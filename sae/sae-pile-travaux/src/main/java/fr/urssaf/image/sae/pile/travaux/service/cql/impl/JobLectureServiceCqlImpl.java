@@ -63,17 +63,17 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
    */
   public JobLectureServiceCqlImpl(final CassandraCQLClientFactory ccf) {
 
-    final IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
+    final IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl(ccf);
     jobHistoryDaoCql.setCcf(ccf);
     final JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
     jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
 
-    final IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl();
+    final IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl(ccf);
     jobRequestDaoCql.setCcf(ccf);
     final JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
     jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
 
-    final IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl();
+    final IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl(ccf);
     jobsQueueDaoCql.setCcf(ccf);
     final JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
     jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
