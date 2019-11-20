@@ -9,9 +9,9 @@ import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionToJob
 /**
  * Interface DAO de {@link JobExecutionToJobStepCql}
  * 
- * @param <JobExecutionToJobStepCql>
+ * @param JobExecutionToJobStepCql
  *          Type de d'objet contenue dans le registre
- * @param <Long>
+ * @param Long
  *          le type d'Identifiant de l'objet
  */
 public interface IJobExecutionToJobStepDaoCql extends IGenericIndexDAO<JobExecutionToJobStepCql, Long> {
