@@ -34,9 +34,10 @@ public class RechercheIterateurWattTest {
     * Reproduit une requête lancée par WATT
     */
    public void rechercheIterateurWattTest() throws Exception {
-      final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
       // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.LOCALHOST.getUrl());
       // final SaeServicePortType service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_PAJE.getUrl());
+      final SaeServicePortType service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.FRONTAL_CSPP.getUrl());
 
       final PrintStream sysout = new PrintStream("c:/temp/out.txt");
 

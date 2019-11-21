@@ -33,39 +33,48 @@ public class SaeServiceStubFactory {
 
    public static SaeServicePortType getServiceForRechercheDocumentaireGNT(final String url) {
       final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("RECHERCHE-DOCUMENTAIRE.p12",
-                                                                                RECHERCHE_DOCUMENTAIRE_PASS,
-                                                                                Arrays.asList("PAGM_RECHERCHE_DOCUMENTAIRE_GNT"),
-                                                                                "CS_RECHERCHE_DOCUMENTAIRE",
-                                                                                VI_LOGIN);
+            RECHERCHE_DOCUMENTAIRE_PASS,
+            Arrays.asList("PAGM_RECHERCHE_DOCUMENTAIRE_GNT"),
+            "CS_RECHERCHE_DOCUMENTAIRE",
+            VI_LOGIN);
 
       return getSaeService(url, handler);
    }
 
    public static SaeServicePortType getServiceForRechercheDocumentaireGNS(final String url) {
       final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("RECHERCHE-DOCUMENTAIRE.p12",
-                                                                                RECHERCHE_DOCUMENTAIRE_PASS,
-                                                                                Arrays.asList("PAGM_RECHERCHE_DOCUMENTAIRE_GNS"),
-                                                                                "CS_RECHERCHE_DOCUMENTAIRE",
-                                                                                VI_LOGIN);
+            RECHERCHE_DOCUMENTAIRE_PASS,
+            Arrays.asList("PAGM_RECHERCHE_DOCUMENTAIRE_GNS"),
+            "CS_RECHERCHE_DOCUMENTAIRE",
+            VI_LOGIN);
 
       return getSaeService(url, handler);
    }
 
    public static SaeServicePortType getServiceForDevToutesActions(final String url) {
       final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("RECHERCHE-DOCUMENTAIRE.p12",
-                                                                                RECHERCHE_DOCUMENTAIRE_PASS,
-                                                                                Arrays.asList("PAGM_TOUTES_ACTIONS"),
-                                                                                "CS_DEV_TOUTES_ACTIONS",
-                                                                                VI_LOGIN);
+            RECHERCHE_DOCUMENTAIRE_PASS,
+            Arrays.asList("PAGM_TOUTES_ACTIONS"),
+            "CS_DEV_TOUTES_ACTIONS",
+            VI_LOGIN);
+      return getSaeService(url, handler);
+   }
+
+   public static SaeServicePortType getServiceForDevToutesActionsCSPPGNS(final String url) {
+      final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("RECHERCHE-DOCUMENTAIRE.p12",
+            RECHERCHE_DOCUMENTAIRE_PASS,
+            Arrays.asList("PAGM_TOUTES_ACTIONS_GNS"),
+            "CS_DEV_TOUTES_ACTIONS",
+            VI_LOGIN);
       return getSaeService(url, handler);
    }
 
    public static SaeServicePortType getServiceForCimeGNTCotisant(final String url) {
       final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("CIME.p12",
-                                                                                CIME_PASS,
-                                                                                Arrays.asList("PAGM_CIME_GNT_COTISANT"),
-                                                                                "CS_CIME",
-                                                                                VI_LOGIN);
+            CIME_PASS,
+            Arrays.asList("PAGM_CIME_GNT_COTISANT"),
+            "CS_CIME",
+            VI_LOGIN);
       return getSaeService(url, handler);
    }
 

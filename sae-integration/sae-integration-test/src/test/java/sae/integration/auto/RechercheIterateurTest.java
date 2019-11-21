@@ -52,7 +52,8 @@ public class RechercheIterateurTest {
 
    @BeforeClass
    public static void setup() {
-      service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_CLIENT.getUrl());
+      // service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_CLIENT.getUrl());
+      service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_CESU.getUrl());
    }
 
    @Before

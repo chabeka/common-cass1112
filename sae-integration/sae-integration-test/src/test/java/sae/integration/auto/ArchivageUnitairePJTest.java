@@ -45,8 +45,9 @@ public class ArchivageUnitairePJTest {
       // environment = Environments.GNT_INT_PAJE;
       // environment = Environments.GNS_INT_INTERNE;
       // environment = Environments.GNT_INT_INTERNE;
-      environment = Environments.GNS_INT_CESU;
+      environment = Environments.MIG_GNT;
       // environment = Environments.GNT_INT_CLIENT;
+      // environment = Environments.GNS_INT_CLIENT;
       service = SaeServiceStubFactory.getServiceForDevToutesActions(environment.getUrl());
    }
 

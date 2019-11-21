@@ -29,7 +29,8 @@ public class ConsultationTest {
     * Consultation d'un document inexistant
     */
    public void consultationDocInexistantTest() throws Exception {
-      final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
+      final SaeServicePortType service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_CSPP.getUrl());
 
       final ConsultationMTOMRequestType request = new ConsultationMTOMRequestType();
       final String docId = UUID.randomUUID().toString();
