@@ -38,22 +38,28 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class MappingDocumentServiceImpl implements MappingDocumentService {
 
-  @Autowired
+  // @Autowired EC
   private MetadataReferenceDAO referenceDAO;
 
+  @Autowired
+  public MappingDocumentServiceImpl(final MetadataReferenceDAO referenceDAO) {
+    super();
+    this.referenceDAO = referenceDAO;
+
+  }
   /**
    * {@inheritDoc}
    */
   @Override
   @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops",
-                     "PMD.DataflowAnomalyAnalysis"})
+  "PMD.DataflowAnomalyAnalysis"})
   public StorageDocument saeDocumentToStorageDocument(final SAEDocument saeDoc)
       throws InvalidSAETypeException {
 
     final StorageDocument storageDoc = new StorageDocument();
 
     final List<StorageMetadata> sMetadata = saeMetadatasToStorageMetadatas(saeDoc
-                                                                                 .getMetadatas());
+                                                                           .getMetadatas());
 
     storageDoc.setContent(saeDoc.getContent());
 
@@ -73,21 +79,21 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public SAEDocument storageDocumentToSaeDocument(
                                                   final StorageDocument storageDoc)
-      throws InvalidSAETypeException,
-      MappingFromReferentialException {
+                                                      throws InvalidSAETypeException,
+                                                      MappingFromReferentialException {
     final SAEDocument saeDoc = new SAEDocument();
     final List<SAEMetadata> metadatas = new ArrayList<>();
     saeDoc.setContent(storageDoc.getContent());
     saeDoc.setFilePath(storageDoc.getFilePath());
     saeDoc.setFileName(storageDoc.getFileName());
     for (final StorageMetadata sMetadata : Utils.nullSafeIterable(storageDoc
-                                                                            .getMetadatas())) {
+                                                                  .getMetadatas())) {
       try {
         final MetadataReference reference = referenceDAO
-                                                        .getByShortCode(sMetadata.getShortCode());
+            .getByShortCode(sMetadata.getShortCode());
         metadatas.add(new SAEMetadata(reference.getLongCode(),
                                       reference
-                                               .getShortCode(),
+                                      .getShortCode(),
                                       sMetadata.getValue()));
       }
       catch (final ReferentialException refExcpt) {
@@ -111,11 +117,11 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     for (final SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
       try {
         final MetadataReference reference = referenceDAO
-                                                        .getByLongCode(metadata.getLongCode());
+            .getByLongCode(metadata.getLongCode());
 
         metadatas.add(new UntypedMetadata(metadata.getLongCode(),
                                           Utils
-                                               .convertToString(metadata.getValue(), reference)));
+                                          .convertToString(metadata.getValue(), reference)));
       }
       catch (final ParseException parseExcept) {
         throw new InvalidSAETypeException(parseExcept);
@@ -139,7 +145,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   public SAEDocument untypedDocumentToSaeDocument(final UntypedDocument untyped)
       throws InvalidSAETypeException, MappingFromReferentialException {
     final List<SAEMetadata> metadatas = untypedMetadatasToSaeMetadatas(untyped
-                                                                              .getUMetadatas());
+                                                                       .getUMetadatas());
 
     return new SAEDocument(untyped.getFilePath(),
                            untyped.getContent(),
@@ -154,17 +160,17 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public UntypedDocument storageDocumentToUntypedDocument(
                                                           final StorageDocument storage)
-      throws InvalidSAETypeException,
-      MappingFromReferentialException {
+                                                              throws InvalidSAETypeException,
+                                                              MappingFromReferentialException {
     final List<UntypedMetadata> metadatas = new ArrayList<>();
     for (final StorageMetadata metadata : Utils.nullSafeIterable(storage
-                                                                        .getMetadatas())) {
+                                                                 .getMetadatas())) {
       try {
         final MetadataReference reference = referenceDAO
-                                                        .getByShortCode(metadata.getShortCode());
+            .getByShortCode(metadata.getShortCode());
         metadatas.add(new UntypedMetadata(reference.getLongCode(),
                                           Utils
-                                               .convertToString(metadata.getValue(), reference)));
+                                          .convertToString(metadata.getValue(), reference)));
       }
       catch (final ParseException parseExcept) {
         throw new InvalidSAETypeException(parseExcept);
@@ -194,7 +200,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   @Override
   public VirtualStorageDocument saeVirtualDocumentToVirtualStorageDocument(
                                                                            final SAEVirtualDocument document)
-      throws InvalidSAETypeException {
+                                                                               throws InvalidSAETypeException {
 
     final VirtualStorageDocument storageDocument = new VirtualStorageDocument();
     final List<StorageMetadata> metadatas = new ArrayList<>();
@@ -205,16 +211,16 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     final String filePath = document.getReference().getFilePath();
     String fileName = FilenameUtils.getBaseName(filePath);
     fileName = fileName.concat("_")
-                       .concat(String.valueOf(document.getStartPage()))
-                       .concat("_")
-                       .concat(String.valueOf(document.getEndPage()));
+        .concat(String.valueOf(document.getStartPage()))
+        .concat("_")
+        .concat(String.valueOf(document.getEndPage()));
     storageDocument.setFileName(fileName);
 
     for (final SAEMetadata metadata : Utils.nullSafeIterable(document
-                                                                     .getMetadatas())) {
+                                                             .getMetadatas())) {
       metadatas.add(new StorageMetadata(metadata.getShortCode(),
                                         metadata
-                                                .getValue()));
+                                        .getValue()));
     }
     storageDocument.setMetadatas(metadatas);
 
@@ -227,16 +233,16 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   @Override
   public List<SAEMetadata> untypedMetadatasToSaeMetadatas(
                                                           final List<UntypedMetadata> metadatas)
-      throws InvalidSAETypeException,
-      MappingFromReferentialException {
+                                                              throws InvalidSAETypeException,
+                                                              MappingFromReferentialException {
     final List<SAEMetadata> saeMetadatas = new ArrayList<>();
     for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
       try {
         final MetadataReference reference = referenceDAO
-                                                        .getByLongCode(metadata.getLongCode());
+            .getByLongCode(metadata.getLongCode());
         saeMetadatas.add(new SAEMetadata(reference.getLongCode(),
                                          reference
-                                                  .getShortCode(),
+                                         .getShortCode(),
                                          Utils.conversionToObject(
                                                                   metadata.getValue(),
                                                                   reference)));
@@ -258,13 +264,13 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   @Override
   public List<SAEMetadata> nullSafeUntypedMetadatasToSaeMetadatas(
                                                                   final List<UntypedMetadata> metadatas)
-      throws InvalidSAETypeException,
-      MappingFromReferentialException {
+                                                                      throws InvalidSAETypeException,
+                                                                      MappingFromReferentialException {
     final List<SAEMetadata> saeMetadatas = new ArrayList<>();
     for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
       try {
         final MetadataReference reference = referenceDAO
-                                                        .getByLongCode(metadata.getLongCode());
+            .getByLongCode(metadata.getLongCode());
         if (StringUtils.isEmpty(metadata.getValue())) {
           saeMetadatas.add(new SAEMetadata(reference.getLongCode(),
                                            reference.getShortCode(),
@@ -294,14 +300,14 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   @Override
   public SAEVirtualDocument untypedVirtualDocumentToSaeVirtualDocument(
                                                                        final UntypedVirtualDocument document)
-      throws InvalidSAETypeException,
-      MappingFromReferentialException {
+                                                                           throws InvalidSAETypeException,
+                                                                           MappingFromReferentialException {
 
     final SAEVirtualDocument virtualDocument = new SAEVirtualDocument();
     virtualDocument.setEndPage(document.getEndPage());
     virtualDocument.setIndex(document.getIndex());
     final List<SAEMetadata> metadatas = untypedMetadatasToSaeMetadatas(document
-                                                                               .getuMetadatas());
+                                                                       .getuMetadatas());
     virtualDocument.setMetadatas(metadatas);
     virtualDocument.setStartPage(document.getStartPage());
     virtualDocument.setReference(document.getReference());
@@ -320,7 +326,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     for (final SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
       sMetadata.add(new StorageMetadata(metadata.getShortCode(),
                                         metadata
-                                                .getValue()));
+                                        .getValue()));
     }
 
     return sMetadata;
@@ -336,7 +342,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
       try {
         final MetadataReference reference = referenceDAO
-                                                        .getByLongCode(metadata.getLongCode());
+            .getByLongCode(metadata.getLongCode());
         if (reference != null) {
           if (metadata.getValue() != null && StringUtils.isNotBlank(metadata.getValue().toString())) {
             saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), Utils.conversionToObject(metadata.getValue(), reference)));
@@ -366,14 +372,14 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   @Override
   public List<UntypedMetadata> storageMetadataToUntypedMetadata(
                                                                 final List<StorageMetadata> storageMetas)
-      throws InvalidSAETypeException,
-      MappingFromReferentialException {
+                                                                    throws InvalidSAETypeException,
+                                                                    MappingFromReferentialException {
 
     final List<UntypedMetadata> untypedMetadatas = new ArrayList<>();
     for (final StorageMetadata metadata : Utils.nullSafeIterable(storageMetas)) {
       try {
         final MetadataReference reference = referenceDAO
-                                                        .getByShortCode(metadata.getShortCode());
+            .getByShortCode(metadata.getShortCode());
 
         untypedMetadatas.add(new UntypedMetadata(reference.getLongCode(),
                                                  Utils.convertToString(metadata.getValue(), reference)));
@@ -394,8 +400,8 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   @Override
   public UntypedDocumentAttachment storageDocumentAttachmentToUntypedDocumentAttachment(
                                                                                         final StorageDocumentAttachment storage)
-      throws InvalidSAETypeException,
-      MappingFromReferentialException {
+                                                                                            throws InvalidSAETypeException,
+                                                                                            MappingFromReferentialException {
 
     final List<UntypedMetadata> metadatas = new ArrayList<>();
 
@@ -414,7 +420,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       reference = referenceDAO.getByShortCode("SM_ARCHIVAGE_DATE");
       metadatas.add(new UntypedMetadata(reference.getLongCode(),
                                         Utils
-                                             .convertToString(dateArchivage, reference)));
+                                        .convertToString(dateArchivage, reference)));
 
       // Nom du fichier
       final String nom = storage.getName();
@@ -422,15 +428,15 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       reference = referenceDAO.getByShortCode("nfi");
       metadatas.add(new UntypedMetadata(reference.getLongCode(),
                                         nom.concat(
-                                                   ".")
-                                           .concat(extension)));
+                                            ".")
+                                        .concat(extension)));
 
       // Hash
       final String hash = storage.getHash();
       reference = referenceDAO.getByShortCode("SM_DIGEST");
       metadatas.add(new UntypedMetadata(reference.getLongCode(),
                                         Utils
-                                             .convertToString(hash, reference)));
+                                        .convertToString(hash, reference)));
 
       final UntypedDocumentAttachment untypedDocument = new UntypedDocumentAttachment(
                                                                                       storage.getDocUuid(),
@@ -456,10 +462,10 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     for (final StorageMetadata metadata : Utils.nullSafeIterable(metadatas)) {
       try {
         final MetadataReference reference = referenceDAO
-                                                        .getByShortCode(metadata.getShortCode());
+            .getByShortCode(metadata.getShortCode());
         saeMetadatas.add(new SAEMetadata(reference.getLongCode(),
                                          reference
-                                                  .getShortCode(),
+                                         .getShortCode(),
                                          metadata.getValue()));
       }
       catch (final ReferentialException refExcpt) {
