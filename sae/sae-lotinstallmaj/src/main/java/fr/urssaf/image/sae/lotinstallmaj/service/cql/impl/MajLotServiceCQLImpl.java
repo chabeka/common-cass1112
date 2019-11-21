@@ -11,156 +11,156 @@ import fr.urssaf.image.sae.lotinstallmaj.service.MajLotService;
 @Service
 public class MajLotServiceCQLImpl implements MajLotService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(MajLotServiceCQLImpl.class);
-	
-	// SAE
-	public static final String SAE_MODE_API = "SAE_CREATE_MODE_API";
-	public static final String SAE_MIG_TRACES = "SAE_CREATE_TRACE";
-	public static final String SAE_MIG_JOB_SPRING = "SAE_CREATE_JOB_SPRING";
-	public static final String SAE_MIG_PILE_TRAVAUX = "SAE_CREATE_PILE_TRAVAUX";
-	// SAE DELETE TABLE MIG
-	public static final String SAE_DELETE_MODE_API = "SAE_DELETE_MODE_API";
-	public static final String SAE_DELETE_MIG_TRACES = "SAE_DELETE_TRACES";
-	public static final String SAE_DELETE_MIG_JOB_SPRING = "SAE_DELETE_JOB_SPRING";
-	public static final String SAE_DELETE_MIG_PILE_TRAVAUX = "SAE_DELETE_PILE_TRAVAUX";
-	// DFCE
-	public static final String DFCE_192_TO_200_SCHEMA = "DFCE_192_TO_200_SCHEMA";
-	public static final String DFCE_200_TO_210_SCHEMA = "DFCE_200_TO_210_SCHEMA";
-	public static final String DFCE_210_TO_230_SCHEMA = "DFCE_210_TO_230_SCHEMA";
-	public static final String DFCE_230_TO_192_SCHEMA = "DFCE_230_TO_192_SCHEMA";
-	
-	@Autowired
-	private SAECassandraUpdaterCQL saeUpdater;
-	
-	@Autowired
-	private DFCECassandraUpdaterCQL dfceUpdater;
-	
-	@Override
-	public void demarre(String nomOperation, String[] argSpecifiques) {
-		
-		
-		// DFCE
-		
-		if (DFCE_192_TO_200_SCHEMA.equalsIgnoreCase(nomOperation)) {
-			
-			updateDFCE192TO200();
-			
-		} else if (DFCE_200_TO_210_SCHEMA.equalsIgnoreCase(nomOperation)){
-			
-			updateDFCE200TO210();
-			
-		} else if (DFCE_210_TO_230_SCHEMA.equalsIgnoreCase(nomOperation)){
-			//
-			updateDFCE210TO230();
-			
-		} else if (DFCE_230_TO_192_SCHEMA.equalsIgnoreCase(nomOperation)){
-			
-			updateDFCE230TO192();
-			
-		}
-		
-		// SAE
-		
-		else if (SAE_MIG_TRACES.equalsIgnoreCase(nomOperation)){
-			
-			saeUpdater.createTablesTraces();
-			
-		}else if (SAE_MIG_PILE_TRAVAUX.equalsIgnoreCase(nomOperation)){
-			
-			saeUpdater.createTablesPileTravaux();
-			
-		}else if (SAE_MIG_JOB_SPRING.equalsIgnoreCase(nomOperation)){
-			
-			saeUpdater.createTablesJobSpring();
-			
-		}else if (SAE_MODE_API.equalsIgnoreCase(nomOperation)){
-			
-			saeUpdater.createTablesModeapi();
-			
-		}else if (SAE_DELETE_MODE_API.equalsIgnoreCase(nomOperation)){
-			
-			saeUpdater.deleteTablesModeapi();
-			
-		}else if (SAE_DELETE_MIG_TRACES.equalsIgnoreCase(nomOperation)){
-			
-			saeUpdater.deleteTablesTraces();
-			
-		}else if (SAE_DELETE_MIG_JOB_SPRING.equalsIgnoreCase(nomOperation)){
-			
-			saeUpdater.deleteTablesJobSpring();;
-			
-		}else if (SAE_DELETE_MIG_PILE_TRAVAUX.equalsIgnoreCase(nomOperation)){
-			
-			saeUpdater.deleteTablesPilesTravaux();
-			
-		}else {
-			
-		  // Opération inconnue => log + exception runtime
-		  String message = String.format("Erreur technique : L'opération %s est inconnue", nomOperation);
-		  LOG.error(message);
-		  throw new MajLotRuntimeException(message);
-		}
-		
-	}
-	
-	@Override
-	public void demarreCreateMetadatasIndexesDroitsSAE(String applicationConcernee) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public void demarreCreateSAE() {
-		LOG.debug("Démarrage des opérations de création de la base SAE");
-	    this.createGedBase();
-	    LOG.debug("Opérations de création terminées sur la base SAE");
-		
-	}	
-	
-	
-	private void updateDFCE192TO200() {
-		LOG.info("Début de l'opération : mise à jour du keyspace DFCE pour le lot 192TO200");
-		// Récupération de la chaîne de connexion au cluster cassandra
-		dfceUpdater.update192ToVersion200();
-		LOG.info("Fin de l'opération : mise à jour du keyspace DFCE");
-	}
+  private static final Logger LOG = LoggerFactory.getLogger(MajLotServiceCQLImpl.class);
 
-	private void updateDFCE200TO210() {
-		LOG.info("Début de l'opération : mise à jour du keyspace DFCE pour le lot 200TO210");
-		// Récupération de la chaîne de connexion au cluster cassandra
-		dfceUpdater.update200ToVersion210();
-		LOG.info("Fin de l'opération : mise à jour du keyspace DFCE");
-	}
+  // SAE
+  public static final String SAE_MODE_API = "SAE_CREATE_MODE_API";
+  public static final String SAE_MIG_TRACES = "SAE_CREATE_TRACE";
+  public static final String SAE_MIG_JOB_SPRING = "SAE_CREATE_JOB_SPRING";
+  public static final String SAE_MIG_PILE_TRAVAUX = "SAE_CREATE_PILE_TRAVAUX";
+  // SAE DELETE TABLE MIG
+  public static final String SAE_DELETE_MODE_API = "SAE_DELETE_MODE_API";
+  public static final String SAE_DELETE_MIG_TRACES = "SAE_DELETE_TRACES";
+  public static final String SAE_DELETE_MIG_JOB_SPRING = "SAE_DELETE_JOB_SPRING";
+  public static final String SAE_DELETE_MIG_PILE_TRAVAUX = "SAE_DELETE_PILE_TRAVAUX";
+  // DFCE
+  public static final String DFCE_192_TO_200_SCHEMA = "DFCE_192_TO_200_SCHEMA";
+  public static final String DFCE_200_TO_210_SCHEMA = "DFCE_200_TO_210_SCHEMA";
+  public static final String DFCE_210_TO_230_SCHEMA = "DFCE_210_TO_230_SCHEMA";
+  public static final String DFCE_230_TO_192_SCHEMA = "DFCE_230_TO_192_SCHEMA";
 
-	private void updateDFCE210TO230() {
-		LOG.info("Début de l'opération : mise à jour du keyspace DFCE pour le lot 210TO230");
-		// Récupération de la chaîne de connexion au cluster cassandra
-		dfceUpdater.update210ToVersion230();
-		LOG.info("Fin de l'opération : mise à jour du keyspace DFCE");
-	}
-	
-	private void updateDFCE230TO192() {
-		LOG.info("Début de l'opération : mise à jour du keyspace DFCE pour le lot 230TO192");
-		// Récupération de la chaîne de connexion au cluster cassandra
-		dfceUpdater.update230ToVersion192();
-		LOG.info("Fin de l'opération : mise à jour du keyspace DFCE");
-	}
-	
-	private void createGedBase() {
-		LOG.info("Début de l'opération : creation des tables cql SAE ");
-		
-		saeUpdater.createTablesModeapi();
-		saeUpdater.createTablesTraces();
-		saeUpdater.createTablesPileTravaux();
-		saeUpdater.createTablesJobSpring();
-		
-		saeUpdater.createTablesCommons();
-		saeUpdater.createTablesDroits();
-		saeUpdater.createTablesFormats();
-		saeUpdater.createTablesMetadata();
-		saeUpdater.createTablesRND();
-		
-		
-		LOG.info("Fin de l'opération : creation des tables cql SAE");
-	}
+  @Autowired
+  private SAECassandraUpdaterCQL saeUpdater;
+
+  @Autowired
+  private DFCECassandraUpdaterCQL dfceUpdater;
+
+  @Override
+  public void demarre(final String nomOperation, final String[] argSpecifiques) {
+
+
+    // DFCE
+
+    if (DFCE_192_TO_200_SCHEMA.equalsIgnoreCase(nomOperation)) {
+
+      updateDFCE192TO200();
+
+    } else if (DFCE_200_TO_210_SCHEMA.equalsIgnoreCase(nomOperation)){
+
+      updateDFCE200TO210();
+
+    } else if (DFCE_210_TO_230_SCHEMA.equalsIgnoreCase(nomOperation)){
+      //
+      updateDFCE210TO230();
+
+    } else if (DFCE_230_TO_192_SCHEMA.equalsIgnoreCase(nomOperation)){
+
+      updateDFCE230TO192();
+
+    }
+
+    // SAE
+
+    else if (SAE_MIG_TRACES.equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesTraces();
+
+    }else if (SAE_MIG_PILE_TRAVAUX.equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesPileTravaux();
+
+    }else if (SAE_MIG_JOB_SPRING.equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesJobSpring();
+
+    }else if (SAE_MODE_API.equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesModeapi();
+
+    }else if (SAE_DELETE_MODE_API.equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.deleteTablesModeapi();
+
+    }else if (SAE_DELETE_MIG_TRACES.equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.deleteTablesTraces();
+
+    }else if (SAE_DELETE_MIG_JOB_SPRING.equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.deleteTablesJobSpring();;
+
+    }else if (SAE_DELETE_MIG_PILE_TRAVAUX.equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.deleteTablesPilesTravaux();
+
+    }else {
+
+      // Opération inconnue => log + exception runtime
+      final String message = String.format("Erreur technique : L'opération %s est inconnue", nomOperation);
+      LOG.error(message);
+      throw new MajLotRuntimeException(message);
+    }
+
+  }
+
+  @Override
+  public void demarreCreateMetadatasIndexesDroitsSAE(final String applicationConcernee) {
+    // TODO Auto-generated method stub
+
+  }
+
+  @Override
+  public void demarreCreateSAE() {
+    LOG.debug("Démarrage des opérations de création de la base SAE");
+    createGedBase();
+    LOG.debug("Opérations de création terminées sur la base SAE");
+
+  }	
+
+
+  private void updateDFCE192TO200() {
+    LOG.info("Début de l'opération : mise à jour du keyspace DFCE pour le lot 192TO200");
+    // Récupération de la chaîne de connexion au cluster cassandra
+    dfceUpdater.update192ToVersion200();
+    LOG.info("Fin de l'opération : mise à jour du keyspace DFCE");
+  }
+
+  private void updateDFCE200TO210() {
+    LOG.info("Début de l'opération : mise à jour du keyspace DFCE pour le lot 200TO210");
+    // Récupération de la chaîne de connexion au cluster cassandra
+    dfceUpdater.update200ToVersion210();
+    LOG.info("Fin de l'opération : mise à jour du keyspace DFCE");
+  }
+
+  private void updateDFCE210TO230() {
+    LOG.info("Début de l'opération : mise à jour du keyspace DFCE pour le lot 210TO230");
+    // Récupération de la chaîne de connexion au cluster cassandra
+    dfceUpdater.update210ToVersion230();
+    LOG.info("Fin de l'opération : mise à jour du keyspace DFCE");
+  }
+
+  private void updateDFCE230TO192() {
+    LOG.info("Début de l'opération : mise à jour du keyspace DFCE pour le lot 230TO192");
+    // Récupération de la chaîne de connexion au cluster cassandra
+    dfceUpdater.update230ToVersion192();
+    LOG.info("Fin de l'opération : mise à jour du keyspace DFCE");
+  }
+
+  private void createGedBase() {
+    LOG.info("Début de l'opération : creation des tables cql SAE ");
+
+    saeUpdater.createTablesModeapi();
+    saeUpdater.createTablesTraces();
+    saeUpdater.createTablesPileTravaux();
+    saeUpdater.createTablesJobSpring();
+
+    saeUpdater.createTablesCommons();
+    saeUpdater.createTablesDroits();
+    saeUpdater.createTablesFormats();
+    saeUpdater.createTablesMetadata();
+    saeUpdater.createTablesRND();
+
+
+    LOG.info("Fin de l'opération : creation des tables cql SAE");
+  }
 }
