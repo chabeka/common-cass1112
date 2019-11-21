@@ -64,11 +64,11 @@ public class TraceDestinataireCqlSupport {
                });
   }
 
-   public TraceDestinataireCqlSupport(final CassandraCQLClientFactory ccf) {
+  public TraceDestinataireCqlSupport(final CassandraCQLClientFactory ccf) {
 
-		final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl();
-		dao.setCcf(ccf);
-		destinatairecqldao = dao;
+    final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl(ccf);
+    dao.setCcf(ccf);
+    destinatairecqldao = dao;
   }
   /**
    * Création d'une trace destinataire
