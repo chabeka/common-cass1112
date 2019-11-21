@@ -42,7 +42,6 @@ public class RndServiceCqlTest {
   @After
   public void after() throws Exception {
     server.resetDataOnly();
-
   }
 
   @Before
@@ -84,7 +83,5 @@ public class RndServiceCqlTest {
     typeDocARecup.setLibelle("Libellé 1.2.1.1.1");
     typeDocARecup.setType(TypeCode.ARCHIVABLE_AED);
     Assert.assertEquals("Le type de doc est incorrect", typeDocARecup, type);
-
   }
-
 }

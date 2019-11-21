@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.datastax.driver.extras.codecs.enums.EnumNameCodec;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.sae.rnd.dao.cql.IRndDaoCql;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
@@ -20,6 +21,13 @@ import fr.urssaf.image.sae.rnd.modele.TypeDocument;
  */
 @Repository
 public class RndCqlDaoImpl extends GenericDAOImpl<TypeDocument, String> implements IRndDaoCql {
+  /**
+   * @param ccf
+   */
+  public RndCqlDaoImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
+
   /**
    * Cette methode est appelé après l'instanciation de la classe par spring.
    * Grace à l'annotation {@link PostConstruct} on est sur que les dependances
