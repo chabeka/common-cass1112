@@ -128,7 +128,7 @@ public class SAESearchServiceImplDatasTest {
 
   private EcdeTestDocument ecde;
 
-  private final int NB_DOCUMENTS_PAR_PAGE = 100;
+  private final int NB_DOCUMENTS_PAR_PAGE = 2000;
 
   @BeforeClass
   public static void beforeClass() throws IOException {

@@ -765,8 +765,16 @@ SAESearchService {
       final long endTime = System.currentTimeMillis();
       final long diff = endTime - startTime;
       if (diff / 1000 >= dureeMaxRequete) {
+        List<String> list;
+        if (indexOrderPreferenceList!=null) {
+          list=indexOrderPreferenceList;
+        }else {
+          list=new ArrayList<>();
+        }
+        final List listIndexOrderPreferenceList = Arrays.asList(prefixeTrc, String.join(",", list), requeteFinal);
         LOG.warn("{} - Requête de recherche dure plus de "+ dureeMaxRequete +"  secondes - Index utilisé : {} - Requête Lucene utilisée : {}", 
-                 Arrays.asList(prefixeTrc, String.join(",", indexOrderPreferenceList), requeteFinal).toArray());
+                 listIndexOrderPreferenceList.toArray());
+        throw new SAESearchServiceEx("Timeout requête soap, durée=" + diff / 1000 + "s");
       }
 
     }
