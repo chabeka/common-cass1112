@@ -28,7 +28,8 @@ import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmfSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.FormatControlProfilCqlSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmfCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 
 /**

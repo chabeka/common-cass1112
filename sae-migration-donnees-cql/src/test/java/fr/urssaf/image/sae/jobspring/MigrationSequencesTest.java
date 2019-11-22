@@ -23,7 +23,8 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.ISequencesDaoCql;
 import fr.urssaf.image.sae.spring.batch.MigrationSequences;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 /**
  * (AC75095351) Classe de test migration des referentielFormat
@@ -109,6 +110,7 @@ public class MigrationSequencesTest {
     Assert.assertTrue(!listCql.isEmpty());
     Assert.assertEquals(listThrift.size(), listCql.size());
     Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+
   }
 
   /**

@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.sae.droit.model.GenericDroitType;
 
 /**
@@ -18,5 +19,12 @@ import fr.urssaf.image.sae.droit.model.GenericDroitType;
  */
 @Repository
 public class GenericDroitTypeImpl extends GenericDAOImpl<GenericDroitType, UUID> implements IGenericDroitTypeDao {
+
+  /**
+   * @param ccf
+   */
+  public GenericDroitTypeImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
 
 }

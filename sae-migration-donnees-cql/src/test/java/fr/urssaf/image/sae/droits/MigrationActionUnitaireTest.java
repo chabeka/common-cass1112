@@ -23,7 +23,8 @@ import fr.urssaf.image.sae.droit.MigrationActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.ActionUnitaireCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 
 /**
@@ -77,6 +78,7 @@ public class MigrationActionUnitaireTest {
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
+      // LOGGER.info("SizeThriftToCqlActionUnitaire=" + listThrift.size());
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
@@ -98,6 +100,7 @@ public class MigrationActionUnitaireTest {
 
     Assert.assertEquals(listCql.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
+    // LOGGER.info("SizeCqlToThriftActionUnitaire=" + listThrift.size());
     Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
   }
 

@@ -5,9 +5,11 @@ package fr.urssaf.image.sae.piletravaux.dao;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 //import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.piletravaux.model.GenericJobType;
 
@@ -19,5 +21,13 @@ import fr.urssaf.image.sae.piletravaux.model.GenericJobType;
  */
 @Repository
 public class GenericJobTypeImpl extends GenericDAOImpl<GenericJobType, UUID> implements IGenericJobTypeDao {
+
+  /**
+   * @param ccf
+   */
+  @Autowired
+  public GenericJobTypeImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
 
 }

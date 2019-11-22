@@ -22,7 +22,8 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
 import fr.urssaf.image.sae.metadata.referential.support.cql.DictionaryCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 /**
  * (AC75095351) Classe de test migration des dictionary

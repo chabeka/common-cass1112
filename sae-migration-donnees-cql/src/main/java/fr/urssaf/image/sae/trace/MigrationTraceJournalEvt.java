@@ -248,10 +248,9 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     int nb = 0;
     final List<Date> dates = DateRegUtils.getListFromDates(DateUtils.addYears(DATE, -18), DateUtils.addYears(DATE, 1));
     for (final Date d : dates) {
-      // final Iterator<TraceJournalEvtIndex> it = supportJThrift.findByDateIterator(d); EC
+
       final List<TraceJournalEvtIndex> list = supportJThrift.findByDate(d);
       List<TraceJournalEvtIndexCql> listTemp = new ArrayList<>();
-      // while (it.hasNext()) { EC
       for (final TraceJournalEvtIndex next : list) {
         final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next);
         listTemp.add(trace);
@@ -287,7 +286,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     final StringSerializer stringSerializer = StringSerializer.get();
     final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
     final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-                                                                              .createRangeSlicesQuery(indexDocDaothrift.getKeyspace(),
+        .createRangeSlicesQuery(indexDocDaothrift.getKeyspace(),
                                 stringSerializer,
                                 stringSerializer,
                                 bytesSerializer);

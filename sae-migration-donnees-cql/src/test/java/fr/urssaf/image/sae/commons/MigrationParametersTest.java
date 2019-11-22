@@ -25,7 +25,9 @@ import fr.urssaf.image.sae.commons.bo.ParameterType;
 import fr.urssaf.image.sae.commons.bo.cql.ParameterCql;
 import fr.urssaf.image.sae.commons.support.ParametersSupport;
 import fr.urssaf.image.sae.commons.support.cql.ParametersCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
+
 
 
 /**

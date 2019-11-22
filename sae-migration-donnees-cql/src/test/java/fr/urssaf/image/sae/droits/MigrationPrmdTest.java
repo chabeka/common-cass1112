@@ -26,7 +26,8 @@ import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PrmdCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 
 /**

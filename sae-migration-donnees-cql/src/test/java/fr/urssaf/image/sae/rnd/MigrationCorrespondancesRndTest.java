@@ -24,7 +24,8 @@ import fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.CorrespondancesRndCqlSupport;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
 import fr.urssaf.image.sae.rnd.modele.EtatCorrespondance;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 /**
  * (AC75095351) Classe de test migration des referentielFormat

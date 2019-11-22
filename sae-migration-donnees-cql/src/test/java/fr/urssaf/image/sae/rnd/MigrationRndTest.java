@@ -23,7 +23,9 @@ import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
+
 
 /**
  * (AC75095351) Classe de test migration des referentielFormat

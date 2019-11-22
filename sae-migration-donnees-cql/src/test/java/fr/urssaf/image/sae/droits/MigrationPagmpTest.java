@@ -23,7 +23,8 @@ import fr.urssaf.image.sae.droit.MigrationPagmp;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmpCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 
 /**

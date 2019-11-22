@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.sae.commons.model.GenericParametersType;
 
 /**
@@ -17,5 +18,12 @@ import fr.urssaf.image.sae.commons.model.GenericParametersType;
  */
 @Repository
 public class GenericParametersTypeImpl extends GenericDAOImpl<GenericParametersType, UUID> implements IGenericParametersTypeDao {
+
+  /**
+   * @param ccf
+   */
+  public GenericParametersTypeImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
 
 }

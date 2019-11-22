@@ -15,6 +15,8 @@ import fr.urssaf.image.sae.droit.MigrationPagma;
 import fr.urssaf.image.sae.droit.MigrationPagmf;
 import fr.urssaf.image.sae.droit.MigrationPagmp;
 import fr.urssaf.image.sae.droit.MigrationPrmd;
+import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
+import fr.urssaf.image.sae.droit.dao.support.cql.ActionUnitaireCqlSupport;
 import fr.urssaf.image.sae.format.MigrationReferentielFormat;
 import fr.urssaf.image.sae.jobspring.MigrationJobExecution;
 import fr.urssaf.image.sae.jobspring.MigrationJobExecutionToJobStep;
@@ -64,6 +66,7 @@ public class App {
    * sens de la migration de la table cql vers la table thrift
    */
   private static final String CQL_TO_THRIFT = "CQL_TO_THRIFT";
+
 
   public static void main(final String[] args) {
 
@@ -362,7 +365,8 @@ public class App {
 
       if ("DroitActionUnitaire".equals(cfName)) {
         final MigrationActionUnitaire migrationActionUnitaire = context.getBean(MigrationActionUnitaire.class);
-
+        final ActionUnitaireSupport supportThrift = context.getBean(ActionUnitaireSupport.class);
+        final ActionUnitaireCqlSupport supportCql = context.getBean(ActionUnitaireCqlSupport.class);
         if (THRIFT_TO_CQL.equals(migrateTo)) {
           migrationActionUnitaire.migrationFromThriftToCql();
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {

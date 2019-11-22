@@ -22,7 +22,8 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
 import fr.urssaf.image.sae.metadata.referential.support.cql.SaeMetadataCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 /**
  * (AC75095351) Classe de test migration des metadata

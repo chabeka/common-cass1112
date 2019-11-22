@@ -24,7 +24,8 @@ import fr.urssaf.image.sae.droit.MigrationPagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmaCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 
 /**

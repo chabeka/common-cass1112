@@ -7,6 +7,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Transient;
 
 /**
@@ -29,6 +32,9 @@ public class GenericDroitType {
   protected String column1;
 
   protected ByteBuffer value;
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(GenericDroitType.class);
 
   @Transient
   private String strKey;
@@ -91,7 +97,7 @@ public class GenericDroitType {
       strKey = new String(arrayKey, "UTF-8");
     }
     catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
     }
     return strKey;
   }
@@ -127,7 +133,7 @@ public class GenericDroitType {
       }
     }
     catch (final UnsupportedEncodingException e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
     }
     return strValue;
   }

@@ -22,7 +22,8 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport;
 import fr.urssaf.image.sae.format.referentiel.dao.support.cql.ReferentielFormatCqlSupport;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 /**
  * (AC75095351) Classe de test migration des referentielFormat
@@ -153,4 +154,5 @@ public class MigrationReferentielFormatTest {
 
     return formatFichier;
   }
+
 }

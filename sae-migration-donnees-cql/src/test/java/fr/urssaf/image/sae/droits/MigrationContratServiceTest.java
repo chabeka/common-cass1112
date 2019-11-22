@@ -24,7 +24,8 @@ import fr.urssaf.image.sae.droit.MigrationContratService;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.ContratServiceCqlSupport;
-import fr.urssaf.image.sae.testutils.CompareUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
+
 
 
 /**

@@ -5,9 +5,11 @@ package fr.urssaf.image.sae.trace.dao;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 //import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.trace.model.GenericTraceType;
 
@@ -17,5 +19,13 @@ import fr.urssaf.image.sae.trace.model.GenericTraceType;
  */
 @Service
 public class GenericTraceTypeImpl extends GenericDAOImpl<GenericTraceType, UUID> implements IGenericTraceTypeDao {
+
+  /**
+   * @param ccf
+   */
+  @Autowired
+  public GenericTraceTypeImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
 
 }
