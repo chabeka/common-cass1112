@@ -110,6 +110,8 @@ public final class MajLotServiceImpl implements MajLotService {
 
   public static final String CASSANDRA_DFCE_190700 = "CASSANDRA_DFCE_190700";
 
+  public static final String CASSANDRA_DFCE_200200 = "CASSANDRA_DFCE_200200";
+
   public static final String META_SEPA = "META_SEPA";
 
   public static final String META_130400 = "META_130400";
@@ -371,7 +373,9 @@ public final class MajLotServiceImpl implements MajLotService {
     } else if (CASSANDRA_DFCE_190700.equalsIgnoreCase(nomOperation)) {
       // Update keyspace SAE
       updateCassandra190700();
-
+	} else if (CASSANDRA_DFCE_200200.equalsIgnoreCase(nomOperation)) {
+      // Update keyspace SAE
+      updateCassandra200200();
     }else {
       // Opération inconnue => log + exception runtime
       final String message = String.format("Erreur technique : L'opération %s est inconnue", nomOperation);
@@ -499,7 +503,10 @@ public final class MajLotServiceImpl implements MajLotService {
      * // CASSANDRA_DFCE_190700
      * updateMetaDfce("META_190700");
      */
+	// CASSANDRA_DFCE_200200
+	updateMetaDfce("META_200200");
 
+    
     try {
       if (APPL_CONCERNEE.GNT.equals(gedConcernee)) {
         // Ajout des index composites GNT_CASSANDRA_DFCE_180300
@@ -919,6 +926,13 @@ public final class MajLotServiceImpl implements MajLotService {
     LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
   }
 
+  private void updateCassandra200200() {
+    LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 200200");
+    // Récupération de la chaîne de connexion au cluster cassandra
+    updater.updateToVersion32();
+    LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+  }
+  
   /**
    * Ajout des droits GED
    */
@@ -1324,6 +1338,7 @@ public final class MajLotServiceImpl implements MajLotService {
     updater.updateToVersion29();
     updater.updateToVersion30();
     updater.updateToVersion31();
+	updater.updateToVersion32();
   }
 
 }

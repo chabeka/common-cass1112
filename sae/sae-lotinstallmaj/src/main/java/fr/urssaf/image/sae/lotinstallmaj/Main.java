@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationContext;
 
 import fr.urssaf.image.sae.commons.context.ContextFactory;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotService;
+import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.OperationCQL;
 
 /**
  * Classe Main du JAR Executable
@@ -34,24 +35,34 @@ public final class Main {
 
       // Récupération du contexte Spring du bean permettant de lancer
       // l'opération
-      // MajLotService majLotService = context.getBean("majLotServiceImpl",MajLotService.class);
+      MajLotService majLotService = context.getBean("majLotServiceImpl",MajLotService.class);
 
       // Retire des arguments de la ligne de commande ceux que l'on a déjà
       // traités.
       // On ne laisse que les arguments spécifiques à l'opération
       String[] argsSpecifiques = (String[]) ArrayUtils.remove(args, 0);
 
-      // Démarre l'opération
-      //majLotService.demarre(nomOperation, argsSpecifiques);
+      try {
+	     
+	      // Récupération du contexte Spring du bean permettant de lancer
+	      // l'opération
+	      MajLotService majLotServicecql = context.getBean("majLotServiceCQLImpl",
+	            MajLotService.class);
+	      
+	      // Démarre l'opération sur les nouvelles tables cql
+	      if(OperationCQL.get(nomOperation) != null) {
+	    	  majLotServicecql.demarre(nomOperation, argsSpecifiques);
+	      } 
+	      else {
+	    	  // Démarre l'opération sur les anciennes commandes
+	    	  majLotService.demarre(nomOperation, argsSpecifiques);
+	      }
+      } catch (Exception e){
+    	 
+      } finally {
+    	  System.exit(0);
+      }
       
-      
-      // Récupération du contexte Spring du bean permettant de lancer
-      // l'opération
-      MajLotService majLotServicecql = context.getBean("majLotServiceCQLImpl",
-            MajLotService.class);
-      // Démarre l'opération
-      majLotServicecql.demarre(nomOperation, argsSpecifiques);
-
    }
 
    /**

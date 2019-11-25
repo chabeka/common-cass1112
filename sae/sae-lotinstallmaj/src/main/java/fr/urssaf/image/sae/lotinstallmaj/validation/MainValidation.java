@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotGeneralException;
 import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.MajLotServiceCQLImpl;
 import fr.urssaf.image.sae.lotinstallmaj.service.impl.MajLotServiceImpl;
+import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.OperationCQL;
 
 /**
  * Classe de validation des arguments en entrée de la classe principale du JAR
@@ -294,58 +295,60 @@ public class MainValidation {
       if (MajLotServiceImpl.CASSANDRA_DFCE_190700
               .equalsIgnoreCase(nomOperation))
            return;
-                 
+      if (MajLotServiceImpl.CASSANDRA_DFCE_200200
+              .equalsIgnoreCase(nomOperation))
+           return;                 
     // CAS Nouvelle version de la DFCE 2.3.1 avec les scripts cql
     
-    if (MajLotServiceCQLImpl.DFCE_192_TO_200_SCHEMA
+    if (OperationCQL.DFCE_192_TO_200_SCHEMA.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
     	return;
 	}
-    if (MajLotServiceCQLImpl.DFCE_200_TO_210_SCHEMA
+    if (OperationCQL.DFCE_200_TO_210_SCHEMA.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
-    if (MajLotServiceCQLImpl.DFCE_210_TO_230_SCHEMA
+    if (OperationCQL.DFCE_210_TO_230_SCHEMA.getNomOp()
             .equalsIgnoreCase(nomOperation)) {
     	return;
 	}
-	if (MajLotServiceCQLImpl.DFCE_230_TO_192_SCHEMA
+	if (OperationCQL.DFCE_230_TO_192_SCHEMA.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
     
     // Cas migration cql des tables de la base SAE
     
-	if (MajLotServiceCQLImpl.SAE_MODE_API
+	if (OperationCQL.SAE_MODE_API.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
-	if (MajLotServiceCQLImpl.SAE_MIG_TRACES
+	if (OperationCQL.SAE_MIG_TRACES.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
-	if (MajLotServiceCQLImpl.SAE_MIG_PILE_TRAVAUX
+	if (OperationCQL.SAE_MIG_PILE_TRAVAUX.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
-	if (MajLotServiceCQLImpl.SAE_MIG_JOB_SPRING
+	if (OperationCQL.SAE_MIG_JOB_SPRING.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
 	
-	if (MajLotServiceCQLImpl.SAE_DELETE_MIG_JOB_SPRING
+	if (OperationCQL.SAE_DELETE_MIG_JOB_SPRING.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
-	if (MajLotServiceCQLImpl.SAE_DELETE_MIG_PILE_TRAVAUX
+	if (OperationCQL.SAE_DELETE_MIG_PILE_TRAVAUX.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
-	if (MajLotServiceCQLImpl.SAE_DELETE_MIG_TRACES
+	if (OperationCQL.SAE_DELETE_MIG_TRACES.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
-	if (MajLotServiceCQLImpl.SAE_DELETE_MODE_API
+	if (OperationCQL.SAE_DELETE_MODE_API.getNomOp()
 	            .equalsIgnoreCase(nomOperation)) {
 		return;
 	}
