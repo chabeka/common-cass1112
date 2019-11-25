@@ -71,8 +71,8 @@ public class TraceDestinataireCqlSupport {
    *          le connecteur à cassandra
    */
   public TraceDestinataireCqlSupport(final CassandraCQLClientFactory ccf) {
-	   
-    final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl();
+
+    final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl(ccf);
     dao.setCcf(ccf);
     destinatairecqldao = dao;
   }
@@ -129,12 +129,12 @@ public class TraceDestinataireCqlSupport {
 
   }
 
-   /**
+  /**
    * Sauvegarde ou update d'une {@link TraceDestinataire} dans la base
    * 
    * @param trace
    *          la trace à Sauvegarder/updater
-    */
+   */
   private void saveOrUpdate(final TraceDestinataire trace) {
     Assert.notNull(trace, "l'objet traceDestinataire ne peut etre null");
 
@@ -183,7 +183,7 @@ public class TraceDestinataireCqlSupport {
 
   }
 
-   /**
+  /**
    * Renvoie la liste de toutes les {@link TraceDestinataire} de la base
    * 
    * @return liste de {@link TraceDestinataire}
