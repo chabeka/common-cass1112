@@ -1,8 +1,7 @@
 package fr.urssaf.image.sae.commons.bo;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.Assert;
 
 /**
  * Tests unitaires de la classe ParameterRowType

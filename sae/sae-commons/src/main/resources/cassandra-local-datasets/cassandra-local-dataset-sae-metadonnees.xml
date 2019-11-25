@@ -5128,8 +5128,8 @@
             <column>
                <name>transf</name>
                <value>bytes(01)</value>
-            </column>       
-         </row>                         
+            </column>
+         </row>
          <row>
             <key>DomaineTechnique</key>
             <column>
@@ -5713,7 +5713,7 @@
             <column>
                <name>transf</name>
                <value>bytes(01)</value>
-            </column>       
+            </column>   
          </row>
          <row>
             <key>IdModificationMasseInterne</key>
