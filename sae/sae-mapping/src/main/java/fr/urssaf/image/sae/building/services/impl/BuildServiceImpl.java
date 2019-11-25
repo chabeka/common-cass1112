@@ -35,8 +35,8 @@ public class BuildServiceImpl implements BuildService {
    @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final LuceneCriteria buildStorageLuceneCriteria(
-         final String luceneQuery, final int limit,
-         final List<SAEMetadata> metadatas) {
+                                                          final String luceneQuery, final int limit,
+                                                          final List<SAEMetadata> metadatas) {
       final List<StorageMetadata> desiredMetadata = new ArrayList<>();
       for (final SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
          desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
@@ -67,7 +67,7 @@ public class BuildServiceImpl implements BuildService {
    @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final UUIDCriteria buildStorageUuidCriteria(final UUID uuid,
-         final List<SAEMetadata> metadatas) {
+                                                      final List<SAEMetadata> metadatas) {
       final List<StorageMetadata> desiredMetadata = new ArrayList<>();
       for (final SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
          desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
@@ -82,13 +82,13 @@ public class BuildServiceImpl implements BuildService {
    @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final UntypedDocument buildUntypedDocument(final DataHandler content,
-         final Map<String, String> metadatas) {
+                                                     final Map<String, String> metadatas) {
       final List<UntypedMetadata> uMetadatas = new ArrayList<>();
       for (final Entry<String, String> uMetadata : Utils.nullSafeMap(metadatas)
-            .entrySet()) {
+                                                        .entrySet()) {
          uMetadatas.add(new UntypedMetadata(uMetadata.getKey(),
                                             uMetadata
-               .getValue()));
+                                                     .getValue()));
       }
       return new UntypedDocument(content, uMetadatas);
 
