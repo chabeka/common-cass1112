@@ -36,7 +36,7 @@ public class DataCqlUtils {
     Keyspace keyspace = null;
     try {
       final File file = new File(pathfile);
-      LOGGER.warn("lengthFile=" + file.length());
+      LOGGER.debug("lengthFile=" + file.length());
       final XStream xstream = new XStream();
       xstream.alias("keyspace", Keyspace.class);
       xstream.alias("columnFamily", ColumnFamily.class);
@@ -53,7 +53,7 @@ public class DataCqlUtils {
       LOGGER.error("Erreur: " + e.getMessage());
       return null;
     }
-    LOGGER.error("keyspace= " + keyspace);
+    // LOGGER.debug("keyspace= " + keyspace);
     return keyspace;
   }
 
@@ -68,9 +68,9 @@ public class DataCqlUtils {
     List<Row> list = new ArrayList<>();
     try {
       final Keyspace keyspace = deserializeKeyspace(pathfile);
-      LOGGER.warn("keyspace=" + keyspace);
+      // LOGGER.debug("keyspace=" + keyspace);
       if (keyspace != null && keyspace.getColumnFamilies() != null) {
-        LOGGER.warn("keyspace exist");
+        // LOGGER.debug("keyspace exist");
         for (final ColumnFamily columnFamily : keyspace.getColumnFamilies().getColumnFamily()) {
           if (columnFamily.getName().equals(columnFamilyName)) {
             list = columnFamily.getRows();
