@@ -83,9 +83,10 @@ ItemWriter<StorageDocument> {
       for (final StorageMetadata metadata : storageDocument.getMetadatas()) {
          // on ne remplit que les dates de mise a la corbeille
          // et l'id de suppression ou de transfert
-         if (Constantes.CODE_COURT_META_DATE_CORBEILLE.equals(metadata.getShortCode())
-               || StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode().equals(metadata.getShortCode())) {
-            modifiedMetadatas.add(metadata);
+         if (Constantes.CODE_COURT_META_ID_SUPPRESSION.equals(metadata.getShortCode())
+                 || Constantes.CODE_COURT_META_DATE_CORBEILLE.equals(metadata.getShortCode())
+                 || StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode().equals(metadata.getShortCode())) {
+              modifiedMetadatas.add(metadata);
          }
       }
       // ETAPE 1 : mise a jour de l'identifiant de suppression ou de transfert (lors de la suppression) et de la date de mise a la corbeille
