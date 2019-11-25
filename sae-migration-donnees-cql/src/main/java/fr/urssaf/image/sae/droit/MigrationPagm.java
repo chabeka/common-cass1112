@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.PagmSerializer;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.model.GenericDroitType;
 import fr.urssaf.image.sae.droit.utils.PagmUtils;
+import fr.urssaf.image.sae.utils.CompareUtils;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 
 /**
@@ -62,7 +63,7 @@ public class MigrationPagm {
       // Extraction de la clé
       final Row row = (Row) it.next();
       key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
-      if (!keys.contains(key)) {
+      if (key != null && !keys.contains(key)) {
         keys.add(key);
       }
       // extraction de la colonne
@@ -86,6 +87,11 @@ public class MigrationPagm {
 
       nb++;
     }
+    final List<PagmCql> pagmsCql = new ArrayList<>();
+    final Iterator<PagmCql> pagmsIterator = pagmDaoCql.findAllWithMapper();
+    pagmsIterator.forEachRemaining(pagmsCql::add);
+    comparePagms(getListPagmCqlFromThrift(keys), pagmsCql);
+
     LOGGER.debug(" Totale : " + nb);
     return keys;
   }
@@ -95,10 +101,12 @@ public class MigrationPagm {
    */
   public void migrationFromCqlTothrift() {
 
-    LOGGER.info(" MigrationPagm - migrationFromCqlTothrift- start ");
-    final Iterator<PagmCql> pagmsCql = pagmDaoCql.findAllWithMapper();
-    while (pagmsCql.hasNext()) {
-      final PagmCql pagmCql = pagmsCql.next();
+    LOGGER.info(" MIGRATION_PAGM - migrationFromCqlTothrift- start ");
+    final Iterator<PagmCql> pagmsCqlIterator = pagmDaoCql.findAllWithMapper();
+    final List<PagmCql> pagmsCql = new ArrayList<>();
+    while (pagmsCqlIterator.hasNext()) {
+      final PagmCql pagmCql = pagmsCqlIterator.next();
+      pagmsCql.add(pagmCql);
       final Pagm pagm = new Pagm();
       pagm.setCode(pagmCql.getCode());
       pagm.setPagma(pagmCql.getPagma());
@@ -111,7 +119,8 @@ public class MigrationPagm {
 
       pagmSupport.create(pagmCql.getIdClient(), pagm, new Date().getTime());
     }
-    LOGGER.info(" MigrationPagm - migrationFromCqlTothrift- end ");
+    comparePagms(getListPagmCqlFromThrift(getKeys()), pagmsCql);
+    LOGGER.info(" MIGRATION_PAGM - migrationFromCqlTothrift- end ");
 
   }
 
@@ -126,4 +135,42 @@ public class MigrationPagm {
     }
     return listAllFromThrift;
   }
+
+  /**
+   * Comparaison des liste en taille et en contenu
+   * 
+   * @param pagmThrift
+   * @param pagmCql
+   */
+  private void comparePagms(final List<PagmCql> pagmThrift, final List<PagmCql> pagmCql) {
+
+    LOGGER.info("MIGRATION_PAGM -- SizeThriftParameter=" + pagmThrift.size());
+    LOGGER.info("MIGRATION_PAGM -- SizeCqlParameter=" + pagmCql.size());
+    if (CompareUtils.compareListsGeneric(pagmThrift, pagmCql)) {
+      LOGGER.info("MIGRATION_PAGM -- Les listes pagm sont identiques");
+    } else {
+      LOGGER.warn("MIGRATION_PAGM -- ATTENTION: Les listes pagm sont différentes ");
+    }
+  }
+
+  /**
+   * Récupération de la liste des keys
+   * 
+   * @return
+   */
+  private List<String> getKeys() {
+    final List<String> keys = new ArrayList<>();
+    String key = null;
+    final Iterator<GenericDroitType> it = genericdao.findAllByCFName("DroitPagm", ccf.getKeyspace().getKeyspaceName());
+    while (it.hasNext()) {
+      // Extraction de la clé
+      final Row row = (Row) it.next();
+      key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
+      if (key != null && !keys.contains(key)) {
+        keys.add(key);
+      }
+    }
+    return keys;
+  }
+
 }

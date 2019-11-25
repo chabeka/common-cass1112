@@ -167,12 +167,12 @@ public class MigrationParameters implements IMigration {
    */
   private void compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql) {
 
-    LOGGER.info("MIGRATION_parameter -- SizeThriftParameter=" + parametersThrift.size());
-    LOGGER.info("MIGRATION_parameter -- SizeCqlParameter=" + parametersCql.size());
+    LOGGER.info("MIGRATION_PARAMETER -- SizeThriftParameter=" + parametersThrift.size());
+    LOGGER.info("MIGRATION_PARAMETER -- SizeCqlParameter=" + parametersCql.size());
     if (CompareUtils.compareListsGeneric(parametersThrift, parametersCql)) {
-      LOGGER.info("MIGRATION_parameter -- Les listes parameters sont identiques");
+      LOGGER.info("MIGRATION_PARAMETER -- Les listes parameters sont identiques");
     } else {
-      LOGGER.warn("MIGRATION_parameter -- ATTENTION: Les listes parameter sont différentes ");
+      LOGGER.warn("MIGRATION_PARAMETER -- ATTENTION: Les listes parameter sont différentes ");
     }
 
   }
