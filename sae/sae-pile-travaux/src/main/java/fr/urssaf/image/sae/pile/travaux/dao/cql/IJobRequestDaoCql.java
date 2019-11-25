@@ -7,10 +7,10 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 
 /**
- * DAO de la colonne famille <code>JobRequest</code>
+ * DAO de la colonne famille {@link JobRequestCql}
  */
 
 public interface IJobRequestDaoCql extends IGenericDAO<JobRequestCql, UUID> {
 
-   public Optional<JobRequestCql> getJobRequestIdByJobKey(final byte[] jobKey);
+  public Optional<JobRequestCql> getJobRequestIdByJobKey(final byte[] jobKey);
 }

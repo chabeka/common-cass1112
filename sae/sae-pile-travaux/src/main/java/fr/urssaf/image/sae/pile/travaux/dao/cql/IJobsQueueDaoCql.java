@@ -8,7 +8,7 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
 /**
- * DAO de la colonne famille <code>JobsQueue</code>
+ * DAO de la colonne famille {@link JobQueueCql}
  */
 
 public interface IJobsQueueDaoCql extends IGenericDAO<JobQueueCql, String> {

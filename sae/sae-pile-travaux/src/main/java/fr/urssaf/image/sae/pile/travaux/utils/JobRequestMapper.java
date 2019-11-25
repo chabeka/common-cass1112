@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.pile.travaux.utils;
 
+import org.apache.log4j.Logger;
+import org.springframework.util.Assert;
+
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
@@ -13,101 +16,107 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
  */
 public class JobRequestMapper {
 
-   public static JobRequestCql mapJobRequestThriftToJobRequestCql(final JobRequest jobRequestThrift) {
+  public static final Logger LOGGER = Logger.getLogger(JobRequestMapper.class);
 
-      final JobRequestCql jobRequestcql = new JobRequestCql();
+  public static JobRequestCql mapJobRequestThriftToJobRequestCql(final JobRequest jobRequestThrift) {
 
-      jobRequestcql.setIdJob(jobRequestThrift.getIdJob());
+    Assert.notNull(jobRequestThrift, " L'objet jobRequestThrift à mapper ne peux être null");
 
-      jobRequestcql.setType(jobRequestThrift.getType());
+    final JobRequestCql jobRequestcql = new JobRequestCql();
 
-      jobRequestcql.setParameters(jobRequestThrift.getParameters());
+    jobRequestcql.setIdJob(jobRequestThrift.getIdJob());
 
-      jobRequestcql.setState(jobRequestThrift.getState().name());
+    jobRequestcql.setType(jobRequestThrift.getType());
 
-      jobRequestcql.setReservedBy(jobRequestThrift.getReservedBy());
+    jobRequestcql.setParameters(jobRequestThrift.getParameters());
 
-      jobRequestcql.setCreationDate(jobRequestThrift.getCreationDate());
+    jobRequestcql.setState(jobRequestThrift.getState().name());
 
-      jobRequestcql.setReservationDate(jobRequestThrift.getReservationDate());
+    jobRequestcql.setReservedBy(jobRequestThrift.getReservedBy());
 
-      jobRequestcql.setStartingDate(jobRequestThrift.getStartingDate());
+    jobRequestcql.setCreationDate(jobRequestThrift.getCreationDate());
 
-      jobRequestcql.setEndingDate(jobRequestThrift.getEndingDate());
+    jobRequestcql.setReservationDate(jobRequestThrift.getReservationDate());
 
-      jobRequestcql.setMessage(jobRequestThrift.getMessage());
+    jobRequestcql.setStartingDate(jobRequestThrift.getStartingDate());
 
-      jobRequestcql.setSaeHost(jobRequestThrift.getSaeHost());
+    jobRequestcql.setEndingDate(jobRequestThrift.getEndingDate());
 
-      jobRequestcql.setClientHost(jobRequestThrift.getClientHost());
+    jobRequestcql.setMessage(jobRequestThrift.getMessage());
 
-      jobRequestcql.setPid(jobRequestThrift.getPid());
+    jobRequestcql.setSaeHost(jobRequestThrift.getSaeHost());
 
-      jobRequestcql.setDocCount(jobRequestThrift.getDocCount());
+    jobRequestcql.setClientHost(jobRequestThrift.getClientHost());
 
-      jobRequestcql.setDocCountTraite(jobRequestThrift.getDocCountTraite());
+    jobRequestcql.setPid(jobRequestThrift.getPid());
 
-      jobRequestcql.setToCheckFlag(jobRequestThrift.getToCheckFlag());
+    jobRequestcql.setDocCount(jobRequestThrift.getDocCount());
 
-      jobRequestcql
-                   .setToCheckFlagRaison(jobRequestThrift.getToCheckFlagRaison());
+    jobRequestcql.setDocCountTraite(jobRequestThrift.getDocCountTraite());
 
-      jobRequestcql.setVi(jobRequestThrift.getVi());
+    jobRequestcql.setToCheckFlag(jobRequestThrift.getToCheckFlag());
 
-      jobRequestcql.setJobParameters(jobRequestThrift.getJobParameters());
+    jobRequestcql
+    .setToCheckFlagRaison(jobRequestThrift.getToCheckFlagRaison());
 
-      jobRequestcql.setJobKey(jobRequestThrift.getJobKey());
+    jobRequestcql.setVi(jobRequestThrift.getVi());
 
-      return jobRequestcql;
+    jobRequestcql.setJobParameters(jobRequestThrift.getJobParameters());
 
-   }
+    jobRequestcql.setJobKey(jobRequestThrift.getJobKey());
 
-   public static JobRequest mapJobRequestCqlToJobRequestThrift(final JobRequestCql jobRequestcql) {
+    return jobRequestcql;
 
-      final JobRequest jobRequestThrift = new JobRequest();
+  }
 
-      jobRequestThrift.setIdJob(jobRequestThrift.getIdJob());
+  public static JobRequest mapJobRequestCqlToJobRequestThrift(final JobRequestCql jobRequestcql) {
 
-      jobRequestThrift.setType(jobRequestThrift.getType());
+    Assert.notNull(jobRequestcql, " L'objet jobRequestcql a mapper ne peux être null");
 
-      jobRequestThrift.setParameters(jobRequestThrift.getParameters());
+    final JobRequest jobRequestThrift = new JobRequest();
 
-      jobRequestThrift.setState(JobState.valueOf(jobRequestThrift.getState().name()));
+    jobRequestThrift.setIdJob(jobRequestcql.getIdJob());
 
-      jobRequestThrift.setReservedBy(jobRequestThrift.getReservedBy());
+    jobRequestThrift.setType(jobRequestcql.getType());
 
-      jobRequestThrift.setCreationDate(jobRequestThrift.getCreationDate());
+    jobRequestThrift.setParameters(jobRequestcql.getParameters());
 
-      jobRequestThrift.setReservationDate(jobRequestThrift.getReservationDate());
+    jobRequestThrift.setState(JobState.valueOf(jobRequestcql.getState()));
 
-      jobRequestThrift.setStartingDate(jobRequestThrift.getStartingDate());
+    jobRequestThrift.setReservedBy(jobRequestcql.getReservedBy());
 
-      jobRequestThrift.setEndingDate(jobRequestThrift.getEndingDate());
+    jobRequestThrift.setCreationDate(jobRequestcql.getCreationDate());
 
-      jobRequestThrift.setMessage(jobRequestThrift.getMessage());
+    jobRequestThrift.setReservationDate(jobRequestcql.getReservationDate());
 
-      jobRequestThrift.setSaeHost(jobRequestThrift.getSaeHost());
+    jobRequestThrift.setStartingDate(jobRequestcql.getStartingDate());
 
-      jobRequestThrift.setClientHost(jobRequestThrift.getClientHost());
+    jobRequestThrift.setEndingDate(jobRequestcql.getEndingDate());
 
-      jobRequestThrift.setPid(jobRequestThrift.getPid());
+    jobRequestThrift.setMessage(jobRequestcql.getMessage());
 
-      jobRequestThrift.setDocCount(jobRequestThrift.getDocCount());
+    jobRequestThrift.setSaeHost(jobRequestcql.getSaeHost());
 
-      jobRequestThrift.setDocCountTraite(jobRequestThrift.getDocCountTraite());
+    jobRequestThrift.setClientHost(jobRequestcql.getClientHost());
 
-      jobRequestThrift.setToCheckFlag(jobRequestThrift.getToCheckFlag());
+    jobRequestThrift.setPid(jobRequestcql.getPid());
 
-      jobRequestThrift
-                      .setToCheckFlagRaison(jobRequestThrift.getToCheckFlagRaison());
+    jobRequestThrift.setDocCount(jobRequestcql.getDocCount());
 
-      jobRequestThrift.setVi(jobRequestThrift.getVi());
+    jobRequestThrift.setDocCountTraite(jobRequestcql.getDocCountTraite());
 
-      jobRequestThrift.setJobParameters(jobRequestThrift.getJobParameters());
+    jobRequestThrift.setToCheckFlag(jobRequestcql.getToCheckFlag());
 
-      jobRequestThrift.setJobKey(jobRequestThrift.getJobKey());
+    jobRequestThrift
+    .setToCheckFlagRaison(jobRequestcql.getToCheckFlagRaison());
 
-      return jobRequestThrift;
+    jobRequestThrift.setVi(jobRequestcql.getVi());
 
-   }
+    jobRequestThrift.setJobParameters(jobRequestcql.getJobParameters());
+
+    jobRequestThrift.setJobKey(jobRequestcql.getJobKey());
+
+    return jobRequestThrift;
+
+  }
 }

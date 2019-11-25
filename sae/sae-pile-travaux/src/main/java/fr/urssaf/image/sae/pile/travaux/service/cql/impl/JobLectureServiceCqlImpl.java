@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,8 @@ import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupportCql;
 @Service
 public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
+   private static final Logger LOGGER = LoggerFactory.getLogger(JobLectureServiceCqlImpl.class);
+   
   private  JobRequestSupportCql jobRequestSupportCql;
 
   private  JobsQueueSupportCql jobsQueueSupportCql;
@@ -134,14 +138,9 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
     for (final JobQueueCql jobQueue : listJQ) {
       final JobRequestCql jobRequest = getJobRequest(jobQueue.getIdJob());
-      if (jobRequest == null) {
-        try {
-          throw new JobInexistantException(jobQueue.getIdJob());
+         if (jobRequest != null) {
+        	 jobRequests.add(jobRequest);
         }
-        catch (final JobInexistantException e) {
-          e.printStackTrace();
-        }
-      }
       jobRequests.add(jobRequest);
     }
 

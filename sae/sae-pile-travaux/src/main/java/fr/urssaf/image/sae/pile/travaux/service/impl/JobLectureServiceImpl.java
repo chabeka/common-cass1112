@@ -52,16 +52,9 @@ public class JobLectureServiceImpl implements JobLectureService {
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final JobRequestCql jobRequestCql = jobLectureCqlService.getJobRequest(jobRequestUUID);
       // Vérifier que le job existe
-      if (jobRequestCql == null) {
-        try {
-          throw new JobInexistantException(jobRequestUUID);
+      if (jobRequestCql != null) {
+        return JobRequestMapper.mapJobRequestCqlToJobRequestThrift(jobRequestCql);
         }
-        catch (final JobInexistantException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-      return JobRequestMapper.mapJobRequestCqlToJobRequestThrift(jobRequestCql);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getJobRequest(jobRequestUUID);
