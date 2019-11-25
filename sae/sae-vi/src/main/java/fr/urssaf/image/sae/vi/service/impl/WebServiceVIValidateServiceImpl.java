@@ -159,6 +159,7 @@ public class WebServiceVIValidateServiceImpl implements
                "Aucun PAGM n'est spécifié dans le VI, or il est obligatoire d'en spécifier au moins un");
       }
 
+
    }
 
    /**
