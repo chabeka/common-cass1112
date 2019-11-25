@@ -81,10 +81,7 @@ public class SearchObjectClassUtil {
             }
           }
         }
-        catch (final IllegalAccessException e) {
-          LOGGER.error(e.getMessage());
-        }
-        catch (final IllegalArgumentException e) {
+        catch (final IllegalAccessException | IllegalArgumentException e) {
           LOGGER.error(e.getMessage());
         }
       }
