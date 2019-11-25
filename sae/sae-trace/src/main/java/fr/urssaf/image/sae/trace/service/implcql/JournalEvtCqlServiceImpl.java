@@ -1,6 +1,4 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
+
 package fr.urssaf.image.sae.trace.service.implcql;
 
 import java.io.File;
@@ -40,7 +38,7 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.TraceUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Implementation de l'intreface ({@link JournalEvtServiceCql}) Services du journal des événements du SAE
  */
 @Component
 public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
@@ -81,12 +79,12 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
 
   public JournalEvtCqlServiceImpl(final CassandraCQLClientFactory ccf) {
 
-    final ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl(ccf);
-    // dao.setCcf(ccf);
-    final ITraceJournalEvtIndexCqlDao indexdao = new TraceJournalEvtIndexCqlDaoImpl(ccf);
-    // indexdao.setCcf(ccf);
-    final ITraceJournalEvtIndexDocCqlDao indexdocdao = new TraceJournalEvtIndexDocDaoCqlImpl(ccf);
-    // indexdocdao.setCcf(ccf);
+    final ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl();
+		dao.setCcf(ccf);
+    final ITraceJournalEvtIndexCqlDao indexdao = new TraceJournalEvtIndexCqlDaoImpl();
+		indexdao.setCcf(ccf);
+    final ITraceJournalEvtIndexDocCqlDao indexdocdao = new TraceJournalEvtIndexDocDaoCqlImpl();
+		indexdocdao.setCcf(ccf);
 
     final TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
     final TraceJournalEvtCqlSupport support = new TraceJournalEvtCqlSupport(dao, indexdao, indexdocdao, timeUUIDSupport);

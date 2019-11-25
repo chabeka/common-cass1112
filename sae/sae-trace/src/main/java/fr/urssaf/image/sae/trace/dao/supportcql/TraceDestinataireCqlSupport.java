@@ -64,9 +64,15 @@ public class TraceDestinataireCqlSupport {
                });
   }
 
+  /**
+   * Utilisé dans le cas d'une construction manuel de l'instance de la classe
+   * 
+   * @param ccf
+   *          le connecteur à cassandra
+   */
   public TraceDestinataireCqlSupport(final CassandraCQLClientFactory ccf) {
-
-    final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl(ccf);
+	   
+    final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl();
     dao.setCcf(ccf);
     destinatairecqldao = dao;
   }
@@ -123,9 +129,12 @@ public class TraceDestinataireCqlSupport {
 
   }
 
-  /**
+   /**
+   * Sauvegarde ou update d'une {@link TraceDestinataire} dans la base
+   * 
    * @param trace
-   */
+   *          la trace à Sauvegarder/updater
+    */
   private void saveOrUpdate(final TraceDestinataire trace) {
     Assert.notNull(trace, "l'objet traceDestinataire ne peut etre null");
 
@@ -174,8 +183,10 @@ public class TraceDestinataireCqlSupport {
 
   }
 
-  /**
-   * {@inheritDoc}
+   /**
+   * Renvoie la liste de toutes les {@link TraceDestinataire} de la base
+   * 
+   * @return liste de {@link TraceDestinataire}
    */
   public List<TraceDestinataire> findAll() {
     final Iterator<TraceDestinataire> it = destinatairecqldao.findAllWithMapper();

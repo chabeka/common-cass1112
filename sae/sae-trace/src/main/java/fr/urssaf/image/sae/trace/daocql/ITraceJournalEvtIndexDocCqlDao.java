@@ -6,7 +6,12 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
 
 /**
- * TODO (AC75095028) Description du type
+ * Interface DAO de {@link TraceJournalEvtIndexDocCql}
+ * 
+ * @param <TraceJournalEvtIndexDocCql>
+ *          Type de d'objet contenue dans le registre
+ * @param <UUID>
+ *          Le type d'Identifiant de l'objet
  */
 public interface ITraceJournalEvtIndexDocCqlDao extends IGenericDAO<TraceJournalEvtIndexDocCql, UUID> {
 

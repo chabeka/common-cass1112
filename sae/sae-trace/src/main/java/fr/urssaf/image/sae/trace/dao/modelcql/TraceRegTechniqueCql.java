@@ -15,6 +15,9 @@ import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
+/**
+ * Classe de modèle de la CF traceregtechniquecql
+ */
 @Table(name = "traceregtechniquecql")
 public class TraceRegTechniqueCql extends Trace {
 
@@ -62,15 +65,15 @@ public class TraceRegTechniqueCql extends Trace {
                               final UUID idTrace, final Date timestamp) {
 
     super(trace, listInfos, idTrace, timestamp);
-    this.contexte = trace.getContexte();
-    this.stacktrace = trace.getStracktrace();
+    contexte = trace.getContexte();
+    stacktrace = trace.getStracktrace();
 
     if (CollectionUtils.isNotEmpty(listInfos)
         && MapUtils.isNotEmpty(trace.getInfos())) {
-      this.infos = new HashMap<String, String>();
+      infos = new HashMap<>();
       for (final String info : listInfos) {
         if (trace.getInfos().get(info) != null) {
-          this.infos.put(info, trace.getInfos().get(info).toString());
+          infos.put(info, trace.getInfos().get(info).toString());
         }
       }
 

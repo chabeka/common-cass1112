@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Support des classe DAO {@link ITraceRegSecuriteCqlDao} & {@link ITraceRegSecuriteIndexCqlDao}
  */
 @Component
 public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<TraceRegSecuriteCql, TraceRegSecuriteIndexCql> {

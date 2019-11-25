@@ -21,7 +21,12 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe mère des classes de traitement des traces
+ * 
+ * @param <T>
+ *          Type de {@link Trace} contenue dans le registre
+ * @param <I>
+ *          Index des traces
  */
 public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends TraceIndex> {
 
@@ -78,11 +83,23 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
 
   }
 
+  /**
+   * Enregistrement de la liste des entités {@link T} fournie en parapètre
+   * 
+   * @param entites
+   *          la liste des entités {@link T}
+   */
   @SuppressWarnings("unchecked")
   public void saveAllTraces(final Iterable<T> entites) {
     getDao().saveAll(entites);
   }
 
+  /**
+   * Enregistrement de la liste des entités {@link I} fournie en parapètre
+   * 
+   * @param entites
+   *          la liste des entités {@link I}
+   */
   @SuppressWarnings("unchecked")
   public void saveAllIndex(final Iterable<I> entites) {
     getIndexDao().saveAll(entites);
@@ -136,11 +153,23 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     return getDao().findWithMapperById(identifiant);
   }
 
+  /**
+   * Retourne toutes les entitiés {@link T} contenu dans la base
+   * 
+   * @return
+   *         la liste {@link T} des entités
+   */
   @SuppressWarnings("unchecked")
   public Iterator<T> findAll() {
     return getDao().findAllWithMapper();
   }
 
+  /**
+   * Retourne toutes les entitiés {@link I} contenu dans la base
+   * 
+   * @return
+   *         la liste {@link I} des entités
+   */
   @SuppressWarnings("unchecked")
   public Iterator<I> findAllIndex() {
     return getIndexDao().findAllWithMapper();
@@ -262,6 +291,8 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
 
 
   /**
+   * Formatage de la date en yyyyMMdd
+   * 
    * @return the dateFormat
    */
 

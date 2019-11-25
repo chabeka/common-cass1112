@@ -17,6 +17,9 @@ import fr.urssaf.image.sae.trace.daocql.ITraceRegTechniqueIndexCqlDao;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
+/**
+ * Support des classe DAO {@link ITraceRegTechniqueCqlDao} & {@link ITraceRegTechniqueIndexCqlDao}
+ */
 @Component
 public class TraceRegTechniqueCqlSupport extends GenericAbstractTraceCqlSupport<TraceRegTechniqueCql, TraceRegTechniqueIndexCql> {
 

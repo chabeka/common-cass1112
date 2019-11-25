@@ -10,11 +10,14 @@ import com.datastax.driver.mapping.annotations.Table;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe de modèle de la CF tracejournalevtindexcql
  */
 @Table(name = "tracejournalevtindexcql")
 public class TraceJournalEvtIndexCql extends TraceIndex {
 
+	/**
+	 * Clé de partitionnement associé à la colonne du même nom dans la CF tracejournalevtindexcql
+	 */
   @PartitionKey
   @Column(name = "identifiantindex")
   private String identifiantIndex;
