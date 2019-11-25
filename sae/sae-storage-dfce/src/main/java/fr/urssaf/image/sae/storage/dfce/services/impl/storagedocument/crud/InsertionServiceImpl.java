@@ -86,40 +86,46 @@ InsertionService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public StorageDocument insertStorageDocument(
-                                                final StorageDocument storageDocument) throws InsertionServiceEx, InsertionIdGedExistantEx {
+         final StorageDocument storageDocument) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       try {
          // -- ici on récupère le nom et l'extension du fichier
          final String[] file = BeanMapper.findFileNameAndExtension(
-                                                                   storageDocument, StorageTechnicalMetadatas.NOM_FICHIER
-                                                                   .getShortCode().toString());
+               storageDocument, StorageTechnicalMetadatas.NOM_FICHIER
+               .getShortCode().toString());
          LOGGER.debug("{} - Enrichissement des métadonnées : "
                + "ajout de la métadonnée NomFichier valeur : {}.{}",
                new Object[] { TRC_INSERT, file[0], file[1] });
 
          // -- conversion du storageDocument en DFCE Document
          final Document docDfce = BeanMapper.storageDocumentToDfceDocument(
-                                                                           getBaseDFCE(), storageDocument, file);
+               getBaseDFCE(), storageDocument, file);
 
          // -- ici on récupère le contenu du fichier.
          final File fileContent = new File(storageDocument.getFilePath());
          // On fait en sorte que le dataHandler puisse avoir accès à un fileInputStream qui supporte les
          // méthodes mark et reset, afin de pouvoir gérer les éventuelles reconnexions à DFCE.
-         final DataHandler docContent = new DataHandler(new MarkableFileDataSource(fileContent));
 
-         LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
-
-         return storageDocumentServiceSupport.insertDocumentInStorage(
-                                                                      getDfceServices(), typeList, docDfce,
-                                                                      docContent, file, storageDocument.getMetadatas(), tracesSupport);
+         try (MarkableFileDataSource fis = new MarkableFileDataSource(fileContent)) {
+            final DataHandler docContent = new DataHandler(fis);
+            LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
+            return storageDocumentServiceSupport.insertDocumentInStorage(
+                  getDfceServices(),
+                  typeList,
+                  docDfce,
+                  docContent,
+                  file,
+                  storageDocument.getMetadatas(),
+                  tracesSupport);
+         }
 
       } catch (final InsertionIdGedExistantEx ex) {
          throw ex;
       } catch (final Exception except) {
 
          throw new InsertionServiceEx(
-                                      StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
-                                      except.getMessage(), except);
+               StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
+               except.getMessage(), except);
       }
    }
 
@@ -131,12 +137,12 @@ InsertionService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public StorageDocument insertBinaryStorageDocument(
-                                                      final StorageDocument storageDoc) throws InsertionServiceEx, InsertionIdGedExistantEx {
+         final StorageDocument storageDoc) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       // -- Insertion du document
       return storageDocumentServiceSupport.insertBinaryStorageDocument(
-                                                                       getDfceServices(), typeList, storageDoc, LOGGER,
-                                                                       tracesSupport);
+            getDfceServices(), typeList, storageDoc, LOGGER,
+            tracesSupport);
    }
 
    /**
@@ -146,7 +152,7 @@ InsertionService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public StorageReferenceFile insertStorageReference(
-                                                      final VirtualStorageReference reference) throws InsertionServiceEx {
+         final VirtualStorageReference reference) throws InsertionServiceEx {
       final String trcPrefix = "insertStorageReference";
       LOGGER.debug("{} - début", trcPrefix);
 
@@ -159,20 +165,20 @@ InsertionService {
          stream = new FileInputStream(reference.getFilePath());
 
          final FileReference fileReference = getDfceServices().createFileReference(name,
-                                                                                   extension, stream);
+               extension, stream);
 
          referenceFile = BeanMapper
                .fileReferenceToStorageReferenceFile(fileReference);
 
          LOGGER.debug(
-                      "{} - insertion réalisée. Fichier inséré : {}{}",
-                      new Object[] { trcPrefix, IOUtils.LINE_SEPARATOR,
-                                     referenceFile.toString() });
+               "{} - insertion réalisée. Fichier inséré : {}{}",
+               new Object[] { trcPrefix, IOUtils.LINE_SEPARATOR,
+                     referenceFile.toString() });
 
       } catch (final Exception exception) {
          throw new InsertionServiceEx(
-                                      StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
-                                      exception.getMessage(), exception);
+               StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
+               exception.getMessage(), exception);
 
       } finally {
          if (stream != null) {
@@ -196,7 +202,7 @@ InsertionService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public UUID insertVirtualStorageDocument(
-                                            final VirtualStorageDocument vDocument) throws InsertionServiceEx {
+         final VirtualStorageDocument vDocument) throws InsertionServiceEx {
       final String trcPrefix = "insertVirtualStorageDocument";
       LOGGER.debug("{} - début", trcPrefix);
 
@@ -205,28 +211,28 @@ InsertionService {
 
       try {
          LOGGER.debug("{} - transformation de l'objet document en objet DFCE",
-                      trcPrefix);
+               trcPrefix);
          final Document document = BeanMapper.virtualStorageDocumentToDfceDocument(
-                                                                                   baseDFCE, vDocument);
+               baseDFCE, vDocument);
 
          LOGGER.debug(
-                      "{} - transformation du fichier de référence en objet DFCE",
-                      trcPrefix);
+               "{} - transformation du fichier de référence en objet DFCE",
+               trcPrefix);
          final FileReference fileReference = BeanMapper
                .storageReferenceFileToFileReference(vDocument
-                                                    .getReferenceFile());
+                     .getReferenceFile());
 
          LOGGER.debug("{} - insertion du document virtuel", trcPrefix);
          final Document generateDocument = getDfceServices()
                .storeVirtualDocument(document, fileReference,
-                                     vDocument.getStartPage(), vDocument.getEndPage());
+                     vDocument.getStartPage(), vDocument.getEndPage());
 
          uuid = generateDocument.getUuid();
 
       } catch (final Exception exception) {
          throw new InsertionServiceEx(
-                                      StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
-                                      exception.getMessage(), exception);
+               StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
+               exception.getMessage(), exception);
       }
 
       LOGGER.debug("{} - fin", trcPrefix);

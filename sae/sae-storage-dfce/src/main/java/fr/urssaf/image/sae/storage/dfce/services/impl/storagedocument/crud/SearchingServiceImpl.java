@@ -93,7 +93,6 @@ SearchingService {
   @Value("${sae.nom.instance.plateforme}")
   private String nomPlateforme;
 
-
   /**
    * {@inheritDoc}
    */
