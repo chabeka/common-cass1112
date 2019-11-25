@@ -7,6 +7,8 @@ public class EnvironmentBuilder {
 
    private String url;
 
+   private String envCode;
+
    private String ecdeName;
 
    private String appliServer;
@@ -16,7 +18,7 @@ public class EnvironmentBuilder {
    private String cassandraServers;
 
    public Environment build() {
-      return new Environment(url, ecdeName, appliServer, ecdeMountPoint, cassandraServers);
+      return new Environment(url, envCode, ecdeName, appliServer, ecdeMountPoint, cassandraServers);
    }
 
    /**
@@ -27,11 +29,27 @@ public class EnvironmentBuilder {
    }
 
    /**
-    * @param url
-    *           the url to set
+    * @param lib
+    *           libellé de l'environnement
     */
    public EnvironmentBuilder setUrl(final String url) {
       this.url = url;
+      return this;
+   }
+
+   /**
+    * @return Le code de l'environnement
+    */
+   public String getEnvCode() {
+      return envCode;
+   }
+
+   /**
+    * @param code
+    *           Le code de l'environnement
+    */
+   public EnvironmentBuilder setEnvCode(final String code) {
+      envCode = code;
       return this;
    }
 

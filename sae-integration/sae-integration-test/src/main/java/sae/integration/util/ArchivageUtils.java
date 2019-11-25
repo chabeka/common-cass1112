@@ -5,6 +5,10 @@ package sae.integration.util;
 
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.SOAPBinding;
+import javax.xml.ws.soap.SOAPFaultException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sae.integration.data.RandomData;
 import sae.integration.data.TestData;
@@ -17,6 +21,8 @@ import sae.integration.webservice.modele.SaeServicePortType;
  * Classe utilitaire facilitant l'archivage de documents
  */
 public final class ArchivageUtils {
+
+   private static final Logger LOGGER = LoggerFactory.getLogger(ArchivageUtils.class);
 
    private ArchivageUtils() {
       // Classe statique
@@ -33,15 +39,23 @@ public final class ArchivageUtils {
     *         L'id document archivé
     */
    public static String sendArchivageUnitaire(final SaeServicePortType service, final ArchivageUnitairePJRequestType request) {
-      // Activation MTOM
-      final BindingProvider bp = (BindingProvider) service;
-      final SOAPBinding binding = (SOAPBinding) bp.getBinding();
-      binding.setMTOMEnabled(true);
-      // Lancement
-      final ArchivageUnitairePJResponseType response = service.archivageUnitairePJ(request);
-      // récupération du résultat
-      final String docId = response.getIdArchive();
-      return docId;
+      try {
+         // Activation MTOM
+         final BindingProvider bp = (BindingProvider) service;
+         final SOAPBinding binding = (SOAPBinding) bp.getBinding();
+         binding.setMTOMEnabled(true);
+         // Lancement
+         final ArchivageUnitairePJResponseType response = service.archivageUnitairePJ(request);
+         // récupération du résultat
+         final String docId = response.getIdArchive();
+         return docId;
+      }
+      catch (final SOAPFaultException e) {
+         LOGGER.warn(e.getMessage());
+         LOGGER.warn("Détail : {}", SoapHelper.getSoapFaultDetail(e));
+         throw e;
+      }
+
    }
 
    /**

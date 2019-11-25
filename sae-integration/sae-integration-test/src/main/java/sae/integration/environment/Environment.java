@@ -7,6 +7,8 @@ public class Environment {
 
    private final String url;
 
+   private final String envCode;
+
    private final String ecdeName;
 
    private final String appliServer;
@@ -15,8 +17,10 @@ public class Environment {
 
    private final String cassandraServers;
 
-   public Environment(final String url, final String ecdeName, final String appliServer, final String ecdeMountPoint, final String cassandraServers) {
+   public Environment(final String url, final String envCode, final String ecdeName, final String appliServer, final String ecdeMountPoint,
+         final String cassandraServers) {
       this.url = url;
+      this.envCode = envCode;
       this.ecdeName = ecdeName;
       this.appliServer = appliServer;
       this.ecdeMountPoint = ecdeMountPoint;
@@ -28,6 +32,13 @@ public class Environment {
     */
    public String getUrl() {
       return url;
+   }
+
+   /**
+    * @return L'url du service
+    */
+   public String getEnvCode() {
+      return envCode;
    }
 
    /**

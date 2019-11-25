@@ -12,7 +12,9 @@ import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.SSHException;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.connection.channel.direct.Session.Command;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.xfer.InMemorySourceFile;
+import sae.integration.environment.Environment;
 
 /**
  * Méthodes utilitaires concernant les transferts SSH
@@ -21,6 +23,21 @@ public class SSHHelper {
 
    private SSHHelper() {
       // Classe statique
+   }
+
+   /**
+    * Renvoie un client SSH permettant d'accéder au serveur d'appli de l'environnement
+    * 
+    * @param environment
+    * @return
+    * @throws Exception
+    */
+   public static SSHClient getSSHClient(final Environment environment) throws Exception {
+      final SSHClient sshClient = new SSHClient();
+      sshClient.addHostKeyVerifier(new PromiscuousVerifier());
+      sshClient.connect(environment.getAppliServer());
+      sshClient.authPassword("root", "hwicnir");
+      return sshClient;
    }
 
    /**

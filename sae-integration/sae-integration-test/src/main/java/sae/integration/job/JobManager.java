@@ -13,7 +13,6 @@ import com.datastax.oss.driver.api.core.uuid.Uuids;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.SSHException;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import sae.integration.environment.Environment;
 import sae.integration.util.ResourceUtils;
 import sae.integration.util.SSHHelper;
@@ -41,10 +40,7 @@ public class JobManager implements Closeable {
    public JobManager(final Environment environment) throws Exception {
       this.environment = environment;
       jobId = Uuids.timeBased();
-      sshClient = new SSHClient();
-      sshClient.addHostKeyVerifier(new PromiscuousVerifier());
-      sshClient.connect(environment.getAppliServer());
-      sshClient.authPassword("root", "hwicnir");
+      sshClient = SSHHelper.getSSHClient(environment);
       cassandraHelper = new CassandraHelper(environment);
    }
 
@@ -68,6 +64,16 @@ public class JobManager implements Closeable {
       // Créer le job dans cassandra
       final String sommaireHash = DigestUtils.sha1Hex(sommaire);
       cassandraHelper.writeTransfertJob(jobId, getEcdeUrl() + "/sommaire.xml", sommaireHash);
+      // Appel de l'exécutable du job
+      launchRemoteJob();
+   }
+
+   public void launchModificationMasse(final String sommaire) throws Exception {
+      // Poser le sommaire et les documents sur l'ecde
+      sendSommaire(sommaire);
+      // Créer le job dans cassandra
+      final String sommaireHash = DigestUtils.sha1Hex(sommaire);
+      cassandraHelper.writeModificationJob(jobId, getEcdeUrl() + "/sommaire.xml", sommaireHash);
       // Appel de l'exécutable du job
       launchRemoteJob();
    }
@@ -96,15 +102,33 @@ public class JobManager implements Closeable {
     */
    private void sendSommaireAndFiles(final String sommaire, final List<String> docPaths, final List<String> docTargetNames) throws Exception {
       sendSommaire(sommaire);
+      createDocDirInECDE();
+
+      for (int i = 0; i < docPaths.size(); i++) {
+         sendDocumentInECDE(docPaths.get(i), docTargetNames.get(i));
+      }
+   }
+
+   public void createDocDirInECDE() throws Exception {
       final String jobPath = getEcdePath();
       final String docDir = jobPath + "/documents";
       SSHHelper.execute(sshClient, "mkdir " + docDir);
+   }
 
-      for (int i = 0; i < docPaths.size(); i++) {
-         final String docPath = docPaths.get(i);
-         final String targetPath = docDir + "/" + docTargetNames.get(i);
-         SSHHelper.writeFileFromResource(sshClient, this, targetPath, docPath);
-      }
+   /**
+    * Envoie un document sur l'ecde
+    * 
+    * @param docResourcePath
+    * @param docTargetName
+    * @throws Exception
+    * @return le chemin du document sur l'ecde
+    */
+   public String sendDocumentInECDE(final String docResourcePath, final String docTargetName) throws Exception {
+      final String jobPath = getEcdePath();
+      final String docDir = jobPath + "/documents";
+      final String targetPath = docDir + "/" + docTargetName;
+      SSHHelper.writeFileFromResource(sshClient, this, targetPath, docResourcePath);
+      return getEcdeUrl() + "/documents/" + docTargetName;
    }
 
    private void sendSommaire(final String sommaire) throws Exception {

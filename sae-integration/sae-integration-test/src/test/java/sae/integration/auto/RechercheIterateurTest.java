@@ -40,119 +40,120 @@ import sae.integration.webservice.modele.SaeServicePortType;
  */
 public class RechercheIterateurTest {
 
-   private static SaeServicePortType service;
+  private static SaeServicePortType service;
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(RechercheIterateurTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RechercheIterateurTest.class);
 
-   private CleanHelper cleanHelper;
+  private CleanHelper cleanHelper;
 
-   private Instant archivageStartTime;
+  private Instant archivageStartTime;
 
-   private Instant archivageEndTime;
+  private Instant archivageEndTime;
 
-   @BeforeClass
-   public static void setup() {
-      service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_CLIENT.getUrl());
-   }
+  @BeforeClass
+  public static void setup() {
+    // service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_CLIENT.getUrl());
+    service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.MIG_GNT.getUrl());
+  }
 
-   @Before
-   public void before() {
-      cleanHelper = new CleanHelper(service);
-   }
+  @Before
+  public void before() {
+    cleanHelper = new CleanHelper(service);
+  }
 
-   @After
-   public void after() throws Exception {
-      LOGGER.info("Nettoyage...");
-      cleanHelper.close();
-   }
+  @After
+  public void after() throws Exception {
+    LOGGER.info("Nettoyage...");
+    cleanHelper.close();
+  }
 
-   /**
-    * Mise en place du contexte
-    * On archive 20 documents, dont 10 répondent à la requête
-    */
-   private void setContext() {
-      // Récupération de l'heure courante (avec de la marge en cas de désynchronisation d'horloge)
-      archivageStartTime = Instant.now().minusSeconds(30);
+  /**
+   * Mise en place du contexte
+   * On archive 20 documents, dont 10 répondent à la requête
+   */
+  private void setContext() {
+    // Récupération de l'heure courante (avec de la marge en cas de désynchronisation d'horloge)
+    archivageStartTime = Instant.now().minusSeconds(30);
 
-      // Archivage des documents
-      for (int i = 0; i < 20; i++) {
-         final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
-         final ListeMetadonneeType metaList = RandomData.getRandomMetadatas();
-         request.setMetadonnees(metaList);
-         request.setDataFile(TestData.getTxtFile(metaList));
+    // Archivage des documents
+    for (int i = 0; i < 20; i++) {
+      final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
+      final ListeMetadonneeType metaList = RandomData.getRandomMetadatas();
+      request.setMetadonnees(metaList);
+      request.setDataFile(TestData.getTxtFile(metaList));
 
-         SoapBuilder.setMetaValue(metaList, "CodeOrganismeProprietaire", "UR827");
-         SoapBuilder.setMetaValue(metaList, "StatutWATT", "PRET");
+      SoapBuilder.setMetaValue(metaList, "CodeOrganismeProprietaire", "UR827");
+      SoapBuilder.setMetaValue(metaList, "StatutWATT", "PRET");
 
-         String codeProduit, codeTraitement;
-         if (i % 2 == 0) {
-            // Document répondant à la requête
-            codeProduit = RandomData.getElementInArray(new String[] {"PC77A", "PC66A"});
-            codeTraitement = RandomData.getElementInArray(new String[] {"RP17", "TP17"});
-         } else {
-            // Document ne répondant pas à la requête
-            codeProduit = RandomData.getElementInArray(new String[] {"NC18", "NC19"});
-            codeTraitement = RandomData.getElementInArray(new String[] {"PC20", "PC21"});
-         }
-         SoapBuilder.setMetaValue(metaList, "CodeProduitV2", codeProduit);
-         SoapBuilder.setMetaValue(metaList, "CodeTraitementV2", codeTraitement);
-
-         // Lancement de l'archivage
-         ArchivageUtils.sendArchivageUnitaire(service, request, cleanHelper);
+      String codeProduit, codeTraitement;
+      if (i % 2 == 0) {
+        // Document répondant à la requête
+        codeProduit = RandomData.getElementInArray(new String[] {"PC77A", "PC66A"});
+        codeTraitement = RandomData.getElementInArray(new String[] {"RP17", "TP17"});
+      } else {
+        // Document ne répondant pas à la requête
+        codeProduit = RandomData.getElementInArray(new String[] {"NC18", "NC19"});
+        codeTraitement = RandomData.getElementInArray(new String[] {"PC20", "PC21"});
       }
-      archivageEndTime = Instant.now().plusSeconds(30);
-   }
+      SoapBuilder.setMetaValue(metaList, "CodeProduitV2", codeProduit);
+      SoapBuilder.setMetaValue(metaList, "CodeTraitementV2", codeTraitement);
 
-   @Test
-   /**
-    * Reproduit une requête lancée par WATT
-    */
-   public void rechercheIterateurWattTest() throws Exception {
-      // Archivage des documents
-      LOGGER.info("Archivage des documents");
-      setContext();
+      // Lancement de l'archivage
+      ArchivageUtils.sendArchivageUnitaire(service, request, cleanHelper);
+    }
+    archivageEndTime = Instant.now().plusSeconds(30);
+  }
 
-      // Préparation rechercher par itérateur
-      final RechercheParIterateurRequestType request = new RechercheParIterateurRequestType();
-      final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
-      final ListeMetadonneeType fixedMetadatas = new ListeMetadonneeType();
-      SoapBuilder.addMeta(fixedMetadatas, "DomaineCotisant", "true");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", "UR827");
-      SoapBuilder.addMeta(fixedMetadatas, "StatutWATT", "PRET");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeProduitV2", "PC77A");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeProduitV2", "PC66A");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeTraitementV2", "RP17");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeTraitementV2", "TP17");
+  @Test
+  /**
+   * Reproduit une requête lancée par WATT
+   */
+  public void rechercheIterateurWattTest() throws Exception {
+    // Archivage des documents
+    LOGGER.info("Archivage des documents");
+    setContext();
 
-      mainRequest.setFixedMetadatas(fixedMetadatas);
-      final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeDateTimeMetadata("DateArchivage", archivageStartTime, archivageEndTime);
-      mainRequest.setVaryingMetadata(varyingMetadata);
-      request.setRequetePrincipale(mainRequest);
-      final ListeMetadonneeCodeType metadataToReturn = new ListeMetadonneeCodeType();
-      metadataToReturn.getMetadonneeCode().add("CodeTraitementV2");
-      metadataToReturn.getMetadonneeCode().add("CodeProduitV2");
-      metadataToReturn.getMetadonneeCode().add("DateArchivage");
-      request.setMetadonnees(metadataToReturn);
+    // Préparation rechercher par itérateur
+    final RechercheParIterateurRequestType request = new RechercheParIterateurRequestType();
+    final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
+    final ListeMetadonneeType fixedMetadatas = new ListeMetadonneeType();
+    SoapBuilder.addMeta(fixedMetadatas, "DomaineCotisant", "true");
+    SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", "UR827");
+    SoapBuilder.addMeta(fixedMetadatas, "StatutWATT", "PRET");
+    SoapBuilder.addMeta(fixedMetadatas, "CodeProduitV2", "PC77A");
+    SoapBuilder.addMeta(fixedMetadatas, "CodeProduitV2", "PC66A");
+    SoapBuilder.addMeta(fixedMetadatas, "CodeTraitementV2", "RP17");
+    SoapBuilder.addMeta(fixedMetadatas, "CodeTraitementV2", "TP17");
 
-      request.setNbDocumentsParPage(2);
+    mainRequest.setFixedMetadatas(fixedMetadatas);
+    final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeDateTimeMetadata("DateArchivage", archivageStartTime, archivageEndTime);
+    mainRequest.setVaryingMetadata(varyingMetadata);
+    request.setRequetePrincipale(mainRequest);
+    final ListeMetadonneeCodeType metadataToReturn = new ListeMetadonneeCodeType();
+    metadataToReturn.getMetadonneeCode().add("CodeTraitementV2");
+    metadataToReturn.getMetadonneeCode().add("CodeProduitV2");
+    metadataToReturn.getMetadonneeCode().add("DateArchivage");
+    request.setMetadonnees(metadataToReturn);
 
-      // Boucle sur les différentes pages
-      LOGGER.info("Parcours des documents");
-      int counter = 0;
-      while (true) {
-         final RechercheParIterateurResponseType response = service.rechercheParIterateur(request);
-         final IdentifiantPageType nextPageId = response.getIdentifiantPageSuivante();
-         for (final ResultatRechercheType doc : response.getResultats().getResultat()) {
-            final String UUID = doc.getIdArchive();
-            LOGGER.debug("Doc trouvé : {}", UUID);
-            counter++;
-         }
-         if (response.isDernierePage()) {
-            break;
-         }
-         request.setIdentifiantPage(nextPageId);
+    request.setNbDocumentsParPage(2);
+
+    // Boucle sur les différentes pages
+    LOGGER.info("Parcours des documents");
+    int counter = 0;
+    while (true) {
+      final RechercheParIterateurResponseType response = service.rechercheParIterateur(request);
+      final IdentifiantPageType nextPageId = response.getIdentifiantPageSuivante();
+      for (final ResultatRechercheType doc : response.getResultats().getResultat()) {
+        final String UUID = doc.getIdArchive();
+        LOGGER.debug("Doc trouvé : {}", UUID);
+        counter++;
       }
-      LOGGER.info("Nombre de documents trouvés : {}", counter);
-      Assert.assertEquals("On s'attend à trouver 10 documents", 10, counter);
-   }
+      if (response.isDernierePage()) {
+        break;
+      }
+      request.setIdentifiantPage(nextPageId);
+    }
+    LOGGER.info("Nombre de documents trouvés : {}", counter);
+    Assert.assertEquals("On s'attend à trouver 10 documents", 10, counter);
+  }
 }

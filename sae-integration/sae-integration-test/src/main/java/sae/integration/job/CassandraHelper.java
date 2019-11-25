@@ -36,7 +36,9 @@ public class CassandraHelper {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(CassandraHelper.class);
 
-   private static final String VI_FOR_JOB = "{\"codeAppli\":\"CS_SATURNE\",\"idUtilisateur\":\"NON_RENSEIGNE\",\"saeDroits\":{\"archivage_masse\":[{\"prmd\":{\"code\":\"PRMD_SATURNE_COTISANT\",\"description\":\"SATURNE - Tous documents cotisants \",\"lucene\":\"DomaineCotisant:true\",\"metadata\":{\"DomaineCotisant\":[\"true\"]},\"bean\":\"\"},\"values\":{}}],\"reprise_masse\":[{\"prmd\":{\"code\":\"PRMD_SATURNE_COTISANT\",\"description\":\"SATURNE - Tous documents cotisants \",\"lucene\":\"DomaineCotisant:true\",\"metadata\":{\"DomaineCotisant\":[\"true\"]},\"bean\":\"\"},\"values\":{}}],\"transfert_masse\":[{\"prmd\":{\"code\":\"PRMD_SATURNE_COTISANT\",\"description\":\"SATURNE - Tous documents cotisants \",\"lucene\":\"DomaineCotisant:true\",\"metadata\":{\"DomaineCotisant\":[\"true\"]},\"bean\":\"\"},\"values\":{}}]},\"pagms\":[\"PAGM_SATURNE\"],\"listControlProfil\":[]}";
+   private static final String VI_FOR_JOB = "{\"codeAppli\":\"CS_SATURNE\",\"idUtilisateur\":\"NON_RENSEIGNE\",\"saeDroits\":{\"archivage_masse\":[{\"prmd\":{\"code\":\"PRMD_SATURNE_COTISANT\",\"description\":\"SATURNE - Tous documents cotisants \",\"lucene\":\"DomaineCotisant:true\",\"metadata\":{\"DomaineCotisant\":[\"true\"]},\"bean\":\"\"},\"values\":{}}],\"modification_masse\":[{\"prmd\":{\"code\":\"PRMD_SATURNE_COTISANT\",\"description\":\"SATURNE - Tous documents cotisants \",\"lucene\":\"DomaineCotisant:true\",\"metadata\":{\"DomaineCotisant\":[\"true\"]},\"bean\":\"\"},\"values\":{}}],\"reprise_masse\":[{\"prmd\":{\"code\":\"PRMD_SATURNE_COTISANT\",\"description\":\"SATURNE - Tous documents cotisants \",\"lucene\":\"DomaineCotisant:true\",\"metadata\":{\"DomaineCotisant\":[\"true\"]},\"bean\":\"\"},\"values\":{}}],\"transfert_masse\":[{\"prmd\":{\"code\":\"PRMD_SATURNE_COTISANT\",\"description\":\"SATURNE - Tous documents cotisants \",\"lucene\":\"DomaineCotisant:true\",\"metadata\":{\"DomaineCotisant\":[\"true\"]},\"bean\":\"\"},\"values\":{}}]},\"pagms\":[\"PAGM_SATURNE\"],\"listControlProfil\":[]}";
+
+   private static final String CODE_TRAITEMENT = "UR666";
 
    public CassandraHelper(final Environment environment) {
       this.environment = environment;
@@ -109,12 +111,39 @@ public class CassandraHelper {
       writeJob(jobId, sommaireURL, sommaireHash, appliServer, json, jobType);
    }
 
+   /**
+    * On écrit un job de modification de masse, d'id "jobId" dans cassandra, en indiquant qu'il est réservé par le serveur "appliServer"
+    * 
+    * @param jobId
+    *           id du job
+    * @param sommaireURL
+    *           url du sommaire
+    * @param sommaireHash
+    *           hash (sha1) du sommaire
+    * @throws Exception
+    */
+   public void writeModificationJob(final UUID jobId, final String sommaireURL, final String sommaireHash) throws Exception {
+      final String appliServer = environment.getAppliServer();
+      String json = "{\"idJob\":\"ID_JOB\",\"type\":\"modification_masse\",\"parameters\":null,\"jobParameters\":{\"typeHash\": \"SHA-1\",\"ecdeUrl\":\"SOMMAIRE_URL\",\"codeTraitement\":\"CODE_TRAITEMENT\",\"hash\": \"SOMMAIRE_HASH\"}}";
+      json = json.replace("ID_JOB", jobId.toString());
+      json = json.replace("SOMMAIRE_URL", sommaireURL);
+      json = json.replace("CODE_TRAITEMENT", CODE_TRAITEMENT);
+      json = json.replace("SOMMAIRE_HASH", sommaireHash);
+      final String jobType = "modification_masse";
+      writeJob(jobId, sommaireURL, sommaireHash, appliServer, json, jobType);
+   }
+
    private void writeJob(final UUID jobId, final String sommaireURL, final String sommaireHash, final String appliServer, final String json,
          final String jobType)
-         throws ConnectionException {
-      String jobParametersAsXML = "<?xml version='1.0' encoding='UTF-8'?><map><entry><string>typeHash</string><string>SHA-1</string></entry><entry><string>ecdeUrl</string><string>SOMMAIRE_URL</string></entry><entry><string>hash</string><string>SOMMAIRE_HASH</string></entry></map>";
+               throws ConnectionException {
+      String jobParametersAsXML = "<?xml version='1.0' encoding='UTF-8'?><map><entry><string>typeHash</string><string>SHA-1</string></entry><entry><string>ecdeUrl</string><string>SOMMAIRE_URL</string></entry>ADDITIONAL_ENTRY<entry><string>hash</string><string>SOMMAIRE_HASH</string></entry></map>";
       jobParametersAsXML = jobParametersAsXML.replace("SOMMAIRE_URL", sommaireURL);
       jobParametersAsXML = jobParametersAsXML.replace("SOMMAIRE_HASH", sommaireHash);
+      String additionalEntry = "";
+      if ("modification_masse".equals(jobType)) {
+         additionalEntry = "<entry><string>codeTraitement</string><string>" + CODE_TRAITEMENT + "</string></entry>";
+      }
+      jobParametersAsXML = jobParametersAsXML.replace("ADDITIONAL_ENTRY", additionalEntry);
 
       final MutationBatch batch = saeKeyspace.prepareMutationBatch();
       final long currentDate = System.currentTimeMillis() / 1000L;
@@ -126,7 +155,7 @@ public class CassandraHelper {
       .putColumn("reservationDate", currentDate)
       .putColumn("saeHost", appliServer)
       .putColumn("state", "RESERVED")
-            .putColumn("type", jobType)
+      .putColumn("type", jobType)
       .putColumn("vi", VI_FOR_JOB);
       batch.withRow(JobsQueueCF.get(), appliServer)
       .putColumn(jobId, json);

@@ -1,5 +1,8 @@
 package sae.integration.auto.transfert.masse;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertThat;
+
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -21,6 +24,7 @@ import sae.integration.webservice.factory.SaeServiceStubFactory;
 import sae.integration.webservice.modele.ArchivageUnitairePJRequestType;
 import sae.integration.webservice.modele.ListeMetadonneeType;
 import sae.integration.webservice.modele.SaeServicePortType;
+import sae.integration.xml.modele.NonIntegratedDocumentType;
 import sae.integration.xml.modele.ResultatsType;
 
 /**
@@ -81,16 +85,19 @@ public class TransfertMasseDocAlreadyInGNSTest {
 
          // Vérification du contenu du fichier resultats.xml
          final ResultatsType resultat = XMLHelper.parseResultatsXML(resultatsXML);
-         Assert.assertEquals(3, (int) resultat.getInitialDocumentsCount());
-         Assert.assertEquals(3, (int) resultat.getIntegratedDocumentsCount());
+         Assert.assertEquals(1, (int) resultat.getInitialDocumentsCount());
+         Assert.assertEquals(0, (int) resultat.getIntegratedDocumentsCount());
+         Assert.assertEquals(1, (int) resultat.getNonIntegratedDocumentsCount());
+         final NonIntegratedDocumentType nonIntegratedDocument = resultat.getNonIntegratedDocuments().getNonIntegratedDocument().get(0);
+         Assert.assertEquals(uuid, nonIntegratedDocument.getObjetNumerique().getUUID());
+         final String libErreur = nonIntegratedDocument.getErreurs().getErreur().get(0).getLibelle();
+         assertThat(libErreur, containsString("est anormalement présent en GNT et en GNS"));
 
       }
       finally {
          LOGGER.info("Suppression des documents");
-         for (int i = 0; i < 3; i++) {
-            CleanHelper.deleteOneDocument(gntService, uuid);
-            CleanHelper.deleteOneDocument(gnsService, uuid);
-         }
+         CleanHelper.deleteOneDocument(gntService, uuid);
+         CleanHelper.deleteOneDocument(gnsService, uuid);
       }
    }
 

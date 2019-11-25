@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sae.integration.environment.Environments;
 import sae.integration.util.SoapBuilder;
 import sae.integration.util.SoapHelper;
 import sae.integration.webservice.factory.SaeServiceStubFactory;
@@ -32,31 +33,28 @@ public class RechercheIterateurScribeTest {
     * Recherche par itérateur, sur la production
     */
    public void rechercheDocATransfererTest() throws Exception {
-      final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT("http://hwi69progednatgntcot1boweb1.cer69.recouv/ged/services/SaeService/");
-      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT("http://hwi69progednatgntcot1boweb1.cer69.recouv/ged/services/SaeService/");
+      final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT("http://frontalged.urssaf.recouv/frontalged_be/services/saeService/");
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT("http://frontalint2.gidn.recouv/frontalged_be/services/saeService/");
+      // final SaeServicePortType service = SaeServiceStubFactory
+      // .getServiceForRechercheDocumentaireGNT("http://hwi69int2pgedboint2.gidn.recouv:8080/frontalged_be/services/saeService/");
 
       final PrintStream sysout = new PrintStream("c:/temp/out.txt");
-
-      final String[] organismes = new String[] {"UR727", "UR837", "UR917", "UR747", "UR547", "UR257", "UR200"};
-      for (final String codeOrga : organismes) {
-         System.out.println("Orga : " + codeOrga);
-         // rechercheDocATransfererForOneOrga(service, sysout, codeOrga);
-         rechercheDocWatt(service, sysout, codeOrga);
-      }
+      rechercheDocATransferer(service, sysout);
       sysout.close();
    }
 
-   private void rechercheDocATransfererForOneOrga(final SaeServicePortType service, final PrintStream sysout, final String orgaToCheck) {
+   private void rechercheDocATransferer(final SaeServicePortType service, final PrintStream sysout) {
       final RechercheParIterateurRequestType request = new RechercheParIterateurRequestType();
       final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
       final ListeMetadonneeType fixedMetadatas = new ListeMetadonneeType();
       SoapBuilder.addMeta(fixedMetadatas, "DomaineCotisant", "true");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", orgaToCheck);
       SoapBuilder.addMeta(fixedMetadatas, "ApplicationProductrice", "SCRIBE");
       SoapBuilder.addMeta(fixedMetadatas, "ATransfererScribe", "true");
 
       mainRequest.setFixedMetadatas(fixedMetadatas);
-      final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeMetadata("DateArchivage", "20190101", "20251212");
+      final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeMetadata("DateArchivage", "20190901", "20251212");
       mainRequest.setVaryingMetadata(varyingMetadata);
       request.setRequetePrincipale(mainRequest);
       final ListeMetadonneeCodeType metadataToReturn = new ListeMetadonneeCodeType();

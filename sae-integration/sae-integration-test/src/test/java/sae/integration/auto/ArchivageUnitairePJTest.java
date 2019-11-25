@@ -4,7 +4,10 @@ import java.io.IOException;
 
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.SOAPBinding;
+import javax.xml.ws.soap.SOAPFaultException;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.IOUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -12,12 +15,17 @@ import org.slf4j.LoggerFactory;
 
 import sae.integration.data.RandomData;
 import sae.integration.data.TestData;
+import sae.integration.environment.Environment;
 import sae.integration.environment.Environments;
+import sae.integration.job.JobManager;
 import sae.integration.util.ArchivageValidationUtils;
 import sae.integration.util.CleanHelper;
+import sae.integration.util.SoapBuilder;
+import sae.integration.util.SoapHelper;
 import sae.integration.webservice.factory.SaeServiceStubFactory;
 import sae.integration.webservice.modele.ArchivageUnitairePJRequestType;
 import sae.integration.webservice.modele.ArchivageUnitairePJResponseType;
+import sae.integration.webservice.modele.ListeMetadonneeType;
 import sae.integration.webservice.modele.SaeServicePortType;
 
 /**
@@ -30,9 +38,17 @@ public class ArchivageUnitairePJTest {
 
    private static SaeServicePortType service;
 
+   private static Environment environment;
+
    @BeforeClass
    public static void setup() {
-      service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_INTERNE.getUrl());
+      // environment = Environments.GNT_INT_PAJE;
+      // environment = Environments.GNS_INT_INTERNE;
+      // environment = Environments.GNT_INT_INTERNE;
+      environment = Environments.MIG_GNT;
+      // environment = Environments.GNT_INT_CLIENT;
+      // environment = Environments.GNS_INT_CLIENT;
+      service = SaeServiceStubFactory.getServiceForDevToutesActions(environment.getUrl());
    }
 
    /**
@@ -73,7 +89,14 @@ public class ArchivageUnitairePJTest {
 
       ArchivageUnitairePJResponseType response;
 
-      response = service.archivageUnitairePJ(request);
+      try {
+         response = service.archivageUnitairePJ(request);
+      }
+      catch (final SOAPFaultException e) {
+         LOGGER.warn(e.getMessage());
+         LOGGER.warn("Détail : {}", SoapHelper.getSoapFaultDetail(e));
+         throw e;
+      }
 
       // Affichage de l'identifiant unique d'archivage dans la console
       final String idDoc = response.getIdArchive();
@@ -85,5 +108,93 @@ public class ArchivageUnitairePJTest {
       CleanHelper.deleteOneDocument(service, idDoc);
    }
 
+   /**
+    * Test le service archivageUnitairePJ, en passant le fichier sur l'ecde
+    * 
+    * @throws Exception
+    */
+   @Test
+   public void archivageUnitairePJ_ECDE() throws Exception {
+
+      // Envoi d'un document sur l'ecde
+      String ecdeUrl;
+      try (JobManager manager = new JobManager(environment)) {
+         manager.createDocDirInECDE();
+         ecdeUrl = manager.sendDocumentInECDE("documents/testDoc.tif", "testDoc.tif");
+         LOGGER.info("Chemin du document sur l'ecde : {}", ecdeUrl);
+      }
+
+      // Requête
+      final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
+      request.setMetadonnees(RandomData.getRandomMetadatas());
+      TestData.updateMetaForTiffFile(request.getMetadonnees());
+      request.setEcdeUrl(ecdeUrl);
+
+      // On spécifie le HASH en SHA-256
+      final byte[] contenu = IOUtils.toByteArray(getClass().getClassLoader().getResourceAsStream("documents/testDoc.tif"));
+      final ListeMetadonneeType metaList = request.getMetadonnees();
+      SoapBuilder.setMetaValue(metaList, "Hash", DigestUtils.sha256Hex(contenu));
+      SoapBuilder.setMetaValue(metaList, "TypeHash", "SHA-256");
+
+      ArchivageUnitairePJResponseType response;
+
+      try {
+         response = service.archivageUnitairePJ(request);
+      }
+      catch (final SOAPFaultException e) {
+         LOGGER.warn(e.getMessage());
+         LOGGER.warn("Détail : {}", SoapHelper.getSoapFaultDetail(e));
+         throw e;
+      }
+
+      // Affichage de l'identifiant unique d'archivage dans la console
+      final String idDoc = response.getIdArchive();
+      LOGGER.info("Archivage en succès. UUID reçu : {}", idDoc);
+      // Validation
+      ArchivageValidationUtils.validateDocument(service, idDoc, request.getMetadonnees());
+
+      // Nettoyage
+      CleanHelper.deleteOneDocument(service, idDoc);
+   }
+
+   /**
+    * Test le service archivageUnitairePJ, en utilisant un hash de type SHA256
+    * 
+    * @throws Exception
+    */
+   @Test
+   public void archivageUnitairePJ_SHA256() throws Exception {
+
+      // Requête
+      final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
+      request.setMetadonnees(RandomData.getRandomMetadatas());
+      request.setDataFile(TestData.getTiffFile(request.getMetadonnees()));
+
+      // On spécifie le HASH en SHA-256
+      final byte[] contenu = request.getDataFile().getFile();
+      final ListeMetadonneeType metaList = request.getMetadonnees();
+      SoapBuilder.setMetaValue(metaList, "Hash", DigestUtils.sha256Hex(contenu));
+      SoapBuilder.setMetaValue(metaList, "TypeHash", "SHA-256");
+
+      ArchivageUnitairePJResponseType response;
+
+      try {
+         response = service.archivageUnitairePJ(request);
+      }
+      catch (final SOAPFaultException e) {
+         LOGGER.warn(e.getMessage());
+         LOGGER.warn("Détail : {}", SoapHelper.getSoapFaultDetail(e));
+         throw e;
+      }
+
+      // Affichage de l'identifiant unique d'archivage dans la console
+      final String idDoc = response.getIdArchive();
+      LOGGER.info("Archivage en succès. UUID reçu : {}", idDoc);
+      // Validation
+      ArchivageValidationUtils.validateDocument(service, idDoc, request.getMetadonnees());
+
+      // Nettoyage
+      CleanHelper.deleteOneDocument(service, idDoc);
+   }
 
 }

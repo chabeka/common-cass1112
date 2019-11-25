@@ -47,8 +47,10 @@ public class TransfertUnitaireMultithread {
       // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_INTERNE.getUrl());
       // gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.LOCALHOST.getUrl());
       // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_CLIENT.getUrl());
-      gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_PIC.getUrl());
-      gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_PIC.getUrl());
+      // gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_PIC.getUrl());
+      // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_PIC.getUrl());
+      gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_PAJE.getUrl());
+      gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_PAJE.getUrl());
    }
 
    @After
@@ -62,14 +64,7 @@ public class TransfertUnitaireMultithread {
 
    @Test
    public void transfertMutithreadTest() throws Exception {
-      try {
-         docId = ArchivageUtils.archivagePDF(gntService);
-      }
-      catch (final SOAPFaultException e) {
-         LOGGER.warn(e.getMessage());
-         LOGGER.warn("Détail : {}", SoapHelper.getSoapFaultDetail(e));
-         throw e;
-      }
+      docId = ArchivageUtils.archivagePDF(gntService);
 
       LOGGER.info("Archivage d'un document en GNT : {}", docId);
 

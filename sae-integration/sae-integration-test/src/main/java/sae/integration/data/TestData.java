@@ -21,6 +21,33 @@ public class TestData {
    }
 
    /**
+    * Permet d'alimenter les méta nécessaires (hash, nom du fichier, ...) relatives au fichier pdf de test
+    * 
+    * @param listMetasType
+    */
+   public static void updateMetaForPdfFile(final ListeMetadonneeType listMetasType) {
+      getPdfFile(listMetasType);
+   }
+
+   /**
+    * Permet d'alimenter les méta nécessaires (hash, nom du fichier, ...) relatives au fichier tiff de test
+    * 
+    * @param listMetasType
+    */
+   public static void updateMetaForTiffFile(final ListeMetadonneeType listMetasType) {
+      getTiffFile(listMetasType);
+   }
+
+   /**
+    * Permet d'alimenter les méta nécessaires (hash, nom du fichier, ...) relatives au fichier txt de test
+    * 
+    * @param listMetasType
+    */
+   public static void updateMetaForTxtFile(final ListeMetadonneeType listMetasType) {
+      getTxtFile(listMetasType);
+   }
+
+   /**
     * Récupère un fichier PDF de test, pour archivage
     * Alimente les métadonnées relatives à ce fichier
     * 
