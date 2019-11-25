@@ -7,6 +7,9 @@
         <dependent-module archiveName="sae-trace-20.04.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-trace/sae-trace">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="commons-dfce-1.11.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/commons-dfce/commons-dfce">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <dependent-module archiveName="commons-cassandra-2.1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/commons-cassandra/commons-cassandra">
             <dependency-type>uses</dependency-type>
         </dependent-module>
