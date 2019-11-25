@@ -9,6 +9,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -36,23 +38,20 @@ public class SearchableControlServicesImplTest {
   @Autowired
   private CassandraServerBean server;
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(SearchableControlServicesImplTest.class);
+
   @After
   public void after() throws Exception {
     server.resetDataOnly();
   }
 
   @Test
-  public void init() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
-      Assert.assertTrue(true);
+  public void init() throws Exception {
 
+    if (server.isCassandraStarted()) {
+      server.resetData();
     }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
+    Assert.assertTrue(true);
   }
 
 

@@ -15,6 +15,8 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
@@ -57,6 +59,9 @@ public abstract class AbstractMetadataControlCqlTest {
 
   @Autowired
   TraceDestinataireCqlSupport traceDestinataireCqlSupport;
+
+  private static final Logger LOG = LoggerFactory
+      .getLogger(AbstractMetadataControlCqlTest.class);
 
   static boolean init = false;
 
@@ -122,13 +127,16 @@ public abstract class AbstractMetadataControlCqlTest {
   @Test
   public void z_end() {
     try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
+      /*
+       * if (server.isCassandraStarted()) {
+       * server.resetData();
+       * }
+       */
+      final int x = 1 / 0;
       Assert.assertTrue(true);
     }
     catch (final Exception e) {
-      e.printStackTrace();
+      LOG.error("{}", e);
     }
   }
 }

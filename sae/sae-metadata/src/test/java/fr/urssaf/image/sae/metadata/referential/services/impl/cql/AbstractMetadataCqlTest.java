@@ -85,16 +85,12 @@ public abstract class AbstractMetadataCqlTest {
   }
 
   @Test
-  public void z_end() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
-      Assert.assertTrue(true);
+  public void z_end() throws Exception {
+
+    if (server.isCassandraStarted()) {
+      server.resetData();
     }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
+    Assert.assertTrue(true);
   }
 
 }

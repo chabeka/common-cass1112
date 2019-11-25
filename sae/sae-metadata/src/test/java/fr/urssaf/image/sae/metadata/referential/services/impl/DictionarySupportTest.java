@@ -45,17 +45,13 @@ public class DictionarySupportTest {
   }
 
   @Test
-  public void init() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
-      Assert.assertTrue(true);
+  public void init() throws Exception {
 
+    if (server.isCassandraStarted()) {
+      server.resetData();
     }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
+    Assert.assertTrue(true);
+
   }
 
   /**

@@ -43,17 +43,12 @@ public class SaeMetadataSupportFacadeTest {
   }
 
   @Test
-  public void init() {
-    try {
-      if (cassandraServer.isCassandraStarted()) {
-        cassandraServer.resetData();
-      }
-      Assert.assertTrue(true);
+  public void init() throws Exception {
 
+    if (cassandraServer.isCassandraStarted()) {
+      cassandraServer.resetData();
     }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
+    Assert.assertTrue(true);
   }
 
   @Test(expected = ModeGestionAPIUnkownException.class)
