@@ -118,7 +118,7 @@ public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
 
   private EcdeTestDocument ecde;
 
-  private final int NB_DOCUMENTS_PAR_PAGE = 1000;
+  private final int NB_DOCUMENTS_PAR_PAGE = 100;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
