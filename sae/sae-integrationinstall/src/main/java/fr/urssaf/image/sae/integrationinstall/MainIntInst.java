@@ -117,7 +117,7 @@ public final class MainIntInst {
       LOG.info("Fin de la creation de la base de donnees DFCE");
       LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
       // Création de la base SAE
-      // majLotService.demarreCreateSAE();
+      majLotService.demarreCreateSAE();
       // tables cql
       majCqlLotService.demarreCreateSAE();
       LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
