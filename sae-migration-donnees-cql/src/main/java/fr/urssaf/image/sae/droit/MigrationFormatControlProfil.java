@@ -73,7 +73,8 @@ public class MigrationFormatControlProfil implements IMigration {
   }
 
   /**
-   * Comparer les listes de formatControlProfil 
+   * Logs: Comparer les listes de formatControlProfil
+   * 
    * @param formatControlProfilsThrift
    * @param formatControlProfilsCql
    */

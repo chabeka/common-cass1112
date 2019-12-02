@@ -52,6 +52,10 @@
    <import resource="applicationContext-commons-cassandra-spring-batch.xml" />
    <import resource="applicationContext-sae-services-batch.xml" />
    <import resource="applicationContext-sae-droit.xml" />
+   <import resource="applicationContext-sae-format.xml" />
+   <import resource="applicationContext-sae-metadata.xml" />
+    <import resource="applicationContext-sae-rnd.xml" />
+    <import resource="applicationContext-sae-commons.xml" />
    
    
  

@@ -68,7 +68,7 @@ public class App {
   private static final String CQL_TO_THRIFT = "CQL_TO_THRIFT";
 
 
-  public static void main(final String[] args) {
+  public static void main(final String[] args) throws Exception {
 
     LOG.info(" ___________________________");
     LOG.info("|                           |");
@@ -91,8 +91,8 @@ public class App {
 
       // final MigrationJobExecutionsRunning jobexe = context.getBean("MigrationJobExecutionsRunning");
 
-      final MigrationJobExecutionsRunning jobexe = context.getBean(MigrationJobExecutionsRunning.class);
-      jobexe.migrationFromCqlTothrift();
+      // final MigrationJobExecutionsRunning jobexe = context.getBean(MigrationJobExecutionsRunning.class);
+      // jobexe.migrationFromCqlTothrift();
       // le nom de colonne familly
       final String cfName = args[1];
       final String migrateTo = args[2]; // le sens de la migration ==> de cql vers thrift ou contraire
@@ -104,18 +104,18 @@ public class App {
         LOG.info("|______________________________________________________________|");
         LOG.info("|   Le string designant le sens  de la migration est incorrect.|");
         LOG.info("|   Les valeurs possibles sont:                                |");
-        LOG.info("|    - thriftTocql                                             |");
-        LOG.info("|    - cqlToThrift                                             |");
+        LOG.info("|    - THRIFT_TO_CQL                                             |");
+        LOG.info("|    - CQL_TO_THRIFT                                             |");
         LOG.info("|______________________________________________________________|");
       }
-
+      final boolean all = "ALL".equals(cfName);
       // ##########################################################################
       // ################################ Les Traces ##############################
       // ##########################################################################
 
       // Trace destinataire
 
-      if ("TraceDestinataire".equals(cfName)) {
+      if ("TraceDestinataire".equals(cfName) || all) {
         final MigrationTraceDestinataire mtrdesti = context.getBean(MigrationTraceDestinataire.class);
 
         if (CQL_TO_THRIFT.equals(migrateTo)) {
@@ -128,7 +128,7 @@ public class App {
 
       // Trace reg exploitation
 
-      if ("TraceRegExploitation".equals(cfName)) {
+      if ("TraceRegExploitation".equals(cfName) || all) {
         final MigrationTraceRegExploitation mtrex = context.getBean(MigrationTraceRegExploitation.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -140,7 +140,7 @@ public class App {
 
       // Trace reg exploitation index
 
-      if ("TraceRegExploitationIndex".equals(cfName)) {
+      if ("TraceRegExploitationIndex".equals(cfName) || all) {
         final MigrationTraceRegExploitation mtrex = context.getBean(MigrationTraceRegExploitation.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -152,7 +152,7 @@ public class App {
       }
 
       // trace reg journal
-      if ("TraceJournalEvt".equals(cfName)) {
+      if ("TraceJournalEvt".equals(cfName) || all) {
         final MigrationTraceJournalEvt mtjournal = context.getBean(MigrationTraceJournalEvt.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -164,7 +164,7 @@ public class App {
       }
 
       // trace reg journal index
-      if ("TraceJournalEvtIndex".equals(cfName)) {
+      if ("TraceJournalEvtIndex".equals(cfName) || all) {
         final MigrationTraceJournalEvt mtjournal = context.getBean(MigrationTraceJournalEvt.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -176,17 +176,13 @@ public class App {
       }
 
       // trace reg journal index doc
-      if ("TraceJournalEvtIndexDoc".equals(cfName)) {
+      if ("TraceJournalEvtIndexDoc".equals(cfName) || all) {
         final MigrationTraceJournalEvt mtjournal = context.getBean(MigrationTraceJournalEvt.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
-          try {
-            mtjournal.migrationIndexDocFromThriftToCql();
-          }
-          catch (final Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
+
+          mtjournal.migrationIndexDocFromThriftToCql();
+
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           mtjournal.migrationIndexDocFromCqlToThrift();
         }
@@ -194,7 +190,7 @@ public class App {
       }
 
       // trace reg Technique
-      if ("TraceRegTechnique".equals(cfName)) {
+      if ("TraceRegTechnique".equals(cfName) || all) {
         final MigrationTraceRegTechnique mtrtech = context.getBean(MigrationTraceRegTechnique.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -205,7 +201,7 @@ public class App {
       }
 
       // trace reg Technique index
-      if ("TraceRegTechnique".equals(cfName)) {
+      if ("TraceRegTechnique".equals(cfName) || all) {
         final MigrationTraceRegTechnique mtrtech = context.getBean(MigrationTraceRegTechnique.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -217,7 +213,7 @@ public class App {
       }
 
       // trace reg Securité
-      if ("TraceRegSecurite".equals(cfName)) {
+      if ("TraceRegSecurite".equals(cfName) || all) {
         final MigrationTraceRegSecurite mtrsecu = context.getBean(MigrationTraceRegSecurite.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -228,7 +224,7 @@ public class App {
       }
 
       // trace reg Securité index
-      if ("TraceRegSecurite".equals(cfName)) {
+      if ("TraceRegSecurite".equals(cfName) || all) {
         final MigrationTraceRegSecurite mtrsecu = context.getBean(MigrationTraceRegSecurite.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -243,7 +239,7 @@ public class App {
       // ###################### Les job spring batch ##############################
       // ##########################################################################
 
-      if (Constante.JOBINSTANCE_CFNAME.equals(cfName)) {
+      if (Constante.JOBINSTANCE_CFNAME.equals(cfName) || all) {
         final MigrationJobInstance migJobInst = context.getBean(MigrationJobInstance.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -253,7 +249,7 @@ public class App {
         }
       }
 
-      if (Constante.JOBINSTANCES_BY_NAME_CFNAME.equals(cfName)) {
+      if (Constante.JOBINSTANCES_BY_NAME_CFNAME.equals(cfName) || all) {
         final MigrationJobInstancesByName jobInstByName = context.getBean(MigrationJobInstancesByName.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -263,7 +259,7 @@ public class App {
         }
       }
 
-      if (Constante.JOBEXECUTION_CFNAME.equals(cfName)) {
+      if (Constante.JOBEXECUTION_CFNAME.equals(cfName) || all) {
         final MigrationJobExecution jobex = context.getBean(MigrationJobExecution.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -273,7 +269,7 @@ public class App {
         }
       }
 
-      if (Constante.JOBEXECUTIONS_CFNAME.equals(cfName)) {
+      if (Constante.JOBEXECUTIONS_CFNAME.equals(cfName) || all) {
         final MigrationJobExecutions jobExes = context.getBean(MigrationJobExecutions.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -283,7 +279,7 @@ public class App {
         }
       }
 
-      if (Constante.JOBSTEP_CFNAME.equals(cfName)) {
+      if (Constante.JOBSTEP_CFNAME.equals(cfName) || all) {
         final MigrationJobStep jobStep = context.getBean(MigrationJobStep.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -292,7 +288,7 @@ public class App {
           jobStep.migrationFromCqlTothrift();
         }
       }
-      if (Constante.JOBSTEPS_CFNAME.equals(cfName)) {
+      if (Constante.JOBSTEPS_CFNAME.equals(cfName) || all) {
         final MigrationJobSteps jobStep = context.getBean(MigrationJobSteps.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -301,7 +297,7 @@ public class App {
           jobStep.migrationFromCqlTothrift();
         }
       }
-      if (Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME.equals(cfName)) {
+      if (Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME.equals(cfName) || all) {
         final MigrationJobExecutionToJobStep jobexeToStep = context.getBean(MigrationJobExecutionToJobStep.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -310,7 +306,7 @@ public class App {
           jobexeToStep.migrationFromCqlTothrift();
         }
       }
-      if (Constante.JOBINSTANCE_TO_JOBEXECUTION_CFNAME.equals(cfName)) {
+      if (Constante.JOBINSTANCE_TO_JOBEXECUTION_CFNAME.equals(cfName) || all) {
         final MigrationJobinstanceToJobExecution jobexeToStep = context.getBean(MigrationJobinstanceToJobExecution.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -319,7 +315,7 @@ public class App {
           jobexeToStep.migrationFromCqlTothrift();
         }
       }
-      if (Constante.JOBEXECUTIONS_RUNNING_CFNAME.equals(cfName)) {
+      if (Constante.JOBEXECUTIONS_RUNNING_CFNAME.equals(cfName) || all) {
         final MigrationJobExecutionsRunning jobexeRunn = context.getBean(MigrationJobExecutionsRunning.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -333,7 +329,7 @@ public class App {
       // ###################### Les piles de travaux ##############################
       // ##########################################################################
 
-      if ("JobHistory".equals(cfName)) {
+      if ("JobHistory".equals(cfName) || all) {
         final MigrationJobHistory jobH = context.getBean(MigrationJobHistory.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -341,7 +337,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           jobH.migrationFromCqlTothrift();
         }
-      } else if ("JobRequest".equals(cfName)) {
+      } else if ("JobRequest".equals(cfName) || all) {
         final MigrationJobRequest jobRequest = context.getBean(MigrationJobRequest.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -349,7 +345,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           jobRequest.migrationFromCqlTothrift();
         }
-      } else if ("JobQueue".equals(cfName)) {
+      } else if ("JobQueue".equals(cfName) || all) {
 
         final MigrationJobQueue jobexeQueue = context.getBean(MigrationJobQueue.class);
 
@@ -363,7 +359,7 @@ public class App {
       // ###################### Les droits ##############################
       // ##########################################################################
 
-      if ("DroitActionUnitaire".equals(cfName)) {
+      if ("DroitActionUnitaire".equals(cfName) || all) {
         final MigrationActionUnitaire migrationActionUnitaire = context.getBean(MigrationActionUnitaire.class);
         final ActionUnitaireSupport supportThrift = context.getBean(ActionUnitaireSupport.class);
         final ActionUnitaireCqlSupport supportCql = context.getBean(ActionUnitaireCqlSupport.class);
@@ -372,7 +368,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationActionUnitaire.migrationFromCqlTothrift();
         }
-      } else if ("ContratService".equals(cfName)) {
+      } else if ("ContratService".equals(cfName) || all) {
         final MigrationContratService migrationContratService = context.getBean(MigrationContratService.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -380,7 +376,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationContratService.migrationFromCqlTothrift();
         }
-      } else if ("FormatControlProfil".equals(cfName)) {
+      } else if ("FormatControlProfil".equals(cfName) || all) {
 
         final MigrationFormatControlProfil migrationFormatControlProfil = context.getBean(MigrationFormatControlProfil.class);
 
@@ -389,7 +385,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationFormatControlProfil.migrationFromCqlTothrift();
         }
-      } else if ("DroitPagm".equals(cfName)) {
+      } else if ("DroitPagm".equals(cfName) || all) {
 
         final MigrationPagm migrationPagm = context.getBean(MigrationPagm.class);
 
@@ -398,7 +394,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationPagm.migrationFromCqlTothrift();
         }
-      } else if ("DroitPagma".equals(cfName)) {
+      } else if ("DroitPagma".equals(cfName) || all) {
 
         final MigrationPagma migrationPagma = context.getBean(MigrationPagma.class);
 
@@ -407,7 +403,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationPagma.migrationFromCqlTothrift();
         }
-      } else if ("DroitPagmf".equals(cfName)) {
+      } else if ("DroitPagmf".equals(cfName) || all) {
 
         final MigrationPagmf migrationPagmf = context.getBean(MigrationPagmf.class);
 
@@ -416,7 +412,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationPagmf.migrationFromCqlTothrift();
         }
-      } else if ("DroitPagmp".equals(cfName)) {
+      } else if ("DroitPagmp".equals(cfName) || all) {
 
         final MigrationPagmp migrationPagmp = context.getBean(MigrationPagmp.class);
 
@@ -425,7 +421,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationPagmp.migrationFromCqlTothrift();
         }
-      } else if ("DroitPrmd".equals(cfName)) {
+      } else if ("DroitPrmd".equals(cfName) || all) {
 
         final MigrationPrmd migrationPrmd = context.getBean(MigrationPrmd.class);
 
@@ -439,7 +435,7 @@ public class App {
       // ###################### Les parameters (commons) ##############################
       // ##########################################################################
 
-      if ("Parameters".equals(cfName)) {
+      if ("Parameters".equals(cfName) || all) {
         final MigrationParameters migrationParameters = context.getBean(MigrationParameters.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -452,7 +448,7 @@ public class App {
       // ###################### Les metadata ##############################
       // ##########################################################################
 
-      if ("Metadata".equals(cfName)) {
+      if ("Metadata".equals(cfName) || all) {
         final MigrationMetadata migrationMetadata = context.getBean(MigrationMetadata.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -460,7 +456,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationMetadata.migrationFromCqlTothrift();
         }
-      } else if ("Dictionary".equals(cfName)) {
+      } else if ("Dictionary".equals(cfName) || all) {
 
         final MigrationDictionary migrationDictionary = context.getBean(MigrationDictionary.class);
 
@@ -475,7 +471,7 @@ public class App {
       // ###################### Referentiel format ##############################
       // ##########################################################################
 
-      if ("ReferentielFormat".equals(cfName)) {
+      if ("ReferentielFormat".equals(cfName) || all) {
         final MigrationReferentielFormat migrationReferentielFormat = context.getBean(MigrationReferentielFormat.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -489,7 +485,7 @@ public class App {
       // ###################### Rnd ##############################
       // ##########################################################################
 
-      if ("Rnd".equals(cfName)) {
+      if ("Rnd".equals(cfName) || all) {
         final MigrationRnd migrationRnd = context.getBean(MigrationRnd.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
@@ -497,7 +493,7 @@ public class App {
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           migrationRnd.migrationFromCqlTothrift();
         }
-      } else if ("CorrespondancesRnd".equals(cfName)) {
+      } else if ("CorrespondancesRnd".equals(cfName) || all) {
 
         final MigrationCorrespondancesRnd migrationCorrespondancesRnd = context.getBean(MigrationCorrespondancesRnd.class);
 
@@ -512,7 +508,7 @@ public class App {
       // ###################### Sequences ##############################
       // ##########################################################################
 
-      if ("Sequences".equals(cfName)) {
+      if ("Sequences".equals(cfName) || all) {
         final MigrationSequences migrationSequences = context.getBean(MigrationSequences.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {

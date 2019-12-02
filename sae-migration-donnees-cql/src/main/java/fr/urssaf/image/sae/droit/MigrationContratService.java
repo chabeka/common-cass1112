@@ -74,7 +74,7 @@ public class MigrationContratService implements IMigration {
   }
 
   /**
-   * Comparaison des liste en taille et en contenu
+   * Logs: Comparaison des liste en taille et en contenu
    * 
    * @param contratServicesThrift
    * @param contratServicesCql

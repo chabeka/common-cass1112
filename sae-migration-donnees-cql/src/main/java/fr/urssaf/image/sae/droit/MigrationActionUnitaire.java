@@ -73,7 +73,7 @@ public class MigrationActionUnitaire implements IMigration {
   }
 
   /**
-   * Comparaison des liste en taille et en contenu
+   * Logs: Comparaison des liste en taille et en contenu
    * 
    * @param actionsUnitairesThrift
    * @param actionsUnitairesCql

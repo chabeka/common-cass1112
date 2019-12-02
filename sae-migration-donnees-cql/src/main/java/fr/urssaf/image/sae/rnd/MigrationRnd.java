@@ -76,7 +76,7 @@ public class MigrationRnd implements IMigration {
   }
 
   /**
-   * Comparaison des liste en taille et en contenu
+   * Logs: Comparaison des listes en taille et en contenu
    * 
    * @param typeDocumentsThrift
    * @param typeDocumentsCql

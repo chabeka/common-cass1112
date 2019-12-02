@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.datastax.driver.core.Row;
@@ -44,7 +43,8 @@ public class MigrationJobQueue implements IMigration {
   IJobsQueueDaoCql cqldao;
 
 
-  @Qualifier("CassandraClientFactory")
+  // @Qualifier("CassandraClientFactory")
+  @Autowired
   private CassandraClientFactory ccf;
 
   // String keyspace = "SAE";

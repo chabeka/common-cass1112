@@ -99,7 +99,9 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
 
       // Parcours des rows pour déterminer la dernière clé de l'ensemble
       final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> lastRow = orderedRows.peekLast();
-      startKey = lastRow.getKey();
+      if (lastRow != null) {
+        startKey = lastRow.getKey();
+      }
 
       // On recupère les ids des JobInstance
       final List<Long> jobIds = new ArrayList<>(blockSize);

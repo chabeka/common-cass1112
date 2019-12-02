@@ -74,7 +74,7 @@ public class MigrationPagma implements IMigration {
   }
 
   /**
-   * Comparaison des liste en taille et en contenu
+   * Logs: Comparaison des liste en taille et en contenu
    * 
    * @param pagmasThrift
    * @param pagmasCql

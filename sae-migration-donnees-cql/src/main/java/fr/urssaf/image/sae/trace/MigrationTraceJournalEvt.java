@@ -67,7 +67,11 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
   @Autowired
   private TraceJournalEvtCqlSupport supportcql;
 
+
+
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceJournalEvt.class);
+
+
 
   /**
    * Utilisation de cql uniquement
@@ -78,7 +82,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
     LOGGER.debug(" migrationFromThriftToCql start");
 
-    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceJournalEvt", keyspace_tu);
+    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceJournalEvt", ccfthrift.getKeyspace().getKeyspaceName());
 
     UUID lastKey = null;
 
@@ -247,24 +251,27 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
     int nb = 0;
     final List<Date> dates = DateRegUtils.getListFromDates(DateUtils.addYears(DATE, -18), DateUtils.addYears(DATE, 1));
+
     for (final Date d : dates) {
 
       final List<TraceJournalEvtIndex> list = supportJThrift.findByDate(d);
       List<TraceJournalEvtIndexCql> listTemp = new ArrayList<>();
-      for (final TraceJournalEvtIndex next : list) {
-        final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next);
-        listTemp.add(trace);
-        if (listTemp.size() == 10000) {
+      if (list != null && !list.isEmpty()) {
+        for (final TraceJournalEvtIndex next : list) {
+          final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next);
+          listTemp.add(trace);
+          if (listTemp.size() == 10000) {
+            nb = nb + listTemp.size();
+            supportcql.saveAllIndex(listTemp);
+            listTemp = new ArrayList<>();
+            System.out.println(" Temp i : " + nb);
+          }
+        }
+        if (!listTemp.isEmpty()) {
           nb = nb + listTemp.size();
           supportcql.saveAllIndex(listTemp);
           listTemp = new ArrayList<>();
-          System.out.println(" Temp i : " + nb);
         }
-      }
-      if (!listTemp.isEmpty()) {
-        nb = nb + listTemp.size();
-        supportcql.saveAllIndex(listTemp);
-        listTemp = new ArrayList<>();
       }
     }
 

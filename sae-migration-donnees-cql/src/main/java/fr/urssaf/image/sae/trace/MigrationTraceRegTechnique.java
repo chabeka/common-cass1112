@@ -55,6 +55,8 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
   @Autowired
   TraceRegTechniqueSupport supportThrift;
 
+
+
   /**
    * Utilisation de cql uniquement
    * Migration de CF thrift vers la CF cql en utilsant un mapping manuel. L'extration des données est faite
@@ -62,7 +64,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
    */
   public int migrationFromThriftToCql() {
 
-    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegTechnique", keyspace_tu);
+    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegTechnique", ccfthrift.getKeyspace().getKeyspaceName());
 
     UUID lastKey = null;
 
@@ -204,29 +206,24 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
     int i = 0;
     final List<Date> dates = DateRegUtils.getListFromDates(DateUtils.addYears(DATE, -18), DateUtils.addYears(DATE, 1));
     for (final Date d : dates) {
-      // EMMANUEL
-      /*
-       * final Iterator<TraceRegTechniqueIndex> it = supportThrift.findByDateIterator(d);
-       */
       final List<TraceRegTechniqueIndex> list = supportThrift.findByDate(d);
       List<TraceRegTechniqueIndexCql> listTemp = new ArrayList<>();
-      //// EMMANUEL
-      for (final TraceRegTechniqueIndex nextReg : list) {
-        // while (it.hasNext()) {
-        // final TraceRegTechniqueIndex nextReg = it.next();
-        final TraceRegTechniqueIndexCql trace = createTraceIndexFromThriftToCql(nextReg);
-        listTemp.add(trace);
-        if (listTemp.size() == 10000) {
+      if (list != null && !list.isEmpty()) {
+        for (final TraceRegTechniqueIndex nextReg : list) {
+          final TraceRegTechniqueIndexCql trace = createTraceIndexFromThriftToCql(nextReg);
+          listTemp.add(trace);
+          if (listTemp.size() == 10000) {
+            i = i + listTemp.size();
+            supportcql.saveAllIndex(listTemp);
+            listTemp = new ArrayList<>();
+          }
+        }
+        if (!listTemp.isEmpty()) {
           i = i + listTemp.size();
           supportcql.saveAllIndex(listTemp);
           listTemp = new ArrayList<>();
-        }
-      }
-      if (!listTemp.isEmpty()) {
-        i = i + listTemp.size();
-        supportcql.saveAllIndex(listTemp);
-        listTemp = new ArrayList<>();
 
+        }
       }
     }
     System.out.println(" Total : " + i);

@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.jobspring;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
@@ -29,7 +28,8 @@ public class MigrationJob {
   @Autowired
   protected CassandraCQLClientFactory ccfcql;
 
-  @Qualifier("CassandraClientFactory")
+  // @Qualifier("CassandraClientFactory")
+  @Autowired
   protected CassandraClientFactory ccfthrift;
 
 }

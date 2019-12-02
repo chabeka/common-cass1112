@@ -55,6 +55,8 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
   @Autowired
   TraceRegSecuriteSupport supportThrift;
 
+
+
   /**
    * Utilisation de cql uniquement
    * Migration de CF thrift vers la CF cql en utilsant un mapping manuel. L'extration des données est faite
@@ -64,7 +66,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
    */
   public int migrationFromThriftToCql() {
 
-    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegSecurite", keyspace_tu);
+    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegSecurite", ccfthrift.getKeyspace().getKeyspaceName());
 
     UUID lastKey = null;
     Date timestamp = null;
@@ -182,26 +184,26 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
     int i = 0;
     final List<Date> dates = DateRegUtils.getListFromDates(DateUtils.addYears(DATE, -18), DateUtils.addYears(DATE, 1));
     for (final Date d : dates) {
-      // final Iterator<TraceRegSecuriteIndex> it = supportThrift.findByDateIterator(d); EC
+
       final List<TraceRegSecuriteIndex> list = supportThrift.findByDate(d);
 
       List<TraceRegSecuriteIndexCql> listTemp = new ArrayList<>();
-      // while (it.hasNext()) { EC
-      for (final TraceRegSecuriteIndex next : list) {
-        // final TraceRegSecuriteIndex next = it.next(); EC
-        final TraceRegSecuriteIndexCql trace = createTraceIndexFromThriftToCql(next);
-        listTemp.add(trace);
-        if (listTemp.size() == 10000) {
+      if (list != null && list.isEmpty()) {
+        for (final TraceRegSecuriteIndex next : list) {
+
+          final TraceRegSecuriteIndexCql trace = createTraceIndexFromThriftToCql(next);
+          listTemp.add(trace);
+          if (listTemp.size() == 10000) {
+            i = i + listTemp.size();
+            supportcql.saveAllIndex(listTemp);
+            listTemp = new ArrayList<>();
+          }
+        }
+        if (!listTemp.isEmpty()) {
           i = i + listTemp.size();
-          // supportcql.saveAllIndex(listTemp); EC
+          supportcql.saveAllIndex(listTemp);
           listTemp = new ArrayList<>();
         }
-      }
-      if (!listTemp.isEmpty()) {
-        i = i + listTemp.size();
-        // supportcql.saveAllIndex(listTemp); EC
-        listTemp = new ArrayList<>();
-
       }
     }
     System.out.println(" Total : " + i);

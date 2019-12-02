@@ -198,13 +198,14 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
     }
 
     // traiter le dernier cas
-    jobStep.setExitStatus(new ExitStatus(exitCode, exitMessage));
-    final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(jobStep);
-    stepcql.setJobStepExecutionId(lastKey);
-    stepcql.setJobExecutionId(jobStepExecutionId);
-    stepcql.setName(stepName);
-    jobdaocql.save(stepcql);
-
+    if (jobStep != null) {
+      jobStep.setExitStatus(new ExitStatus(exitCode, exitMessage));
+      final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(jobStep);
+      stepcql.setJobStepExecutionId(lastKey);
+      stepcql.setJobExecutionId(jobStepExecutionId);
+      stepcql.setName(stepName);
+      jobdaocql.save(stepcql);
+    }
     if (LOG.isDebugEnabled()) {
       LOG.debug("MigrationJobStep - migrationFromThriftToCql - FIN");
     }
