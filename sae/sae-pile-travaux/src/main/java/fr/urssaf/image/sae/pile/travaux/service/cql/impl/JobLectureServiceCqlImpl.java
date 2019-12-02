@@ -38,8 +38,8 @@ import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupportCql;
 @Service
 public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(JobLectureServiceCqlImpl.class);
-   
+  private static final Logger LOGGER = LoggerFactory.getLogger(JobLectureServiceCqlImpl.class);
+
   private  JobRequestSupportCql jobRequestSupportCql;
 
   private  JobsQueueSupportCql jobsQueueSupportCql;
@@ -53,8 +53,8 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
   }
 
   @Autowired
-  public JobLectureServiceCqlImpl(final JobHistorySupportCql jobHistorySupportCql, final JobRequestSupportCql jobRequestSupportCql,
-                                  final JobsQueueSupportCql jobsQueueSupportCql) {
+  public JobLectureServiceCqlImpl(final JobRequestSupportCql jobRequestSupportCql, final JobsQueueSupportCql jobsQueueSupportCql,
+                                  final JobHistorySupportCql jobHistorySupportCql) {
 
     this.jobHistorySupportCql = jobHistorySupportCql;
     this.jobRequestSupportCql = jobRequestSupportCql;
@@ -138,9 +138,9 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
     for (final JobQueueCql jobQueue : listJQ) {
       final JobRequestCql jobRequest = getJobRequest(jobQueue.getIdJob());
-         if (jobRequest != null) {
-        	 jobRequests.add(jobRequest);
-        }
+      if (jobRequest != null) {
+        jobRequests.add(jobRequest);
+      }
       jobRequests.add(jobRequest);
     }
 
