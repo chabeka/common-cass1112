@@ -119,4 +119,47 @@ public class TraceJournalEvtIndexDocCql extends TraceIndex {
     this.infos = infos;
   }
 
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = super.hashCode();
+	result = prime * result + ((contexte == null) ? 0 : contexte.hashCode());
+	result = prime * result + ((contratService == null) ? 0 : contratService.hashCode());
+	result = prime * result + ((identifiantIndex == null) ? 0 : identifiantIndex.hashCode());
+	result = prime * result + ((infos == null) ? 0 : infos.hashCode());
+	return result;
+}
+
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (!super.equals(obj))
+		return false;
+	if (!(obj instanceof TraceJournalEvtIndexDocCql))
+		return false;
+	TraceJournalEvtIndexDocCql other = (TraceJournalEvtIndexDocCql) obj;
+	if (contexte == null) {
+		if (other.contexte != null)
+			return false;
+	} else if (!contexte.equals(other.contexte))
+		return false;
+	if (contratService == null) {
+		if (other.contratService != null)
+			return false;
+	} else if (!contratService.equals(other.contratService))
+		return false;
+	if (identifiantIndex == null) {
+		if (other.identifiantIndex != null)
+			return false;
+	} else if (!identifiantIndex.equals(other.identifiantIndex))
+		return false;
+	if (infos == null) {
+		if (other.infos != null)
+			return false;
+	} else if (!infos.equals(other.infos))
+		return false;
+	return true;
+}
+
 }

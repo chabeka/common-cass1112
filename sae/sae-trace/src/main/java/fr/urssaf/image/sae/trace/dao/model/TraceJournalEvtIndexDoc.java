@@ -5,10 +5,13 @@ package fr.urssaf.image.sae.trace.dao.model;
 
 import java.util.Map;
 
+import com.datastax.driver.mapping.annotations.Table;
+
 /**
  * Classe de modèle de la CF TraceJournalEvtIndexDoc
  * 
  */
+@Table(name = "TraceJournalEvtIndexDoc")
 public class TraceJournalEvtIndexDoc extends TraceIndex {
 
    /**

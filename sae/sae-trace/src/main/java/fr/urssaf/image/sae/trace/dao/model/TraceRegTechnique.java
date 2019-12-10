@@ -12,12 +12,15 @@ import java.util.UUID;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
+import com.datastax.driver.mapping.annotations.Table;
+
 import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 /**
  * Classe de modèle d'une trace du registre de surveillance technique
  */
+@Table(name = "TraceRegTechnique")
 public class TraceRegTechnique extends Trace {
 
    /** Contexte de la trace */

@@ -144,4 +144,54 @@ public class TraceIndex {
     return tDate;
   }
 
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((codeEvt == null) ? 0 : codeEvt.hashCode());
+	result = prime * result + ((identifiant == null) ? 0 : identifiant.hashCode());
+	result = prime * result + ((login == null) ? 0 : login.hashCode());
+	result = prime * result + ((pagms == null) ? 0 : pagms.hashCode());
+	result = prime * result + ((timestamp == null) ? 0 : timestamp.hashCode());
+	return result;
+}
+
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (obj == null)
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	TraceIndex other = (TraceIndex) obj;
+	if (codeEvt == null) {
+		if (other.codeEvt != null)
+			return false;
+	} else if (!codeEvt.equals(other.codeEvt))
+		return false;
+	if (identifiant == null) {
+		if (other.identifiant != null)
+			return false;
+	} else if (!identifiant.equals(other.identifiant))
+		return false;
+	if (login == null) {
+		if (other.login != null)
+			return false;
+	} else if (!login.equals(other.login))
+		return false;
+	if (pagms == null) {
+		if (other.pagms != null)
+			return false;
+	} else if (!pagms.equals(other.pagms))
+		return false;
+	if (timestamp == null) {
+		if (other.timestamp != null)
+			return false;
+	} else if (!timestamp.equals(other.timestamp))
+		return false;
+	return true;
+}
+
+
 }

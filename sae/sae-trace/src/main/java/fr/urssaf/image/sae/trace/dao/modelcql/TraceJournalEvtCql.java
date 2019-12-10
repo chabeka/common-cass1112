@@ -121,4 +121,37 @@ public class TraceJournalEvtCql extends Trace {
   public final void setInfos(final Map<String, String> infos) {
     this.infos = infos;
   }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((contexte == null) ? 0 : contexte.hashCode());
+		result = prime * result + ((infos == null) ? 0 : infos.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (!(obj instanceof TraceJournalEvtCql))
+			return false;
+		TraceJournalEvtCql other = (TraceJournalEvtCql) obj;
+		if (contexte == null) {
+			if (other.contexte != null)
+				return false;
+		} else if (!contexte.equals(other.contexte))
+			return false;
+		if (infos == null) {
+			if (other.infos != null)
+				return false;
+		} else if (!infos.equals(other.infos))
+			return false;
+		return true;
+	}
+	  
+  
 }

@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 /**
  * Classe de modèle d'une trace du journal des événements
  */
-@Table(name = "tracejournalevt")
+@Table(name = "TraceJournalEvt")
 public class TraceJournalEvt extends Trace {
 
    /**
