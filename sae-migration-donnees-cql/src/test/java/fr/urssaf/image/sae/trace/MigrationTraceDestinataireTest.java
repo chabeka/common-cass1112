@@ -90,6 +90,20 @@ public class MigrationTraceDestinataireTest {
     Assert.assertEquals(listCql.size(), listcodeevt.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
   }
+  
+  @Test
+  public void sliceQueryTest() {
+	  populateTableThrift();
+	  //populateTableCql();
+
+    try {
+		mtracedesti.comparTraceDestinataireFromCQlandThrift();
+	} catch (Exception e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+
+  }
   // CLASSE UTILITAIRE
 
   public void populateTableCql() {

@@ -175,4 +175,21 @@ public class MigrationTraceRegTechniqueTest {
     return list.size();
 
   }
+  
+  @Test
+  public void sliceQueryTest() throws Exception {
+	
+	populateTableThrift();
+
+	mtracej.migrationFromThriftToCql();
+	mtracej.migrationIndexFromThriftToCql();
+
+    try {
+    	mtracej.traceComparator();
+    	mtracej.indexComparator();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+    
+  }
 }

@@ -48,7 +48,7 @@ public class MigrationTraceJournalEvtTest {
 
   private static final Date DATE = new Date();
 
-  int NB_ROWS = 100;
+  int NB_ROWS = 20005;
 
   @Autowired
   TraceJournalEvtIndexDao indexDao;
@@ -100,7 +100,7 @@ public class MigrationTraceJournalEvtTest {
     Assert.assertEquals(NB_ROWS, listCql.size());
 
     // index journal
-    mtracej.migrationIndexFromThriftToCql();
+    mtracej.migIndexFromThriftToCql();
     final List<TraceJournalEvtIndexCql> listCqlIndex = Lists.newArrayList(indexjDao.findAll());
 
     Assert.assertEquals(NB_ROWS, listCqlIndex.size());
@@ -167,6 +167,9 @@ public class MigrationTraceJournalEvtTest {
     trace.setPagms(Arrays.asList("PAGM  suffixe"));
 
     supportThrift.create(trace, new Date().getTime());
+
+    // ajout de indexDoc
+    supportThrift.addIndexDoc(trace, uuid.toString(), new Date().getTime());
   }
 
   public final int countRow() {
@@ -181,5 +184,24 @@ public class MigrationTraceJournalEvtTest {
 
     return list.size();
 
+  }
+  
+  @Test
+  public void sliceQueryTest() throws Exception {
+	
+	populateTableThrift();
+	//populateTableCql();
+	mtracej.migrationFromThriftToCql();
+	mtracej.migIndexFromThriftToCql();
+	mtracej.migrationIndexDocFromThriftToCql();
+
+    try {
+    	mtracej.traceComparator();
+    	mtracej.indexComparator();
+    	mtracej.indexDocComparator();
+	} catch (Exception e) {
+		e.printStackTrace();
+	}
+    
   }
 }
