@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import com.datastax.driver.core.Row;
 
+import fr.urssaf.image.sae.commons.CompareTraceRegExploitation;
 import fr.urssaf.image.sae.trace.commons.TraceFieldsName;
 import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueIndexDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
@@ -54,8 +55,9 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
 
   @Autowired
   TraceRegTechniqueSupport supportThrift;
-
-
+  
+  @Autowired
+  private CompareTraceRegExploitation compRegTec;
 
   /**
    * Utilisation de cql uniquement
@@ -64,7 +66,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
    */
   public int migrationFromThriftToCql() {
 
-    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegTechnique", ccfthrift.getKeyspace().getKeyspaceName());
+    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegTechnique", thriftdao.getKeyspace().getKeyspaceName());
 
     UUID lastKey = null;
 
@@ -222,7 +224,6 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
           i = i + listTemp.size();
           supportcql.saveAllIndex(listTemp);
           listTemp = new ArrayList<>();
-
         }
       }
     }
@@ -253,6 +254,26 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
     System.out.println(" Total : " + i);
   }
 
+  // TESt DONNEES
+  /**
+   * Comparer les Traces cql et Thrift
+   * @throws Exception
+   */
+  public boolean  traceComparator() throws Exception {
+	  boolean isBaseOk = compRegTec.traceComparator();
+	  return isBaseOk;
+  }
+  
+  /**
+   * Comparer les Traces cql et Thrift
+   * @throws Exception
+   */
+  public boolean indexComparator() throws Exception {
+	  boolean isBaseOk = compRegTec.indexComparator();
+	  return isBaseOk;
+	  
+  }
+  
   // Methodes utilitaires
 
   /**

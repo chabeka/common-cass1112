@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,7 +11,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +22,10 @@ import org.springframework.stereotype.Component;
 
 import com.datastax.driver.core.Row;
 
+import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.CompareIndexDoc;
+import fr.urssaf.image.sae.commons.CompareTraceJournalEvt;
 import fr.urssaf.image.sae.trace.commons.TraceFieldsName;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDao;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDocDao;
@@ -30,8 +37,11 @@ import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
+import fr.urssaf.image.sae.trace.dao.serializer.TraceJournalEvtIndexSerializer;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
+import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtCqlDao;
+import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexCqlDao;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexDocCqlDao;
 import fr.urssaf.image.sae.trace.model.GenericTraceType;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
@@ -40,7 +50,10 @@ import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.DateSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
@@ -66,12 +79,14 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
   @Autowired
   private TraceJournalEvtCqlSupport supportcql;
-
-
+  
+  @Autowired
+  private CompareTraceJournalEvt compJEvt;
+  
+  @Autowired
+  private CompareIndexDoc compJEvtDoc;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceJournalEvt.class);
-
-
 
   /**
    * Utilisation de cql uniquement
@@ -82,7 +97,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
     LOGGER.debug(" migrationFromThriftToCql start");
 
-    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceJournalEvt", ccfthrift.getKeyspace().getKeyspaceName());
+    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceJournalEvt", indexthrift.getKeyspace().getKeyspaceName());
 
     UUID lastKey = null;
 
@@ -242,10 +257,12 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     return nb;
   }
 
+  
+  
   /**
    * Migration de la CF index du journal de thritf vers la CF cql
    */
-  public int migrationIndexFromThriftToCql() {
+  public int migIndexFromThriftToCql() {
 
     LOGGER.debug(" migrationIndexFromThriftToCql start");
 
@@ -254,24 +271,25 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
     for (final Date d : dates) {
 
+      
       final List<TraceJournalEvtIndex> list = supportJThrift.findByDate(d);
       List<TraceJournalEvtIndexCql> listTemp = new ArrayList<>();
-      if (list != null && !list.isEmpty()) {
-        for (final TraceJournalEvtIndex next : list) {
-          final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next);
-          listTemp.add(trace);
-          if (listTemp.size() == 10000) {
-            nb = nb + listTemp.size();
-            supportcql.saveAllIndex(listTemp);
-            listTemp = new ArrayList<>();
-            System.out.println(" Temp i : " + nb);
-          }
-        }
-        if (!listTemp.isEmpty()) {
-          nb = nb + listTemp.size();
-          supportcql.saveAllIndex(listTemp);
-          listTemp = new ArrayList<>();
-        }
+      if(list != null && !list.isEmpty())  {
+	      for (final TraceJournalEvtIndex next : list) {
+	        final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next, DateRegUtils.getJournee(d));
+	        listTemp.add(trace);
+	        if (listTemp.size() == 10000) {
+	          nb = nb + listTemp.size();
+	          supportcql.saveAllIndex(listTemp);
+	          listTemp = new ArrayList<>();
+	          System.out.println(" Temp i : " + nb);
+	        }
+	      }
+	      if (!listTemp.isEmpty()) {
+	        nb = nb + listTemp.size();
+	        supportcql.saveAllIndex(listTemp);
+	        listTemp = new ArrayList<>();
+	      }
       }
     }
 
@@ -325,7 +343,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
         final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
         for (final TraceJournalEvtIndexDoc tr : list) {
-          indexDocDaocql.save(UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey()));
+          TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
+          indexDocDaocql.saveWithMapper(indxDocCql);
           nbRows++;
         }
       }
@@ -372,20 +391,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    *          l'index {@link TraceJournalEvtIndexCql}
    * @return l'index {@link TraceJournalEvtIndex}
    */
-  public TraceJournalEvtIndexCql createTraceIndexFromThriftToCql(final TraceJournalEvtIndex index) {
-    final TraceJournalEvtIndexCql tr = new TraceJournalEvtIndexCql();
-    final String journee = DateRegUtils.getJournee(index.getTimestamp());
-    tr.setIdentifiantIndex(journee);
-    tr.setContexte(index.getContexte());
-    tr.setContratService(index.getContratService());
-
-    tr.setIdentifiant(index.getIdentifiant());
-    tr.setCodeEvt(index.getCodeEvt());
-    tr.setLogin(index.getLogin());
-    tr.setPagms(index.getPagms());
-    tr.setTimestamp(index.getTimestamp());
-
-    return tr;
+  public TraceJournalEvtIndexCql createTraceIndexFromThriftToCql(final TraceJournalEvtIndex index, String key) {
+	  return UtilsTraceMapper.createJournalIndexFromThriftToCql(index, key);
   }
 
   /**
@@ -396,16 +403,86 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    * @return un {@link TraceJournalEvtIndex}
    */
   public TraceJournalEvtIndex createTraceIndexFromCqlToThrift(final TraceJournalEvtIndexCql index) {
-    final TraceJournalEvtIndex tr = new TraceJournalEvtIndex();
-    tr.setIdentifiant(index.getIdentifiant());
-    tr.setCodeEvt(index.getCodeEvt());
-    tr.setLogin(index.getLogin());
-    tr.setPagms(index.getPagms());
-    tr.setTimestamp(index.getTimestamp());
-
-    tr.setContexte(index.getContexte());
-    tr.setContratService(index.getContratService());
-    return tr;
+	return UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(index); 
   }
 
+  /**
+   * Comparer les Traces cql et Thrift
+   * @throws Exception
+   */
+  public boolean traceComparator() throws Exception {
+	  boolean isBaseOk = compJEvt.traceComparator();
+	  return isBaseOk;
+  }
+  
+  /**
+   * Comparer les Traces cql et Thrift
+   * @throws Exception
+   */
+  public boolean indexComparator() throws Exception {
+	  boolean isBaseOk = compJEvt.indexComparator();
+	  return isBaseOk;
+	  
+  }
+  /**
+   * Comparer les TracesIndex cql et Thrift
+   * @throws Exception
+   */
+  public void indexDocComparator() throws Exception {
+	  // recuperer un iterateur sur la table cql
+	  // Parcourir les elements de l'iterateur et pour chaque element 
+	  // recuperer un ensemble de X elements dans la table thrift
+	  // chercher l'element cql dans les X elements
+	  // si trouvé, on passe à l'element suivant cql
+	  // sinon on recupère les X element suivant dans la table thrift puis on fait une nouvelle recherche
+	  // si on en recupère  moins de X et qu'on ne trouve pas l'element cql alors == > echec de comparaison
+	  //compJEvt.checkIndexCql(null, TraceJournalEvtIndexDoc.class.getSimpleName());
+	  	  
+	   final Iterator<TraceJournalEvtIndexDocCql> itJournal = indexDocDaocql.findAllWithMapper();
+	   boolean isEqBase = true;
+	   boolean isInMap = false;
+	   
+	   Map<String, Map<UUID, TraceJournalEvtIndexDocCql>> mapRow = new HashMap<>();
+	   
+	   int i= 0;
+	   while (itJournal.hasNext()) {
+		   TraceJournalEvtIndexDocCql tr = itJournal.next();	
+		   
+		   // Pour chaque trace cql On cherche dans la map
+		   // La map sera construite au fur et à mesure
+		   if(!mapRow.isEmpty()) {
+			   isInMap = false;
+			   for (Map.Entry<String, Map<UUID, TraceJournalEvtIndexDocCql>> entry: mapRow.entrySet()) {
+				   String key = entry.getKey();			   
+				   Map<UUID, TraceJournalEvtIndexDocCql> ssRow = entry.getValue();
+				   UUID id = tr.getIdentifiant();
+				   TraceJournalEvtIndexDocCql trThToCql = ssRow.get(id);
+				   if(tr.equals(trThToCql)) {
+					   isInMap = true;
+					   ssRow.remove(id);
+					   if(ssRow.isEmpty()) {
+						   mapRow.remove(key);
+					   }
+					   break;
+			       }  
+
+			   }
+		   }
+		   		   
+		   // on verifie que l'objet courant est dans la base cql, si on ne le trouve dans la map
+		   if(!isInMap) {
+			   boolean isObj = compJEvtDoc.checkIndexDocCql(tr, mapRow);
+			   if(!isObj) {
+				   LOGGER.info(" Objet cql n'a pas été trouvé dans la base thrift");
+			   } else {
+				   isEqBase = isEqBase && isObj;
+			   }
+		    }
+		   
+	   } 
+	   if(isEqBase) {
+		   LOGGER.info(" MigrationTraceDestinataire - OK");
+	   }   
+  }
+  
 }
