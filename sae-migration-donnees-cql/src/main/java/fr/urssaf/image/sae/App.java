@@ -168,7 +168,7 @@ public class App {
         final MigrationTraceJournalEvt mtjournal = context.getBean(MigrationTraceJournalEvt.class);
 
         if (THRIFT_TO_CQL.equals(migrateTo)) {
-          mtjournal.migrationIndexFromThriftToCql();
+          mtjournal.migIndexFromThriftToCql();
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
           mtjournal.migrationIndexFromCqlToThrift();
         }
