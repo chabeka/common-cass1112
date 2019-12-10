@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.trace.model;
 
+import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.util.Date;
 
@@ -10,9 +11,11 @@ import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
+import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
+
 
 @Table(name = "jobexecutioncql")
-public class JobExecutionCqlForMig {
+public class JobExecutionCqlForMig implements Serializable, Comparable<JobExecutionCqlForMig>{
 
    // Colonnes de JobExecution
 
@@ -221,6 +224,100 @@ public class JobExecutionCqlForMig {
 		this.executionContext = executionContext;
 	}
 
+	@Override
+	public int compareTo(JobExecutionCqlForMig job) {
+		return getJobExecutionId().compareTo(job.getJobExecutionId());
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((creationTime == null) ? 0 : creationTime.hashCode());
+		result = prime * result + ((endTime == null) ? 0 : endTime.hashCode());
+		result = prime * result + ((executionContext == null) ? 0 : executionContext.hashCode());
+		result = prime * result + ((exitCode == null) ? 0 : exitCode.hashCode());
+		result = prime * result + ((exitMessage == null) ? 0 : exitMessage.hashCode());
+		result = prime * result + ((jobExecutionId == null) ? 0 : jobExecutionId.hashCode());
+		result = prime * result + ((jobInstanceId == null) ? 0 : jobInstanceId.hashCode());
+		result = prime * result + ((jobName == null) ? 0 : jobName.hashCode());
+		result = prime * result + ((lastUpdated == null) ? 0 : lastUpdated.hashCode());
+		result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((version == null) ? 0 : version.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		JobExecutionCqlForMig other = (JobExecutionCqlForMig) obj;
+		if (creationTime == null) {
+			if (other.creationTime != null)
+				return false;
+		} else if (!creationTime.equals(other.creationTime))
+			return false;
+		if (endTime == null) {
+			if (other.endTime != null)
+				return false;
+		} else if (!endTime.equals(other.endTime))
+			return false;
+		if (executionContext == null) {
+			if (other.executionContext != null)
+				return false;
+		} else if (!executionContext.equals(other.executionContext))
+			return false;
+		if (exitCode == null) {
+			if (other.exitCode != null)
+				return false;
+		} else if (!exitCode.equals(other.exitCode))
+			return false;
+		if (exitMessage == null) {
+			if (other.exitMessage != null)
+				return false;
+		} else if (!exitMessage.equals(other.exitMessage))
+			return false;
+		if (jobExecutionId == null) {
+			if (other.jobExecutionId != null)
+				return false;
+		} else if (!jobExecutionId.equals(other.jobExecutionId))
+			return false;
+		if (jobInstanceId == null) {
+			if (other.jobInstanceId != null)
+				return false;
+		} else if (!jobInstanceId.equals(other.jobInstanceId))
+			return false;
+		if (jobName == null) {
+			if (other.jobName != null)
+				return false;
+		} else if (!jobName.equals(other.jobName))
+			return false;
+		if (lastUpdated == null) {
+			if (other.lastUpdated != null)
+				return false;
+		} else if (!lastUpdated.equals(other.lastUpdated))
+			return false;
+		if (startTime == null) {
+			if (other.startTime != null)
+				return false;
+		} else if (!startTime.equals(other.startTime))
+			return false;
+		if (status != other.status)
+			return false;
+		if (version == null) {
+			if (other.version != null)
+				return false;
+		} else if (!version.equals(other.version))
+			return false;
+		return true;
+	}
+	
+	
 
 }
 
