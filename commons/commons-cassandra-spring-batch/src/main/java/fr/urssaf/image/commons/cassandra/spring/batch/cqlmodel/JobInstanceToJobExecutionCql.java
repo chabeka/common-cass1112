@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel;
 
+import java.io.Serializable;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -11,7 +13,7 @@ import com.datastax.driver.mapping.annotations.Table;
  * TODO (AC75095028) Description du type
  */
 @Table(name = "jobinstancetojobexecutioncql")
-public class JobInstanceToJobExecutionCql {
+public class JobInstanceToJobExecutionCql implements Serializable, Comparable<JobInstanceToJobExecutionCql>{
 
    @PartitionKey
    @Column(name = "jobinstanceid")
@@ -72,5 +74,41 @@ public class JobInstanceToJobExecutionCql {
    public void setValue(final String value) {
       this.value = value;
    }
+
+	@Override
+	public int compareTo(JobInstanceToJobExecutionCql job) {
+		return (""+this.jobExecutionId + this.jobInstanceId).compareTo(""+job.getJobExecutionId()+job.getJobInstanceId());
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((jobExecutionId == null) ? 0 : jobExecutionId.hashCode());
+		result = prime * result + ((jobInstanceId == null) ? 0 : jobInstanceId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		JobInstanceToJobExecutionCql other = (JobInstanceToJobExecutionCql) obj;
+		if (jobExecutionId == null) {
+			if (other.jobExecutionId != null)
+				return false;
+		} else if (!jobExecutionId.equals(other.jobExecutionId))
+			return false;
+		if (jobInstanceId == null) {
+			if (other.jobInstanceId != null)
+				return false;
+		} else if (!jobInstanceId.equals(other.jobInstanceId))
+			return false;
+		return true;
+	}
 
 }

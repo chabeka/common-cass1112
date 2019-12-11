@@ -13,7 +13,8 @@ import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe créée pour corriger un problème de déserialisation 
+ * de la colonne executionContext veant de la table thrift
  */
 @Table(name = "jobexecutioncql")
 public class JobExecutionCql {

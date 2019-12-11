@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel;
 
+import java.io.Serializable;
+
 import com.datastax.driver.mapping.annotations.ClusteringColumn;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -12,7 +14,7 @@ import com.datastax.driver.mapping.annotations.Table;
  * TODO (AC75095028) Description du type
  */
 @Table(name = "jobexecutiontojobstepcql")
-public class JobExecutionToJobStepCql {
+public class JobExecutionToJobStepCql  implements Serializable, Comparable<JobExecutionToJobStepCql>{
 
    @PartitionKey
    @Column(name = "jobexecutionid")
@@ -68,5 +70,10 @@ public class JobExecutionToJobStepCql {
    public void setValue(final String value) {
       this.value = value;
    }
+
+@Override
+public int compareTo(JobExecutionToJobStepCql job) {
+	return (""+getJobExecutionId()+getJobStepId()).compareTo(job.getJobExecutionId()+job.getJobStepId()+"");
+}
 
 }
