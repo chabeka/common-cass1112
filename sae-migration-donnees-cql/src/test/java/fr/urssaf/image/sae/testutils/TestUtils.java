@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.testutils;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,6 +75,9 @@ public class TestUtils {
 
   public static JobExecution saveJobExecutionThrift(final JobInstance jobInstance, final int index, final CassandraJobExecutionDaoThrift jobExecutionDao) {
     final JobExecution jobExecution = createJobExecution(jobInstance, index);
+    if (index != 0 && index % 9 == 0) {
+      jobExecution.setEndTime(new Date());
+    }
     jobExecutionDao.saveJobExecution(jobExecution);
     return jobExecution;
   }

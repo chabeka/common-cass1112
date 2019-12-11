@@ -3,7 +3,9 @@
  */
 package fr.urssaf.image.sae.jobspring;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,10 +15,12 @@ import org.springframework.stereotype.Component;
 import com.datastax.driver.core.Row;
 
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionToJobStepCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsRunningCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionToJobStepDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.jobspring.model.GenericJobSpring;
+import fr.urssaf.image.sae.utils.CompareUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -92,4 +96,59 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
 
   }
 
+  
+  //############################################################
+  // ################# TESTDES DONNEES ######################
+  // ############################################################
+  
+  public boolean compareJobExecutionsToStep() {
+ 	  	
+ 	  	// liste venant de la base thrift après transformation
+ 	  	List<JobExecutionToJobStepCql> listJobThrift = getListJobExeToStepThrift();
+ 	  
+ 	  	// liste venant de la base cql
+ 	  	List<JobExecutionToJobStepCql> listJobCql = new ArrayList<>();
+ 	  	final Iterator<JobExecutionToJobStepCql> it = jobExeToJobStepDao.findAllWithMapper();
+ 	    while (it.hasNext()) {
+ 	      final JobExecutionToJobStepCql jobExToJR = it.next();        
+ 	    	listJobCql.add(jobExToJR);	    	
+ 	    }
+ 	    
+ 	    // comparaison de deux listes
+ 	    if (CompareUtils.compareListsGeneric(listJobCql, listJobThrift)) {
+ 	    	LOG.info("MIGRATION_JobExecutions -- Les listes metadata sont identiques");
+ 	     } else {
+ 	    	 LOG.warn("MIGRATION_JobExecutions -- ATTENTION: Les listes metadata sont différentes ");
+ 	     }
+ 	  
+ 	    return false;  
+  }
+  
+  	/**
+  	 * Liste des job cql venant de la table thirft après transformation
+  	 * @return
+  	 */
+  	public List<JobExecutionToJobStepCql> getListJobExeToStepThrift(){
+ 	  
+ 	    List<JobExecutionToJobStepCql> listJobThrift = new ArrayList<JobExecutionToJobStepCql>();
+ 	    
+ 	   final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
+
+ 	    while (it.hasNext()) {
+ 	      final Row row = (Row) it.next();
+ 	      final Long jobExecutionId = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
+ 	      final Long idStep = row.getLong("column1");
+
+ 	      final JobExecutionToJobStepCql jobcql = new JobExecutionToJobStepCql();
+ 	      jobcql.setJobStepId(idStep);
+ 	      jobcql.setJobExecutionId(jobExecutionId);
+ 	      // la value n'est pas renseignée dans l'ancien système
+ 	      jobcql.setValue("");
+ 	     listJobThrift.add(jobcql);
+ 	    }
+     
+ 	    return listJobThrift;
+  	}
+  	
+  	
 }

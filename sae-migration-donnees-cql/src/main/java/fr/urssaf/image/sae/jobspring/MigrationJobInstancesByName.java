@@ -3,7 +3,9 @@
  */
 package fr.urssaf.image.sae.jobspring;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstancesByNam
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.jobspring.model.GenericJobSpring;
+import fr.urssaf.image.sae.utils.CompareUtils;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
@@ -77,4 +80,57 @@ public class MigrationJobInstancesByName extends MigrationJob implements IMigrat
 
   }
 
+  //############################################################
+  // ################# TESTDES DONNEES ######################
+  // ############################################################
+
+  public boolean compareJobInstanceByName() {
+
+    // liste venant de la base thrift après transformation
+    final List<JobInstancesByNameCql> listJobThrift = getListJobInstanceByNameThrift();
+
+    // liste venant de la base cql
+    final List<JobInstancesByNameCql> listJobCql = new ArrayList<>();
+    final Iterator<JobInstancesByNameCql> it = jobInstByNamedao.findAllWithMapper();
+    while (it.hasNext()) {
+      final JobInstancesByNameCql jobExToJR = it.next();        
+      listJobCql.add(jobExToJR);	    	
+    }
+
+    // comparaison de deux listes
+    final boolean isListEqual = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
+    if (isListEqual) {
+      LOGGER.info("MIGRATION_JobInstancesByNameCql -- Les listes metadata sont identiques");
+    } else {
+      LOGGER.warn("MIGRATION_JobInstancesByNameCql -- ATTENTION: Les listes metadata sont différentes ");
+    }
+
+    return isListEqual;
+  }
+
+  /**
+   * Liste des job cql venant de la table thirft après transformation
+   * @return
+   */
+  public List<JobInstancesByNameCql> getListJobInstanceByNameThrift(){
+
+    final List<JobInstancesByNameCql> listJobThrift = new ArrayList<>();
+
+    final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBINSTANCES_BY_NAME_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
+    while (it.hasNext()) {
+      final Row row = (Row) it.next();
+      final String key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
+      if (!"_unreserved".equals(key)) {
+        final Long id = row.getLong("column1");
+        // La value n'est pas setter dans l'ancien système
+        final String value = "";
+        final JobInstancesByNameCql jobcql = new JobInstancesByNameCql();
+        jobcql.setJobInstanceId(id);
+        jobcql.setJobName(key);
+        listJobThrift.add(jobcql);
+      }
+    }
+
+    return listJobThrift;
+  }
 }

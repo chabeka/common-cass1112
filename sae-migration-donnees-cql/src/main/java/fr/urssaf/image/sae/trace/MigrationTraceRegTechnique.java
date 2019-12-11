@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +49,8 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 @Component
 public class MigrationTraceRegTechnique extends MigrationTrace {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceRegTechnique.class);
+
   @Autowired
   TraceRegTechniqueIndexDao thriftdao;
 
@@ -55,7 +59,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
 
   @Autowired
   TraceRegTechniqueSupport supportThrift;
-  
+
   @Autowired
   private CompareTraceRegExploitation compRegTec;
 
@@ -65,6 +69,8 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
    * à partir du type {@link GenericTraceType} qui permet de wrapper les colonnes
    */
   public int migrationFromThriftToCql() {
+
+    LOGGER.info(" migrationFromThriftToCql ---------- DEBUT");
 
     final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegTechnique", thriftdao.getKeyspace().getKeyspaceName());
 
@@ -78,7 +84,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
     Map<String, String> infos = new HashMap<>();
     String context = null;
     String stacktrace = null;
-    int nb = 0;
+    int nbRow = 0;
     TraceRegTechniqueCql traceregTech;
 
     List<TraceRegTechniqueCql> listToSave = new ArrayList<>();
@@ -116,11 +122,11 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
         context = null;
 
         if (listToSave.size() == 10000) {
-          nb = nb + listToSave.size();
+          nbRow = nbRow + listToSave.size();
 
           supportcql.saveAllTraces(listToSave);
           listToSave = new ArrayList<>();
-          System.out.println(" Temp i : " + nb);
+          System.out.println(" Temp i : " + nbRow);
         }
 
       }
@@ -171,12 +177,15 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
       traceregTech.setStacktrace(stacktrace);
       listToSave.add(traceregTech);
 
-      nb = nb + listToSave.size();
+      nbRow = nbRow + listToSave.size();
       supportcql.saveAllTraces(listToSave);
       listToSave = new ArrayList<>();
     }
-    // System.out.println(" Total : " + nb);
-    return nb;
+
+    LOGGER.info(" migrationFromThriftToCql Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" migrationFromThriftToCql ---------- FIN");
+
+    return nbRow;
   }
 
   /**
@@ -184,18 +193,23 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
    */
   public int migrationFromCqlToThrift() {
 
+    LOGGER.info(" migrationFromCqlToThrift ---------- FIN");
+
     final Iterator<TraceRegTechniqueCql> tracej = supportcql.findAll();
-    int nb = 0;
+    int nbRow = 0;
     while (tracej.hasNext()) {
       final TraceRegTechniqueCql cql = tracej.next();
       final TraceRegTechnique traceTrhift = createTraceThriftFromCqlTrace(cql);
       final Date date = cql.getTimestamp();
       final Long times = date != null ? date.getTime() : 0;
       supportThrift.create(traceTrhift, times);
-      nb++;
+      nbRow++;
     }
-    System.out.println(" Total : " + nb);
-    return nb;
+
+    LOGGER.info(" migrationFromThriftToCql Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" migrationFromCqlToThrift ---------- FIN");
+
+    return nbRow;
   }
 
   // INDEX DE LA TRACE
@@ -205,7 +219,8 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
    */
   public void migrationIndexFromThriftToCql() {
 
-    int i = 0;
+    LOGGER.info(" migrationIndexFromThriftToCql ---------- DEBUT");
+    int nbRow = 0;
     final List<Date> dates = DateRegUtils.getListFromDates(DateUtils.addYears(DATE, -18), DateUtils.addYears(DATE, 1));
     for (final Date d : dates) {
       final List<TraceRegTechniqueIndex> list = supportThrift.findByDate(d);
@@ -215,19 +230,22 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
           final TraceRegTechniqueIndexCql trace = createTraceIndexFromThriftToCql(nextReg);
           listTemp.add(trace);
           if (listTemp.size() == 10000) {
-            i = i + listTemp.size();
+            nbRow = nbRow + listTemp.size();
             supportcql.saveAllIndex(listTemp);
             listTemp = new ArrayList<>();
           }
         }
         if (!listTemp.isEmpty()) {
-          i = i + listTemp.size();
+          nbRow = nbRow + listTemp.size();
           supportcql.saveAllIndex(listTemp);
           listTemp = new ArrayList<>();
         }
       }
     }
-    System.out.println(" Total : " + i);
+
+    LOGGER.info(" migrationIndexFromThriftToCql Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" migrationIndexFromThriftToCql ---------- FIN");
+
   }
 
   /**
@@ -235,7 +253,9 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
    */
   public void migrationIndexFromCqlToThrift() {
 
-    int i = 0;
+    LOGGER.info(" migrationIndexFromThriftToCql ---------- FIN");
+
+    int nbRow = 0;
     final Iterator<TraceRegTechniqueIndexCql> it = supportcql.findAllIndex();
     while (it.hasNext()) {
       final TraceRegTechniqueIndex index = createTraceIndexFromCqlToThrift(it.next());
@@ -249,9 +269,11 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
                             index.getTimestamp().getTime());
       thriftdao.update(indexUpdater);
 
-      i++;
+      nbRow++;
     }
-    System.out.println(" Total : " + i);
+
+    LOGGER.info(" migrationIndexFromThriftToCql Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" migrationIndexFromThriftToCql ---------- FIN");
   }
 
   // TESt DONNEES
@@ -260,20 +282,20 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
    * @throws Exception
    */
   public boolean  traceComparator() throws Exception {
-	  boolean isBaseOk = compRegTec.traceComparator();
-	  return isBaseOk;
+    final boolean isBaseOk = compRegTec.traceComparator();
+    return isBaseOk;
   }
-  
+
   /**
    * Comparer les Traces cql et Thrift
    * @throws Exception
    */
   public boolean indexComparator() throws Exception {
-	  boolean isBaseOk = compRegTec.indexComparator();
-	  return isBaseOk;
-	  
+    final boolean isBaseOk = compRegTec.indexComparator();
+    return isBaseOk;
+
   }
-  
+
   // Methodes utilitaires
 
   /**

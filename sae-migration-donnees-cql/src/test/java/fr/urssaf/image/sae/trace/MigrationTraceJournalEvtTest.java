@@ -48,7 +48,7 @@ public class MigrationTraceJournalEvtTest {
 
   private static final Date DATE = new Date();
 
-  int NB_ROWS = 20005;
+  int NB_ROWS = 200;
 
   @Autowired
   TraceJournalEvtIndexDao indexDao;
@@ -86,7 +86,7 @@ public class MigrationTraceJournalEvtTest {
 
   @After
   public void after() throws Exception {
-    server.resetData(false, MODE_API.DATASTAX);
+    //server.resetData(false, MODE_API.DATASTAX);
   }
 
   @Test

@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -47,6 +49,8 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 @Component
 public class MigrationTraceRegSecurite extends MigrationTrace {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceJournalEvt.class);
+
   @Autowired
   TraceRegSecuriteIndexDao thriftdao;
 
@@ -55,7 +59,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
 
   @Autowired
   TraceRegSecuriteSupport supportThrift;
-  
+
   @Autowired
   private CompareTraceRegExploitation compRegSecu;
 
@@ -68,6 +72,8 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
    */
   public int migrationFromThriftToCql() {
 
+    LOGGER.info(" migrationFromThriftToCql ---------- DEBUT");
+
     final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegSecurite", thriftdao.getKeyspace().getKeyspaceName());
 
     UUID lastKey = null;
@@ -78,8 +84,8 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
     List<String> pagms = null;
     Map<String, String> infos = new HashMap<>();
     String context = null;
-    int i = 0;
-    TraceRegSecuriteCql traceregexpl;
+    int nbRow = 0;
+    TraceRegSecuriteCql traceregexpl = null;
 
     while (listT.hasNext()) {
 
@@ -107,6 +113,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
 
         lastKey = key;
         // réinitialisation
+        traceregexpl = null;
         timestamp = null;
         codeEvt = null;
         contrat = null;
@@ -114,6 +121,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
         pagms = null;
         infos = new HashMap<>();
         context = null;
+        nbRow++;
       }
 
       // extraction du nom de la colonne
@@ -147,11 +155,24 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
 
         context = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
       }
-      i++;
+
     }
 
-    System.out.println(" Total : " + i);
-    return i;
+    // traiter le dernier cas
+    traceregexpl = new TraceRegSecuriteCql(lastKey, timestamp);
+    traceregexpl.setCodeEvt(codeEvt);
+    traceregexpl.setContratService(contrat);
+    traceregexpl.setInfos(infos);
+    traceregexpl.setLogin(login);
+    traceregexpl.setPagms(pagms);
+    traceregexpl.setContexte(context);
+    supportcql.save(traceregexpl);
+    nbRow++;
+
+    LOGGER.info(" migrationFromThriftToCql Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" migrationFromThriftToCql ---------- FIN");
+
+    return nbRow;
   }
 
   /**
@@ -159,19 +180,24 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
    */
   public int migrationFromCqlToThrift() {
 
+    LOGGER.info(" migrationFromCqlToThrift ---------- DEBUT");
+
     final Iterator<TraceRegSecuriteCql> tracej = supportcql.findAll();
 
-    int i = 0;
+    int nbRow = 0;
     while (tracej.hasNext()) {
       final TraceRegSecuriteCql next = tracej.next();
       final TraceRegSecurite traceTrhift = createTraceThriftFromCqlTrace(next);
       final Date date = next.getTimestamp();
       final Long times = date != null ? date.getTime() : 0;
       supportThrift.create(traceTrhift, times);
-      i++;
+      nbRow++;
     }
-    System.out.println(" Total : " + i);
-    return i;
+
+    LOGGER.info(" migrationFromCqlToThrift Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" migrationFromCqlToThrift ---------- FIN");
+
+    return nbRow;
   }
 
   // INDEX DE LA TRACE
@@ -183,41 +209,44 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
    */
   public int migrationIndexFromThriftToCql() {
 
-    int i = 0;
+    LOGGER.info(" migrationIndexFromThriftToCql ---------- DEBUT");
+    int nbRow = 0;
     final List<Date> dates = DateRegUtils.getListFromDates(DateUtils.addYears(DATE, -18), DateUtils.addYears(DATE, 1));
     for (final Date d : dates) {
 
       final List<TraceRegSecuriteIndex> list = supportThrift.findByDate(d);
 
       List<TraceRegSecuriteIndexCql> listTemp = new ArrayList<>();
-      if (list != null && list.isEmpty()) {
+      if (list != null && !list.isEmpty()) {
         for (final TraceRegSecuriteIndex next : list) {
 
           final TraceRegSecuriteIndexCql trace = createTraceIndexFromThriftToCql(next);
           listTemp.add(trace);
           if (listTemp.size() == 10000) {
-            i = i + listTemp.size();
+            nbRow = nbRow + listTemp.size();
             supportcql.saveAllIndex(listTemp);
             listTemp = new ArrayList<>();
           }
         }
         if (!listTemp.isEmpty()) {
-          i = i + listTemp.size();
+          nbRow = nbRow + listTemp.size();
           supportcql.saveAllIndex(listTemp);
           listTemp = new ArrayList<>();
         }
       }
     }
-    System.out.println(" Total : " + i);
-    return i;
+
+    LOGGER.info(" migrationIndexFromThriftToCql Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" migrationIndexFromThriftToCql ---------- FIN");
+    return nbRow;
   }
 
   /**
    * Migration de la CF INDEX de TraceRegExploitation de cql vers thrift
    */
   public void migrationIndexFromCqlToThrift() {
-
-    int i = 0;
+    LOGGER.info(" migrationIndexFromCqlToThrift ---------- FIN");
+    int nbRow = 0;
     final Iterator<TraceRegSecuriteIndexCql> it = supportcql.findAllIndex();
     while (it.hasNext()) {
       final TraceRegSecuriteIndexCql next = it.next();
@@ -232,30 +261,32 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
                             index.getTimestamp().getTime());
       thriftdao.update(indexUpdater);
 
-      i++;
+      nbRow++;
     }
-    System.out.println(" Total : " + i);
+
+    LOGGER.info(" migrationIndexFromCqlToThrift Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" migrationIndexFromCqlToThrift ---------- FIN");
   }
-  
+
   // TEST DES DONNEES
-  
+
   /**
    * Comparer les Traces cql et Thrift
    * @throws Exception
    */
   public boolean traceComparator() throws Exception {
-	  boolean isBaseOk = compRegSecu.traceComparator();
-	  return isBaseOk;
+    final boolean isBaseOk = compRegSecu.traceComparator();
+    return isBaseOk;
   }
-  
+
   /**
    * Comparer les Traces cql et Thrift
    * @throws Exception
    */
   public boolean indexComparator() throws Exception {
-	  boolean isBaseOk = compRegSecu.indexComparator();
-	  return isBaseOk;
-	  
+    final boolean isBaseOk = compRegSecu.indexComparator();
+    return isBaseOk;
+
   }
   // Methodes utilitaires
 
@@ -297,6 +328,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
     tr.setContexte(index.getContexte());
     tr.setLogin(index.getLogin());
     tr.setPagms(index.getPagms());
+    tr.setTimestamp(index.getTimestamp());
 
     return tr;
   }

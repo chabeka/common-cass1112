@@ -3,7 +3,9 @@
  */
 package fr.urssaf.image.sae.jobspring;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceToJobE
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.jobspring.model.GenericJobSpring;
+import fr.urssaf.image.sae.utils.CompareUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -39,10 +42,7 @@ public class MigrationJobinstanceToJobExecution extends MigrationJob implements 
   @Override
   public void migrationFromThriftToCql() {
     if (LOG.isDebugEnabled()) {
-      LOG.debug(" _____________________________________________________");
-      LOG.debug("                                                      ");
       LOG.debug(" MigrationJobinstanceToJobExecution - migrationFromThriftToCql - DEBUT ");
-      LOG.debug(" _____________________________________________________");
     }
 
     final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBINSTANCE_TO_JOBEXECUTION_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
@@ -58,10 +58,7 @@ public class MigrationJobinstanceToJobExecution extends MigrationJob implements 
       jobInstToJobEx.save(jobInstToJ);
     }
     if (LOG.isDebugEnabled()) {
-      LOG.debug(" _____________________________________________________");
-      LOG.debug("                                                      ");
       LOG.debug(" MigrationJobinstanceToJobExecution - migrationFromThriftToCql - FIN   ");
-      LOG.debug(" _____________________________________________________");
     }
   }
 
@@ -69,10 +66,7 @@ public class MigrationJobinstanceToJobExecution extends MigrationJob implements 
   public void migrationFromCqlTothrift() {
 
     if (LOG.isDebugEnabled()) {
-      LOG.debug(" _____________________________________________________");
-      LOG.debug("                                                      ");
       LOG.debug(" MigrationJobinstanceToJobExecution - migrationFromCqlTothrift - DEBUT ");
-      LOG.debug(" _____________________________________________________");
     }
 
     final Serializer<String> sSlz = StringSerializer.get();
@@ -96,12 +90,61 @@ public class MigrationJobinstanceToJobExecution extends MigrationJob implements 
     }
 
     if (LOG.isDebugEnabled()) {
-      LOG.debug(" _____________________________________________________");
-      LOG.debug("                                                      ");
       LOG.debug(" MigrationJobinstanceToJobExecution - migrationFromCqlTothrift - FIN   ");
-      LOG.debug(" _____________________________________________________");
     }
 
   }
 
+
+  //############################################################
+  // ################# TESTDES DONNEES ######################
+  // ############################################################
+
+  public boolean compareJobInstanceToExecution() {
+
+    // liste d'objet cql venant de la base thrift après transformation
+    final List<JobInstanceToJobExecutionCql> listJobThrift = getListJobInstanceToJobExecutionThrift();
+
+    // liste venant de la base cql
+    final List<JobInstanceToJobExecutionCql> listJobCql = new ArrayList<>();
+    final Iterator<JobInstanceToJobExecutionCql> it = jobInstToJobEx.findAllWithMapper();
+    while (it.hasNext()) {
+      final JobInstanceToJobExecutionCql jobExToJR = it.next();        
+      listJobCql.add(jobExToJR);	    	
+    }
+
+    // comparaison de deux listes
+    final boolean isListEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
+    if (isListEq) {
+      LOG.info("MIGRATION_JobInstanceToExecution -- Les listes metadata sont identiques");
+    } else {
+      LOG.warn("MIGRATION_JobInstanceToExecution -- ATTENTION: Les listes metadata sont différentes ");
+    }
+
+    return isListEq;
+  }
+
+  /**
+   * Liste des job cql venant de la table thirft après transformation
+   * @return
+   */
+  public List<JobInstanceToJobExecutionCql> getListJobInstanceToJobExecutionThrift(){
+
+    final List<JobInstanceToJobExecutionCql> listJobThrift = new ArrayList<>();
+
+    final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBINSTANCE_TO_JOBEXECUTION_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
+
+    while (it.hasNext()) {
+      final Row row = (Row) it.next();
+      final Long idInst = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
+      final Long idJobEx = row.getLong("column1");
+      final JobInstanceToJobExecutionCql jobInstToJ = new JobInstanceToJobExecutionCql();
+      jobInstToJ.setJobInstanceId(idInst);
+      jobInstToJ.setJobExecutionId(idJobEx);
+      jobInstToJ.setValue("");
+      listJobThrift.add(jobInstToJ);
+    }
+
+    return listJobThrift;
+  }
 }

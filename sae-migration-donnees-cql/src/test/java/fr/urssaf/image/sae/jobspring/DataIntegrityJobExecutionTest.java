@@ -1,5 +1,5 @@
 /**
- *
+ *  TODO (AC75095028) Description du fichier
  */
 package fr.urssaf.image.sae.jobspring;
 
@@ -20,7 +20,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionsDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionsRunningDaoCql;
@@ -31,7 +30,6 @@ import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobExe
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobInstanceDaoThrift;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator;
-import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import fr.urssaf.image.sae.support.JobClockSupportFactory;
@@ -39,13 +37,9 @@ import fr.urssaf.image.sae.testutils.TestUtils;
 import fr.urssaf.image.sae.utils.Dumper;
 import me.prettyprint.hector.api.Keyspace;
 
-/**
- *
- *
- */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-migration-test.xml" })
-public class MigrationJobExecutionTest {
+@ContextConfiguration(locations = {"/applicationContext-sae-migration-test.xml"})
+public class DataIntegrityJobExecutionTest {
 
   /**
    * le +1 vient de la clé qui regroupe toutes les colonnes de la CF<br>
@@ -118,7 +112,7 @@ public class MigrationJobExecutionTest {
 
   @After
   public void after() throws Exception {
-    server.resetData(true, MODE_API.HECTOR);
+    // server.resetData(true, MODE_API.HECTOR);
   }
 
   @Before
@@ -148,89 +142,39 @@ public class MigrationJobExecutionTest {
 
   @Test
   public void migrationFromThriftToCql() throws Exception {
+
     populateTableThrift();
 
     // migration de la table JobExecution
     migJobInst.migrationFromThriftToCql();
     final boolean isJonInst = migJobInst.compareJobInstance();
+    Assert.assertTrue("les elements des tables JobInstance cql et thrift doivent être egaux", isJonInst);
 
     migJobInstByNameIndex.migrationFromThriftToCql();
     final boolean isJobInstByName = migJobInstByNameIndex.compareJobInstanceByName();
+    Assert.assertTrue("les elements des tables JobInstancesByName cql et thrift doivent être egaux", isJobInstByName);
 
     // JOBEXECUTION
     migJobExe.migrationFromThriftToCql();
     final boolean isJobExe = migJobExe.compareJobExecution();
+    Assert.assertTrue("les elements des tables JobExecution cql et thrift doivent être egaux", isJobExe);
 
     // JOBEXECUTIONS
     migJobExesIndex.migrationFromThriftToCql();
     final boolean isJobExes = migJobExesIndex.compareJobExecutions();
+    Assert.assertTrue("les elements des tables JobExecutions cql et thrift doivent être egaux", isJobExes);
 
     // JobInstanceToJobExecution
     migJobInstToExeIndex.migrationFromThriftToCql();
     final boolean isJobInstToExe = migJobInstToExeIndex.compareJobInstanceToExecution();
+    Assert.assertTrue("les elements des tables JobinstanceToJobExecution cql et thrift doivent être egaux", isJobInstToExe);
 
     // JOBEXECUTIONS_RUNNING_CFNAME
     migJobRunIndex.migrationFromThriftToCql();
     final boolean isJobRun = migJobRunIndex.compareJobExecutionsRunning();
+    Assert.assertTrue("les elements des tables JobExecutionsRunning cql et thrift doivent être egaux", isJobRun);
 
-    // final JobInstance inst = TestUtils.getOrCreateTestJobInstanceCql(MY_JOB_NAME + 1000, jobInstanceDaocql);
-    //migJobExe.migrationFromThriftToCql();
 
-    System.out.println("isJonInst " + isJonInst);
-    System.out.println("isJobInstByName " + isJobInstByName);
-    System.out.println("isJobExe " + isJobExe);
-    System.out.println("isJobExes " + isJobExes);
-    System.out.println("isJobInstToExe " + isJobInstToExe);
-    System.out.println("isJobRun " + isJobRun);
-  }
-
-  @Test
-  public void migrationFromCqlTothrift() throws Exception {
-
-    populateTableCql();
-
-    // JOBINSTANCE
-    // migration de la table
-    migJobInst.migrationFromCqlTothrift();
-
-    final int nb_keyInst = dumper.getKeysCount(Constante.JOBINSTANCE_CFNAME);
-    Assert.assertEquals(100, nb_keyInst);
-
-    // JOBINSTANCE_BY_NAME
-    // migration de la table
-    migJobInstByNameIndex.migrationFromCqlTothrift();
-
-    final int nb_keyInstByName = dumper.getKeysCount(Constante.JOBINSTANCES_BY_NAME_CFNAME);
-    Assert.assertEquals(100, nb_keyInstByName);
-
-    // JOBEXECUTION
-    // migration de la table
-    migJobExe.migrationFromCqlTothrift();
-
-    final int nb_key = dumper.getKeysCount(Constante.JOBEXECUTION_CFNAME);
-    Assert.assertEquals(100, nb_key);
-
-    // JOBEXECUTIONS
-    // migration de la table
-    migJobExesIndex.migrationFromCqlTothrift();
-
-    final int nb_key1 = dumper.getKeysCount(Constante.JOBEXECUTIONS_CFNAME);
-    Assert.assertEquals(101, nb_key1);
-
-    // JOBINSTANCE_TO_JOBEXECUTION_CFNAME
-    // migration de la table
-    migJobInstToExeIndex.migrationFromCqlTothrift();
-
-    final int nb_key2 = dumper.getKeysCount(Constante.JOBINSTANCE_TO_JOBEXECUTION_CFNAME);
-    Assert.assertEquals(100, nb_key2);
-
-    // JOBEXECUTIONS_RUNNING_CFNAME
-    // migration de la table
-    migJobRunIndex.migrationFromCqlTothrift();
-
-    //
-    final int nb_key3 = dumper.getKeysCount(Constante.JOBEXECUTIONS_RUNNING_CFNAME);
-    Assert.assertEquals(101, nb_key3);
   }
 
   // Methode UTILITAIRE

@@ -95,7 +95,7 @@ public class MigrationTraceDestinataire {
 		   // checker si l'objet courant est equivalent à celui de la base thrift
 		   boolean isObj = checkTraceDestinataire(tr);
 		   if(!isObj) {
-			   throw new Exception(" Objet cql non identique à celui de la base thrift");
+			   LOGGER.info(" Objet cql non identique à celui de la base thrift");
 		   } else {
 			   isEqBase = isEqBase && isObj;
 		   }   

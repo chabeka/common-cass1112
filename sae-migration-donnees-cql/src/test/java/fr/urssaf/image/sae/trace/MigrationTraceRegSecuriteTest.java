@@ -23,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceRegSecuriteIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegSecuriteIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
@@ -84,7 +83,7 @@ public class MigrationTraceRegSecuriteTest {
 
   @After
   public void after() throws Exception {
-    server.resetData(false, MODE_API.DATASTAX);
+    // server.resetData(false, MODE_API.DATASTAX);
   }
   @Test
   public void migrationFromThriftToCql() {
@@ -168,21 +167,21 @@ public class MigrationTraceRegSecuriteTest {
     return list.size();
 
   }
-  
+
   @Test
   public void sliceQueryTest() throws Exception {
-	
-	populateTableThrift();
 
-	mtracej.migrationFromThriftToCql();
-	mtracej.migrationIndexFromThriftToCql();
+    populateTableThrift();
+
+    mtracej.migrationFromThriftToCql();
+    mtracej.migrationIndexFromThriftToCql();
 
     try {
-    	mtracej.traceComparator();
-    	mtracej.indexComparator();
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-    
+      mtracej.traceComparator();
+      mtracej.indexComparator();
+    } catch (final Exception e) {
+      e.printStackTrace();
+    }
+
   }
 }

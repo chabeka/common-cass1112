@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.jobspring;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,15 +15,15 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.datastax.driver.core.Row;
-
+import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.serializer.ExecutionContextSerializer;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 import fr.urssaf.image.sae.IMigration;
-import fr.urssaf.image.sae.jobspring.model.GenericJobSpring;
+import fr.urssaf.image.sae.utils.CompareUtils;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -29,6 +31,11 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.beans.ColumnSlice;
+import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
  * Classe permettant de faire la grigration de données de la table {@link JobStep}
@@ -43,6 +50,9 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
 
   @Autowired
   IJobStepExecutionDaoCql jobdaocql;
+
+  @Autowired
+  CassandraClientFactory ccf;
 
   protected static final String JOBSTEP_CFNAME = "JobStep";
 
@@ -89,126 +99,99 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
    */
   @Override
   public void migrationFromThriftToCql() {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigrationJobStep - migrationFromThriftToCql - DEBUT");
-    }
 
-    final Serializer<String> sSlz = StringSerializer.get();
-    final Serializer<Integer> iSlz = IntegerSerializer.get();
-    final Serializer<Date> dSlz = NullableDateSerializer.get();
-    final Serializer<ExecutionContext> oSlz = ExecutionContextSerializer.get();
+    LOG.info("MigrationJobStep - migrationFromThriftToCql - DEBUT");
 
-    final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(JOBSTEP_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
+    final Serializer<String> stringSerializer = StringSerializer.get();
+    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+    final LongSerializer longSerializer = LongSerializer.get();
 
-    Long lastKey = null;
+    final RangeSlicesQuery<Long, String, byte[]> rangeSlicesQuery = HFactory
+        .createRangeSlicesQuery(ccf.getKeyspace(),
+                                longSerializer,
+                                stringSerializer,
+                                bytesSerializer);
+    rangeSlicesQuery.setColumnFamily(JOBSTEP_CFNAME);
 
-    // initialisation des colonnes
-    String exitMessage = null;
-    String exitCode = null;
-    Long jobStepExecutionId = null;
-    String stepName = null;
-    StepExecution jobStep = null;
-    while (it.hasNext()) {
-      // Extraction de la clé
-      final Row row = (Row) it.next();
-      final Long key = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
-      if(lastKey == null) {
-        lastKey = key;
-      }
-      if (jobStep == null) {
-        // le vrai nom sera fixé après
-        jobStep = new StepExecution("aaa", null);
-      }
-      // compare avec la derniere clé qui a été extraite
-      // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
-      // alors on enrgistre celui qui vient d'être traité
-      if (key != null && !key.equals(lastKey)) {
-        jobStep.setExitStatus(new ExitStatus(exitCode, exitMessage));
-        final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(jobStep);
-        stepcql.setJobStepExecutionId(lastKey);
-        stepcql.setJobExecutionId(jobStepExecutionId);
-        stepcql.setName(stepName);
-        jobdaocql.save(stepcql);
+    final int blockSize = 1000;
+    Long startKey = null;
+    int totalKey = 1;
+    int count;
+    do {
+      rangeSlicesQuery.setRange(null, null, false, blockSize);
+      rangeSlicesQuery.setKeys(startKey, null);
+      rangeSlicesQuery.setRowCount(blockSize);
+      final QueryResult<OrderedRows<Long, String, byte[]>> result0 = rangeSlicesQuery.execute();
 
-        lastKey = key;
-        // réinitialisation
-        jobStep = new StepExecution("aaa", null);
-      }
-      // extraction des colonnes
-      final String columnName = StringSerializer.get().fromByteBuffer(row.getBytes("column1"));
+      final OrderedRows<Long, String, byte[]> orderedRows = result0.get();
+      count = orderedRows.getCount();
+      // On enlève 1, car sinon à chaque itération, la startKey serait
+      // comptée deux fois.
+      totalKey += count - 1;
+      // Parcours des rows pour déterminer la dernière clé de l'ensemble
+      final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> lastRow = orderedRows.peekLast();
+      startKey = lastRow.getKey();
 
-      if (JS_STEP_NAME_COLUMN.equals(columnName)) {
-        stepName = getValue(row, JS_STEP_NAME_COLUMN, sSlz);
-      }
-      if (JS_JOB_EXECUTION_ID_COLUMN.equals(columnName)) {
-        jobStepExecutionId = LongSerializer.get().fromByteBuffer(row.getBytes("value"));
+      for (final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> row : orderedRows) {
+        final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
+        final long key = row.getKey();
+        final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(stepThrift);
+        final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
+        stepcql.setJobExecutionId(jobExecutionId);
+        stepcql.setJobStepExecutionId(key);
+        jobdaocql.saveWithMapper(stepcql);
       }
 
-      if (JS_VERSION_COLUMN.equals(columnName)) {
-        jobStep.setVersion(getValue(row, JS_VERSION_COLUMN, iSlz));
-      }
-      if (JS_START_TIME_COLUMN.equals(columnName)) {
-        jobStep.setStartTime(getValue(row, JS_START_TIME_COLUMN, dSlz));
-      }
-      if (JS_END_TIME_COLUMN.equals(columnName)) {
-        jobStep.setEndTime(getValue(row, JS_END_TIME_COLUMN, dSlz));
-      }
-      if (JS_STATUS_COLUMN.equals(columnName)) {
-        jobStep.setStatus(BatchStatus.valueOf(getValue(row, JS_STATUS_COLUMN, sSlz)));
-      }
-      if (JS_COMMITCOUNT_COLUMN.equals(columnName)) {
-        jobStep.setCommitCount(getValue(row, JS_COMMITCOUNT_COLUMN, iSlz));
-      }
-      if (JS_READCOUNT_COLUMN.equals(columnName)) {
-        jobStep.setReadCount(getValue(row, JS_READCOUNT_COLUMN, iSlz));
-      }
-      if (JS_FILTERCOUNT_COLUMN.equals(columnName)) {
-        jobStep.setFilterCount(getValue(row, JS_FILTERCOUNT_COLUMN, iSlz));
-      }
-      if (JS_WRITECOUNT_COLUMN.equals(columnName)) {
-        jobStep.setWriteCount(getValue(row, JS_WRITECOUNT_COLUMN, iSlz));
-      }
-      if (JS_READSKIPCOUNT_COLUMN.equals(columnName)) {
-        jobStep.setReadSkipCount(getValue(row, JS_READSKIPCOUNT_COLUMN, iSlz));
-      }
-      if (JS_WRITESKIPCOUNT_COLUMN.equals(columnName)) {
-        jobStep.setWriteSkipCount(getValue(row, JS_WRITESKIPCOUNT_COLUMN, iSlz));
-      }
-      if (JS_PROCESSSKIPCOUNT_COLUMN.equals(columnName)) {
-        jobStep.setProcessSkipCount(getValue(row, JS_PROCESSSKIPCOUNT_COLUMN, iSlz));
-      }
-      if (JS_ROLLBACKCOUNT_COLUMN.equals(columnName)) {
-        jobStep.setRollbackCount(getValue(row, JS_ROLLBACKCOUNT_COLUMN, iSlz));
-      }
-      if (JS_EXIT_CODE_COLUMN.equals(columnName)) {
-        exitCode = getValue(row, JS_EXIT_CODE_COLUMN, sSlz);
-        jobStep.setExitStatus(new ExitStatus(exitCode, exitMessage));
-      }
-      if (JS_EXIT_MESSAGE_COLUMN.equals(columnName)) {
-        exitMessage = getValue(row, JS_EXIT_MESSAGE_COLUMN, sSlz);
-      }
-      if (JS_LAST_UPDATED_COLUMN.equals(columnName)) {
-        jobStep.setLastUpdated(getValue(row, JS_LAST_UPDATED_COLUMN, dSlz));
-      }
-      if (JS_EXECUTION_CONTEXT_COLUMN.equals(columnName)) {
-        final ExecutionContext executionContext = getValue(row, JS_EXECUTION_CONTEXT_COLUMN, oSlz);
-        jobStep.setExecutionContext(executionContext);
+    } while (count == blockSize);
+
+    LOG.debug(" Nb total de cle dans la CF: " + totalKey);
+    LOG.info("MigrationJobStep - migrationFromThriftToCql - FIN");
+  }
+
+  public List<JobStepCql> getStepExecutionsFromThrift() {
+
+    final List<JobStepCql> list = new ArrayList<>();
+
+    final Serializer<String> stringSerializer = StringSerializer.get();
+    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+    final LongSerializer longSerializer = LongSerializer.get();
+
+    final RangeSlicesQuery<Long, String, byte[]> rangeSlicesQuery = HFactory
+        .createRangeSlicesQuery(ccf.getKeyspace(),
+                                longSerializer,
+                                stringSerializer,
+                                bytesSerializer);
+    rangeSlicesQuery.setColumnFamily(JOBSTEP_CFNAME);
+
+    final int blockSize = 1000;
+    Long startKey = null;
+    int count;
+    do {
+      rangeSlicesQuery.setRange(null, null, false, blockSize);
+      rangeSlicesQuery.setKeys(startKey, null);
+      rangeSlicesQuery.setRowCount(blockSize);
+      final QueryResult<OrderedRows<Long, String, byte[]>> result0 = rangeSlicesQuery.execute();
+
+      final OrderedRows<Long, String, byte[]> orderedRows = result0.get();
+      count = orderedRows.getCount();
+
+      // Parcours des rows pour déterminer la dernière clé de l'ensemble
+      final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> lastRow = orderedRows.peekLast();
+      startKey = lastRow.getKey();
+
+      for (final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> row : orderedRows) {
+        final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
+        final long key = row.getKey();
+        final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(stepThrift);
+        final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
+        stepcql.setJobExecutionId(jobExecutionId);
+        stepcql.setJobStepExecutionId(key);
+        list.add(stepcql);
       }
 
-    }
+    } while (count == blockSize);
 
-    // traiter le dernier cas
-    if (jobStep != null) {
-      jobStep.setExitStatus(new ExitStatus(exitCode, exitMessage));
-      final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(jobStep);
-      stepcql.setJobStepExecutionId(lastKey);
-      stepcql.setJobExecutionId(jobStepExecutionId);
-      stepcql.setName(stepName);
-      jobdaocql.save(stepcql);
-    }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigrationJobStep - migrationFromThriftToCql - FIN");
-    }
+    return list;
   }
 
   /**
@@ -231,24 +214,54 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
     }
   }
 
+  // ############################################################
+  // ################# TESTDES DONNEES ######################
+  // ############################################################
+
+  public boolean compareJobStepCql() {
+
+    // liste d'objet cql venant de la base thrift après transformation
+    final List<JobStepCql> listJobThrift = getStepExecutionsFromThrift();
+
+    // liste venant de la base cql
+    final List<JobStepCql> listJobCql = new ArrayList<>();
+    final Iterator<JobStepCql> it = jobdaocql.findAllWithMapper();
+    while (it.hasNext()) {
+      final JobStepCql jobExToJR = it.next();
+      listJobCql.add(jobExToJR);
+    }
+
+    // comparaison de deux listes
+    final boolean isEqList = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
+    if (isEqList) {
+      LOG.info("MIGRATION_JobInstanceByName -- Les listes metadata sont identiques");
+    } else {
+      LOG.warn("MIGRATION_JobInstanceByName -- ATTENTION: Les listes metadata sont différentes ");
+    }
+
+    return isEqList;
+  }
+
+
   // ########################################################################
   // ########################## Methodes utilitares ########################
   // ########################################################################
+
   /**
    * Méthode utilitaire pour récupérer la valeur d'une colonne
-   *
+   * 
    * @param <T>
-   *           type de la valeur
-   * @param row
-   *           row de colonnes contenant la colonne à lire
+   *          type de la valeur
+   * @param slice
+   *          slice de colonnes contenant la colonne à lire
    * @param colName
-   *           nom de la colonne à lire
+   *          nom de la colonne à lire
    * @param serializer
-   *           sérialiseur à utiliser
+   *          sérialiseur à utiliser
    * @return
    */
-  private <T> T getValue(final Row row, final String colName, final Serializer<T> serializer) {
-    final byte[] bytes = row.getBytes("value").array();
+  private <T> T getValue(final ColumnSlice<String, byte[]> slice, final String colName, final Serializer<T> serializer) {
+    final byte[] bytes = slice.getColumnByName(colName).getValue();
     return serializer.fromBytes(bytes);
   }
 
@@ -256,7 +269,7 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
    * Enregistre un step dans cassandra Le step doit avoir un id affecté.
    *
    * @param stepExecution
-   *           : step à enregistrer
+   *          : step à enregistrer
    */
   private void saveStepExecutionToCassandra(final StepExecution stepExecution, final Long executionId) {
 
@@ -291,4 +304,50 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
     jobStepTemplate.update(updater);
 
   }
+
+  /**
+   * Crée un objet StepExecution à partir d'une ligne lue de cassandra
+   * 
+   * @param jobExecution
+   *          : le jobExecution référencé par le step à créer (éventuellement null)
+   * @param result
+   *          : données cassandra
+   * @return
+   */
+  private StepExecution getStepExecutionFromRow(final ColumnSlice<String, byte[]> slice) {
+
+    final Serializer<String> sSlz = StringSerializer.get();
+    final Serializer<Integer> iSlz = IntegerSerializer.get();
+    final Serializer<Date> dSlz = NullableDateSerializer.get();
+    final Serializer<ExecutionContext> oSlz = ExecutionContextSerializer.get();
+
+    if (slice.getColumns().size() == 0) {
+      return null;
+    }
+    final String stepName = getValue(slice, JS_STEP_NAME_COLUMN, sSlz);
+    final StepExecution step = new StepExecution(stepName, null);
+
+    step.setVersion(getValue(slice, JS_VERSION_COLUMN, iSlz));
+    step.setStartTime(getValue(slice, JS_START_TIME_COLUMN, dSlz));
+    step.setEndTime(getValue(slice, JS_END_TIME_COLUMN, dSlz));
+    step.setStatus(BatchStatus.valueOf(getValue(slice, JS_STATUS_COLUMN, sSlz)));
+    step.setCommitCount(getValue(slice, JS_COMMITCOUNT_COLUMN, iSlz));
+    step.setReadCount(getValue(slice, JS_READCOUNT_COLUMN, iSlz));
+    step.setFilterCount(getValue(slice, JS_FILTERCOUNT_COLUMN, iSlz));
+    step.setWriteCount(getValue(slice, JS_WRITECOUNT_COLUMN, iSlz));
+    step.setReadSkipCount(getValue(slice, JS_READSKIPCOUNT_COLUMN, iSlz));
+    step.setWriteSkipCount(getValue(slice, JS_WRITESKIPCOUNT_COLUMN, iSlz));
+    step.setProcessSkipCount(getValue(slice, JS_PROCESSSKIPCOUNT_COLUMN, iSlz));
+    step.setRollbackCount(getValue(slice, JS_ROLLBACKCOUNT_COLUMN, iSlz));
+    final String exitCode = getValue(slice, JS_EXIT_CODE_COLUMN, sSlz);
+    final String exitMessage = getValue(slice, JS_EXIT_MESSAGE_COLUMN, sSlz);
+    step.setExitStatus(new ExitStatus(exitCode, exitMessage));
+    step.setLastUpdated(getValue(slice, JS_LAST_UPDATED_COLUMN, dSlz));
+    final ExecutionContext executionContext = getValue(slice, JS_EXECUTION_CONTEXT_COLUMN, oSlz);
+    step.setExecutionContext(executionContext);
+    return step;
+
+  }
+
+
 }

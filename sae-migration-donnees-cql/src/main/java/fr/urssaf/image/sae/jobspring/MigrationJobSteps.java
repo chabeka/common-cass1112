@@ -3,7 +3,9 @@
  */
 package fr.urssaf.image.sae.jobspring;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepsDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.jobspring.model.GenericJobSpring;
+import fr.urssaf.image.sae.utils.CompareUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.CompositeSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
@@ -99,4 +102,55 @@ public class MigrationJobSteps extends MigrationJob implements IMigration {
 
   }
 
+  //############################################################
+  // ################# TESTDES DONNEES ######################
+  // ############################################################
+
+  public boolean compareJobStepsCql() {
+
+    // liste d'objet cql venant de la base thrift après transformation
+    final List<JobStepsCql> listJobThrift = getListJobStepsCqlFromThrift();
+
+    // liste venant de la base cql
+    final List<JobStepsCql> listJobCql = new ArrayList<>();
+    final Iterator<JobStepsCql> it = jobStepsExeDao.findAllWithMapper();
+    while (it.hasNext()) {
+      final JobStepsCql jobExToJR = it.next();        
+      listJobCql.add(jobExToJR);	    	
+    }
+
+    // comparaison de deux listes
+    if (CompareUtils.compareListsGeneric(listJobCql, listJobThrift)) {
+      LOG.info("MIGRATION_JobInstanceByName -- Les listes metadata sont identiques");
+    } else {
+      LOG.warn("MIGRATION_JobInstanceByName -- ATTENTION: Les listes metadata sont différentes ");
+    }
+
+    return false;  
+  }
+
+  /**
+   * Liste des job cql venant de la table thirft après transformation
+   * @return
+   */
+  public List<JobStepsCql> getListJobStepsCqlFromThrift() {
+
+    final List<JobStepsCql> listJobThrift = new ArrayList<>();
+
+    final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBSTEPS_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
+
+    while (it.hasNext()) {
+      final Row row = (Row) it.next();
+      final Long id = row.getLong("column1");
+      final Composite composite = CompositeSerializer.get().fromByteBuffer(row.getBytes("value"));
+      final String jobName = (String) composite.getComponent(0).getValue(StringSerializer.get());
+      final String stepName = (String) composite.getComponent(1).getValue(StringSerializer.get());
+      final JobStepsCql jobcql = new JobStepsCql();
+      jobcql.setJobStepId(id);
+      jobcql.setJobName(jobName);
+      jobcql.setStepName(stepName);
+      listJobThrift.add(jobcql);
+    }     
+    return listJobThrift;
+  }
 }
