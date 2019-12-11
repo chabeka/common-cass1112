@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
-import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
@@ -363,8 +362,8 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * Ajout save
    * EC
    */
-  public TraceRegSecuriteCql save(final TraceRegSecuriteCql entity) {
-    getDao().save(entity);
+  public T save(final T entity) {
+    getDao().saveWithMapper(entity);
     return entity;
   }
 }
