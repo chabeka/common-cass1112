@@ -24,6 +24,8 @@ import fr.urssaf.image.sae.commons.utils.ObjectCodec;
 @Repository
 public class ParametersCqlDaoImpl extends GenericDAOImpl<ParameterCql, String> implements IParametersDaoCql {
   /**
+   * Constructeur pour injection manuelle
+   * 
    * @param ccf
    */
   @Autowired
