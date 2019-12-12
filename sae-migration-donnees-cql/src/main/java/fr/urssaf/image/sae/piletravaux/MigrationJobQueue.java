@@ -78,7 +78,7 @@ public class MigrationJobQueue implements IMigration {
       jobCql.setType(jobq.getType());
 
       // enregistrement
-      cqldao.save(jobCql);
+      cqldao.saveWithMapper(jobCql);
 
       nb++;
     }
