@@ -52,7 +52,7 @@ public class MigrationJobInstancesByName extends MigrationJob implements IMigrat
         final JobInstancesByNameCql jobcql = new JobInstancesByNameCql();
         jobcql.setJobInstanceId(id);
         jobcql.setJobName(key);
-        jobInstByNamedao.save(jobcql);
+        jobInstByNamedao.saveWithMapper(jobcql);
       } else {
 
       }

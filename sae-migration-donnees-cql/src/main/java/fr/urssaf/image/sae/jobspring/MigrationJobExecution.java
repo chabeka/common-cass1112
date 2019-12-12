@@ -88,7 +88,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
       final Row row = (Row) it.next();
       JobExecutionCqlForMig jobExecutionCql = getJobExecutionFromResult(key, lastKey, row);
       if (key != null && !key.equals(lastKey)) {
-        jobdaocqlForMig.save(jobExecutionCql);
+        jobdaocqlForMig.saveWithMapper(jobExecutionCql);
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
       }

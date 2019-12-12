@@ -58,7 +58,7 @@ public class MigrationJobExecutionsRunning extends MigrationJob implements IMigr
         jobExes.setJobName(key);
         jobExes.setValue(value);
 
-        jobExeToJobR.save(jobExes);
+        jobExeToJobR.saveWithMapper(jobExes);
       }
 
     }
