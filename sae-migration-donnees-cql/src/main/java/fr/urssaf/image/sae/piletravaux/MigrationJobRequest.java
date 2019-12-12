@@ -52,7 +52,6 @@ public class MigrationJobRequest implements IMigration {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationJobRequest.class);
 
-  public static final String JOBREQUEST_CFNAME = "JobRequest";
 
   @Autowired
   IGenericJobTypeDao genericdao;
@@ -171,6 +170,7 @@ public class MigrationJobRequest implements IMigration {
     LOGGER.debug(" MigrationJobRequest - migrationFromCqlToThrift end");
 
   }
+
   // ############################################################
   // ################# TESTDES DONNEES ######################
   // ############################################################
@@ -216,7 +216,7 @@ public class MigrationJobRequest implements IMigration {
                                 bytesSerializer,
                                 bytesSerializer,
                                 bytesSerializer);
-    rangeSlicesQuery.setColumnFamily(JOBREQUEST_CFNAME);
+    rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
     final int blockSize = 1000;
     byte[] startKey = new byte[0];
     int count;

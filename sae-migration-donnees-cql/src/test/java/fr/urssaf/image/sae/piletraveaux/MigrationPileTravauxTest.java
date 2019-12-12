@@ -253,20 +253,4 @@ public class MigrationPileTravauxTest {
 
   }
 
-  @Test
-  public void sliceQueryTest() throws Exception {
-
-    populateTableThrift();
-
-    migJobR.migrationFromThriftToCql();
-
-    try {
-      final boolean isEqBase = migJobR.compareJobRequestCql();
-      Assert.assertTrue("Les données dans la base thrift et cql doivent être égales", isEqBase);
-    }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
-
-  }
 }

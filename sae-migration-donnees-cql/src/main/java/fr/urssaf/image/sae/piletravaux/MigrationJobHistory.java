@@ -3,8 +3,10 @@
  */
 package fr.urssaf.image.sae.piletravaux;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -23,8 +25,15 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
 import fr.urssaf.image.sae.pile.travaux.service.impl.JobQueueServiceImpl;
 import fr.urssaf.image.sae.piletravaux.dao.IGenericJobTypeDao;
 import fr.urssaf.image.sae.piletravaux.model.GenericJobType;
+import fr.urssaf.image.sae.utils.CompareUtils;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
+import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
  * Migration de CF JobHistory
@@ -63,10 +72,6 @@ public class MigrationJobHistory {
     final Iterator<GenericJobType> it = genericdao.findAllByCFName("JobHistory", ccf.getKeyspace().getKeyspaceName());
 
     UUID lastKey = null;
-    if (it.hasNext()) {
-      final Row row = (Row) it.next();
-      lastKey = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-    }
 
     Map<UUID, String> trace = new HashMap<>();
     JobHistoryCql jobH;
@@ -79,7 +84,9 @@ public class MigrationJobHistory {
 
       final Row row = (Row) it.next();
       key = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-
+      if (lastKey == null) {
+        lastKey = key;
+      }
       // compare avec la derniere clé qui a été extraite
       // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
       // alors on enrgistre celui qui vient d'être traité
@@ -90,7 +97,7 @@ public class MigrationJobHistory {
         jobH.setTrace(trace);
 
         // enregistrement
-        cqldao.save(jobH);
+        cqldao.saveWithMapper(jobH);
 
         // réinitialisation
         lastKey = key;
@@ -114,7 +121,7 @@ public class MigrationJobHistory {
       jobH.setTrace(trace);
 
       // enregistrement
-      cqldao.save(jobH);
+      cqldao.saveWithMapper(jobH);
 
       nb++;
     }
@@ -151,6 +158,126 @@ public class MigrationJobHistory {
 
     LOGGER.debug(" Totale : " + nb);
     LOGGER.debug(" MigrationJobHistory - migrationFromCqlToThrift end");
+  }
+
+  // ############################################################
+  // ################# TESTDES DONNEES ######################
+  // ############################################################
+
+  public boolean compareJobHistoryCql() {
+
+    // liste d'objet cql venant de la base thrift après transformation
+    final List<JobHistoryCql> listJobThrift = getListJobHistoryThrift();
+
+    // liste venant de la base cql
+
+    final List<JobHistoryCql> listRToCql = new ArrayList<>();
+    final Iterator<JobHistoryCql> it = cqldao.findAllWithMapper();
+    while (it.hasNext()) {
+      final JobHistoryCql jobHistory = it.next();
+      listRToCql.add(jobHistory);
+    }
+
+    // comparaison de deux listes
+    final boolean isEqBase = CompareUtils.compareListsGeneric(listRToCql, listJobThrift);
+    if (isEqBase) {
+      LOGGER.info("MIGRATION_JobInstanceByName -- Les listes metadata sont identiques");
+    } else {
+      LOGGER.warn("MIGRATION_JobInstanceByName -- ATTENTION: Les listes metadata sont différentes ");
+    }
+
+    return isEqBase;
+  }
+
+  /**
+   * Liste des job cql venant de la table thirft après transformation
+   * 
+   * @return
+   */
+  public List<JobHistoryCql> getListJobHistoryThrift() {
+
+    final List<JobHistoryCql> listJobThrift = new ArrayList<>();
+
+    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+    final UUIDSerializer uuidSerializer = UUIDSerializer.get();
+
+    final RangeSlicesQuery<UUID, UUID, byte[]> rangeSlicesQuery = HFactory
+        .createRangeSlicesQuery(ccf.getKeyspace(),
+                                uuidSerializer,
+                                uuidSerializer,
+                                bytesSerializer);
+    rangeSlicesQuery.setColumnFamily(JobHistoryDao.JOBHISTORY_CFNAME);
+    final int blockSize = 1000;
+    UUID startKey = null;
+    UUID currentKey = null;
+    UUID lastKey = null;
+
+    Map<UUID, String> mapTrace = new HashMap<>();
+    int count;
+    do {
+
+      // on fixe la clé de depart et la clé de fin. Dans notre cas il n'y a pas de clé de fin car on veut parcourir
+      // toutes les clé jusqu'à la dernière
+      // on fixe un nombre maximal de ligne à traiter à chaque itération
+      // si le nombre de resultat < blockSize on sort de la boucle ==> indique la fin des colonnes
+
+      rangeSlicesQuery.setRange(null, null, false, blockSize);
+      rangeSlicesQuery.setKeys(startKey, null);
+      rangeSlicesQuery.setRowCount(blockSize);
+      // rangeSlicesQuery.setReturnKeysOnly();
+      final QueryResult<OrderedRows<UUID, UUID, byte[]>> result = rangeSlicesQuery.execute();
+
+      final OrderedRows<UUID, UUID, byte[]> orderedRows = result.get();
+      count = orderedRows.getCount();
+
+      // Parcours des rows pour déterminer la dernière clé de l'ensemble
+      final me.prettyprint.hector.api.beans.Row<UUID, UUID, byte[]> lastRow = orderedRows.peekLast();
+      if (lastRow != null) {
+        startKey = lastRow.getKey();
+      }
+
+      for (final me.prettyprint.hector.api.beans.Row<UUID, UUID, byte[]> row : orderedRows) {
+
+        UUID column = null;
+        String infoTrace = null;
+
+        currentKey = row.getKey();
+
+        if (lastKey == null) {
+          lastKey = currentKey;
+        }
+
+        if (currentKey != null && !currentKey.equals(lastKey)) {
+          final JobHistoryCql jobH = new JobHistoryCql();
+          jobH.setIdjob(lastKey);
+          jobH.setTrace(mapTrace);
+          lastKey = currentKey;
+          listJobThrift.add(jobH);
+
+          // reinitialisation
+          mapTrace = new HashMap<>();
+        }
+
+        final List<HColumn<UUID, byte[]>> tHl = row.getColumnSlice().getColumns();
+        for (final HColumn<UUID, byte[]> col : tHl) {
+          column = col.getName();
+          infoTrace = StringSerializer.get().fromBytes(col.getValue());
+        }
+        mapTrace.put(column, infoTrace);
+
+      }
+
+    } while (count == blockSize);
+
+    // enregistrer le dernier cas
+    if (currentKey != null) {
+      final JobHistoryCql jobH = new JobHistoryCql();
+      jobH.setIdjob(lastKey);
+      jobH.setTrace(mapTrace);
+      listJobThrift.add(jobH);
+    }
+
+    return listJobThrift;
   }
 
 }
