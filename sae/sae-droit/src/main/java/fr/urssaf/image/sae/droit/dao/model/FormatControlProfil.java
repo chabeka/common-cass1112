@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.droit.dao.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.Frozen;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -11,6 +14,8 @@ import com.datastax.driver.mapping.annotations.Table;
  */
 @Table(name = "droitformatcontrolprofilcql")
 public class FormatControlProfil implements Comparable<FormatControlProfil> {
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ActionUnitaire.class);
 
   @PartitionKey
   @Column(name = "formatCode")
@@ -96,6 +101,9 @@ public class FormatControlProfil implements Comparable<FormatControlProfil> {
         return false;
       }
     } else if (!controlProfil.equals(other.controlProfil)) {
+
+      LOGGER.warn("code:" + formatCode + "/" + getFormatCode() + ", controlProfil:" + controlProfil + "/" + other.getControlProfil());
+
       return false;
     }
     if (description == null) {
@@ -103,6 +111,7 @@ public class FormatControlProfil implements Comparable<FormatControlProfil> {
         return false;
       }
     } else if (!description.equals(other.description)) {
+      LOGGER.debug("code:" + formatCode + "/" + getFormatCode() + ", description:" + description + "/" + other.getDescription());
       return false;
     }
     if (formatCode == null) {

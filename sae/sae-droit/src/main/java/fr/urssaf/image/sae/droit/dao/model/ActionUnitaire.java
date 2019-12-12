@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.droit.dao.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -13,6 +16,8 @@ import com.datastax.driver.mapping.annotations.Table;
  */
 @Table(name = "droitactionunitairecql")
 public class ActionUnitaire implements Comparable<ActionUnitaire> {
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ActionUnitaire.class);
 
   /** identifiant unique de l'action unitaire. */
   @PartitionKey
@@ -64,6 +69,9 @@ public class ActionUnitaire implements Comparable<ActionUnitaire> {
       final ActionUnitaire actionUnitaire = (ActionUnitaire) obj;
       areEquals = code.equals(actionUnitaire.getCode())
           && description.equals(actionUnitaire.getDescription());
+      if (!description.equals(actionUnitaire.getDescription())) {
+        LOGGER.warn("codes:" + code + "/" + actionUnitaire.getCode() + ", descriptions:" + description + "/" + actionUnitaire.getDescription());
+      }
     }
 
     return areEquals;
