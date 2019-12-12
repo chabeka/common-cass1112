@@ -41,7 +41,7 @@
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-format</artifactId>
 			<version>20.04.0-SNAPSHOT</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-commons</artifactId>
