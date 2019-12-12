@@ -79,9 +79,10 @@ public class JournalServiceImpl implements JournalService {
 
     final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
     final String date1 = sdf.format(dateDebut);
+    // date1 = date1.concat("0000");//
 
-    String date2 = sdf.format(dateFin);
-    date2 = date2.concat("2359");// Correction EC
+    final String date2 = sdf.format(dateFin);
+    // date2 = date2.concat("2359");// Correction EC
 
     LOGGER.debug(LOG_FIN, trcPrefix);
     return journalDfceSupport.findByDates(date1, date2,
