@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
 
+import com.datastax.driver.mapping.annotations.ClusteringColumn;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
@@ -29,6 +30,7 @@ public class JobQueueCql implements Serializable, Comparable<JobQueueCql> {
   @PartitionKey
   private String key;
 
+  @ClusteringColumn
   private UUID idJob;
 
   private String type;
@@ -100,7 +102,7 @@ public class JobQueueCql implements Serializable, Comparable<JobQueueCql> {
    */
   @Override
   public int compareTo(final JobQueueCql job) {
-    return (key + "").compareTo(job.getKey() + "");
+    return (key + idJob + "").compareTo(job.getKey() + job.getIdJob() + "");
   }
 
   @Override
