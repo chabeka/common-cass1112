@@ -147,4 +147,21 @@ public class DataIntegrityPileTravaux {
     }
 
   }
+
+  @Test
+  public void sliceQueryJobQueueTest() throws Exception {
+
+    populateTableThrift();
+
+    migJobQ.migrationFromThriftToCql();
+
+    try {
+      final boolean isEqBase = migJobQ.compareJobQueueCql();
+      Assert.assertTrue("Les données dans la base thrift et cql de la table JobHistory et JobHistoryCql doivent être égales", isEqBase);
+    }
+    catch (final Exception e) {
+      fail("Les données dans la base thrift et cql de la table JobHistory et JobHistoryCql  doivent être égales");
+    }
+
+  }
 }
