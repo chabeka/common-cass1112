@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,7 +41,6 @@ import fr.urssaf.image.sae.piletravaux.MigrationJobHistory;
 import fr.urssaf.image.sae.piletravaux.MigrationJobQueue;
 import fr.urssaf.image.sae.piletravaux.MigrationJobRequest;
 import fr.urssaf.image.sae.utils.Dumper;
-import junit.framework.Assert;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.Keyspace;
 
@@ -249,6 +249,23 @@ public class MigrationPileTravauxTest {
       final String jobKey = new String("jobKey" + 1);
       job.setJobKey(jobKey.getBytes());
       jobQueueService.addJob(job);
+    }
+
+  }
+
+  @Test
+  public void sliceQueryTest() throws Exception {
+
+    populateTableThrift();
+
+    migJobR.migrationFromThriftToCql();
+
+    try {
+      final boolean isEqBase = migJobR.compareJobRequestCql();
+      Assert.assertTrue("Les données dans la base thrift et cql doivent être égales", isEqBase);
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
     }
 
   }

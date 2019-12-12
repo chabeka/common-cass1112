@@ -201,7 +201,7 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
   public boolean compareJobInstance() {
 
     // liste venant de la base thrift après transformation
-    final List<JobInstanceCql> listJobThrift = getListJobExeToStepThrift();
+    final List<JobInstanceCql> listJobThrift = getListJobInstanceThrift();
 
     // liste venant de la base cql
     final List<JobInstanceCql> listJobCql = new ArrayList<>();
@@ -226,7 +226,7 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
    * Liste des job cql venant de la table thirft après transformation
    * @return
    */
-  public List<JobInstanceCql> getListJobExeToStepThrift(){
+  public List<JobInstanceCql> getListJobInstanceThrift(){
 
     final List<JobInstanceCql> listJobThrift = new ArrayList<>();
 
