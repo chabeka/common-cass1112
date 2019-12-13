@@ -16,7 +16,7 @@
 
 	<properties>
 		<junit.version>4.8.2</junit.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<sae.version>19.10.0-SNAPSHOT</sae.version>
 		<commons.dfce.version>1.11.0-SNAPSHOT</commons.dfce.version>
 		<aspectj.version>1.8.13</aspectj.version>
