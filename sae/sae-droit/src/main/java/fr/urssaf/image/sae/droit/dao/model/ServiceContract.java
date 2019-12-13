@@ -5,6 +5,9 @@ package fr.urssaf.image.sae.droit.dao.model;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -18,7 +21,8 @@ import com.datastax.driver.mapping.annotations.Transient;
  */
 @Table(name = "droitcontratservicecql")
 public class ServiceContract implements Comparable<ServiceContract> {
-
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ServiceContract.class);
   /** code intelligible du CS */
   @Column(name = "libelle")
   private String libelle;
@@ -226,7 +230,14 @@ public class ServiceContract implements Comparable<ServiceContract> {
           && description.equals(contract.getDescription())
           && libelle.equals(contract.getLibelle())
           && viDuree.equals(contract.getViDuree());
-
+      if (!areEquals) {
+        LOGGER.warn("codeClient:" + codeClient + "/" + getCodeClient()
+        + ", description:" + description + "/" + contract.getDescription()
+        + ", libelle:" + libelle + "/" + contract.getLibelle()
+        + ", description:" + description + "/" + contract.getDescription()
+        + ", viDuree:" + viDuree + "/" + contract.getViDuree()
+            );
+      }
     }
 
     return areEquals;

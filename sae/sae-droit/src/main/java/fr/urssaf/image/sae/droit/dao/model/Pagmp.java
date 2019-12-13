@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.droit.dao.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -13,7 +16,8 @@ import com.datastax.driver.mapping.annotations.Table;
  */
 @Table(name = "droitpagmpcql")
 public class Pagmp implements Comparable<Pagmp> {
-
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(Pagmp.class);
   /** identifiant unique du PAGMp */
   @PartitionKey
   @Column(name = "code")
@@ -85,6 +89,11 @@ public class Pagmp implements Comparable<Pagmp> {
       areEquals = code.equals(pagmp.getCode())
           && description.equals(pagmp.getDescription())
           && prmd.equals(pagmp.getPrmd());
+      if (!areEquals) {
+        LOGGER.warn("code:" + code + "/" + getCode()
+            + ", description:" + description + "/" + pagmp.getDescription()
+            + ", prmd:" + prmd + "/" + pagmp.getPrmd());
+      }
     }
 
     return areEquals;

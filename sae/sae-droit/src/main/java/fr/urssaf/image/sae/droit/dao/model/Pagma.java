@@ -5,6 +5,9 @@ package fr.urssaf.image.sae.droit.dao.model;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -15,7 +18,8 @@ import com.datastax.driver.mapping.annotations.Table;
  */
 @Table(name = "droitpagmacql")
 public class Pagma implements Comparable<Pagma> {
-
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(Pagma.class);
   /** code unique du PAGMa */
   @PartitionKey
   @Column(name = "code")
@@ -67,6 +71,9 @@ public class Pagma implements Comparable<Pagma> {
       areEquals = code.equals(pagma.getCode())
           && actionUnitaires.size() == pagma.getActionUnitaires().size()
           && actionUnitaires.containsAll(pagma.getActionUnitaires());
+      if (!areEquals) {
+        LOGGER.warn("code:" + code + "/" + getCode() + ", actionUnitaires:" + actionUnitaires + "/" + pagma.getActionUnitaires());
+      }
     }
 
     return areEquals;

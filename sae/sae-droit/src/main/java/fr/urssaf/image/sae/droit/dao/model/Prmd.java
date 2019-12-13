@@ -6,6 +6,9 @@ package fr.urssaf.image.sae.droit.dao.model;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -17,7 +20,8 @@ import com.google.common.base.Objects;
  */
 @Table(name = "droitprmdcql")
 public class Prmd implements Comparable<Prmd> {
-
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(Prmd.class);
   /** identifiant unique du PRMD */
   @PartitionKey
   @Column(name = "code")
@@ -104,6 +108,14 @@ public class Prmd implements Comparable<Prmd> {
           && metadata.keySet().size() == prmd.getMetadata().keySet()
           .size()
           && metadata.keySet().containsAll(prmd.getMetadata().keySet());
+      if (!areEquals) {
+        LOGGER.warn("code:" + code + "/" + getCode()
+        + ", description:" + description + "/" + prmd.getDescription()
+        + ", lucene:" + lucene + "/" + prmd.getLucene()
+        + ", bean:" + bean + "/" + prmd.getBean()
+            + ", metadata:" + metadata + "/" + prmd.getMetadata()
+            );
+      }
     }
 
     return areEquals;

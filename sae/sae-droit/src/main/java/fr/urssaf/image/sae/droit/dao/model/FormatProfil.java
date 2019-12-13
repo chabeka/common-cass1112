@@ -15,7 +15,6 @@ public class FormatProfil {
   private boolean formatValidation;
   private String formatValidationMode;
 
-
   /**
    * @return indicateur de contrôle d'identification
    */
