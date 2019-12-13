@@ -48,22 +48,22 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
       daoCql.addStepExecutions(jobExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       daoThrift.addStepExecutions(jobExecution);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
+      daoCql.addStepExecutions(jobExecution);
+      daoThrift.addStepExecutions(jobExecution);
     }
   }
 
   @Override
   public final StepExecution getStepExecution(final JobExecution jobExecution, final Long stepExecutionId) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
+    if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       return daoCql.getStepExecution(jobExecution, stepExecutionId);
-    } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       return daoThrift.getStepExecution(jobExecution, stepExecutionId);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
     return null;
   }
@@ -75,9 +75,10 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
       daoCql.saveStepExecution(stepExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       daoThrift.saveStepExecution(stepExecution);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
+      daoCql.saveStepExecution(stepExecution);
+      daoThrift.saveStepExecution(stepExecution);
     }
   }
 
@@ -92,9 +93,10 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
       daoCql.updateStepExecution(stepExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       daoThrift.updateStepExecution(stepExecution);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
+      daoCql.updateStepExecution(stepExecution);
+      daoThrift.saveStepExecution(stepExecution);
     }
   }
 
@@ -110,9 +112,10 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
       daoCql.deleteStepExecution(stepExecutionId);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       daoThrift.deleteStepExecution(stepExecutionId);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
+      daoCql.deleteStepExecution(stepExecutionId);
+      daoThrift.deleteStepExecution(stepExecutionId);
     }
   }
 
@@ -128,9 +131,10 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
       daoCql.deleteStepsOfExecution(jobExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       daoThrift.deleteStepsOfExecution(jobExecution);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
+      daoCql.deleteStepsOfExecution(jobExecution);
+      daoThrift.deleteStepsOfExecution(jobExecution);
     }
   }
 
@@ -138,13 +142,12 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
   @Override
   public final int countStepExecutions(final String jobNamePattern, final String stepNamePattern) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
+    if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi) ||
+        ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       return daoCql.countStepExecutions(jobNamePattern, stepNamePattern);
-    } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       return daoThrift.countStepExecutions(jobNamePattern, stepNamePattern);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
     return 0;
   }
@@ -153,13 +156,12 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
   @Override
   public final Collection<StepExecution> findStepExecutions(final String jobNamePattern, final String stepNamePattern, final int start, final int count) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
+    if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       return daoCql.findStepExecutions(jobNamePattern, stepNamePattern, start, count);
-    } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       return daoThrift.findStepExecutions(jobNamePattern, stepNamePattern, start, count);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
     return null;
   }
@@ -168,13 +170,12 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
   @Override
   public final Collection<String> findStepNamesForJobExecution(final String jobName, final String excludesPattern) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
+    if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       return daoCql.findStepNamesForJobExecution(jobName, excludesPattern);
-    } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       return daoThrift.findStepNamesForJobExecution(jobName, excludesPattern);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
     return null;
   }
