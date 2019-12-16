@@ -69,10 +69,11 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   public JobClockSupport getClockSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
-        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
+    ) {
       // nothing => le clock est gerer automatiquement par datastax
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
-        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return regSecuriteThriftService.getClockSupport();
     }
     return null;
