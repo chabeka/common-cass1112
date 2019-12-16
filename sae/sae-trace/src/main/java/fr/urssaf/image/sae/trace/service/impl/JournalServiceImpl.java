@@ -78,11 +78,11 @@ public class JournalServiceImpl implements JournalService {
                                                       dateFin.toString() });
 
     final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
-    final String date1 = sdf.format(dateDebut);
-    // date1 = date1.concat("0000");//
+    String date1 = sdf.format(dateDebut);
+    date1 = date1.concat("000000000");
 
-    final String date2 = sdf.format(dateFin);
-    // date2 = date2.concat("2359");// Correction EC
+    String date2 = sdf.format(dateFin);
+    date2 = date2.concat("235959999");
 
     LOGGER.debug(LOG_FIN, trcPrefix);
     return journalDfceSupport.findByDates(date1, date2,
@@ -103,7 +103,7 @@ public class JournalServiceImpl implements JournalService {
     String date1 = sdf.format(dateDebut);
     date1 = date1.concat("000000000");
     String date2 = sdf.format(dateFin);
-    date2 = date2.concat("999999999");
+    date2 = date2.concat("235959999");
 
     LOGGER.debug("{} - fin", trcPrefix);
     return journalDfceSupport.findByDates(date1, date2,
