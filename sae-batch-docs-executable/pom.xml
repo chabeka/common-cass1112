@@ -15,7 +15,7 @@
 	<description>Traitement de masse: import, export, delete</description>
 
 	<properties>
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<sae.version>20.04.0-SNAPSHOT</sae.version>
 		<commons.dfce.version>2.1.0-SNAPSHOT</commons.dfce.version>
