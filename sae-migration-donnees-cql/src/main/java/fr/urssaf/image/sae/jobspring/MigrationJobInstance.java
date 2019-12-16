@@ -262,11 +262,20 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
         startKey = lastRow.getKey();
       }
 
+      int nb = 1;
       // On recupère les ids des JobInstance
       for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
         final JobInstance job = getTraceFromResult(row);
         final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
-        listJobThrift.add(cql);
+
+        // tant que count == blockSize on ajout tout sauf le dernier
+        // Cela empeche d'ajouter la lastRow deux fois
+        if (count == blockSize && nb < count) {
+          listJobThrift.add(cql);
+        } else if (count != blockSize) {
+          listJobThrift.add(cql);
+        }
+        nb++;
       }
 
     } while (count == blockSize);

@@ -241,11 +241,18 @@ public class MigrationJobRequest implements IMigration {
       if (lastRow != null) {
         startKey = lastRow.getKey();
       }
-
+      int nb = 1;
       for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
         final JobRequest job = getTraceFromResult(row);
         final JobRequestCql cql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(job);
-        listJobThrift.add(cql);
+        // tant que count == blockSize on ajout tout sauf le dernier
+        // Cela empeche d'ajouter la lastRow deux fois
+        if (count == blockSize && nb < count) {
+          listJobThrift.add(cql);
+        } else if (count != blockSize) {
+          listJobThrift.add(cql);
+        }
+        nb++;
       }
 
     } while (count == blockSize);

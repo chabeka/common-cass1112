@@ -179,6 +179,7 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
       final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> lastRow = orderedRows.peekLast();
       startKey = lastRow.getKey();
 
+      int nb = 1;
       for (final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> row : orderedRows) {
         final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
         final long key = row.getKey();
@@ -186,7 +187,15 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
         final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
         stepcql.setJobExecutionId(jobExecutionId);
         stepcql.setJobStepExecutionId(key);
-        list.add(stepcql);
+
+        // tant que count == blockSize on ajout tout sauf le dernier
+        // Cela empeche d'ajouter la lastRow deux fois
+        if (count == blockSize && nb < count) {
+          list.add(stepcql);
+        } else if (count != blockSize) {
+          list.add(stepcql);
+        }
+        nb++;
       }
 
     } while (count == blockSize);
@@ -234,9 +243,9 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
     // comparaison de deux listes
     final boolean isEqList = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
     if (isEqList) {
-      LOG.info("MIGRATION_JobInstanceByName -- Les listes metadata sont identiques");
+      LOG.info("MIGRATION_JobStepCql -- Les listes metadata sont identiques");
     } else {
-      LOG.warn("MIGRATION_JobInstanceByName -- ATTENTION: Les listes metadata sont différentes ");
+      LOG.warn("MIGRATION_JobStepCql -- ATTENTION: Les listes metadata sont différentes ");
     }
 
     return isEqList;

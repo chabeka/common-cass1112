@@ -120,13 +120,14 @@ public class MigrationJobSteps extends MigrationJob implements IMigration {
     }
 
     // comparaison de deux listes
-    if (CompareUtils.compareListsGeneric(listJobCql, listJobThrift)) {
-      LOG.info("MIGRATION_JobInstanceByName -- Les listes metadata sont identiques");
+    final boolean isBasEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
+    if (isBasEq) {
+      LOG.info("MIGRATION_JobStepsCql -- Les listes metadata sont identiques");
     } else {
-      LOG.warn("MIGRATION_JobInstanceByName -- ATTENTION: Les listes metadata sont différentes ");
+      LOG.warn("MIGRATION_JobStepsCql -- ATTENTION: Les listes metadata sont différentes ");
     }
 
-    return false;  
+    return isBasEq;
   }
 
   /**

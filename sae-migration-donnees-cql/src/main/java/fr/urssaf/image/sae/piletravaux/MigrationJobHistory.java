@@ -181,9 +181,9 @@ public class MigrationJobHistory {
     // comparaison de deux listes
     final boolean isEqBase = CompareUtils.compareListsGeneric(listRToCql, listJobThrift);
     if (isEqBase) {
-      LOGGER.info("MIGRATION_JobInstanceByName -- Les listes metadata sont identiques");
+      LOGGER.info("MIGRATION_JobHistoryCql -- Les listes metadata sont identiques");
     } else {
-      LOGGER.warn("MIGRATION_JobInstanceByName -- ATTENTION: Les listes metadata sont différentes ");
+      LOGGER.warn("MIGRATION_JobHistoryCql -- ATTENTION: Les listes metadata sont différentes ");
     }
 
     return isEqBase;
