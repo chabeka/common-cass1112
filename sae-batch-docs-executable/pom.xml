@@ -11,14 +11,14 @@
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-batch-docs-executable</artifactId>
 	<name>sae-batch-docs-executable</name>
-	<version>19.10.0-SNAPSHOT</version>
+	<version>2.1.0-SNAPSHOT</version>
 	<description>Traitement de masse: import, export, delete</description>
 
 	<properties>
 		<junit.version>4.8.2</junit.version>
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
-		<sae.version>19.10.0-SNAPSHOT</sae.version>
-		<commons.dfce.version>1.11.0-SNAPSHOT</commons.dfce.version>
+		<sae.version>20.04.0-SNAPSHOT</sae.version>
+		<commons.dfce.version>2.1.0-SNAPSHOT</commons.dfce.version>
 		<aspectj.version>1.8.13</aspectj.version>
 		<easymock.version>3.0</easymock.version>
 		<apache.commons-collections.version>3.2.1</apache.commons-collections.version>
