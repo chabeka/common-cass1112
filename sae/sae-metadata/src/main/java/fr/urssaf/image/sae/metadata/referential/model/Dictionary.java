@@ -2,6 +2,9 @@ package fr.urssaf.image.sae.metadata.referential.model;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -12,6 +15,8 @@ import com.datastax.driver.mapping.annotations.Table;
  */
 @Table(name = "dictionarycql")
 public class Dictionary implements Comparable<Dictionary> {
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(Dictionary.class);
   @PartitionKey
   @Column(name = "identifiant")
   private String identifiant;
@@ -65,6 +70,7 @@ public class Dictionary implements Comparable<Dictionary> {
         return false;
       }
     } else if (!entries.equals(other.entries)) {
+      LOGGER.warn("identifiant:" + identifiant + "/" + getIdentifiant() + ", entries:" + entries + "/" + other.entries);
       return false;
     }
     if (identifiant == null) {

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -47,7 +49,8 @@ import com.datastax.driver.mapping.annotations.Table;
 @SuppressWarnings( { "PMD.LongVariable", "PMD.TooManyFields" })
 @Table(name = "metadatacql")
 public class MetadataReference implements Serializable, Comparable<MetadataReference> {
-
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(MetadataReference.class);
 
 
   /**
@@ -553,6 +556,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!archivable.equals(other.archivable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", archivable:" + archivable + "/" + other.archivable);
       return false;
     }
     if (clientAvailable == null) {
@@ -560,6 +564,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!clientAvailable.equals(other.clientAvailable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", clientAvailable:" + clientAvailable + "/" + other.clientAvailable);
       return false;
     }
     if (consultable == null) {
@@ -567,6 +572,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!consultable.equals(other.consultable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", consultable:" + consultable + "/" + other.consultable);
       return false;
     }
     if (defaultConsultable == null) {
@@ -574,6 +580,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!defaultConsultable.equals(other.defaultConsultable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", defaultConsultable:" + defaultConsultable + "/" + other.defaultConsultable);
       return false;
     }
     if (description == null) {
@@ -581,6 +588,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!description.equals(other.description)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", description:" + description + "/" + other.description);
       return false;
     }
     if (dictionaryName == null) {
@@ -588,6 +596,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!dictionaryName.equals(other.dictionaryName)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", dictionaryName:" + dictionaryName + "/" + other.dictionaryName);
       return false;
     }
     if (hasDictionary == null) {
@@ -595,6 +604,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!hasDictionary.equals(other.hasDictionary)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", hasDictionary:" + hasDictionary + "/" + other.hasDictionary);
       return false;
     }
     if (internal == null) {
@@ -602,6 +612,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!internal.equals(other.internal)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", internal:" + internal + "/" + other.internal);
       return false;
     }
     if (isIndexed == null) {
@@ -609,6 +620,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!isIndexed.equals(other.isIndexed)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", isIndexed:" + isIndexed + "/" + other.isIndexed);
       return false;
     }
     if (label == null) {
@@ -616,6 +628,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!label.equals(other.label)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", label:" + label + "/" + other.label);
       return false;
     }
     if (leftTrimable == null) {
@@ -623,6 +636,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!leftTrimable.equals(other.leftTrimable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", leftTrimable:" + leftTrimable + "/" + other.leftTrimable);
       return false;
     }
     if (length == null) {
@@ -630,6 +644,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!length.equals(other.length)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", length:" + length + "/" + other.length);
       return false;
     }
     if (longCode == null) {
@@ -644,6 +659,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!modifiable.equals(other.modifiable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", modifiable:" + modifiable + "/" + other.modifiable);
       return false;
     }
     if (pattern == null) {
@@ -651,6 +667,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!pattern.equals(other.pattern)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", pattern:" + pattern + "/" + other.pattern);
       return false;
     }
     if (requiredForArchival == null) {
@@ -658,6 +675,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!requiredForArchival.equals(other.requiredForArchival)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", requiredForArchival:" + requiredForArchival + "/" + other.requiredForArchival);
       return false;
     }
     if (requiredForStorage == null) {
@@ -665,6 +683,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!requiredForStorage.equals(other.requiredForStorage)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", requiredForStorage:" + requiredForStorage + "/" + other.requiredForStorage);
       return false;
     }
     if (rightTrimable == null) {
@@ -672,6 +691,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!rightTrimable.equals(other.rightTrimable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", rightTrimable:" + rightTrimable + "/" + other.rightTrimable);
       return false;
     }
     if (searchable == null) {
@@ -679,6 +699,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!searchable.equals(other.searchable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", searchable:" + searchable + "/" + other.searchable);
       return false;
     }
     if (shortCode == null) {
@@ -686,6 +707,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!shortCode.equals(other.shortCode)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", shortCode:" + shortCode + "/" + other.shortCode);
       return false;
     }
     if (transferable == null) {
@@ -693,6 +715,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!transferable.equals(other.transferable)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", transferable:" + transferable + "/" + other.transferable);
       return false;
     }
     if (type == null) {
@@ -700,6 +723,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!type.equals(other.type)) {
+      LOGGER.warn("longCode:" + longCode + "/" + getLongCode() + ", type:" + type + "/" + other.type);
       return false;
     }
     return true;
