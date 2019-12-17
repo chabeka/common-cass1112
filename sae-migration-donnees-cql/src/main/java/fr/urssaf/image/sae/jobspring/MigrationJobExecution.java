@@ -82,19 +82,35 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     // itérateur nous permettant de parcourir toutes les lignes de la CF
     final Iterator<GenericJobExecution> it = genericJobExdao.findAllByCFName(JOBEXECUTION_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
     Long lastKey = null;
-    final Long key = null;
+    Long key = null;
+    JobExecutionCqlForMig jobExecutionCql = new JobExecutionCqlForMig();
 
+    int nbRow = 0;
     while (it.hasNext()) {
       final Row row = (Row) it.next();
-      JobExecutionCqlForMig jobExecutionCql = getJobExecutionFromResult(key, lastKey, row);
+
+      // extraction de la clé
+      key = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
+      if (lastKey == null) {
+        lastKey = key;
+      }
+      //
+      getJobExecutionFromResult(row, jobExecutionCql);
       if (key != null && !key.equals(lastKey)) {
         jobdaocqlForMig.saveWithMapper(jobExecutionCql);
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
+        nbRow++;
       }
+
+    }
+    // ajout du dernier cas traité
+    if (jobExecutionCql != null) {
+      jobdaocqlForMig.saveWithMapper(jobExecutionCql);
+      nbRow++;
     }
 
-
+    LOGGER.debug(" migrationFromThriftToCql total row" + nbRow);
     LOGGER.debug(" migrationFromThriftToCql end");
   }
 
@@ -131,11 +147,16 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     // liste venant de la base cql
     final List<JobExecutionCqlForMig> listJobThrift = new ArrayList<>();
     final Iterator<JobExecutionCql> it = jobdaocql.findAllWithMapper();
+    int nbRow = 0;
     while (it.hasNext()) {
-      final JobExecutionCqlForMig jobExFMig = getJobExecutionJobExeCql(it.next());
+      final JobExecutionCql cqlJob = it.next();
+      final JobExecutionCqlForMig jobExFMig = getJobExecutionJobExeCql(cqlJob);
       listJobThrift.add(jobExFMig);
+      nbRow++;
 
     }
+
+    LOGGER.info("Nb total " + nbRow);
 
     final boolean isListEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
     if (isListEq) {
@@ -178,18 +199,15 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     return jobExecutionCql;
   }
 
-  private JobExecutionCqlForMig getJobExecutionFromResult(Long key, Long lastKey, final Row row) {
+  private void getJobExecutionFromResult(final Row row, final JobExecutionCqlForMig jobExecutionCql) {
 
-    final JobExecutionCqlForMig jobExecutionCql = new JobExecutionCqlForMig();
+    // final JobExecutionCqlForMig jobExecutionCql = new JobExecutionCqlForMig();
 
-    // extraction de la clé
-    key = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
+
     final String colName = StringSerializer.get().fromByteBuffer(row.getBytes("column1"));
-    if(lastKey == null) {
-      lastKey = key;
-    }
+
     // Creation des colonne        
-    final Long executionId = key;
+    final Long executionId = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
     jobExecutionCql.setJobExecutionId(executionId);
 
     if(JE_JOB_INSTANCE_ID_COLUMN.equals(colName)) {
@@ -246,7 +264,6 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
       final String exitMessage = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
       jobExecutionCql.setExitMessage(exitMessage);
     }
-    return jobExecutionCql;
   }
 
   /**
@@ -294,16 +311,28 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     // itérateur nous permettant de parcourir toutes les lignes de la CF
     final Iterator<GenericJobExecution> it = genericJobExdao.findAllByCFName(JOBEXECUTION_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
     Long lastKey = null;
-    final Long key = null;
+    Long key = null;
+    JobExecutionCqlForMig jobExecutionCql = new JobExecutionCqlForMig();
 
     while (it.hasNext()) {
       final Row row = (Row) it.next();
-      JobExecutionCqlForMig jobExecutionCql = getJobExecutionFromResult(key, lastKey, row);
+
+      // extraction de la clé
+      key = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
+      if (lastKey == null) {
+        lastKey = key;
+      }
+      getJobExecutionFromResult(row, jobExecutionCql);
       if (key != null && !key.equals(lastKey)) {
         listJob.add(jobExecutionCql);
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
       }
+    }
+
+    // ajout du dernier cas traité
+    if (jobExecutionCql != null) {
+      listJob.add(jobExecutionCql);
     }
 
     return listJob;
