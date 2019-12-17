@@ -77,11 +77,12 @@ public class JournalServiceImpl implements JournalService {
       LOGGER.debug("{} - Date fin : {}", new String[] { trcPrefix,
             dateFin.toString() });
 
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
-      String date1 = sdf.format(dateDebut);
+    final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
+    String date1 = sdf.format(dateDebut);
+    date1 = date1.concat("000000000");
 
-      String date2 = sdf.format(dateFin);
-      date2 = date2.concat("9999");
+    String date2 = sdf.format(dateFin);
+    date2 = date2.concat("235959999");
 
       LOGGER.debug(LOG_FIN, trcPrefix);
       return journalDfceSupport.findByDates(date1, date2,
@@ -92,17 +93,17 @@ public class JournalServiceImpl implements JournalService {
    public final List<Journal> rechercherJournauxCycleVie(Date dateDebut,
          Date dateFin) {
 
-      String trcPrefix = "rechercherJournauxCycleVie";
-      LOGGER.debug("{} - début", trcPrefix);
-      LOGGER.debug("{} - Date début : {}", new String[] { trcPrefix,
-            dateDebut.toString() });
-      LOGGER.debug("{} - Date fin : {}", new String[] { trcPrefix,
-            dateFin.toString() });
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
-      String date1 = sdf.format(dateDebut);
-      date1 = date1.concat("000000000");
-      String date2 = sdf.format(dateFin);
-      date2 = date2.concat("999999999");
+    final String trcPrefix = "rechercherJournauxCycleVie";
+    LOGGER.debug("{} - début", trcPrefix);
+    LOGGER.debug("{} - Date début : {}", new String[] { trcPrefix,
+                                                        dateDebut.toString() });
+    LOGGER.debug("{} - Date fin : {}", new String[] { trcPrefix,
+                                                      dateFin.toString() });
+    final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
+    String date1 = sdf.format(dateDebut);
+    date1 = date1.concat("000000000");
+    String date2 = sdf.format(dateFin);
+    date2 = date2.concat("235959999");
 
       LOGGER.debug("{} - fin", trcPrefix);
       return journalDfceSupport.findByDates(date1, date2,
