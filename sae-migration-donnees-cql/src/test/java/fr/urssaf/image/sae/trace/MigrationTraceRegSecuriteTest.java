@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.trace;
 
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceRegSecuriteIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegSecuriteIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
@@ -85,10 +83,10 @@ public class MigrationTraceRegSecuriteTest {
 
   @After
   public void after() throws Exception {
-    server.resetData(false, MODE_API.DATASTAX);
+    // server.resetData(false, MODE_API.DATASTAX);
   }
   @Test
-  public void migrationFromThriftToCql() {
+  public void migrationFromThriftToCql() throws Exception {
     populateTableThrift();
 
     final int nb = mtracej.migrationFromThriftToCql();
@@ -175,24 +173,35 @@ public class MigrationTraceRegSecuriteTest {
   public void sliceQueryTest() throws Exception {
     final long debut = System.currentTimeMillis();
     try {
-      System.out.println("Debut  TEST migration des données TraceRegSecurite");
-      // System.out.println("Debut: Création des données TraceRegSecurite" + Calendar.getInstance().getTime());
-      // populateTableThrift();
-      // System.out.println("Fin: Création des données TraceRegSecurite" + Calendar.getInstance().getTime());
-      System.out.println("Debut migration des données TraceRegSecurite" + Calendar.getInstance().getTime());
+      /*
+       * System.out.println("Debut  TEST migration des données TraceRegSecurite");
+       * // System.out.println("Debut: Création des données TraceRegSecurite" + Calendar.getInstance().getTime());
+       * // populateTableThrift();
+       * // System.out.println("Fin: Création des données TraceRegSecurite" + Calendar.getInstance().getTime());
+       * System.out.println("Debut migration des données TraceRegSecurite" + Calendar.getInstance().getTime());
+       * mtracej.migrationFromThriftToCql();
+       * System.out.println("Fin migration des données TraceRegSecurite" + Calendar.getInstance().getTime());
+       * System.out.println("Debut migration des données TraceRegSecuriteIndex" + Calendar.getInstance().getTime());
+       * mtracej.migrationIndexFromThriftToCql();
+       * System.out.println("Fin: Migration des données TraceRegSecuriteIndex " + Calendar.getInstance().getTime());
+       * System.out.println("Debut comparaison des données TraceRegSecurite" + Calendar.getInstance().getTime());
+       */
+
+      populateTableThrift();
+
       mtracej.migrationFromThriftToCql();
-      System.out.println("Fin migration des données TraceRegSecurite" + Calendar.getInstance().getTime());
-      System.out.println("Debut migration des données TraceRegSecuriteIndex" + Calendar.getInstance().getTime());
       mtracej.migrationIndexFromThriftToCql();
-      System.out.println("Fin: Migration des données TraceRegSecuriteIndex " + Calendar.getInstance().getTime());
-      System.out.println("Debut comparaison des données TraceRegSecurite" + Calendar.getInstance().getTime());
 
-      mtracej.traceComparator();
-      mtracej.indexComparator();
+      final boolean isEqBaseTrace = mtracej.traceComparator();
+      Assert.assertTrue("les elements des tables TraceRegSecurite cql et thrift doivent être egaux", isEqBaseTrace);
+      final boolean isEqBaseIndex = mtracej.indexComparator();
+      Assert.assertTrue("les elements des tables TraceRegSecuriteIndexDoc cql et thrift doivent être egaux", isEqBaseIndex);
 
-      final long fin = System.currentTimeMillis();
-      System.out.println("Fin compararaison des données TraceRegSecurite " + Calendar.getInstance().getTime());
-      System.out.println("Duree en s:" + String.valueOf((fin - debut) / 1000));
+      /*
+       * final long fin = System.currentTimeMillis();
+       * System.out.println("Fin compararaison des données TraceRegSecurite " + Calendar.getInstance().getTime());
+       * System.out.println("Duree en s:" + String.valueOf((fin - debut) / 1000));
+       */
     }
     catch (final Exception e) {
       e.printStackTrace();

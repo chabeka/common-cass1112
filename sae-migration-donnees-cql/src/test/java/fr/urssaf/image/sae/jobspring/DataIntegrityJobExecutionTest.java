@@ -145,10 +145,12 @@ public class DataIntegrityJobExecutionTest {
 
     // populateTableThrift();
 
+
     // migration de la table JobInstance
     // migJobInst.migrationFromThriftToCql();
     final boolean isJonInst = migJobInst.compareJobInstance();
     Assert.assertTrue("les elements des tables JobInstance cql et thrift doivent être egaux", isJonInst);
+
     // migJobInstByNameIndex.migrationFromThriftToCql();
     final boolean isJobInstByName = migJobInstByNameIndex.compareJobInstanceByName();
     Assert.assertTrue("les elements des tables JobInstancesByName cql et thrift doivent être egaux", isJobInstByName);
@@ -189,9 +191,6 @@ public class DataIntegrityJobExecutionTest {
   private void populateTableThrift() {
 
     for (int i = 0; i < NB_ROWS; i++) {
-      if (i == 890) {
-        System.out.println("i==890");
-      }
       final JobInstance inst = TestUtils.getOrCreateTestJobInstance(MY_JOB_NAME + i, jobInstanceDao);
       final JobExecution exe = TestUtils.saveJobExecutionThrift(inst, i, jobExecutionDao);
       System.out.println(exe);

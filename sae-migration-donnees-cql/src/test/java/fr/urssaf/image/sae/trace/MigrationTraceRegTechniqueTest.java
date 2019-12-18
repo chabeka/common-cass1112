@@ -25,7 +25,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegTechniqueIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
@@ -86,11 +85,11 @@ public class MigrationTraceRegTechniqueTest {
 
   @After
   public void after() throws Exception {
-    server.resetData(false, MODE_API.DATASTAX);
+    // server.resetData(false, MODE_API.DATASTAX);
   }
 
   @Test
-  public void migrationFromThriftToCql() {
+  public void migrationFromThriftToCql() throws Exception {
     populateTableThrift();
 
     final int nb = mtracej.migrationFromThriftToCql();
@@ -190,8 +189,10 @@ public class MigrationTraceRegTechniqueTest {
     System.out.println("Fin: Migration TraceRegTechnique " + Calendar.getInstance().getTime());
     System.out.println("Debut comparaison des données TraceRegTechnique" + Calendar.getInstance().getTime());
     try {
-      mtracej.traceComparator();
-      mtracej.indexComparator();
+      final boolean isEqBaseTace = mtracej.traceComparator();
+      Assert.assertTrue("les elements des tables TraceRegExploitation cql et thrift doivent être egaux", isEqBaseTace);
+      final boolean isEqIndex = mtracej.indexComparator();
+      Assert.assertTrue("les elements des tables TraceRegExploitation cql et thrift doivent être egaux", isEqIndex);
     }
     catch (final Exception e) {
       e.printStackTrace();

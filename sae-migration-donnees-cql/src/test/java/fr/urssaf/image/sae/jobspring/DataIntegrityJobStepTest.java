@@ -59,7 +59,7 @@ public class DataIntegrityJobStepTest {
 
   private static int NB_STEPS = 10;
 
-  private static int NB_STEPEXECUTION = 20005;
+  private static int NB_STEPEXECUTION = 1005;
 
   private TestingServer zkServer;
 

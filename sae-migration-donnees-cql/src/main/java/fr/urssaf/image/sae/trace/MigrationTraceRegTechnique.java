@@ -3,11 +3,17 @@
  */
 package fr.urssaf.image.sae.trace;
 
-import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,10 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.datastax.driver.core.Row;
-
-import fr.urssaf.image.sae.commons.CompareTraceRegExploitation;
-import fr.urssaf.image.sae.trace.commons.TraceFieldsName;
+import fr.urssaf.image.sae.commons.CompareTraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueIndexDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
@@ -32,22 +35,28 @@ import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegExploitationCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegExploitationIndexCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
-import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
-import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
-import fr.urssaf.image.sae.trace.model.GenericTraceType;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
-import me.prettyprint.cassandra.serializers.DateSerializer;
+import fr.urssaf.image.sae.utils.RepriseFileUtils;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
  * TODO (AC75095028) Description du type
  */
 @Component
 public class MigrationTraceRegTechnique extends MigrationTrace {
+
+  private static final String TRACE_REG_TECHNIQUE_TXT = "TraceRegSecurite.txt";
+
+  private static final String TRACE_REG_TECHNIQUE_INDEX_TXT = "TraceRegSecuriteIndex.txt";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceRegTechnique.class);
 
@@ -61,131 +70,124 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
   TraceRegTechniqueSupport supportThrift;
 
   @Autowired
-  private CompareTraceRegExploitation compRegTec;
+  private CompareTraceRegTechnique compRegTec;
+
 
   /**
-   * Utilisation de cql uniquement
-   * Migration de CF thrift vers la CF cql en utilsant un mapping manuel. L'extration des données est faite
-   * à partir du type {@link GenericTraceType} qui permet de wrapper les colonnes
+   * Migration de la table thrift vers cql
+   * 
+   * @return
+   * @throws Exception
    */
-  public int migrationFromThriftToCql() {
+  public int migrationFromThriftToCql() throws Exception {
 
-    LOGGER.info(" migrationFromThriftToCql ---------- DEBUT");
+    LOGGER.debug(" MigrationTraceRegTechnique migrationFromThriftToCql Start");
 
-    final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegTechnique", thriftdao.getKeyspace().getKeyspaceName());
+    // Clé de depart de l'itération
+    UUID startKey = null;
+    int totalCount = 0;
 
-    UUID lastKey = null;
+    BufferedWriter bWriter = null;
+    File file = null;
+    FileWriter fWriter;
+    //
+    try {
 
-    Date timestamp = null;
-    String codeEvt = null;
-    String contrat = null;
-    String login = null;
-    List<String> pagms = null;
-    Map<String, String> infos = new HashMap<>();
-    String context = null;
-    String stacktrace = null;
-    int nbRow = 0;
-    TraceRegTechniqueCql traceregTech;
+      file = RepriseFileUtils.getKeysFile(getKeyFileDir(), TRACE_REG_TECHNIQUE_TXT);
+      fWriter = new FileWriter(file, true);
+      bWriter = new BufferedWriter(fWriter);
 
-    List<TraceRegTechniqueCql> listToSave = new ArrayList<>();
-    while (listT.hasNext()) {
-
-      // Extraction de la clé
-
-      final Row row = (Row) listT.next();
-      final UUID key = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-      if(lastKey == null) {
-        lastKey = key;
+      final String strKey = RepriseFileUtils.getLastLine(file);
+      if (strKey != null && !strKey.isEmpty()) {
+        startKey = UUID.fromString(strKey);
       }
-      // compare avec la derniere clé qui a été extraite
-      // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
-      // alors on enrgistre celui qui vient d'être traité
-      if (key != null && !key.equals(lastKey)) {
 
-        traceregTech = new TraceRegTechniqueCql(lastKey, timestamp);
-        traceregTech.setCodeEvt(codeEvt);
-        traceregTech.setContratService(contrat);
-        traceregTech.setInfos(infos);
-        traceregTech.setLogin(login);
-        traceregTech.setPagms(pagms);
-        traceregTech.setContexte(context);
-        traceregTech.setStacktrace(stacktrace);
-        listToSave.add(traceregTech);
-        lastKey = key;
-        // réinitialisation
-        timestamp = null;
-        codeEvt = null;
-        contrat = null;
-        login = null;
-        pagms = null;
-        infos = new HashMap<>();
-        context = null;
+      // Parametrage de la requete hector
 
-        if (listToSave.size() == 10000) {
-          nbRow = nbRow + listToSave.size();
+      final StringSerializer stringSerializer = StringSerializer.get();
+      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      final UUIDSerializer uSl = UUIDSerializer.get();
 
-          supportcql.saveAllTraces(listToSave);
-          listToSave = new ArrayList<>();
-          System.out.println(" Temp i : " + nbRow);
+      final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
+          .createRangeSlicesQuery(compRegTec.getKeySpace(),
+                                  uSl,
+                                  stringSerializer,
+                                  bytesSerializer);
+      rangeSlicesQuery.setColumnFamily(compRegTec.getTraceClasseName());
+      final int blockSize = 10;
+      int count;
+
+      // Pour chaque tranche de 10000, on recherche l'objet cql
+      do {
+        rangeSlicesQuery.setRange("", "", false, blockSize);
+        rangeSlicesQuery.setKeys(startKey, null);
+        rangeSlicesQuery.setRowCount(blockSize);
+        final QueryResult<OrderedRows<UUID, String, byte[]>> result = rangeSlicesQuery
+            .execute();
+
+        final OrderedRows<UUID, String, byte[]> orderedRows = result.get();
+        count = orderedRows.getCount();
+        // Parcours des rows pour déterminer la dernière clé de l'ensemble
+        final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
+
+        if (lastRow == null) {
+          LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
+          break;
+        }
+        startKey = lastRow.getKey();
+
+        int nbRow = 1;
+        for (final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row : orderedRows) {
+
+          // on recupère la trace thrifh
+          final TraceRegTechnique trThrift = compRegTec.getTraceFromResult(row);
+          // On le transforme en cql
+          final TraceRegTechniqueCql trThToCql = compRegTec.createTraceFromObjectThrift(trThrift);
+
+          final UUID key = row.getKey();
+          // sauvegarde
+          // tant que count == blockSize on ajout tout sauf le dernier
+          // Cela empeche d'ajouter la lastRow deux fois
+          if (count == blockSize && nbRow < count) {
+
+            supportcql.save(trThToCql);
+            nbRow++;
+            totalCount++;
+
+            // ecriture dans le fichier
+            bWriter.append(key.toString());
+            bWriter.newLine();
+          } else if (count != blockSize) {
+
+            supportcql.save(trThToCql);
+            nbRow++;
+            totalCount++;
+
+            // ecriture dans le fichier
+            bWriter.append(key.toString());
+            bWriter.newLine();
+          }
         }
 
-      }
-
-      // extraction du nom de la colonne
-      final String columnName = row.getString("column1");
-
-      // extraction de la value en fonction du nom de la colonne
-      if (TraceFieldsName.COL_TIMESTAMP.getName().equals(columnName)) {
-
-        timestamp = DateSerializer.get().fromByteBuffer(row.getBytes("value"));
-      } else if (TraceFieldsName.COL_CODE_EVT.getName().equals(columnName)) {
-
-        codeEvt = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
-      } else if (TraceFieldsName.COL_CONTRAT_SERVICE.getName().equals(columnName)) {
-
-        contrat = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
-      } else if (TraceFieldsName.COL_LOGIN.getName().equals(columnName)) {
-
-        login = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
-      } else if (TraceFieldsName.COL_PAGMS.getName().equals(columnName)) {
-
-        pagms = ListSerializer.get().fromByteBuffer(row.getBytes("value"));
-      } else if (TraceFieldsName.COL_INFOS.getName().equals(columnName)) {
-        final Map<String, Object> map = MapSerializer.get().fromByteBuffer(row.getBytes("value"));
-        for (final Map.Entry<String, Object> entry : map.entrySet()) {
-          final String infosKey = entry.getKey();
-          final String value = entry.getValue() != null ? entry.getValue().toString() : "";
-          infos.put(infosKey, value);
-        }
-      } else if (TraceFieldsName.COL_CONTEXTE.getName().equals(columnName)) {
-
-        context = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
-      } else if (TraceFieldsName.COL_STACKTRACE.getName().equals(columnName)) {
-        stacktrace = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
-      }
+      } while (count == blockSize);
 
     }
-    if (listToSave.size() > 0) {
-      // Ajouter le dernier cas traité
-      traceregTech = new TraceRegTechniqueCql(lastKey, timestamp);
-      traceregTech.setCodeEvt(codeEvt);
-      traceregTech.setContratService(contrat);
-      traceregTech.setInfos(infos);
-      traceregTech.setLogin(login);
-      traceregTech.setPagms(pagms);
-      traceregTech.setContexte(context);
-      traceregTech.setStacktrace(stacktrace);
-      listToSave.add(traceregTech);
-
-      nbRow = nbRow + listToSave.size();
-      supportcql.saveAllTraces(listToSave);
-      listToSave = new ArrayList<>();
+    catch (final IOException e) {
+      LOGGER.error(e.toString());
+    }
+    finally {
+      try {
+        bWriter.close();
+      }
+      catch (final Exception e) {
+        LOGGER.warn(e.getMessage(), e);
+      }
     }
 
-    LOGGER.info(" migrationFromThriftToCql Total nbRow: ---------- " + nbRow);
-    LOGGER.info(" migrationFromThriftToCql ---------- FIN");
+    LOGGER.debug(" Totale : " + totalCount);
+    LOGGER.debug(" MigrationTraceRegTechnique migrationFromThriftToCql end");
 
-    return nbRow;
+    return totalCount;
   }
 
   /**
@@ -220,26 +222,48 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
   public void migrationIndexFromThriftToCql() {
 
     LOGGER.info(" migrationIndexFromThriftToCql ---------- DEBUT");
-    int nbRow = 0;
-    final List<Date> dates = DateRegUtils.getListFromDates(DateUtils.addYears(DATE, -18), DateUtils.addYears(DATE, 1));
-    for (final Date d : dates) {
-      final List<TraceRegTechniqueIndex> list = supportThrift.findByDate(d);
-      List<TraceRegTechniqueIndexCql> listTemp = new ArrayList<>();
-      if (list != null && !list.isEmpty()) {
-        for (final TraceRegTechniqueIndex nextReg : list) {
-          final TraceRegTechniqueIndexCql trace = createTraceIndexFromThriftToCql(nextReg);
-          listTemp.add(trace);
-          if (listTemp.size() == 10000) {
-            nbRow = nbRow + listTemp.size();
-            supportcql.saveAllIndex(listTemp);
-            listTemp = new ArrayList<>();
+    final int nbRow = 0;
+
+    Date starDate = DateUtils.addYears(DATE, -5);
+
+    BufferedWriter bWriter = null;
+    File file = null;
+    FileWriter fWriter;
+    //
+    try {
+      file = RepriseFileUtils.getKeysFile(getKeyFileDir(), TRACE_REG_TECHNIQUE_INDEX_TXT);
+      fWriter = new FileWriter(file, true);
+      bWriter = new BufferedWriter(fWriter);
+
+      final String lastLine = RepriseFileUtils.getLastLine(file);
+      if (lastLine != null && !lastLine.isEmpty()) {
+        final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.FRANCE);
+        starDate = format.parse(lastLine);
+      }
+
+      final List<Date> dates = DateRegUtils.getListFromDates(starDate, DateUtils.addYears(DATE, 0));
+      for (final Date d : dates) {
+        final List<TraceRegTechniqueIndex> list = supportThrift.findByDate(d);
+        if (list != null && !list.isEmpty()) {
+          for (final TraceRegTechniqueIndex nextReg : list) {
+            final TraceRegTechniqueIndexCql trace = createTraceIndexFromThriftToCql(nextReg);
+            supportcql.getIndexDao().saveWithMapper(trace);
           }
+          // ecriture dans le fichier
+          bWriter.append(DateRegUtils.getJournee(d));
+          bWriter.newLine();
         }
-        if (!listTemp.isEmpty()) {
-          nbRow = nbRow + listTemp.size();
-          supportcql.saveAllIndex(listTemp);
-          listTemp = new ArrayList<>();
-        }
+      }
+    }
+    catch (final IOException | ParseException e) {
+      LOGGER.error(e.toString());
+    }
+    finally {
+      try {
+        bWriter.close();
+      }
+      catch (final Exception e) {
+        LOGGER.warn(e.getMessage(), e);
       }
     }
 

@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.file.Path;
 
 /**
  * TODO (AC75095028) Description du type
@@ -16,12 +15,8 @@ public class RepriseFileUtils {
 
   // METHODE POUR LE REPRISE
 
-  public static File getKeysFile(final String dirName, final String fileName) throws IOException {
-    final ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-    final File dir = new File(classLoader.getResource(dirName).getFile());
-    final Path dirPath = dir.toPath();
+  public static File getKeysFile(final String dirPath, final String fileName) throws IOException {
     final File file = new File(dirPath.toString() + "/" + fileName);
-
     if (!file.exists()) {
       file.createNewFile();
     }

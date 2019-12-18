@@ -100,7 +100,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     int totalRow = 1;
     //
     try {
-      file = RepriseFileUtils.getKeysFile(migTempFiles, TRACE_JOURNAL_EVT_TXT);
+      file = RepriseFileUtils.getKeysFile(getKeyFileDir(), TRACE_JOURNAL_EVT_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
 
@@ -269,7 +269,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     FileWriter fWriter;
     //
     try {
-      file = RepriseFileUtils.getKeysFile(migTempFiles, TRACE_JOURNAL_EVT_INDEX_TXT);
+      file = RepriseFileUtils.getKeysFile(getKeyFileDir(), TRACE_JOURNAL_EVT_INDEX_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
 
@@ -332,7 +332,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     FileWriter fWriter;
     //
     try {
-      file = RepriseFileUtils.getKeysFile(migTempFiles, TRACE_JOURNAL_EVT_INDEX_DOC_TXT);
+      file = RepriseFileUtils.getKeysFile(getKeyFileDir(), TRACE_JOURNAL_EVT_INDEX_DOC_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
 
