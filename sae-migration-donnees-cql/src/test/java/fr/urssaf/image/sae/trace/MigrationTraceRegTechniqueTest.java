@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,6 @@ import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
 import fr.urssaf.image.sae.trace.daocql.ITraceRegTechniqueIndexCqlDao;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
-import junit.framework.Assert;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 /**

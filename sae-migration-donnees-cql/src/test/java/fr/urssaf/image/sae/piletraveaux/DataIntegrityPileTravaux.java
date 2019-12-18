@@ -6,8 +6,10 @@ package fr.urssaf.image.sae.piletraveaux;
 import static org.junit.Assert.fail;
 
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +26,6 @@ import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
-import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.piletravaux.MigrationJobHistory;
 import fr.urssaf.image.sae.piletravaux.MigrationJobQueue;
@@ -41,19 +42,8 @@ public class DataIntegrityPileTravaux {
 
   private PrintStream sysout;
 
-  // table name
-  private static final String JOBSQUEUE_CFNAME = "JobsQueue";
-
-  private static final String JOBHISTORY_CFNAME = "JobHistory";
-
-  public static final String JOBREQUEST_CFNAME = "JobRequest";
-  // SERVICE
-
   @Autowired
   private JobQueueService jobQueueService;
-
-  @Autowired
-  private JobLectureService jobLectureService;
 
   // DAO CQL
   @Autowired
@@ -77,7 +67,7 @@ public class DataIntegrityPileTravaux {
   @Autowired
   MigrationJobRequest migJobR;
 
-  private final static int NB_JOBS = 100;
+  List<UUID> idsJob = new ArrayList<>();
 
   @Before
   public void init() throws Exception {
@@ -93,9 +83,9 @@ public class DataIntegrityPileTravaux {
 
   private void populateTableThrift() throws Exception {
 
-    for (int i = 0; i < NB_JOBS; i++) {
+    for (int i = 0; i < 1005; i++) {
       final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      System.out.println(idJob);
+      idsJob.add(idJob);
 
       final Date dateCreation = new Date();
       final Map<String, String> jobParam = new HashMap<>();
@@ -114,6 +104,57 @@ public class DataIntegrityPileTravaux {
       jobQueueService.addJob(job);
     }
 
+  }
+
+  private void addHistory() {
+
+
+    final int i = 0;
+    for (final UUID idJob : idsJob) {
+      if (i < 10) {
+        final Date date = new Date();
+        final long timestamp = date.getTime();
+        jobQueueService.addHistory(idJob,
+                                   TimeUUIDUtils
+                                   .getTimeUUID(new Date().getTime() + 1),
+            "message n°1");
+      }
+      if (i < 30) {
+        final Date date = new Date();
+        final long timestamp = date.getTime();
+        jobQueueService.addHistory(idJob,
+                                   TimeUUIDUtils
+                                   .getTimeUUID(new Date().getTime() + 1),
+            "message n°1");
+
+        jobQueueService.addHistory(idJob,
+                                   TimeUUIDUtils
+                                   .getTimeUUID(new Date().getTime() + 2),
+            "message n°2");
+      }
+      if (i < 60) {
+        final Date date = new Date();
+        final long timestamp = date.getTime();
+        jobQueueService.addHistory(idJob,
+                                   TimeUUIDUtils
+                                   .getTimeUUID(new Date().getTime() + 1),
+            "message n°1");
+
+        jobQueueService.addHistory(idJob,
+                                   TimeUUIDUtils
+                                   .getTimeUUID(new Date().getTime() + 2),
+            "message n°2");
+        jobQueueService.addHistory(idJob,
+                                   TimeUUIDUtils
+                                   .getTimeUUID(new Date().getTime() + 3),
+            "message n°3");
+        jobQueueService.addHistory(idJob,
+                                   TimeUUIDUtils
+                                   .getTimeUUID(new Date().getTime() + 4),
+            "message n°4");
+      }
+
+    }
   }
 
   @Test
@@ -137,6 +178,7 @@ public class DataIntegrityPileTravaux {
   public void sliceQueryJobHistoryTest() throws Exception {
 
     populateTableThrift();
+    addHistory();
 
     migJobH.migrationFromThriftToCql();
 

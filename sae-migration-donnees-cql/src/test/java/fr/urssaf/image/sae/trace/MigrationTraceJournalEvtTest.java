@@ -196,15 +196,14 @@ public class MigrationTraceJournalEvtTest {
 
     try {
       final boolean isEqBaseTrace = mtracej.traceComparator();
-      Assert.assertTrue("les elements des tables JobExecution cql et thrift doivent être egaux", isEqBaseTrace);
+      Assert.assertTrue("les elements des tables TraceJournalEvt cql et thrift doivent être egaux", isEqBaseTrace);
       final boolean isEqBaseIndex = mtracej.indexComparator();
-      Assert.assertTrue("les elements des tables JobExecution cql et thrift doivent être egaux", isEqBaseIndex);
+      Assert.assertTrue("les elements des tables TraceJournalEvtIndex cql et thrift doivent être egaux", isEqBaseIndex);
       final boolean isEqBaseIndexDoc = mtracej.indexDocComparator();
-      Assert.assertTrue("les elements des tables JobExecution cql et thrift doivent être egaux", isEqBaseIndexDoc);
+      Assert.assertTrue("les elements des tables TraceJournalEvtIndexDoc cql et thrift doivent être egaux", isEqBaseIndexDoc);
     } catch (final Exception e) {
       e.printStackTrace();
     }
 
   }
 }
-

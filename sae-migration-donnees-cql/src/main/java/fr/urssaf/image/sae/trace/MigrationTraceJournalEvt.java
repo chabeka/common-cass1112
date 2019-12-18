@@ -7,11 +7,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -39,9 +36,9 @@ import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexDocCqlDao;
-import fr.urssaf.image.sae.trace.model.GenericTraceType;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import fr.urssaf.image.sae.trace.utils.UtilsTraceMapper;
+import fr.urssaf.image.sae.utils.RepriseFileUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
@@ -57,9 +54,6 @@ import me.prettyprint.hector.api.query.RangeSlicesQuery;
 @Component
 public class MigrationTraceJournalEvt extends MigrationTrace {
 
-  /**
-   * TODO (AC75095028) Description du champ
-   */
   private static final String TRACE_JOURNAL_EVT_TXT = "TraceJournalEvt.txt";
 
   private static final String TRACE_JOURNAL_EVT_INDEX_TXT = "TraceJournalEvtIndex.txt";
@@ -90,9 +84,10 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceJournalEvt.class);
 
   /**
-   * Utilisation de cql uniquement
-   * Migration de la CF thrift vers la CF cql en utilsant un mapping manuel. L'extration des données est faite
-   * à partir du type {@link GenericTraceType} qui permet de wrapper les colonnes
+   * Migration de la table thrift vers cql
+   * 
+   * @return
+   * @throws Exception
    */
   public int migrationFromThriftToCql() throws Exception {
 
@@ -102,20 +97,19 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     BufferedWriter bWriter = null;
     File file = null;
     FileWriter fWriter;
+    int totalRow = 1;
     //
     try {
-      file = getKeysFile(TRACE_JOURNAL_EVT_TXT);
+      file = RepriseFileUtils.getKeysFile(migTempFiles, TRACE_JOURNAL_EVT_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
 
-      final String strKey = getLastLine(file);
+      final String strKey = RepriseFileUtils.getLastLine(file);
       if (strKey != null && !strKey.isEmpty()) {
         startKey = UUID.fromString(strKey);
       }
     }
     catch (final IOException e) {
-      // final String message = "Impossible d'écrire le fichier " + TRACE_JOURNAL_EVT_TXT;
-      // LOGGER.error(message);
       LOGGER.error(e.toString());
     }
 
@@ -133,7 +127,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     rangeSlicesQuery.setColumnFamily(compJEvt.getTraceClasseName());
     final int blockSize = 1000;
     int count;
-    int nbRow = 1;
+
 
     // Pour chaque tranche de 10000, on recherche l'objet cql
     do {
@@ -145,7 +139,6 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
       final OrderedRows<UUID, String, byte[]> orderedRows = result.get();
       count = orderedRows.getCount();
-      nbRow = nbRow - 1;
       // Parcours des rows pour déterminer la dernière clé de l'ensemble
       final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
 
@@ -154,7 +147,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         break;
       }
       startKey = lastRow.getKey();
-
+      int nbRow = 1;
       for (final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row : orderedRows) {
 
         // on recupère la trace thrifh
@@ -162,22 +155,30 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         // On le transforme en cql
         final TraceJournalEvtCql trThToCql = compJEvt.createTraceFromObjectThrift(trThrift);
 
+        final UUID key = row.getKey();
         // sauvegarde
         // tant que count == blockSize on ajout tout sauf le dernier
         // Cela empeche d'ajouter la lastRow deux fois
         if (count == blockSize && nbRow < count) {
           supportcql.save(trThToCql);
           nbRow++;
+          totalRow++;
+
+          // ecriture dans le fichier
+          bWriter.append(key.toString());
+          bWriter.newLine();
+
         } else if (count != blockSize) {
           supportcql.save(trThToCql);
           nbRow++;
+          totalRow++;
+
+          // ecriture dans le fichier
+          bWriter.append(key.toString());
+          bWriter.newLine();
         }
 
-        final UUID key = row.getKey();
 
-        // ecriture dans le fichier
-        bWriter.append(key.toString());
-        bWriter.newLine();
       }
 
     } while (count == blockSize);
@@ -189,10 +190,10 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       LOGGER.warn(e.getMessage(), e);
     }
 
-    LOGGER.debug(" Totale : " + nbRow);
+    LOGGER.debug(" Totale : " + totalRow);
     LOGGER.debug(" migrationFromThriftToCql end");
 
-    return nbRow;
+    return totalRow;
   }
 
   /**
@@ -259,7 +260,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
     LOGGER.debug(" migrationIndexFromThriftToCql start");
 
-
+    int nbTotalIndex = 0;
     // Clé de depart de l'itération
     Date starDate = DateUtils.addYears(DATE, -5);
 
@@ -268,66 +269,50 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     FileWriter fWriter;
     //
     try {
-      file = getKeysFile(TRACE_JOURNAL_EVT_INDEX_TXT);
+      file = RepriseFileUtils.getKeysFile(migTempFiles, TRACE_JOURNAL_EVT_INDEX_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
 
-      final String lastLine = getLastLine(file);
+      final String lastLine = RepriseFileUtils.getLastLine(file);
       if (lastLine != null && !lastLine.isEmpty()) {
         final SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd", Locale.FRANCE);
         starDate = format.parse(lastLine);
+      }
+
+      final List<Date> dates = DateRegUtils.getListFromDates(starDate, DateUtils.addYears(DATE, 0));
+
+      for (final Date d : dates) {
+
+
+        final List<TraceJournalEvtIndex> list = supportJThrift.findByDate(d);
+        if(list != null && !list.isEmpty())  {
+          for (final TraceJournalEvtIndex next : list) {
+            final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next, DateRegUtils.getJournee(d));
+            supportcql.getIndexDao().saveWithMapper(trace);
+          }
+          // ecriture dans le fichier
+          bWriter.append(DateRegUtils.getJournee(d));
+          bWriter.newLine();
+          nbTotalIndex++;
+        }
       }
     }
     catch (final IOException | ParseException e) {
       LOGGER.error(e.toString());
     }
-
-
-    int nb = 0;
-
-    final List<Date> dates = DateRegUtils.getListFromDates(starDate, DateUtils.addYears(DATE, 0));
-
-    for (final Date d : dates) {
-
-
-      final List<TraceJournalEvtIndex> list = supportJThrift.findByDate(d);
-      List<TraceJournalEvtIndexCql> listTemp = new ArrayList<>();
-      if(list != null && !list.isEmpty())  {
-        for (final TraceJournalEvtIndex next : list) {
-          final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next, DateRegUtils.getJournee(d));
-          listTemp.add(trace);
-          if (listTemp.size() == 10000) {
-            nb = nb + listTemp.size();
-            supportcql.saveAllIndex(listTemp);
-            listTemp = new ArrayList<>();
-
-            // ecriture dans le fichier
-            bWriter.append(DateRegUtils.getJournee(d));
-            bWriter.newLine();
-
-          }
-        }
-        if (!listTemp.isEmpty()) {
-          nb = nb + listTemp.size();
-          supportcql.saveAllIndex(listTemp);
-          bWriter.append(DateRegUtils.getJournee(d));
-          bWriter.newLine();
-          listTemp = new ArrayList<>();
-        }
+    finally {
+      try {
+        bWriter.close();
+      }
+      catch (final Exception e) {
+        LOGGER.warn(e.getMessage(), e);
       }
     }
 
-    try {
-      bWriter.close();
-    }
-    catch (final Exception e) {
-      LOGGER.warn(e.getMessage(), e);
-    }
-
-    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" Totale : " + nbTotalIndex);
     LOGGER.debug(" migrationIndexFromThriftToCql end");
 
-    return nb;
+    return nbTotalIndex;
   }
 
   /**
@@ -347,11 +332,11 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
     FileWriter fWriter;
     //
     try {
-      file = getKeysFile(TRACE_JOURNAL_EVT_INDEX_DOC_TXT);
+      file = RepriseFileUtils.getKeysFile(migTempFiles, TRACE_JOURNAL_EVT_INDEX_DOC_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
 
-      startKey = getLastLine(file);
+      startKey = RepriseFileUtils.getLastLine(file);
     }
     catch (final IOException e) {
       LOGGER.error(e.toString());
@@ -385,6 +370,11 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       nbRows = nbRows - 1;
       // Parcours des rows pour déterminer la dernière clé de l'ensemble
       final me.prettyprint.hector.api.beans.Row<String, String, byte[]> lastRow = orderedRows.peekLast();
+
+      if (lastRow == null) {
+        LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
+        break;
+      }
       startKey = lastRow.getKey();
 
       for (final me.prettyprint.hector.api.beans.Row<String, String, byte[]> row : orderedRows) {
@@ -553,76 +543,6 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       LOGGER.info(" MigrationTraceDestinataire - OK");
     }
     return isEqBase;
-  }
-
-  // METHODE POUR LE REPRISE
-
-  private File getKeysFile(final String fileName) throws IOException {
-    final ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-    final File dir = new File(classLoader.getResource(migTempFiles).getFile());
-    final Path dirPath = dir.toPath();
-    final File file = new File(dirPath.toString() + "/" + fileName);
-
-    if (!file.exists()) {
-      LOGGER.warn("Création du fichier {}", fileName);
-      file.createNewFile();
-    }
-    return file;
-  }
-
-  /**
-   * Recuperer la dernière ligne du fichier
-   * https://stackoverflow.com/questions/686231/quickly-read-the-last-line-of-a-text-file
-   * 
-   * @param file
-   * @return
-   */
-  private String getLastLine(final File file) {
-
-    RandomAccessFile fileHandler = null;
-    try {
-      fileHandler = new RandomAccessFile(file, "r");
-      final long fileLength = fileHandler.length() - 1;
-      final StringBuilder sb = new StringBuilder();
-
-      for (long filePointer = fileLength; filePointer != -1; filePointer--) {
-        fileHandler.seek(filePointer);
-        final int readByte = fileHandler.readByte();
-
-        if (readByte == 0xA) {
-          if (filePointer == fileLength) {
-            continue;
-          }
-          break;
-
-        } else if (readByte == 0xD) {
-          if (filePointer == fileLength - 1) {
-            continue;
-          }
-          break;
-        }
-
-        sb.append((char) readByte);
-      }
-
-      final String lastLine = sb.reverse().toString();
-      return lastLine;
-    }
-    catch (final IOException e) {
-      e.printStackTrace();
-      return null;
-    }
-    finally {
-      if (fileHandler != null) {
-        try {
-          fileHandler.close();
-        }
-        catch (final IOException e) {
-          /* ignore */
-        }
-      }
-    }
-
   }
 
 }

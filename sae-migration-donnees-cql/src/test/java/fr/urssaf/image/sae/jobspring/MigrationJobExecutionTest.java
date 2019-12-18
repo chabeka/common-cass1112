@@ -176,12 +176,6 @@ public class MigrationJobExecutionTest {
     // final JobInstance inst = TestUtils.getOrCreateTestJobInstanceCql(MY_JOB_NAME + 1000, jobInstanceDaocql);
     //migJobExe.migrationFromThriftToCql();
 
-    System.out.println("isJonInst " + isJonInst);
-    System.out.println("isJobInstByName " + isJobInstByName);
-    System.out.println("isJobExe " + isJobExe);
-    System.out.println("isJobExes " + isJobExes);
-    System.out.println("isJobInstToExe " + isJobInstToExe);
-    System.out.println("isJobRun " + isJobRun);
   }
 
   @Test
