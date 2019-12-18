@@ -20,6 +20,8 @@ public class MigrationTrace {
 
   protected static final Date DATE = new Date();
 
+  protected static String migTempFiles = "migTempFiles";
+
   @Autowired
   protected IGenericTraceTypeDao genericdao;
 

@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.curator.shaded.com.google.common.collect.Lists;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceJournalEvtIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -35,7 +35,6 @@ import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexCqlDao;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
-import junit.framework.Assert;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
@@ -185,23 +184,26 @@ public class MigrationTraceJournalEvtTest {
     return list.size();
 
   }
-  
+
   @Test
   public void sliceQueryTest() throws Exception {
-	
-	populateTableThrift();
-	//populateTableCql();
-	mtracej.migrationFromThriftToCql();
-	mtracej.migIndexFromThriftToCql();
-	mtracej.migrationIndexDocFromThriftToCql();
+
+    populateTableThrift();
+    //populateTableCql();
+    mtracej.migrationFromThriftToCql();
+    mtracej.migIndexFromThriftToCql();
+    mtracej.migrationIndexDocFromThriftToCql();
 
     try {
-    	mtracej.traceComparator();
-    	mtracej.indexComparator();
-    	mtracej.indexDocComparator();
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-    
+      final boolean isEqBaseTrace = mtracej.traceComparator();
+      Assert.assertTrue("les elements des tables JobExecution cql et thrift doivent être egaux", isEqBaseTrace);
+      final boolean isEqBaseIndex = mtracej.indexComparator();
+      Assert.assertTrue("les elements des tables JobExecution cql et thrift doivent être egaux", isEqBaseIndex);
+      final boolean isEqBaseIndexDoc = mtracej.indexDocComparator();
+      Assert.assertTrue("les elements des tables JobExecution cql et thrift doivent être egaux", isEqBaseIndexDoc);
+    } catch (final Exception e) {
+      e.printStackTrace();
+    }
+
   }
 }
