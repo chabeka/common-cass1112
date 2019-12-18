@@ -80,7 +80,7 @@ public class MigrationJobRequest implements IMigration {
     LOGGER.info(" MigrationJobRequest - migrationFromThriftToCql - start ");
 
     // extraction des colonnes dans la table thrift
-    final Iterator<GenericJobType> it = genericdao.findAllByCFName("JobHistory", ccf.getKeyspace().getKeyspaceName());
+    final Iterator<GenericJobType> it = genericdao.findAllByCFName("JobRequest", ccf.getKeyspace().getKeyspaceName());
 
     UUID lastKey = null;
     if (it.hasNext()) {
@@ -193,9 +193,9 @@ public class MigrationJobRequest implements IMigration {
 
     final boolean isEqBase = CompareUtils.compareListsGeneric(listRToCql, listJobThrift);
     if (isEqBase) {
-      LOGGER.info("MIGRATION_JobInstanceByName -- Les listes metadata sont identiques");
+      LOGGER.info("MIGRATION_JobRequestCql -- Les listes metadata sont identiques");
     } else {
-      LOGGER.warn("MIGRATION_JobInstanceByName -- ATTENTION: Les listes metadata sont différentes ");
+      LOGGER.warn("MIGRATION_JobRequestCql -- ATTENTION: Les listes metadata sont différentes ");
     }
 
     return isEqBase;
