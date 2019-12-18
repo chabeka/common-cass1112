@@ -166,7 +166,7 @@ public class FormatControlProfilSupportFacade implements ISupportFacade<FormatCo
 
     }
     catch (final FormatControlProfilNotFoundException e) {
-      LOGGER.error(e.getMessage());
+      throw new RuntimeException(e);
     }
 
 

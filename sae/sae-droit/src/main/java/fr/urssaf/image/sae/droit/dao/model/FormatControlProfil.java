@@ -111,7 +111,7 @@ public class FormatControlProfil implements Comparable<FormatControlProfil> {
         return false;
       }
     } else if (!description.equals(other.description)) {
-      LOGGER.debug("code:" + formatCode + "/" + getFormatCode() + ", description:" + description + "/" + other.getDescription());
+      LOGGER.warn("code:" + formatCode + "/" + getFormatCode() + ", description:" + description + "/" + other.getDescription());
       return false;
     }
     if (formatCode == null) {

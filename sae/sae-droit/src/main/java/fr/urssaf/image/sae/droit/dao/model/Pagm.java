@@ -5,13 +5,17 @@ package fr.urssaf.image.sae.droit.dao.model;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Classe de modèle d'un PAGM
  * On n'effectue pas de mapping pour le cql une classe spécifique a été créé
  */
 
 public class Pagm {
-
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(Pagm.class);
   /** code intelligible du PAGM */
 
   private String code;
@@ -194,6 +198,17 @@ public class Pagm {
           || compressionPdfActive.equals(pagm.getCompressionPdfActive()))
           && (seuilCompressionPdf == null && pagm.getSeuilCompressionPdf() == null 
           || seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf()));
+      if (!areEquals) {
+        LOGGER.warn("code:" + code + "/" + getCode() + ", description:" + description + "/" + pagm.getDescription()
+        + ", pagma:" + pagma + "/" + pagm.getPagma()
+        + ", pagmf:" + pagmf + "/" + pagm.getPagmf()
+        + ", pagmp:" + pagmp + "/" + pagm.getPagmp()
+        + ", parametres:" + parametres.keySet() + "/" + pagm.getParametres().keySet()
+        + ", compressionPdfActive:" + compressionPdfActive + "/" + pagm.getCompressionPdfActive()
+        + ", seuilCompressionPdf:" + seuilCompressionPdf + "/" + pagm.getSeuilCompressionPdf()
+
+            );
+      }
     }
 
     return areEquals;

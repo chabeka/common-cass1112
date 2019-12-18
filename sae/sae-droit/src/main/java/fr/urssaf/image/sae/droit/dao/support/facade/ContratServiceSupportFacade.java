@@ -86,7 +86,7 @@ public class ContratServiceSupportFacade implements IContratServiceSupportFacade
       return contratServiceSupport.find(code);
 
     case MODE_API.DUAL_MODE_READ_CQL:
-      return contratServiceSupport.find(code);
+      return contratServiceCqlSupport.find(code);
 
     default:
 
