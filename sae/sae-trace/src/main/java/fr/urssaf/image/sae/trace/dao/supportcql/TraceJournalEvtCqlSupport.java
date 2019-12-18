@@ -76,7 +76,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    * {@inheritDoc}
    */
   @Override
-  protected final IGenericDAO<TraceJournalEvtCql, UUID> getDao() {
+  public final IGenericDAO<TraceJournalEvtCql, UUID> getDao() {
     return tracejdao;
   }
 
@@ -200,7 +200,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    * {@inheritDoc}
    */
   @Override
-  IGenericDAO<TraceJournalEvtIndexCql, String> getIndexDao() {
+  public IGenericDAO<TraceJournalEvtIndexCql, String> getIndexDao() {
     return indexjDao;
   }
 

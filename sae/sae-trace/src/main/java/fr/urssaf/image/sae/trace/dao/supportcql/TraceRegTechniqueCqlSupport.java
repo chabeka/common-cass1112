@@ -50,12 +50,12 @@ public class TraceRegTechniqueCqlSupport extends GenericAbstractTraceCqlSupport<
   }
 
   @Override
-  IGenericDAO<TraceRegTechniqueCql, UUID> getDao() {
+  public IGenericDAO<TraceRegTechniqueCql, UUID> getDao() {
     return dao;
   }
 
   @Override
-  IGenericDAO<TraceRegTechniqueIndexCql, String> getIndexDao() {
+  public IGenericDAO<TraceRegTechniqueIndexCql, String> getIndexDao() {
     return indexDao;
   }
 

@@ -309,12 +309,12 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   /**
    * @return le dao utilisé pour les traces
    */
-  abstract IGenericDAO getDao();
+  public abstract IGenericDAO getDao();
 
   /**
    * @return le dao utilisé pour les index des traces
    */
-  abstract IGenericDAO getIndexDao();
+  public abstract IGenericDAO getIndexDao();
 
   /**
    * retourne l'objet Index créé à partir de la trace
