@@ -64,9 +64,11 @@ public class MigrationActionUnitaire implements IMigration {
     final List<ActionUnitaire> actionsUnitairesCql = new ArrayList<>();
     while (actionsUnitairesIterator.hasNext()) {
       final ActionUnitaire actionUnitaire = actionsUnitairesIterator.next();
+
       actionsUnitairesCql.add(actionUnitaire);
       actionUnitaireSupport.create(actionUnitaire, new Date().getTime());
     }
+
     final List<ActionUnitaire> actionsUnitairesThrift = actionUnitaireSupport.findAll();
     compareActionsUnitaires(actionsUnitairesThrift, actionsUnitairesCql);
     LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromCqlTothrift- end ");

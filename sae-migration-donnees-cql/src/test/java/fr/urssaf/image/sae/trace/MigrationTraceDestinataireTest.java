@@ -90,18 +90,18 @@ public class MigrationTraceDestinataireTest {
     Assert.assertEquals(listCql.size(), listcodeevt.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
   }
-  
+
   @Test
   public void sliceQueryTest() {
-	  populateTableThrift();
-	  //populateTableCql();
+    populateTableThrift();
+    //populateTableCql();
 
     try {
-		mtracedesti.comparTraceDestinataireFromCQlandThrift();
+      mtracedesti.comparTraceDestinataireFromCQlandThrift();
 	} catch (Exception e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
   }
   // CLASSE UTILITAIRE
@@ -133,4 +133,28 @@ public class MigrationTraceDestinataireTest {
       i++;
     }
   }
+
+  // ATTENTION UNIQUEMENT POUR CORRECTION BASE
+  @Test
+  public void createDestinatairesManquants() {
+    /*
+     * final TraceDestinataire evenement = new TraceDestinataire();
+     * evenement.setCodeEvt("DFCE_COPIE_DOC");
+     * final Map<String, List<String>> map = new HashMap<>();
+     * evenement.setDestinataires(map);
+     * map.put(TraceDestinataireDao.COL_JOURN_EVT,
+     * Arrays.asList("all_infos"));
+     * supportThrift.create(evenement, new Date().getTime());
+     */
+    /*
+     * final TraceDestinataire evenement2 = new TraceDestinataire();
+     * evenement2.setCodeEvt("WS_COPIE|KO");
+     * final Map<String, List<String>> map = new HashMap<>();
+     * evenement2.setDestinataires(map);
+     * map.put(TraceDestinataireDao.COL_REG_TECHNIQUE,
+     * Arrays.asList("all_infos"));
+     * supportThrift.create(evenement2, new Date().getTime());
+     */
+  }
+
 }

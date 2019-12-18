@@ -194,35 +194,35 @@ public class MigrationJobExecutionTest {
     migJobInst.migrationFromCqlTothrift();
 
     final int nb_keyInst = dumper.getKeysCount(Constante.JOBINSTANCE_CFNAME);
-    Assert.assertEquals(100, nb_keyInst);
+    Assert.assertEquals(NB_ROWS, nb_keyInst);
 
     // JOBINSTANCE_BY_NAME
     // migration de la table
     migJobInstByNameIndex.migrationFromCqlTothrift();
 
     final int nb_keyInstByName = dumper.getKeysCount(Constante.JOBINSTANCES_BY_NAME_CFNAME);
-    Assert.assertEquals(100, nb_keyInstByName);
+    Assert.assertEquals(NB_ROWS, nb_keyInstByName);
 
     // JOBEXECUTION
     // migration de la table
     migJobExe.migrationFromCqlTothrift();
 
     final int nb_key = dumper.getKeysCount(Constante.JOBEXECUTION_CFNAME);
-    Assert.assertEquals(100, nb_key);
+    Assert.assertEquals(NB_ROWS, nb_key);
 
     // JOBEXECUTIONS
     // migration de la table
     migJobExesIndex.migrationFromCqlTothrift();
 
     final int nb_key1 = dumper.getKeysCount(Constante.JOBEXECUTIONS_CFNAME);
-    Assert.assertEquals(101, nb_key1);
+    Assert.assertEquals(NB_ROWS + 1, nb_key1);
 
     // JOBINSTANCE_TO_JOBEXECUTION_CFNAME
     // migration de la table
     migJobInstToExeIndex.migrationFromCqlTothrift();
 
     final int nb_key2 = dumper.getKeysCount(Constante.JOBINSTANCE_TO_JOBEXECUTION_CFNAME);
-    Assert.assertEquals(100, nb_key2);
+    Assert.assertEquals(NB_ROWS, nb_key2);
 
     // JOBEXECUTIONS_RUNNING_CFNAME
     // migration de la table
@@ -230,7 +230,7 @@ public class MigrationJobExecutionTest {
 
     //
     final int nb_key3 = dumper.getKeysCount(Constante.JOBEXECUTIONS_RUNNING_CFNAME);
-    Assert.assertEquals(101, nb_key3);
+    Assert.assertEquals(NB_ROWS + 1, nb_key3);
   }
 
   // Methode UTILITAIRE

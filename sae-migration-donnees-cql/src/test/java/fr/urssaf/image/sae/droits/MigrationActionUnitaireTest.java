@@ -126,7 +126,7 @@ public class MigrationActionUnitaireTest {
     for (final String code : listCode) {
       final ActionUnitaire actionUnitaire = new ActionUnitaire();
       actionUnitaire.setCode(code);
-      actionUnitaire.setDescription(listDescription[i]);
+        actionUnitaire.setDescription(listDescription[i]);
       supportThrift.create(actionUnitaire, new Date().getTime());
       i++;
     }

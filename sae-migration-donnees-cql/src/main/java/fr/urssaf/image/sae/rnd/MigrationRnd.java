@@ -90,6 +90,7 @@ public class MigrationRnd implements IMigration {
     } else {
       LOGGER.warn("MIGRATION_RND -- ATTENTION: Les listes rnd sont différentes ");
     }
+
   }
 
 }

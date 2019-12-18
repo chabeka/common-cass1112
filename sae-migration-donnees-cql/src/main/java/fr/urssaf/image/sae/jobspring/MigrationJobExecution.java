@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.jobspring;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -94,13 +95,15 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
       if (lastKey == null) {
         lastKey = key;
       }
-      //
-      getJobExecutionFromResult(row, jobExecutionCql);
+
       if (key != null && !key.equals(lastKey)) {
+
         jobdaocqlForMig.saveWithMapper(jobExecutionCql);
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
         nbRow++;
+      } else {
+        getJobExecutionFromResult(row, jobExecutionCql);
       }
 
     }
@@ -144,6 +147,10 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     // liste venant de la base thrift
     final List<JobExecutionCqlForMig> listJobCql = getListJobExeThrift();
 
+    Collections.sort(listJobCql);
+    for (final JobExecutionCqlForMig exe : listJobCql) {
+      System.out.println(exe.getJobExecutionId());
+    }
     // liste venant de la base cql
     final List<JobExecutionCqlForMig> listJobThrift = new ArrayList<>();
     final Iterator<JobExecutionCql> it = jobdaocql.findAllWithMapper();
@@ -156,6 +163,10 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
 
     }
 
+    Collections.sort(listJobThrift);
+    for (final JobExecutionCqlForMig exe : listJobThrift) {
+      System.out.println(exe.getJobExecutionId());
+    }
     LOGGER.info("Nb total " + nbRow);
 
     final boolean isListEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
@@ -202,7 +213,6 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
   private void getJobExecutionFromResult(final Row row, final JobExecutionCqlForMig jobExecutionCql) {
 
     // final JobExecutionCqlForMig jobExecutionCql = new JobExecutionCqlForMig();
-
 
     final String colName = StringSerializer.get().fromByteBuffer(row.getBytes("column1"));
 
@@ -314,6 +324,8 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     Long key = null;
     JobExecutionCqlForMig jobExecutionCql = new JobExecutionCqlForMig();
 
+
+
     while (it.hasNext()) {
       final Row row = (Row) it.next();
 
@@ -322,11 +334,13 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
       if (lastKey == null) {
         lastKey = key;
       }
-      getJobExecutionFromResult(row, jobExecutionCql);
+
       if (key != null && !key.equals(lastKey)) {
         listJob.add(jobExecutionCql);
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
+      } else {
+        getJobExecutionFromResult(row, jobExecutionCql);
       }
     }
 

@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.trace;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -23,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceRegSecuriteIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegSecuriteIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
@@ -83,7 +85,7 @@ public class MigrationTraceRegSecuriteTest {
 
   @After
   public void after() throws Exception {
-    // server.resetData(false, MODE_API.DATASTAX);
+    server.resetData(false, MODE_API.DATASTAX);
   }
   @Test
   public void migrationFromThriftToCql() {
@@ -144,10 +146,11 @@ public class MigrationTraceRegSecuriteTest {
 
   private void createTraceThrift(final UUID uuid) {
     final TraceRegSecurite trace = new TraceRegSecurite(uuid, DATE);
-    trace.setContexte("CONTEXTE + suffixe");
-    trace.setCodeEvt("CODE_EVT + suffixe");
-    trace.setContratService("CONTRAT + suffixe");
-    trace.setLogin("LOGIN + suffixe");
+
+    trace.setContexte("ContexteTest");
+    trace.setCodeEvt("DFCE_MODIF_DOC|OK");
+    trace.setContratService("CS_SATURNE");
+    trace.setLogin("TEST");
     trace.setInfos(INFOSTHRIFT);
     trace.setPagms(Arrays.asList("PAGM  suffixe"));
 
@@ -170,18 +173,33 @@ public class MigrationTraceRegSecuriteTest {
 
   @Test
   public void sliceQueryTest() throws Exception {
-
-    populateTableThrift();
-
-    mtracej.migrationFromThriftToCql();
-    mtracej.migrationIndexFromThriftToCql();
-
+    final long debut = System.currentTimeMillis();
     try {
+      System.out.println("Debut  TEST migration des données TraceRegSecurite");
+      // System.out.println("Debut: Création des données TraceRegSecurite" + Calendar.getInstance().getTime());
+      // populateTableThrift();
+      // System.out.println("Fin: Création des données TraceRegSecurite" + Calendar.getInstance().getTime());
+      System.out.println("Debut migration des données TraceRegSecurite" + Calendar.getInstance().getTime());
+      mtracej.migrationFromThriftToCql();
+      System.out.println("Fin migration des données TraceRegSecurite" + Calendar.getInstance().getTime());
+      System.out.println("Debut migration des données TraceRegSecuriteIndex" + Calendar.getInstance().getTime());
+      mtracej.migrationIndexFromThriftToCql();
+      System.out.println("Fin: Migration des données TraceRegSecuriteIndex " + Calendar.getInstance().getTime());
+      System.out.println("Debut comparaison des données TraceRegSecurite" + Calendar.getInstance().getTime());
+
       mtracej.traceComparator();
       mtracej.indexComparator();
-    } catch (final Exception e) {
+
+      final long fin = System.currentTimeMillis();
+      System.out.println("Fin compararaison des données TraceRegSecurite " + Calendar.getInstance().getTime());
+      System.out.println("Duree en s:" + String.valueOf((fin - debut) / 1000));
+    }
+    catch (final Exception e) {
       e.printStackTrace();
     }
-
+    finally {
+      System.out.println("Fin TEST migration des données TraceRegSecurite");
+    }
   }
+
 }

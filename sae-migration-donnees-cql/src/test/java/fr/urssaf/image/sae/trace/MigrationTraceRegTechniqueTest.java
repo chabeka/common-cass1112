@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.trace;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -175,21 +176,29 @@ public class MigrationTraceRegTechniqueTest {
     return list.size();
 
   }
-  
+
   @Test
   public void sliceQueryTest() throws Exception {
-	
-	populateTableThrift();
-
-	mtracej.migrationFromThriftToCql();
-	mtracej.migrationIndexFromThriftToCql();
-
+    final long debut = System.currentTimeMillis();
+    System.out.println("Debut  TEST migration des données TraceRegTechnique");
+    System.out.println("Debut: Création des données TraceRegTechnique" + Calendar.getInstance().getTime());
+    populateTableThrift();
+    System.out.println("Fin: Création des données TraceRegTechnique" + Calendar.getInstance().getTime());
+    System.out.println("Debut migration des données TraceRegTechnique" + Calendar.getInstance().getTime());
+    mtracej.migrationFromThriftToCql();
+    mtracej.migrationIndexFromThriftToCql();
+    System.out.println("Fin: Migration TraceRegTechnique " + Calendar.getInstance().getTime());
+    System.out.println("Debut comparaison des données TraceRegTechnique" + Calendar.getInstance().getTime());
     try {
-    	mtracej.traceComparator();
-    	mtracej.indexComparator();
-	} catch (Exception e) {
-		e.printStackTrace();
-	}
-    
+      mtracej.traceComparator();
+      mtracej.indexComparator();
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+    final long fin = System.currentTimeMillis();
+    System.out.println("Fin compararaison des données TraceRegTechnique " + Calendar.getInstance().getTime());
+    System.out.println("Duree en s:" + String.valueOf((fin - debut) / 1000));
+    System.out.println("Fin TEST migration des données TraceRegTechnique");
   }
 }

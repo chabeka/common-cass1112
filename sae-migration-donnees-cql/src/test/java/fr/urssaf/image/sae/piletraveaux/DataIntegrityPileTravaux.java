@@ -77,6 +77,8 @@ public class DataIntegrityPileTravaux {
   @Autowired
   MigrationJobRequest migJobR;
 
+  private final static int NB_JOBS = 100;
+
   @Before
   public void init() throws Exception {
 
@@ -91,7 +93,7 @@ public class DataIntegrityPileTravaux {
 
   private void populateTableThrift() throws Exception {
 
-    for (int i = 0; i < 101; i++) {
+    for (int i = 0; i < NB_JOBS; i++) {
       final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       System.out.println(idJob);
 
