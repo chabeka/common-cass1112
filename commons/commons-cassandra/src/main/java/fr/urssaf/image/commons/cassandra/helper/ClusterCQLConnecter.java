@@ -53,12 +53,12 @@ public class ClusterCQLConnecter {
   }
 
   /**
-   * Il arrive que le serveur cassandra local mette du temps avant d'�tre
-   * op�rationnel. Cette m�thode fait en sorte d'attendre jusqu'� ce qu'il soit
-   * op�rationnel
+   * Il arrive que le serveur cassandra local mette du temps avant d'être
+   * opérationnel. Cette méthode fait en sorte d'attendre jusqu'à ce qu'il soit
+   * opérationnel
    *
    * @throws InterruptedException
-   *           : on a �t� interrompu
+   *           : on a été interrompu
    */
   @SuppressWarnings("resource")
   private void waitForServer() throws InterruptedException {
@@ -115,10 +115,10 @@ public class ClusterCQLConnecter {
   private FileCQLDataSet mergeCqlDataSets(final boolean dropAndCreateKeyspace, final String... dataSets) {
     LOG.debug("Merge des datasets en cours");
     final String logFinMerge = "Fin du merge des datasets";
-    // On v�rifie que le keyspace existe pour le cr�er si besoin
+    // On vérifie que le keyspace existe pour le créer si besoin
     final boolean createKeyspace = !(isExistKeyspace(testSession) && !dropAndCreateKeyspace);
 
-    // V�rification des param�tres d'entr�e
+    // Vérification des paramètres d'entrée
     Assert.notEmpty(dataSets, "La liste des Dataset est vide");
     final String fileDataSet = "cassandra-local-datasets/migration-cqltable-common.cql";
     final String fileDataSetTmp = "target/tmp/migration-cqltable-common.cql";
@@ -147,7 +147,7 @@ public class ClusterCQLConnecter {
           }
         } catch (final IOException exp) {
           LOG.error("Erreur de merge des datasets : " + exp);
-          LOG.warn("Ajout de la dataSet par d�faut : " + fileDataSet);
+          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
           tmpFileDataSet = Paths.get(fileDataSet);
         }
       } else {
@@ -172,12 +172,12 @@ public class ClusterCQLConnecter {
       LOG.debug(logFinMerge);
     }
 
-    // Renvoie l'objet Dataset fusionn�
+    // Renvoie l'objet Dataset fusionné
     return new FileCQLDataSet(tmpFileDataSet.toFile().getAbsolutePath(), createKeyspace, dropAndCreateKeyspace, CassandraServerBean.KEYSPACE_TU);
   }
 
   /**
-   * V�rifie si le keyspace existe ou pas.
+   * Vérifie si le keyspace existe ou pas.
    * 
    * @param session
    *          Session de test
@@ -186,13 +186,13 @@ public class ClusterCQLConnecter {
   private boolean isExistKeyspace(final Session session) {
     boolean existKeyspace = false;
 
-    // V�rification de l'existence du keyspace
+    // Vérification de l'existence du keyspace
     final String selectQuery = "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name='" + CassandraServerBean.KEYSPACE_TU + "'";
     final ResultSet keyspaceQueryResult = session.execute(selectQuery);
 
     existKeyspace = keyspaceQueryResult != null && keyspaceQueryResult.iterator() != null && keyspaceQueryResult.iterator().hasNext();
 
-    // Si le keyspace existe, on l'utilise dans la session car cela n'est pas fait par d�faut dans le librairie cassandra-unit.
+    // Si le keyspace existe, on l'utilise dans la session car cela n'est pas fait par défaut dans le librairie cassandra-unit.
     if (existKeyspace) {
       final String useQuery = "USE " + CassandraServerBean.KEYSPACE_TU;
       LOG.debug("executing : " + useQuery);
@@ -203,14 +203,15 @@ public class ClusterCQLConnecter {
   }
 
   public void loadDataSetToServer(final boolean dropAndCreateKeyspace, final String... newDataSets) {
-    // On inject les jeux de donn�es
+    // On injecte les jeux de données
     if (newDataSets != null && newDataSets.length > 0) {
       final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
       cqlDataLoader.load(mergeCqlDataSets(dropAndCreateKeyspace, newDataSets));
     }
   }
+
   /**
-   * Arr�te le cluster (partie cliente) de test
+   * Arrête le cluster (partie cliente) de test
    */
   public final void shutdownTestCluster() {
     if (testCluster != null) {
@@ -226,7 +227,7 @@ public class ClusterCQLConnecter {
   }
 
   /**
-   * M�thode qui efface le contenu de toutes les tables gr�ce � l'ex�cution d'un truncate
+   * Méthode qui efface le contenu de toutes les tables grâce à l'exécution d'un truncate
    */
   public final void clearTables() {
     final KeyspaceMetadata keyspace = testCluster.getMetadata().getKeyspace(CassandraServerBean.KEYSPACE_TU);

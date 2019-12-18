@@ -62,7 +62,7 @@ public class QueryUtils {
         }
       }
       catch (final Exception e) {
-        LOGGER.error(e.getMessage());
+        throw new RuntimeException(e);
       }
     }
   }
@@ -101,7 +101,7 @@ public class QueryUtils {
           }
         }
         catch (final Exception e) {
-          LOGGER.error(e.getMessage());
+          throw new RuntimeException(e);
         }
       }
     }
@@ -168,7 +168,7 @@ public class QueryUtils {
           }
         }
         catch (final Exception e) {
-          LOGGER.error(e.getMessage());
+          throw new RuntimeException(e);
         }
       }
     }

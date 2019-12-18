@@ -59,7 +59,7 @@ public class CassandraApiGestionServiceImpl {
                  }
                });
     if(ccf != null) {
-    	ccf.getSession().getCluster().getMetadata().getKeyspace(ccf.getKeyspace());
+      ccf.getSession().getCluster().getMetadata().getKeyspace(ccf.getKeyspace());
     }
     if (initCacheOnStartup) {
       populateCache();
@@ -102,7 +102,7 @@ public class CassandraApiGestionServiceImpl {
       modeApisList.put(cfName, getApiModeFromConfiguration());
     }
     catch (final FileNotFoundException e) {
-      LOGGER.error(e.getMessage());
+      throw new RuntimeException(e);
     }
   }
 

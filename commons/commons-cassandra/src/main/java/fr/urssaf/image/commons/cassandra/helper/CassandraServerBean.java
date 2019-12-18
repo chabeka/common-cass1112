@@ -53,12 +53,12 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 
   @Override
   public void destroy() throws Exception {
-    // Pas besoin d'arr�ter le serveur
+    // Pas besoin d'arrêter le serveur
   }
 
   /**
-   * R�initialise les donn�es de la base cassandra locale, avec le jeu de
-   * donn�es utilis� initialement lors de la cr�ation du serveur
+   * Réinitialise les données de la base cassandra locale, avec le jeu de
+   * données utilisé initialement lors de la création du serveur
    *
    * @throws Exception
    *           Une erreur est survenue
@@ -88,14 +88,14 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
       created = true;
     }
     if (dataSetsCql != null) {
-      // La deuxi�me fois, on ne recr�e le keyspace que s'il n'est pas d�ja cr��
+      // La deuxième fois, on ne recréé le keyspace que s'il n'est pas d�ja créé
       loadDatasets(!created, MODE_API.DATASTAX, dataSetsCql);
     }
   }
 
   /**
-   * R�initialise les donn�es de la base cassandra locale, avec le jeu de
-   * donn�es utilis� initialement lors de la cr�ation du serveur
+   * Réinitialise les données de la base cassandra locale, avec le jeu de
+   * données utilisé initialement lors de la création du serveur
    *
    * @throws Exception
    *           Une erreur est survenue
@@ -113,13 +113,13 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
   }
 
   /**
-   * R�initialise les donn�es de la base cassandra locale en effectuant un truncate � l'aide du clearTables
-   * on a laiss� les param�tres qui ne sont pas utilis�s pour eviter un refactoring de tous les projets utilisant cette m�thode
+   * Réinitialise les données de la base cassandra locale en effectuant un truncate à l'aide du clearTables
+   * on a laissé les paramètres qui ne sont pas utilisés pour eviter un refactoring de tous les projets utilisant cette méthode
    * 
    * @param dropAndCreateKeyspace
    *          Si true, suppression et creation d'un nouveau keyspace sinon false.
    * @param newDataSets
-   *          Jeu(x) de donn�es � utiliser
+   *          Jeu(x) de données à utiliser
    * @throws Exception
    *           Une erreur est survenue
    */
@@ -211,7 +211,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
         cqlconnecter = new ClusterCQLConnecter(getCqlHosts());
       }
       cqlSession = cqlconnecter.getTestSession();
-      // On inject les jeux de donn�es via le connecteur cql
+      // On inject les jeux de données via le connecteur cql
       cqlconnecter.loadDataSetToServer(dropAndCreateKeyspace, newDataSets);
     }
   }
@@ -222,7 +222,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
       if (newDataSets == null || newDataSets != null && newDataSets.length == 0) {
         newDataSets = dataSets;
       }
-      // creer le connecteur au cluster thrift et charger les datasets
+      // créer le connecteur au cluster thrift et charger les datasets
       if (connecter == null) {
         connecter = new ClusterThriftConnecter(getThriftHosts());
       }
@@ -241,7 +241,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
        * // creer le connecteur au cluster cql et charger les datasets
        * final ClusterCQLConnecter cqlconnecter = new ClusterCQLConnecter(getCqlHosts());
        * cqlSession = cqlconnecter.getTestSession();
-       * // On inject les jeux de données via le connecteur cql
+       * // On injecte les jeux de données via le connecteur cql
        * cqlconnecter.loadDataSetToServer(dropAndCreateKeyspace, newDataSets);
        */
     }
@@ -263,14 +263,14 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
     System.setProperty("cassandra.storagedir", "/tmp/cassandra" + System.nanoTime());
 
     /*
-     * Pour cause d'apparution de cette erreur (adresse ci-dessous) d� � un bug dans la version de cassandra unit utilis�e,
+     * Pour cause d'apparution de cette erreur (adresse ci-dessous) dû à un bug dans la version de cassandra unit utilisé,
      * https://github.com/jsevellec/cassandra-unit/issues/221
-     * Lors de la cr�ation des diff�rents repertoires de cassandra, le fichier de conf n'est pas initialis�
-     * ce qui cr� un NullPointerException �:
+     * Lors de la création des différents repertoires de cassandra, le fichier de conf n'est pas initialisé
+     * ce qui créé un NullPointerException :
      * DatabaseDescriptor.createAllDirectories():
      * if (conf.data_file_directories.length == 0) ==> NullPointerException
      * car conf == null
-     * Pour contourner le probl�me il y a 2 solutions:
+     * Pour contourner le problème il y a 2 solutions:
      * solution 1:
      * On charge d'abord le context (fichier de conf) avant de lancer EmbeddedCassandraServerHelper
      */
@@ -278,7 +278,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
     final String yamlFile = "/" + EmbeddedCassandraServerHelper.DEFAULT_CASSANDRA_YML_FILE;
     final File file = new File(tmpDir + yamlFile);
     System.setProperty("cassandra.config", "file:" + file.getAbsolutePath());
-    // On verifie que le fichier existe sinon on le cr�
+    // On verifie que le fichier existe sinon on le créé
     if (!file.exists()) {
       copyYamlFile(yamlFile, tmpDir);
     }
@@ -329,11 +329,11 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
   }
 
   /**
-   * Dans le cas d'un cassandra zookeeper non local, il s'agit de la cha�ne de
+   * Dans le cas d'un cassandra zookeeper non local, il s'agit de la chaîne de
    * connexion
    *
    * @param hosts
-   *          Cha�ne de connexion (ex :
+   *          Chaîne de connexion (ex :
    *          "toto.toto.com:9160,titi.titi.com:9160")
    */
   public void setHosts(final String hosts) {
@@ -342,14 +342,15 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 
   /**
    * get cql port
-   * Renvoie la cha�ne de connexion au serveur cassandra
+   * Renvoie la chaîne de connexion au serveur cassandra
+   * 
    * @return
    */
   public final String getCqlHosts() {
     if (startLocal) {
-      // Petite bidouille : on met le serveur localhost 3 fois : �a permet de
+      // Petite bidouille : on met le serveur localhost 3 fois : ça permet de
       // tenter 3 fois
-      // l'op�ration si elle �choue la 1ere fois (�a arrive lorsque le
+      // l'opération si elle échoue la 1ere fois (ça arrive lorsque le
       // serveur cassandra local
       // ne se lance pas assez rapidement)
       return "localhost:9042,localhost:9042,localhost:9042";
@@ -360,15 +361,15 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 
   /**
    * Thrift port
-   * Renvoie la cha�ne de connexion au serveur cassandra
+   * Renvoie la chaîne de connexion au serveur cassandra
    *
-   * @return cha�ne de connexion
+   * @return chaîne de connexion
    */
   public final String getThriftHosts() {
     if (startLocal) {
-      // Petite bidouille : on met le serveur localhost 3 fois : �a permet de
+      // Petite bidouille : on met le serveur localhost 3 fois : ça permet de
       // tenter 3 fois
-      // l'opération si elle échoue la 1ere fois (�a arrive lorsque le
+      // l'opération si elle échoue la 1ere fois (ça arrive lorsque le
       // serveur cassandra local
       // ne se lance pas assez rapidement)
       return "localhost:9171,localhost:9171,localhost:9171";
@@ -386,7 +387,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
   }
 
   /**
-   * Indique quel jeu de donn�es cassandraUnit doit �tre utilis� lors de
+   * Indique quel jeu de données cassandraUnit doit être utilisé lors de
    * l'initialisation du serveur cassandra
    *
    * @param dataSet
@@ -394,21 +395,21 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
    */
   public void setDataSet(final String dataSet) {
 
-    // Il peut y avoir plusieurs dataSets s�par�s par des ;
+    // Il peut y avoir plusieurs dataSets séparés par des ;
     dataSets = StringUtils.split(dataSet, ';');
 
   }
 
   /**
-   * Indique quel jeu de donn�es cassandraUnit doit �tre utilis� lors de
+   * Indique quel jeu de données cassandraUnit doit être utilisé lors de
    * l'initialisation du serveur cassandra
    *
    * @param dataSet
-   *          Jeu de donn�es
+   *          Jeu de données
    */
   public void setDataSetCql(final String dataSetCql) {
 
-    // Il peut y avoir plusieurs dataSets s�par�s par des ;
+    // Il peut y avoir plusieurs dataSets séparés par des ;
     dataSetsCql = StringUtils.split(dataSetCql, ';');
 
   }
@@ -424,7 +425,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
   }
 
   /**
-   * @return vrai si le serveur cassandra est lanc� localement
+   * @return vrai si le serveur cassandra est lancé localement
    */
   public boolean getStartLocal() {
     return startLocal;
