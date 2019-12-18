@@ -112,6 +112,44 @@ public final class Constantes {
 
   public static final String CF_DROIT_PRMD = "droitprmd";
 
-  public static final String CF_TRACE_JOURNAL_EVT_INDEX_DOC = "tracejournalevtindexdoccql";
+  public static final String CF_TRACE_JOURNAL_EVT_INDEX = "tracejournalevtindex";
+
+  public static final String CF_TRACE_JOURNAL_EVT_INDEX_DOC = "tracejournalevtindexdoc";
+
+  public static final String CF_TRACE_REG_EXPLOITATION_INDEX = "traceregexploitationindex";
+
+  public static final String CF_TRACE_REG_SECURITE_INDEX = "traceregsecuriteindex";
+
+  public static final String CF_TRACE_REG_TECHNIQUE_INDEX = "traceregtechniqueindex";
+
+  public static final String CF_JOBINSTANCE = "jobinstance";
+
+  public static final String CF_JOBINSTANCES_BY_NAME = "jobinstancesbyname";
+
+  public static final String CF_JOBINSTANCE_TO_JOBEXECUTION = "jobinstancetojobexecution";
+
+  public static final String CF_JOBEXECUTION = "jobexecution";
+
+  public static final String CF_JOBEXECUTIONS = "jobexecutions";
+
+  public static final String CF_JOBEXECUTIONS_RUNNING = "jobexecutionsrunning";
+
+  public static final String CF_JOBEXECUTION_TO_JOBSTEP = "jobexecutiontojobstep";
+
+  public static final String CF_JOBSTEP = "jobstep";
+
+  public static final String CF_JOBSTEPS = "jobsteps";
+
+  public static final String CF_JOB_HISTORY = "jobhistory";
+
+  public static final String CF_JOB_REQUEST = "jobrequest";
+
+  public static final String CF_JOBS_QUEUE = "jobsqueue";
+
+  // Nouvelles tables
+  public static final String CF_MODE_API = "modeapi";
+
+  public static final String CF_SEQUENCES = "sequences";
+
 
 }
