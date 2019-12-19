@@ -387,9 +387,9 @@ public final class MajLotServiceImpl implements MajLotService {
       // MAJ des métadonnées
       updateMetaDfce("META_" + nomOperation);
       // Ajout des index composites
-      if ("GNS".contains(nomOperation)) {
+      if (nomOperation.contains("GNS")) {
         addIndexesCompositeToDfce("META_" + nomOperation, APPL_CONCERNEE.GNS);
-      } else if ("GNT".contains(nomOperation)) {
+      } else if (nomOperation.contains("GNT")) {
         addIndexesCompositeToDfce("META_" + nomOperation, APPL_CONCERNEE.GNT);
       }
     }
