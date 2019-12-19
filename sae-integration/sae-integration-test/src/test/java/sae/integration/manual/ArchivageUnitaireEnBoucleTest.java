@@ -19,32 +19,32 @@ import sae.integration.webservice.modele.SaeServicePortType;
  */
 public class ArchivageUnitaireEnBoucleTest {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(ArchivageUnitaireEnBoucleTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(ArchivageUnitaireEnBoucleTest.class);
 
-   private static SaeServicePortType service;
+  private static SaeServicePortType service;
 
-   private static Environment environment;
+  private static Environment environment;
 
-   @BeforeClass
-   public static void setup() {
-      environment = Environments.MIG_GNT;
-      service = SaeServiceStubFactory.getServiceForDevToutesActions(environment.getUrl());
-      // service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(environment.getUrl());
-   }
+  @BeforeClass
+  public static void setup() {
+    environment = Environments.GNT_INT_PAJE;
+    service = SaeServiceStubFactory.getServiceForDevToutesActions(environment.getUrl());
+    // service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(environment.getUrl());
+  }
 
 
-   @Test
-   public void datasetCreationTest() {
+  @Test
+  public void datasetCreationTest() {
 
-      final int iterationsCount = 100;
+    final int iterationsCount = 100;
 
-      for (int i = 0; i < iterationsCount; i++) {
-         final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
-         request.setMetadonnees(RandomData.getRandomMetadatas());
-         request.setDataFile(TestData.getTxtFile(request.getMetadonnees()));
-         final String uuid = ArchivageUtils.sendArchivageUnitaire(service, request);
-         LOGGER.info("UUID : {}", uuid);
-      }
-   }
+    for (int i = 0; i < iterationsCount; i++) {
+      final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
+      request.setMetadonnees(RandomData.getRandomMetadatas());
+      request.setDataFile(TestData.getTxtFile(request.getMetadonnees()));
+      final String uuid = ArchivageUtils.sendArchivageUnitaire(service, request);
+      LOGGER.info("UUID : {}", uuid);
+    }
+  }
 
 }
