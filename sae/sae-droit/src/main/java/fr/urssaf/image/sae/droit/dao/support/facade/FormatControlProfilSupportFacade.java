@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.droit.utils.Constantes;
  * Un traitement spécifique est effectué en fonction du MODE_API
  */
 @Component
-public class FormatControlProfilSupportFacade implements ISupportFacade<FormatControlProfil> {
+public class FormatControlProfilSupportFacade implements IFormatControlProfilFacade<FormatControlProfil> {
 
   private final String cfName = Constantes.CF_DROIT_FORMAT_CONTROL_PROFIL;
 
@@ -140,34 +140,36 @@ public class FormatControlProfilSupportFacade implements ISupportFacade<FormatCo
    * @throws FormatControlProfilNotFoundException
    */
   @Override
-  public void delete(final String id) {
+  public void delete(final String id) throws FormatControlProfilNotFoundException {
 
-    try {
+    // try {
 
-      switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (ModeGestionAPI.getModeApiCf(cfName)) {
 
-      case MODE_API.HECTOR:
-        formatControlProfilSupport.delete(id, clockSupport.currentCLock());
-        break;
+    case MODE_API.HECTOR:
+      formatControlProfilSupport.delete(id, clockSupport.currentCLock());
+      break;
 
-      case MODE_API.DATASTAX:
-        formatControlProfilCqlSupport.delete(id);
-        break;
+    case MODE_API.DATASTAX:
+      formatControlProfilCqlSupport.delete(id);
+      break;
 
-      case MODE_API.DUAL_MODE_READ_THRIFT:
-      case MODE_API.DUAL_MODE_READ_CQL:
-        formatControlProfilSupport.delete(id, clockSupport.currentCLock());
-        formatControlProfilCqlSupport.delete(id);
-        break;
+    case MODE_API.DUAL_MODE_READ_THRIFT:
+    case MODE_API.DUAL_MODE_READ_CQL:
+      formatControlProfilSupport.delete(id, clockSupport.currentCLock());
+      formatControlProfilCqlSupport.delete(id);
+      break;
 
-      default:
-        throw new ModeGestionAPIUnkownException("FormatControlProfilSupportFacade/delete/Mode API inconnu");
-      }
-
+    default:
+      throw new ModeGestionAPIUnkownException("FormatControlProfilSupportFacade/delete/Mode API inconnu");
     }
-    catch (final FormatControlProfilNotFoundException e) {
-      throw new RuntimeException(e);
-    }
+
+    /*
+     * }
+     * catch (final Exception e) {
+     * throw new RuntimeException(e);
+     * }
+     */
 
 
   }

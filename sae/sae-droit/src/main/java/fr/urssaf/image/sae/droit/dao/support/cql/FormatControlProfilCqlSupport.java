@@ -15,6 +15,8 @@ import org.springframework.util.Assert;
 import fr.urssaf.image.sae.droit.dao.cql.IFormatControlProfilDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
+import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
+import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 
 /**
  * Support de la classe DAO {@link IFormatControlProfilDaoCql}
@@ -45,9 +47,16 @@ public class FormatControlProfilCqlSupport {
    * @param code
    *          identifiant de la formatControlProfil
    */
-  public void delete(final String code) {
+  public void delete(final String code) throws FormatControlProfilNotFoundException {
     Assert.notNull(code, "le code ne peut etre null");
+    final FormatControlProfil formatControl = find(code);
+    if (formatControl == null) {
+      // pas en base
+      throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
+                                                                          .loadMessage("erreur.format.control.delete", code));
+    }
     formatcontrolprofildaocql.deleteById(code);
+
   }
 
   /**
