@@ -54,6 +54,8 @@ import me.prettyprint.hector.api.query.RangeSlicesQuery;
 @Component
 public class MigrationTraceJournalEvt extends MigrationTrace {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceJournalEvt.class);
+
   private static final String TRACE_JOURNAL_EVT_TXT = "TraceJournalEvt.txt";
 
   private static final String TRACE_JOURNAL_EVT_INDEX_TXT = "TraceJournalEvtIndex.txt";
@@ -80,8 +82,6 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
   @Autowired
   private CompareIndexDoc compJEvtDoc;
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceJournalEvt.class);
 
   /**
    * Migration de la table thrift vers cql
@@ -380,24 +380,27 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       for (final me.prettyprint.hector.api.beans.Row<String, String, byte[]> row : orderedRows) {
 
         final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
-        for (final TraceJournalEvtIndexDoc tr : list) {
-          final TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
 
-          // sauvegarde
-          // tant que count == blockSize on ajout tout sauf le dernier
-          // Cela empeche d'ajouter la lastRow deux fois
-          if (count == blockSize && nbRows < count) {
-            indexDocDaocql.saveWithMapper(indxDocCql);
-            nbRows++;
-          } else if (count != blockSize) {
-            indexDocDaocql.saveWithMapper(indxDocCql);
-            nbRows++;
+        if (list != null) {
+          for (final TraceJournalEvtIndexDoc tr : list) {
+            final TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
+
+            // sauvegarde
+            // tant que count == blockSize on ajout tout sauf le dernier
+            // Cela empeche d'ajouter la lastRow deux fois
+            if (count == blockSize && nbRows < count) {
+              indexDocDaocql.saveWithMapper(indxDocCql);
+              nbRows++;
+            } else if (count != blockSize) {
+              indexDocDaocql.saveWithMapper(indxDocCql);
+              nbRows++;
+            }
+
+            // ecriture dans le fichier
+            bWriter.append(row.getKey());
+            bWriter.newLine();
+
           }
-
-          // ecriture dans le fichier
-          bWriter.append(row.getKey());
-          bWriter.newLine();
-
         }
       }
 

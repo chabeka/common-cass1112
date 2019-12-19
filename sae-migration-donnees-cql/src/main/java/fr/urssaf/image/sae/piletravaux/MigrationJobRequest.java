@@ -14,31 +14,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.datastax.driver.core.Row;
-
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
-import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
+import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
-import fr.urssaf.image.sae.pile.travaux.dao.serializer.MapSerializer;
-import fr.urssaf.image.sae.pile.travaux.dao.serializer.VISerializer;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 import fr.urssaf.image.sae.pile.travaux.utils.JobRequestMapper;
 import fr.urssaf.image.sae.piletravaux.dao.IGenericJobTypeDao;
-import fr.urssaf.image.sae.piletravaux.model.GenericJobType;
 import fr.urssaf.image.sae.utils.CompareUtils;
-import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
-import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
@@ -71,68 +64,81 @@ public class MigrationJobRequest implements IMigration {
 
   // String keyspace = "SAE";
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public void migrationFromThriftToCql() {
 
     LOGGER.info(" MigrationJobRequest - migrationFromThriftToCql - start ");
 
-    // extraction des colonnes dans la table thrift
-    final Iterator<GenericJobType> it = genericdao.findAllByCFName("JobRequest", ccf.getKeyspace().getKeyspaceName());
+    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+    final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
+        .createRangeSlicesQuery(ccf.getKeyspace(),
+                                UUIDSerializer.get(),
+                                StringSerializer.get(),
+                                bytesSerializer);
+    rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
+    final int blockSize = 1000;
+    UUID startKey = null;
+    int count;
+    int nbTotalRow = 0;
+    do {
 
-    UUID lastKey = null;
-    if (it.hasNext()) {
-      final Row row = (Row) it.next();
-      lastKey = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-    }
+      // on fixe la clé de depart et la clé de fin. Dans notre cas il n'y a pas de clé de fin car on veut parcourir
+      // toutes les clé jusqu'à la dernière
+      // on fixe un nombre maximal de ligne à traiter à chaque itération
+      // si le nombre de resultat < blockSize on sort de la boucle ==> indique la fin des colonnes
 
-    int nb = 0;
-    UUID key = null;
+      rangeSlicesQuery.setRange(null, null, false, blockSize);
+      rangeSlicesQuery.setKeys(startKey, null);
+      rangeSlicesQuery.setRowCount(blockSize);
+      // rangeSlicesQuery.setReturnKeysOnly();
+      final QueryResult<OrderedRows<UUID, String, byte[]>> result = rangeSlicesQuery.execute();
 
-    while (it.hasNext()) {
-
-      // Extraction de la clé
-
-      final Row row = (Row) it.next();
-      key = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-
-      // compare avec la derniere clé qui a été extraite
-      // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
-      // alors on enrgistre celui qui vient d'être traité
-      if (key != null && !key.equals(lastKey)) {
-
-        // <UUID, String> le type de clé et le nom de la colonne
-        final ColumnFamilyResult<UUID, String> result = jobRequestSupport.getJobRequestTmpl().queryColumns(lastKey);
-
-        // Conversion en objet JobRequest
-        final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(result);
-
-        final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
-        // enregistrement
-        cqldao.saveWithMapper(jobcql);
-
-        // réinitialisation
-        lastKey = key;
-
-        nb++;
+      final OrderedRows<UUID, String, byte[]> orderedRows = result.get();
+      count = orderedRows.getCount();
+      // Parcours des rows pour déterminer la dernière clé de l'ensemble
+      final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
+      if (lastRow != null) {
+        startKey = lastRow.getKey();
       }
 
-      // dernier cas
-      final ColumnFamilyResult<UUID, String> result = jobRequestSupport.getJobRequestTmpl().queryColumns(lastKey);
-      // Conversion en objet JobRequest
-      final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(result);
-      final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
-      // enregistrement
-      cqldao.saveWithMapper(jobcql);
+      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
+      // son utilisation
+      final QueryResultConverter<UUID, String, byte[]> converter = new QueryResultConverter<>();
+      final ColumnFamilyResultWrapper<UUID, String> resultConverter = converter
+          .getColumnFamilyResultWrapper(result,
+                                        UUIDSerializer.get(),
+                                        StringSerializer.get(),
+                                        bytesSerializer);
+      // On itère sur le résultat
+      final HectorIterator<UUID, String> resultIterator = new HectorIterator<>(resultConverter);
 
-    }
+      int nbRow = 1;
+      for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
+        final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
+        // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
+        if (jobRequest != null) {
+          final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
 
-    LOGGER.debug(" Totale : " + nb);
+          if (count == blockSize && nbRow < count) {
+            // enregistrement
+            cqldao.saveWithMapper(jobcql);
+            nbTotalRow++;
+            nbRow++;
+          } else if (count != blockSize) {
+            // enregistrement
+            cqldao.saveWithMapper(jobcql);
+            nbTotalRow++;
+            nbRow++;
+          }
+        }
+      }
+
+    } while (count == blockSize);
+
+    LOGGER.debug(" Totale : " + nbTotalRow);
     LOGGER.debug(" MigrationJobRequest - migrationFromThriftToCql - end");
-
   }
+
 
   /**
    * {@inheritDoc}
@@ -211,14 +217,14 @@ public class MigrationJobRequest implements IMigration {
     final List<JobRequestCql> listJobThrift = new ArrayList<>();
 
     final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-    final RangeSlicesQuery<byte[], byte[], byte[]> rangeSlicesQuery = HFactory
+    final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
         .createRangeSlicesQuery(ccf.getKeyspace(),
-                                bytesSerializer,
-                                bytesSerializer,
+                                UUIDSerializer.get(),
+                                StringSerializer.get(),
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
     final int blockSize = 1000;
-    byte[] startKey = new byte[0];
+    UUID startKey = null;
     int count;
     do {
 
@@ -227,102 +233,54 @@ public class MigrationJobRequest implements IMigration {
       // on fixe un nombre maximal de ligne à traiter à chaque itération
       // si le nombre de resultat < blockSize on sort de la boucle ==> indique la fin des colonnes
 
-      rangeSlicesQuery.setRange(new byte[0], new byte[0], false, blockSize);
-      rangeSlicesQuery.setKeys(startKey, new byte[0]);
+      rangeSlicesQuery.setRange(null, null, false, blockSize);
+      rangeSlicesQuery.setKeys(startKey, null);
       rangeSlicesQuery.setRowCount(blockSize);
       // rangeSlicesQuery.setReturnKeysOnly();
-      final QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery.execute();
+      final QueryResult<OrderedRows<UUID, String, byte[]>> result = rangeSlicesQuery.execute();
 
-      final OrderedRows<byte[], byte[], byte[]> orderedRows = result.get();
+      final OrderedRows<UUID, String, byte[]> orderedRows = result.get();
       count = orderedRows.getCount();
 
       // Parcours des rows pour déterminer la dernière clé de l'ensemble
-      final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> lastRow = orderedRows.peekLast();
+      final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
       if (lastRow != null) {
         startKey = lastRow.getKey();
       }
-      int nb = 1;
-      for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
-        final JobRequest job = getTraceFromResult(row);
-        final JobRequestCql cql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(job);
-        // tant que count == blockSize on ajout tout sauf le dernier
-        // Cela empeche d'ajouter la lastRow deux fois
-        if (count == blockSize && nb < count) {
-          listJobThrift.add(cql);
-        } else if (count != blockSize) {
-          listJobThrift.add(cql);
+
+      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
+      // son utilisation
+      final QueryResultConverter<UUID, String, byte[]> converter = new QueryResultConverter<>();
+      final ColumnFamilyResultWrapper<UUID, String> resultConverter = converter
+          .getColumnFamilyResultWrapper(result,
+                                        UUIDSerializer.get(),
+                                        StringSerializer.get(),
+                                        bytesSerializer);
+      // On itère sur le résultat
+      final HectorIterator<UUID, String> resultIterator = new HectorIterator<>(resultConverter);
+
+      int nbRow = 1;
+      for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
+        final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
+        // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
+        if (jobRequest != null) {
+          final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
+
+          if (count == blockSize && nbRow < count) {
+            // enregistrement
+            listJobThrift.add(jobcql);
+            nbRow++;
+          } else if (count != blockSize) {
+            // enregistrement
+            listJobThrift.add(jobcql);
+            nbRow++;
+          }
         }
-        nb++;
       }
 
     } while (count == blockSize);
 
     return listJobThrift;
-  }
-
-  /**
-   * Recupère un JobRequest à partir de {@link Row}
-   * 
-   * @param row
-   * @return
-   */
-  public JobRequest getTraceFromResult(final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row) {
-
-    UUID instanceId = null;
-    final JobRequest jobRequest = new JobRequest();
-
-    if (row != null) {
-
-      instanceId = UUIDSerializer.get().fromBytes(row.getKey());
-      jobRequest.setIdJob(instanceId);
-      final List<HColumn<byte[], byte[]>> tHl = row.getColumnSlice().getColumns();
-      for (final HColumn<byte[], byte[]> col : tHl) {
-        final String name = StringSerializer.get().fromBytes(col.getName());
-
-        if (JobRequestDao.JR_TYPE_COLUMN.equals(name)) {
-          jobRequest.setType(StringSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_PARAMETERS_COLUMN.equals(name)) {
-          jobRequest.setParameters(StringSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_STATE_COLUMN.equals(name)) {
-          final String state = StringSerializer.get().fromBytes(col.getValue());
-          jobRequest.setState(JobState.valueOf(state));
-        } else if (JobRequestDao.JR_RESERVED_BY_COLUMN.equals(name)) {
-          jobRequest.setReservedBy(StringSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_CREATION_DATE_COLUMN.equals(name)) {
-          jobRequest.setCreationDate(NullableDateSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_RESERVATION_DATE_COLUMN.equals(name)) {
-          jobRequest.setReservationDate(NullableDateSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_STARTING_DATE_COLUMN.equals(name)) {
-          jobRequest.setStartingDate(NullableDateSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_ENDING_DATE_COLUMN.equals(name)) {
-          jobRequest.setEndingDate(NullableDateSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_MESSAGE.equals(name)) {
-          jobRequest.setMessage(StringSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_SAE_HOST.equals(name)) {
-          jobRequest.setSaeHost(StringSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_CLIENT_HOST.equals(name)) {
-          jobRequest.setClientHost(StringSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_DOC_COUNT.equals(name)) {
-          jobRequest.setDocCount(IntegerSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_DOC_COUNT_TRAITE.equals(name)) {
-          jobRequest.setDocCountTraite(IntegerSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_PID.equals(name)) {
-          jobRequest.setPid(IntegerSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_TO_CHECK_FLAG.equals(name)) {
-          jobRequest.setToCheckFlag(BooleanSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_TO_CHECK_FLAG_RAISON.equals(name)) {
-          jobRequest.setToCheckFlagRaison(StringSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_VI.equals(name)) {
-          jobRequest.setVi(VISerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_JOB_PARAM_COLUMN.equals(name)) {
-          jobRequest.setJobParameters(MapSerializer.get().fromBytes(col.getValue()));
-        } else if (JobRequestDao.JR_JOB_KEY_COLUMN.equals(name)) {
-          jobRequest.setJobKey(BytesArraySerializer.get().fromBytes(col.getValue()));
-        }
-      }
-    }
-
-    return jobRequest;
   }
 
 }
