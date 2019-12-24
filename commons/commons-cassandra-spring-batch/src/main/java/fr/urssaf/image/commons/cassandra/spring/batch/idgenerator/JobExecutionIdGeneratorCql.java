@@ -31,7 +31,7 @@ public class JobExecutionIdGeneratorCql implements IdGenerator {
   @Autowired
   public JobExecutionIdGeneratorCql(final Keyspace keyspace, final CuratorFramework curatorClient, final JobClockSupport jobClockSupport,
                                     final ISequencesDaoCql sequencesdao) {
-    generator = new CassandraIdGeneratorCql(curatorClient, "jobExecutionId", sequencesdao);
+    generator = new CassandraIdGeneratorCql(curatorClient, "jobExecutionId", sequencesdao, jobClockSupport);
   }
 
   @Override

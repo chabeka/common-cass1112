@@ -27,7 +27,7 @@ public class StepExecutionIdGeneratorCql implements IdGenerator {
    */
   @Autowired
   public StepExecutionIdGeneratorCql(final CuratorFramework curatorClient, final JobClockSupport jobClockSupport, final ISequencesDaoCql sequencesdao) {
-    generator = new CassandraIdGeneratorCql(curatorClient, "stepExecutionId", sequencesdao);
+    generator = new CassandraIdGeneratorCql(curatorClient, "stepExecutionId", sequencesdao, jobClockSupport);
   }
 
   @Override

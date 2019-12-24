@@ -10,6 +10,7 @@ import com.datastax.driver.mapping.Result;
 
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.ISequencesDaoCql;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 
 /**
@@ -19,7 +20,7 @@ import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
  */
 public class CassandraIdGeneratorCql implements IdGenerator {
 
-  ISequencesDaoCql sequencesdao;
+  private ISequencesDaoCql sequencesdao;
 
   private static final String SEQUENCE_CF = "sequences";
 
@@ -31,9 +32,11 @@ public class CassandraIdGeneratorCql implements IdGenerator {
 
   private int lockTimeOut = DEFAULT_TIME_OUT;
 
+  private JobClockSupport jobClockSupport;
+
   /**
-  *
-  */
+   *
+   */
   public CassandraIdGeneratorCql() {
 
   }
@@ -48,11 +51,12 @@ public class CassandraIdGeneratorCql implements IdGenerator {
    * @param sequencesdao
    *          DAO de sequences
    */
-  public CassandraIdGeneratorCql(final CuratorFramework curatorClient, final String sequenceName, final ISequencesDaoCql sequencesdao) {
+  public CassandraIdGeneratorCql(final CuratorFramework curatorClient, final String sequenceName, final ISequencesDaoCql sequencesdao,
+                                 final JobClockSupport jobClockSupport) {
     this.sequenceName = sequenceName;
     this.curatorClient = curatorClient;
     this.sequencesdao = sequencesdao;
-
+    this.jobClockSupport = jobClockSupport;
   }
 
   @Override
@@ -62,7 +66,7 @@ public class CassandraIdGeneratorCql implements IdGenerator {
     try {
       if (!mutex.acquire(lockTimeOut, TimeUnit.SECONDS)) {
         throw new IdGeneratorException("Erreur lors de la tentative d'acquisition du lock pour la séquence " + sequenceName
-            + " : on n'a pas obtenu le lock au bout de 20 secondes.");
+                                       + " : on n'a pas obtenu le lock au bout de 20 secondes.");
       }
       // On a le lock.
       // On lit la valeur courante de la séquence
@@ -78,7 +82,7 @@ public class CassandraIdGeneratorCql implements IdGenerator {
         return newValue;
       } else {
         throw new IdGeneratorException("Erreur lors de la tentative d'acquisition du lock pour la séquence " + sequenceName
-            + ". Problème de connexion zookeeper ?");
+                                       + ". Problème de connexion zookeeper ?");
       }
 
     } finally {
@@ -95,7 +99,10 @@ public class CassandraIdGeneratorCql implements IdGenerator {
     final Select select = QueryBuilder.select().from(SEQUENCE_CF);
     select.where(QueryBuilder.eq("jobidname", sequenceName));
     final Result<SequencesCql> seqcql = sequencesdao.getMapper().map(sequencesdao.getSession().execute(select));
-    return seqcql.one();
+    if (seqcql != null) {
+      return seqcql.one();
+    }
+    return null;
   }
 
   /**
@@ -108,17 +115,24 @@ public class CassandraIdGeneratorCql implements IdGenerator {
   private long incrementSequenceValue(SequencesCql currentSequence, final String sequenceName) {
     long currentValue;
 
+    long colunmTimeStamp;
+
     if (currentSequence == null) {
       currentValue = 0;
       currentSequence = new SequencesCql();
       currentSequence.setJobIdName(sequenceName);
+      colunmTimeStamp = jobClockSupport.currentCLock();
     } else {
       currentValue = currentSequence.getValue();
+      // calcul du clock
+      final long actualServerClock = jobClockSupport.currentCLock();
+      final long columnClock = sequencesdao.getColunmClock(currentSequence.getJobIdName());
+      colunmTimeStamp = jobClockSupport.getClock(actualServerClock, columnClock);
     }
 
     final long newValue = currentValue + 1;
     currentSequence.setValue(newValue);
-    sequencesdao.saveWithMapper(currentSequence);
+    sequencesdao.saveWithMapper(currentSequence, colunmTimeStamp);
     return newValue;
   }
 

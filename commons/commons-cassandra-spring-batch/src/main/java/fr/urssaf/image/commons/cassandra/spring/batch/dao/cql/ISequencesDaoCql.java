@@ -11,4 +11,12 @@ import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql;
  */
 public interface ISequencesDaoCql extends IGenericDAO<SequencesCql, String> {
 
+  /**
+   * Recupère le timestamp sur la colonne en fonction de l'identifiant de la colonne
+   * 
+   * @param id
+   *          identifiant de la colonne
+   * @return le timestamp de la colonne
+   */
+  public long getColunmClock(String id);
 }
