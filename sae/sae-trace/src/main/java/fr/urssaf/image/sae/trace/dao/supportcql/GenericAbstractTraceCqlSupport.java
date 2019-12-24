@@ -184,7 +184,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   public List<I> findByDate(final Date date, final Integer limite) {
 
     List<I> list = null;
-    final int count = 0;
+    int count = 0;
     final Iterator<I> iterator = getIterator(date);
 
     if (iterator.hasNext()) {
@@ -197,6 +197,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
       } else if (limite != null && count < limite) {
         list.add(iterator.next());
       }
+      count++;
     }
 
     return list;
