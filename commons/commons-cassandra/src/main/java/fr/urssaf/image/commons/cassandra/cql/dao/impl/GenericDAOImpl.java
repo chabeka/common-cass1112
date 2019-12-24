@@ -27,9 +27,13 @@ import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Implementation de l'Interface {@link IGenericDAO }
+ * 
+ * @param <T>
+ *          l'entité T
+ * @param <ID>
+ *          l'identifiant de l'entié
  */
-
 public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(GenericDAOImpl.class);

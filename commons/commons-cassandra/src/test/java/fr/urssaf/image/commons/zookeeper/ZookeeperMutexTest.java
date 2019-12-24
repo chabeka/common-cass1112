@@ -36,7 +36,7 @@ public class ZookeeperMutexTest {
         zkServer.close();
       }
       catch (final IOException e) {
-        LOGGER.error(e.getMessage());
+        throw new RuntimeException(e.getMessage());
       }
     }
   }
@@ -95,13 +95,13 @@ public class ZookeeperMutexTest {
           zkServer.stop();
         }
         catch (final IOException e1) {
-          LOGGER.error(e1.getMessage());
+          throw new RuntimeException(e1.getMessage());
         }
         try {
           Thread.sleep(1000);
           zkServer = new TestingServer(zkServer.getPort(), zkServer.getTempDirectory());
         } catch (final Exception e) {
-          LOGGER.error(e.getMessage());
+          throw new RuntimeException(e.getMessage());
         }
       }
     }).start();

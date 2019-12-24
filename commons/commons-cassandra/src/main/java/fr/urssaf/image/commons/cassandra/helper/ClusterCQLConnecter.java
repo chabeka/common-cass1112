@@ -95,7 +95,7 @@ public class ClusterCQLConnecter {
         final Session session = testCluster.connect();
         testSession = session;
       } catch (final Throwable e) {
-        LOG.error("Erreur technique : " + e.getMessage());
+        throw new RuntimeException(e);
       }
 
     }
@@ -146,9 +146,9 @@ public class ClusterCQLConnecter {
             }
           }
         } catch (final IOException exp) {
-          LOG.error("Erreur de merge des datasets : " + exp);
-          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+
           tmpFileDataSet = Paths.get(fileDataSet);
+          throw new RuntimeException(exp);
         }
       } else {
         LOG.warn("Le fichier de merge des datasets n'existe pas. Ajout de la premiere dataSet uniquement.");
@@ -165,9 +165,8 @@ public class ClusterCQLConnecter {
       }
 
     } catch (final IOException | URISyntaxException e) {
-      LOG.error("Erreur de merge des datasets : " + e);
-      LOG.warn("Ajout de la dataSet par d�faut : " + fileDataSet);
       tmpFileDataSet = Paths.get(fileDataSet);
+      throw new RuntimeException(e);
     } finally {
       LOG.debug(logFinMerge);
     }
@@ -209,7 +208,6 @@ public class ClusterCQLConnecter {
       cqlDataLoader.load(mergeCqlDataSets(dropAndCreateKeyspace, newDataSets));
     }
   }
-
   /**
    * Arrête le cluster (partie cliente) de test
    */

@@ -6,7 +6,7 @@ package fr.urssaf.image.commons.cassandra.cql.codec;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
-import org.codehaus.jackson.JsonProcessingException;
+import org.apache.cassandra.cql3.Json;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
@@ -17,7 +17,17 @@ import com.datastax.driver.core.TypeCodec;
 import com.datastax.driver.core.exceptions.InvalidTypeException;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe venant de la documentation de datastax nous permettant de faire quelques operation de transformation sur les {@link Json}<br>
+ * Each TypeCodec supports a bidirectional mapping between a Java type and a CQL type. A TypeCodec is thus capable of 4 basic operations:<br>
+ * <ul>
+ * <li>Serialize a Java object into a CQL value</li>
+ * <li>Deserialize a CQL value into a Java object</li>
+ * <li>Format a Java object into a CQL literal</li>
+ * <li>Parse a CQL literal into a Java object</li>
+ * </ul>
+ * Pour plus d'explication voir sur le site de datastax
+ * 
+ * @see <a href="https://docs.datastax.com/en/developer/java-driver/3.1/manual/custom_codecs/"> Site datastax</a><br>
  */
 public class JsonCodec<T> extends TypeCodec<T> {
 

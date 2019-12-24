@@ -28,7 +28,12 @@ import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
 import fr.urssaf.image.commons.cassandra.utils.Utils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Interface mère de tous les DAO implementant toutes les opérations de CRUD sur une entité
+ * 
+ * @param <T>
+ *          entité T
+ * @param <ID>
+ *          l'identifiant de l'entité
  */
 public interface ICommonDAO<T, ID> {
   /**
@@ -234,15 +239,15 @@ public interface ICommonDAO<T, ID> {
    * @return
    */
   CassandraCQLClientFactory getCcf();
-   
-   /**
-    *  initialise l'instance de la classe {@link CassandraCQLClientFactory}
-    */
-   public void setCcf(CassandraCQLClientFactory  ccf);
-   /**
-    * @return
-    */
-   Mapper<T> getMapper();
+
+  /**
+   *  initialise l'instance de la classe {@link CassandraCQLClientFactory}
+   */
+  public void setCcf(CassandraCQLClientFactory  ccf);
+  /**
+   * @return
+   */
+  Mapper<T> getMapper();
 
   public Logger getLogger();
 }

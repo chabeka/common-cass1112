@@ -13,21 +13,23 @@ import org.springframework.util.Assert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.Mapper;
-import com.datastax.driver.mapping.MappingManager;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.IGenericIndexDAO;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
 /**
- * @param <T>
+ * Implementation de l'Interface {@link IGenericIndexDAO} spécifique aux types index
+ *
+ * @param <I>
+ *          entité I de type indexe
+ * @param <ID>
+ *          l'identifiant de l'entité
  */
 public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
 
   @Autowired
   protected CassandraCQLClientFactory ccf;
-
-  private MappingManager manager;
 
   protected Class<? extends T> daoType;
 

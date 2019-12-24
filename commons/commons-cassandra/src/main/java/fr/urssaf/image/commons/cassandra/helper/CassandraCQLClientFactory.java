@@ -132,7 +132,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
           cassandraServer.init();
         }
         catch (final Exception e) {
-          LOG.error("Une erreur s'est produite lors de l'initialisation:", e.getMessage());
+          throw new RuntimeException("Une erreur s'est produite lors de l'initialisation:", e);
         }
       }
 
@@ -288,10 +288,11 @@ public final class CassandraCQLClientFactory implements DisposableBean {
           addr = new InetSocketAddress(inetAddressParam[0], Integer.parseInt(inetAddressParam[1]));
         }
         catch (final Exception e) {
-          LOG.error("Le port n'est pas un entier. La connection vers le serveur suivante ne pourra etre realise : " + cassandraServer.getCqlHosts());
+          throw new RuntimeException("Le port n'est pas un entier. La connection vers le serveur suivante ne pourra etre realise : "
+              + cassandraServer.getCqlHosts(), e);
         }
       } else {
-        LOG.error("Seul le hostname (ou IP) et le port sont autorises. La connection vers le serveur suivante ne pourra etre realise : "
+        throw new RuntimeException("Seul le hostname (ou IP) et le port sont autorises. La connection vers le serveur suivante ne pourra etre realise : "
             + cassandraServer.getCqlHosts());
       }
     } else {
