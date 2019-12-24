@@ -5,8 +5,10 @@ package fr.urssaf.image.sae.piletravaux;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -80,6 +82,14 @@ public class MigrationJobRequest implements IMigration {
     UUID startKey = null;
     int count;
     int nbTotalRow = 0;
+
+    // Map contenant key = (numero d'iteration)
+    // value=(liste des UUID des objets de l'iteration)
+    final Map<Integer, List<UUID>> map = new HashMap<>();
+
+    // Numero d'itération
+    int mapKey = 0;
+
     do {
 
       // on fixe la clé de depart et la clé de fin. Dans notre cas il n'y a pas de clé de fin car on veut parcourir
@@ -90,11 +100,11 @@ public class MigrationJobRequest implements IMigration {
       rangeSlicesQuery.setRange(null, null, false, blockSize);
       rangeSlicesQuery.setKeys(startKey, null);
       rangeSlicesQuery.setRowCount(blockSize);
-      // rangeSlicesQuery.setReturnKeysOnly();
       final QueryResult<OrderedRows<UUID, String, byte[]>> result = rangeSlicesQuery.execute();
 
       final OrderedRows<UUID, String, byte[]> orderedRows = result.get();
       count = orderedRows.getCount();
+
       // Parcours des rows pour déterminer la dernière clé de l'ensemble
       final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
       if (lastRow != null) {
@@ -112,26 +122,31 @@ public class MigrationJobRequest implements IMigration {
       // On itère sur le résultat
       final HectorIterator<UUID, String> resultIterator = new HectorIterator<>(resultConverter);
 
-      int nbRow = 1;
+      // Liste des ids de l'iteration n-1 (null si au debut)
+      final List<UUID> lastlistUUID = map.get(mapKey - 1);
+
+      // Liste des ids de l'iteration courante
+      final List<UUID> currentlistUUID = new ArrayList<>();
+
       for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
         final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
         // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
         if (jobRequest != null) {
           final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
 
-          if (count == blockSize && nbRow < count) {
-            // enregistrement
+          currentlistUUID.add(jobcql.getIdJob());
+          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+          if (lastlistUUID == null || !lastlistUUID.contains(jobcql.getIdJob())) {
             cqldao.saveWithMapper(jobcql);
             nbTotalRow++;
-            nbRow++;
-          } else if (count != blockSize) {
-            // enregistrement
-            cqldao.saveWithMapper(jobcql);
-            nbTotalRow++;
-            nbRow++;
           }
         }
       }
+
+      // remettre à jour la map
+      map.put(mapKey, currentlistUUID);
+      map.remove(mapKey -1);
+      mapKey++;
 
     } while (count == blockSize);
 
@@ -190,12 +205,11 @@ public class MigrationJobRequest implements IMigration {
 
     final List<JobRequestCql> listRToCql = new ArrayList<>();
     final Iterator<JobRequestCql> it = cqldao.findAllWithMapper();
+    cqldao.count();
     while (it.hasNext()) {
       final JobRequestCql jobRequest = it.next();
       listRToCql.add(jobRequest);
     }
-
-    // comparaison de deux listes
 
     final boolean isEqBase = CompareUtils.compareListsGeneric(listRToCql, listJobThrift);
     if (isEqBase) {
@@ -226,6 +240,14 @@ public class MigrationJobRequest implements IMigration {
     final int blockSize = 1000;
     UUID startKey = null;
     int count;
+
+    // Map contenant key = (numero d'iteration)
+    // value=(liste des UUID des objets de l'iteration)
+    final Map<Integer, List<UUID>> map = new HashMap<>();
+
+    // Numero d'itération
+    int mapKey = 0;
+
     do {
 
       // on fixe la clé de depart et la clé de fin. Dans notre cas il n'y a pas de clé de fin car on veut parcourir
@@ -259,25 +281,30 @@ public class MigrationJobRequest implements IMigration {
       // On itère sur le résultat
       final HectorIterator<UUID, String> resultIterator = new HectorIterator<>(resultConverter);
 
-      int nbRow = 1;
+      // Liste des ids de l'iteration n-1 (null si au debut)
+      final List<UUID> lastlistUUID = map.get(mapKey - 1);
+
+      // Liste des ids de l'iteration courante
+      final List<UUID> currentlistUUID = new ArrayList<>();
+
       for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
         final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
         // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
         if (jobRequest != null) {
           final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
 
-          if (count == blockSize && nbRow < count) {
-            // enregistrement
+          currentlistUUID.add(jobcql.getIdJob());
+          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+          if (lastlistUUID == null || !lastlistUUID.contains(jobcql.getIdJob())) {
             listJobThrift.add(jobcql);
-            nbRow++;
-          } else if (count != blockSize) {
-            // enregistrement
-            listJobThrift.add(jobcql);
-            nbRow++;
           }
         }
       }
 
+      // remettre à jour la map
+      map.put(mapKey, currentlistUUID);
+      map.remove(mapKey - 1);
+      mapKey++;
     } while (count == blockSize);
 
     return listJobThrift;

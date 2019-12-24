@@ -1,8 +1,10 @@
 package fr.urssaf.image.sae.jobspring;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,9 +72,16 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
     rangeSlicesQuery.setColumnFamily(JOB_INSTANCE_CF_NAME);
     final int blockSize = 1000;
     byte[] startKey = new byte[0];
-    int totalKey = 1;
     int count;
     int nbRows = 0;
+
+    // Map contenant key = (numero d'iteration)
+    // value=(liste des UUID des objets de l'iteration)
+    final Map<Integer, List<Long>> lastIteartionMap = new HashMap<>();
+
+    // Numero d'itération
+    int iterationNB = 0;
+
     do {
 
       // on fixe la clé de depart et la clé de fin. Dans notre cas il n'y a pas de clé de fin car on veut parcourir
@@ -83,17 +92,10 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
       rangeSlicesQuery.setRange(new byte[0], new byte[0], false, blockSize);
       rangeSlicesQuery.setKeys(startKey, new byte[0]);
       rangeSlicesQuery.setRowCount(blockSize);
-      //rangeSlicesQuery.setReturnKeysOnly();
       final QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery.execute();
 
       final OrderedRows<byte[], byte[], byte[]> orderedRows = result.get();
       count = orderedRows.getCount();
-
-      // On enlève 1, car sinon à chaque itération, la startKey serait
-      // comptée deux fois.
-
-      totalKey += count - 1;
-      nbRows = totalKey;
 
       // Parcours des rows pour déterminer la dernière clé de l'ensemble
       final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> lastRow = orderedRows.peekLast();
@@ -101,18 +103,32 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
         startKey = lastRow.getKey();
       }
 
-      // On recupère les ids des JobInstance
+      // Liste des ids de l'iteration n-1 (null si au debut)
+      final List<Long> lastlistUUID = lastIteartionMap.get(iterationNB - 1);
+
+      // Liste des ids de l'iteration courante
+      final List<Long> currentlistUUID = new ArrayList<>();
+
+      // On recupère l'instance dans le row
       for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
         final JobInstance job = getTraceFromResult(row);
         final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
-        jobInstancedaoCql.saveWithMapper(cql);
-        nbRows++;
+
+        currentlistUUID.add(job.getId());
+        // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+        if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
+          jobInstancedaoCql.saveWithMapper(cql);
+          nbRows++;
+        }
       }
 
+      // remettre à jour la map
+      lastIteartionMap.put(iterationNB, currentlistUUID);
+      lastIteartionMap.remove(iterationNB - 1);
+      iterationNB++;
 
     } while (count == blockSize);
 
-    LOGGER.debug(" Nb total de cle dans la CF: " + totalKey);
     LOGGER.debug(" Nb total d'entrées dans la CF : " + nbRows);
     LOGGER.debug(" migrationIndexFromThriftToCql end");
 
@@ -240,6 +256,14 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
     final int blockSize = 1000;
     byte[] startKey = new byte[0];
     int count;
+
+    // Map contenant key = (numero d'iteration)
+    // value=(liste des UUID des objets de l'iteration)
+    final Map<Integer, List<Long>> lastIteartionMap = new HashMap<>();
+
+    // Numero d'itération
+    int iterationNB = 0;
+
     do {
 
       // on fixe la clé de depart et la clé de fin. Dans notre cas il n'y a pas de clé de fin car on veut parcourir
@@ -262,21 +286,28 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
         startKey = lastRow.getKey();
       }
 
-      int nb = 1;
-      // On recupère les ids des JobInstance
+      // Liste des ids de l'iteration n-1 (null si au debut)
+      final List<Long> lastlistUUID = lastIteartionMap.get(iterationNB - 1);
+
+      // Liste des ids de l'iteration courante
+      final List<Long> currentlistUUID = new ArrayList<>();
+
+      // On recupère l'instance dans le row
       for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
         final JobInstance job = getTraceFromResult(row);
         final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
 
-        // tant que count == blockSize on ajout tout sauf le dernier
-        // Cela empeche d'ajouter la lastRow deux fois
-        if (count == blockSize && nb < count) {
-          listJobThrift.add(cql);
-        } else if (count != blockSize) {
+        currentlistUUID.add(job.getId());
+        // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+        if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
           listJobThrift.add(cql);
         }
-        nb++;
       }
+
+      // remettre à jour la map
+      lastIteartionMap.put(iterationNB, currentlistUUID);
+      lastIteartionMap.remove(iterationNB - 1);
+      iterationNB++;
 
     } while (count == blockSize);
 

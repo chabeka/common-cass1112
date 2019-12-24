@@ -2,8 +2,10 @@ package fr.urssaf.image.sae.jobspring;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,6 +119,14 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
     Long startKey = null;
     int totalKey = 1;
     int count;
+
+    // Map contenant key = (numero d'iteration)
+    // value=(liste des UUID des objets de l'iteration)
+    final Map<Integer, List<Long>> lastIterationMap = new HashMap<>();
+
+    // Numero d'itération
+    int iterationNB = 0;
+
     do {
       rangeSlicesQuery.setRange(null, null, false, blockSize);
       rangeSlicesQuery.setKeys(startKey, null);
@@ -132,6 +142,12 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
       final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> lastRow = orderedRows.peekLast();
       startKey = lastRow.getKey();
 
+      // Liste des ids de l'iteration n-1 (null si au debut)
+      final List<Long> lastlistUUID = lastIterationMap.get(iterationNB - 1);
+
+      // Liste des ids de l'iteration courante
+      final List<Long> currentlistUUID = new ArrayList<>();
+
       for (final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> row : orderedRows) {
         final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
         final long key = row.getKey();
@@ -139,68 +155,23 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
         final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
         stepcql.setJobExecutionId(jobExecutionId);
         stepcql.setJobStepExecutionId(key);
-        jobdaocql.saveWithMapper(stepcql);
+
+        currentlistUUID.add(key);
+        // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+        if (lastlistUUID == null || !lastlistUUID.contains(key)) {
+          jobdaocql.saveWithMapper(stepcql);
+        }
       }
+
+      // remettre à jour la map
+      lastIterationMap.put(iterationNB, currentlistUUID);
+      lastIterationMap.remove(iterationNB - 1);
+      iterationNB++;
 
     } while (count == blockSize);
 
     LOG.debug(" Nb total de cle dans la CF: " + totalKey);
     LOG.info("MigrationJobStep - migrationFromThriftToCql - FIN");
-  }
-
-  public List<JobStepCql> getStepExecutionsFromThrift() {
-
-    final List<JobStepCql> list = new ArrayList<>();
-
-    final Serializer<String> stringSerializer = StringSerializer.get();
-    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-    final LongSerializer longSerializer = LongSerializer.get();
-
-    final RangeSlicesQuery<Long, String, byte[]> rangeSlicesQuery = HFactory
-        .createRangeSlicesQuery(ccf.getKeyspace(),
-                                longSerializer,
-                                stringSerializer,
-                                bytesSerializer);
-    rangeSlicesQuery.setColumnFamily(JOBSTEP_CFNAME);
-
-    final int blockSize = 1000;
-    Long startKey = null;
-    int count;
-    do {
-      rangeSlicesQuery.setRange(null, null, false, blockSize);
-      rangeSlicesQuery.setKeys(startKey, null);
-      rangeSlicesQuery.setRowCount(blockSize);
-      final QueryResult<OrderedRows<Long, String, byte[]>> result0 = rangeSlicesQuery.execute();
-
-      final OrderedRows<Long, String, byte[]> orderedRows = result0.get();
-      count = orderedRows.getCount();
-
-      // Parcours des rows pour déterminer la dernière clé de l'ensemble
-      final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> lastRow = orderedRows.peekLast();
-      startKey = lastRow.getKey();
-
-      int nb = 1;
-      for (final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> row : orderedRows) {
-        final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
-        final long key = row.getKey();
-        final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(stepThrift);
-        final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
-        stepcql.setJobExecutionId(jobExecutionId);
-        stepcql.setJobStepExecutionId(key);
-
-        // tant que count == blockSize on ajout tout sauf le dernier
-        // Cela empeche d'ajouter la lastRow deux fois
-        if (count == blockSize && nb < count) {
-          list.add(stepcql);
-        } else if (count != blockSize) {
-          list.add(stepcql);
-        }
-        nb++;
-      }
-
-    } while (count == blockSize);
-
-    return list;
   }
 
   /**
@@ -251,11 +222,78 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
     return isEqList;
   }
 
-
   // ########################################################################
   // ########################## Methodes utilitares ########################
   // ########################################################################
 
+  public List<JobStepCql> getStepExecutionsFromThrift() {
+
+    final List<JobStepCql> list = new ArrayList<>();
+
+    final Serializer<String> stringSerializer = StringSerializer.get();
+    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+    final LongSerializer longSerializer = LongSerializer.get();
+
+    final RangeSlicesQuery<Long, String, byte[]> rangeSlicesQuery = HFactory
+        .createRangeSlicesQuery(ccf.getKeyspace(),
+                                longSerializer,
+                                stringSerializer,
+                                bytesSerializer);
+    rangeSlicesQuery.setColumnFamily(JOBSTEP_CFNAME);
+
+    final int blockSize = 1000;
+    Long startKey = null;
+    int count;
+
+    // Map contenant key = (numero d'iteration)
+    // value=(liste des UUID des objets de l'iteration)
+    final Map<Integer, List<Long>> lastIteartionMap = new HashMap<>();
+
+    // Numero d'itération
+    int iterationNB = 0;
+
+    do {
+      rangeSlicesQuery.setRange(null, null, false, blockSize);
+      rangeSlicesQuery.setKeys(startKey, null);
+      rangeSlicesQuery.setRowCount(blockSize);
+      final QueryResult<OrderedRows<Long, String, byte[]>> result0 = rangeSlicesQuery.execute();
+
+      final OrderedRows<Long, String, byte[]> orderedRows = result0.get();
+      count = orderedRows.getCount();
+      // Parcours des rows pour déterminer la dernière clé de l'ensemble
+      final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> lastRow = orderedRows.peekLast();
+      startKey = lastRow.getKey();
+
+      // Liste des ids de l'iteration n-1 (null si au debut)
+      final List<Long> lastlistUUID = lastIteartionMap.get(iterationNB - 1);
+
+      // Liste des ids de l'iteration courante
+      final List<Long> currentlistUUID = new ArrayList<>();
+
+      for (final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> row : orderedRows) {
+        final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
+        final long key = row.getKey();
+        final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(stepThrift);
+        final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
+        stepcql.setJobExecutionId(jobExecutionId);
+        stepcql.setJobStepExecutionId(key);
+
+        currentlistUUID.add(key);
+        // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+        if (lastlistUUID == null || !lastlistUUID.contains(key)) {
+          list.add(stepcql);
+        }
+      }
+
+      // remettre à jour la map
+      lastIteartionMap.put(iterationNB, currentlistUUID);
+      lastIteartionMap.remove(iterationNB - 1);
+      iterationNB++;
+
+    } while (count == blockSize);
+
+    return list;
+  }
   /**
    * Méthode utilitaire pour récupérer la valeur d'une colonne
    * 

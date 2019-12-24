@@ -36,23 +36,94 @@ import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 public interface ICompareTrace<T extends Trace, TC extends Trace, I extends TraceIndex, IC extends TraceIndex> {
 
+  /**
+   * Créér une nouvelle instance de la {@link Trace}
+   * 
+   * @param idTrace
+   * @param timestamp
+   * @return
+   */
   T createNewInstance(UUID idTrace, Date timestamp);
+
+  /**
+   * Ajoute les champs particulier à la trace {@link Trace} lors de l'extraction depuis
+   * le resultat d'une requete venant de la base de données
+   * 
+   * @param trace
+   * @param row
+   *          la ligne issue de la requete
+   */
   void completeTraceFromResult(T trace, final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row);
 
+  /**
+   * Ajoute les principaux champs à la trace {@link Trace} lors de l'extraction de la {@link Trace} depuis
+   * le resultat d'une requete venant de la base de données
+   * 
+   * @param trThrift
+   *          le type de {@link Trace}
+   * @return la trace de type cql
+   */
   TC createTraceFromObjectThrift(T trThrift);
-  IC  createIndexFromObjectThrift(I index, String key);
+
+  /**
+   * Extraction de la trace de type cql a partir d'une trace de type {@link TraceIndex}
+   * 
+   * @param index
+   *          l'indexe de type thrift
+   * @param key
+   *          la clé
+   * @return la trace cql
+   */
+  IC createIndexFromObjectThrift(I index, String key);
+
+  /**
+   * Créér une nouvelle instance de la trace de type {@link TraceIndex}
+   * 
+   * @return
+   */
   I createNewInstanceIndex();
+
+  /**
+   * Le keyspace du cluster thrift
+   * 
+   * @return
+   */
   Keyspace getKeySpace();
+
   JacksonSerializer<I> getIndexSerializer();
   Logger getLogger();
+
+  /**
+   * le dao en fonction du type de la {@link Trace}
+   * 
+   * @return
+   */
   IGenericDAO<TC, UUID> getTraceDaoType();
+
+  /**
+   * le dao en fonction du type de la {@link TraceIndex}
+   * 
+   * @return
+   */
   IGenericDAO<IC, String> getIndexDaoType();
+
+  /**
+   * renvoie le nom de la table associé a une table de type {@link Trace}
+   * 
+   * @return
+   */
   String getTraceClasseName();
+
+  /**
+   * renvoie le nom de la table associé a une table de type {@link TraceIndex}
+   * 
+   * @return
+   */
   String getIndexClasseName();
 
 
-		/**
-   * Comparer les Traces cql et Thrift
+  /**
+   * Comparer les Traces cql et Thrift de type {@link Trace}
    * 
    * @throws Exception
    */
@@ -70,7 +141,6 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
     boolean isEqBase = true;
     boolean isInMap = false;
 
-    final int ordre = 0;
     while (itJournal.hasNext()) {
       final TC tr = itJournal.next();
 
@@ -98,8 +168,8 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
         }
       }
 
+      // on cherche l'objet courant dans la base thrift si elle n'est pas trouvé dans la map servant de cache
       if(!isInMap) {
-        // on cherche l'objeet courant dans la base thrift
         boolean isObj = false;
         isObj = checkTraceCql(tr, getTraceClasseName(), mapRow);
 
@@ -119,7 +189,8 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
   }
 
   /**
-   * Comparer les Traces cql et Thrift
+   * Comparer les Traces cql et Thrift de type {@link TraceIndex}
+   * 
    * @throws Exception
    */
   public default boolean indexComparator() throws Exception {
@@ -157,9 +228,8 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
           } 
         }
       }
-
+      // on cherche l'objet courant dans la base thrift si elle n'est pas trouvé dans la map servant de cache
       if(!isInMap) {
-        // on cherche l'objeet courant dans la base thrift
         boolean isObj = false;
         isObj = checkIndexCql(tr, getIndexClasseName(), mapRow);
 
@@ -206,7 +276,7 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
     boolean isEqObj = false;
     Integer ordre = 0;
 
-    // Pour chaque tranche de 10000, on recherche l'objet cql 
+    // Pour chaque tranche de blockSize, on recherche l'objet cql
     do {
       rangeSlicesQuery.setRange("", "", false, blockSize);
       rangeSlicesQuery.setKeys(startKey, null);
@@ -283,7 +353,7 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
     Map<UUID, IC> mapRow = null;
     Integer mapKey = 0;
 
-    // Pour chaque tranche de 10000, on recherche l'objet cql 
+    // Pour chaque tranche de blockSize, on recherche l'objet cql
     do {
       rangeSlicesQuery.setRange(null, null, false, 10000);
       rangeSlicesQuery.setKeys(startKey, null);
@@ -292,8 +362,7 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
       try {
         result = rangeSlicesQuery.execute();
       } catch (final Exception e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+        throw new RuntimeException(e.getMessage(), e);
       }
 
 

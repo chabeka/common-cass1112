@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -87,6 +88,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
     UUID startKey = null;
     int totalCount = 0;
 
+    // Gestion du ficher d'enregistrement des clés en cas de reprise
     BufferedWriter bWriter = null;
     File file = null;
     FileWriter fWriter;
@@ -114,10 +116,16 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
                                   stringSerializer,
                                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily(compRegTec.getTraceClasseName());
-      final int blockSize = 10;
+      final int blockSize = 1000;
       int count;
 
-      // Pour chaque tranche de 10000, on recherche l'objet cql
+      // Map contenant key = (numero d'iteration) value=(liste des cles (UUID) des objets de l'iteration)
+      final Map<Integer, List<UUID>> lastIteartionMap = new HashMap<>();
+
+      // Numero d'itération
+      int iterationNB = 0;
+
+      // Pour chaque tranche de blockSize, on recherche l'objet cql
       do {
         rangeSlicesQuery.setRange("", "", false, blockSize);
         rangeSlicesQuery.setKeys(startKey, null);
@@ -136,7 +144,12 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
         }
         startKey = lastRow.getKey();
 
-        int nbRow = 1;
+        // Liste des ids de l'iteration n-1 (null si au debut)
+        final List<UUID> lastlistUUID = lastIteartionMap.get(iterationNB - 1);
+
+        // Liste des ids de l'iteration courante
+        final List<UUID> currentlistUUID = new ArrayList<>();
+
         for (final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row : orderedRows) {
 
           // on recupère la trace thrifh
@@ -145,42 +158,36 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
           final TraceRegTechniqueCql trThToCql = compRegTec.createTraceFromObjectThrift(trThrift);
 
           final UUID key = row.getKey();
-          // sauvegarde
-          // tant que count == blockSize on ajout tout sauf le dernier
-          // Cela empeche d'ajouter la lastRow deux fois
-          if (count == blockSize && nbRow < count) {
 
+          currentlistUUID.add(key);
+          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+          if (lastlistUUID == null || !lastlistUUID.contains(key)) {
             supportcql.save(trThToCql);
-            nbRow++;
             totalCount++;
-
-            // ecriture dans le fichier
-            bWriter.append(key.toString());
-            bWriter.newLine();
-          } else if (count != blockSize) {
-
-            supportcql.save(trThToCql);
-            nbRow++;
-            totalCount++;
-
-            // ecriture dans le fichier
-            bWriter.append(key.toString());
-            bWriter.newLine();
           }
+
+          // ecriture dans le fichier
+          bWriter.append(key.toString());
+          bWriter.newLine();
         }
+
+        // remettre à jour la map
+        lastIteartionMap.put(iterationNB, currentlistUUID);
+        lastIteartionMap.remove(iterationNB - 1);
+        iterationNB++;
 
       } while (count == blockSize);
 
     }
     catch (final IOException e) {
-      LOGGER.error(e.toString());
+      throw new RuntimeException(e.getMessage(), e);
     }
     finally {
       try {
         bWriter.close();
       }
       catch (final Exception e) {
-        LOGGER.warn(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage(), e);
       }
     }
 
@@ -256,14 +263,14 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
       }
     }
     catch (final IOException | ParseException e) {
-      LOGGER.error(e.toString());
+      throw new RuntimeException(e.getMessage(), e);
     }
     finally {
       try {
         bWriter.close();
       }
       catch (final Exception e) {
-        LOGGER.warn(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage(), e);
       }
     }
 

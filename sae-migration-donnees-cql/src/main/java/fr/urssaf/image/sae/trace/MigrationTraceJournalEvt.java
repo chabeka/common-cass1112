@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -89,15 +90,16 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    * @return
    * @throws Exception
    */
-  public int migrationFromThriftToCql() throws Exception {
+  public int migrationFromThriftToCql() {
 
     // Clé de depart de l'itération
     UUID startKey = null;
+    int totalRow = 0;
 
+    // Gestion du ficher d'enregistrement des clés en cas de reprise
     BufferedWriter bWriter = null;
     File file = null;
     FileWriter fWriter;
-    int totalRow = 1;
     //
     try {
       file = RepriseFileUtils.getKeysFile(getKeyFileDir(), TRACE_JOURNAL_EVT_TXT);
@@ -108,86 +110,93 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       if (strKey != null && !strKey.isEmpty()) {
         startKey = UUID.fromString(strKey);
       }
-    }
-    catch (final IOException e) {
-      LOGGER.error(e.toString());
-    }
 
-    // Parametrage de la requete hector
+      // Parametrage de la requete hector
 
-    final StringSerializer stringSerializer = StringSerializer.get();
-    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-    final UUIDSerializer uSl = UUIDSerializer.get();
+      final StringSerializer stringSerializer = StringSerializer.get();
+      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      final UUIDSerializer uSl = UUIDSerializer.get();
 
-    final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
-        .createRangeSlicesQuery(compJEvt.getKeySpace(),
-                                uSl,
-                                stringSerializer,
-                                bytesSerializer);
-    rangeSlicesQuery.setColumnFamily(compJEvt.getTraceClasseName());
-    final int blockSize = 1000;
-    int count;
+      final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
+          .createRangeSlicesQuery(compJEvt.getKeySpace(),
+                                  uSl,
+                                  stringSerializer,
+                                  bytesSerializer);
+      rangeSlicesQuery.setColumnFamily(compJEvt.getTraceClasseName());
+      final int blockSize = 1000;
+      int count;
 
+      // Map contenant key = (numero d'iteration) value=(liste des cles (UUID) des objets de l'iteration)
+      final Map<Integer, List<UUID>> lastIteartionMap = new HashMap<>();
 
-    // Pour chaque tranche de 10000, on recherche l'objet cql
-    do {
-      rangeSlicesQuery.setRange("", "", false, blockSize);
-      rangeSlicesQuery.setKeys(startKey, null);
-      rangeSlicesQuery.setRowCount(blockSize);
-      final QueryResult<OrderedRows<UUID, String, byte[]>> result = rangeSlicesQuery
-          .execute();
+      // Numero d'itération
+      int iterationNB = 0;
 
-      final OrderedRows<UUID, String, byte[]> orderedRows = result.get();
-      count = orderedRows.getCount();
-      // Parcours des rows pour déterminer la dernière clé de l'ensemble
-      final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
+      // Pour chaque tranche de blockSize, on recherche l'objet cql
+      do {
+        rangeSlicesQuery.setRange("", "", false, blockSize);
+        rangeSlicesQuery.setKeys(startKey, null);
+        rangeSlicesQuery.setRowCount(blockSize);
+        final QueryResult<OrderedRows<UUID, String, byte[]>> result = rangeSlicesQuery
+            .execute();
 
-      if (lastRow == null) {
-        LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
-        break;
-      }
-      startKey = lastRow.getKey();
-      int nbRow = 1;
-      for (final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row : orderedRows) {
+        final OrderedRows<UUID, String, byte[]> orderedRows = result.get();
+        count = orderedRows.getCount();
+        // Parcours des rows pour déterminer la dernière clé de l'ensemble
+        final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
 
-        // on recupère la trace thrifh
-        final TraceJournalEvt trThrift = compJEvt.getTraceFromResult(row);
-        // On le transforme en cql
-        final TraceJournalEvtCql trThToCql = compJEvt.createTraceFromObjectThrift(trThrift);
+        if (lastRow == null) {
+          LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
+          break;
+        }
+        startKey = lastRow.getKey();
 
-        final UUID key = row.getKey();
-        // sauvegarde
-        // tant que count == blockSize on ajout tout sauf le dernier
-        // Cela empeche d'ajouter la lastRow deux fois
-        if (count == blockSize && nbRow < count) {
-          supportcql.save(trThToCql);
-          nbRow++;
-          totalRow++;
+        // Liste des ids de l'iteration n-1 (null si au debut)
+        final List<UUID> lastlistUUID = lastIteartionMap.get(iterationNB - 1);
 
-          // ecriture dans le fichier
-          bWriter.append(key.toString());
-          bWriter.newLine();
+        // Liste des ids de l'iteration courante
+        final List<UUID> currentlistUUID = new ArrayList<>();
 
-        } else if (count != blockSize) {
-          supportcql.save(trThToCql);
-          nbRow++;
-          totalRow++;
+        for (final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row : orderedRows) {
+
+          // on recupère la trace thrifh
+          final TraceJournalEvt trThrift = compJEvt.getTraceFromResult(row);
+          // On le transforme en cql
+          final TraceJournalEvtCql trThToCql = compJEvt.createTraceFromObjectThrift(trThrift);
+
+          final UUID key = row.getKey();
+
+          currentlistUUID.add(key);
+          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+          if (lastlistUUID == null || !lastlistUUID.contains(key)) {
+            supportcql.save(trThToCql);
+            totalRow++;
+          }
 
           // ecriture dans le fichier
           bWriter.append(key.toString());
           bWriter.newLine();
+
         }
 
+        // remettre à jour la map
+        lastIteartionMap.put(iterationNB, currentlistUUID);
+        lastIteartionMap.remove(iterationNB - 1);
+        iterationNB++;
 
-      }
+      } while (count == blockSize);
 
-    } while (count == blockSize);
-
-    try {
-      bWriter.close();
     }
     catch (final Exception e) {
-      LOGGER.warn(e.getMessage(), e);
+      throw new RuntimeException(e.getMessage(), e);
+    }
+    finally {
+      try {
+        bWriter.close();
+      }
+      catch (final Exception e) {
+        throw new RuntimeException(e.getMessage(), e);
+      }
     }
 
     LOGGER.debug(" Totale : " + totalRow);
@@ -298,14 +307,14 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       }
     }
     catch (final IOException | ParseException e) {
-      LOGGER.error(e.toString());
+      throw new RuntimeException(e.getMessage(), e);
     }
     finally {
       try {
         bWriter.close();
       }
       catch (final Exception e) {
-        LOGGER.warn(e.getMessage(), e);
+        throw new RuntimeException(e.getMessage(), e);
       }
     }
 
@@ -326,6 +335,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
     // Clé de depart de l'itération
     String startKey = "";
+    int totalKey = 1;
 
     BufferedWriter bWriter = null;
     File file = null;
@@ -337,84 +347,97 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       bWriter = new BufferedWriter(fWriter);
 
       startKey = RepriseFileUtils.getLastLine(file);
-    }
-    catch (final IOException e) {
-      LOGGER.error(e.toString());
-    }
 
-    final StringSerializer stringSerializer = StringSerializer.get();
-    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-    final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-        .createRangeSlicesQuery(indexDocDaothrift.getKeyspace(),
-                                stringSerializer,
-                                stringSerializer,
-                                bytesSerializer);
-    rangeSlicesQuery.setColumnFamily("TraceJournalEvtIndexDoc");
-    final int blockSize = 1000;
-    int totalKey = 1;
-    int count;
-    int nbRows = 1;
-    do {
-      rangeSlicesQuery.setRange("", "", false, 1);
-      rangeSlicesQuery.setKeys(startKey, "");
-      rangeSlicesQuery.setRowCount(blockSize);
-      rangeSlicesQuery.setReturnKeysOnly();
-      final QueryResult<OrderedRows<String, String, byte[]>> result = rangeSlicesQuery
-          .execute();
 
-      final OrderedRows<String, String, byte[]> orderedRows = result.get();
-      count = orderedRows.getCount();
-      // On enlève 1, car sinon à chaque itération, la startKey serait
-      // comptée deux fois.
-      totalKey += count - 1;
-      nbRows = nbRows - 1;
-      // Parcours des rows pour déterminer la dernière clé de l'ensemble
-      final me.prettyprint.hector.api.beans.Row<String, String, byte[]> lastRow = orderedRows.peekLast();
+      final StringSerializer stringSerializer = StringSerializer.get();
+      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
+          .createRangeSlicesQuery(indexDocDaothrift.getKeyspace(),
+                                  stringSerializer,
+                                  stringSerializer,
+                                  bytesSerializer);
+      rangeSlicesQuery.setColumnFamily("TraceJournalEvtIndexDoc");
+      final int blockSize = 1000;
+      int count;
 
-      if (lastRow == null) {
-        LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
-        break;
-      }
-      startKey = lastRow.getKey();
+      // Map contenant key = (numero d'iteration)
+      // value=(liste des UUID des objets de l'iteration)
+      final Map<Integer, List<UUID>> lastIteartionMap = new HashMap<>();
 
-      for (final me.prettyprint.hector.api.beans.Row<String, String, byte[]> row : orderedRows) {
+      // Numero d'itération
+      int iterationNB = 0;
 
-        final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
+      do {
+        rangeSlicesQuery.setRange("", "", false, 1);
+        rangeSlicesQuery.setKeys(startKey, "");
+        rangeSlicesQuery.setRowCount(blockSize);
+        rangeSlicesQuery.setReturnKeysOnly();
+        final QueryResult<OrderedRows<String, String, byte[]>> result = rangeSlicesQuery
+            .execute();
 
-        if (list != null) {
-          for (final TraceJournalEvtIndexDoc tr : list) {
-            final TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
+        final OrderedRows<String, String, byte[]> orderedRows = result.get();
+        count = orderedRows.getCount();
+        // On enlève 1, car sinon à chaque itération, la startKey serait
+        // comptée deux fois.
+        totalKey += count - 1;
+        // Parcours des rows pour déterminer la dernière clé de l'ensemble
+        final me.prettyprint.hector.api.beans.Row<String, String, byte[]> lastRow = orderedRows.peekLast();
 
-            // sauvegarde
-            // tant que count == blockSize on ajout tout sauf le dernier
-            // Cela empeche d'ajouter la lastRow deux fois
-            if (count == blockSize && nbRows < count) {
-              indexDocDaocql.saveWithMapper(indxDocCql);
-              nbRows++;
-            } else if (count != blockSize) {
-              indexDocDaocql.saveWithMapper(indxDocCql);
-              nbRows++;
+        if (lastRow == null) {
+          LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
+          break;
+        }
+        startKey = lastRow.getKey();
+
+        // Liste des ids de l'iteration n-1 (null si au debut)
+        final List<UUID> lastlistUUID = lastIteartionMap.get(iterationNB - 1);
+
+        // Liste des ids de l'iteration courante
+        final List<UUID> currentlistUUID = new ArrayList<>();
+
+        for (final me.prettyprint.hector.api.beans.Row<String, String, byte[]> row : orderedRows) {
+
+          final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
+
+          if (list != null) {
+            for (final TraceJournalEvtIndexDoc tr : list) {
+              final TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
+
+              currentlistUUID.add(java.util.UUID.fromString(row.getKey()));
+
+              // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+              if (lastlistUUID == null || !lastlistUUID.contains(indxDocCql.getIdentifiantIndex())) {
+                indexDocDaocql.saveWithMapper(indxDocCql);
+              }
+
+              // ecriture dans le fichier
+              bWriter.append(row.getKey());
+              bWriter.newLine();
             }
-
-            // ecriture dans le fichier
-            bWriter.append(row.getKey());
-            bWriter.newLine();
-
           }
         }
-      }
 
-    } while (count == blockSize);
+        // remettre à jour la map
+        lastIteartionMap.put(iterationNB, currentlistUUID);
+        lastIteartionMap.remove(iterationNB - 1);
+        iterationNB++;
 
-    try {
-      bWriter.close();
+      } while (count == blockSize);
+
     }
     catch (final Exception e) {
-      LOGGER.warn(e.getMessage(), e);
+      throw new RuntimeException(e.getMessage(), e);
+    }
+    finally {
+      try {
+        bWriter.close();
+      }
+      catch (final Exception e) {
+        throw new RuntimeException(e.getMessage(), e);
+      }
     }
 
     LOGGER.debug(" Nb total de cle dans la CF: " + totalKey);
-    LOGGER.debug(" Nb total d'entrées dans la CF : " + nbRows);
     LOGGER.debug(" migrationIndexFromThriftToCql end");
 
     return totalKey;
