@@ -89,11 +89,6 @@ public class Pagmp implements Comparable<Pagmp> {
       areEquals = code.equals(pagmp.getCode())
           && description.equals(pagmp.getDescription())
           && prmd.equals(pagmp.getPrmd());
-      if (!areEquals) {
-        LOGGER.warn("code:" + code + "/" + getCode()
-            + ", description:" + description + "/" + pagmp.getDescription()
-            + ", prmd:" + prmd + "/" + pagmp.getPrmd());
-      }
     }
 
     return areEquals;

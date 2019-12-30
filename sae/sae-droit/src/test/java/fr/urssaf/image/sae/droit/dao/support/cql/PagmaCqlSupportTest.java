@@ -35,6 +35,8 @@ public class PagmaCqlSupportTest {
 
   private static final String[] ACTIONS1 = new String[] { "action1", "action2" };
 
+  private static final String[] ACTIONS1bis = new String[] {"action1bis", "action2bis"};
+
   @Autowired
   private CassandraServerBean cassandraServer;
 
@@ -129,4 +131,48 @@ public class PagmaCqlSupportTest {
 
   }
 
+  @Test
+  public void testUpdate() {
+    final List<String> listeAu = Arrays.asList(ACTIONS1);
+    final List<String> listeAuBis = Arrays.asList(ACTIONS1bis);
+    final Pagma pagm1 = new Pagma();
+    pagm1.setCode(CODE);
+    pagm1.setActionUnitaires(listeAu);
+    support.create(pagm1);
+
+    final Pagma pagm1bis = new Pagma();
+    pagm1bis.setCode(CODE);
+    pagm1bis.setActionUnitaires(listeAuBis);
+    support.create(pagm1bis);
+
+    final Pagma pagmResult = support.find(CODE);
+    Assert.assertEquals(pagmResult, pagm1bis);
+  }
+
+  @Test
+  public void testNullCodeValue() {
+    try {
+      final List<String> listeAu = Arrays.asList(ACTIONS1);
+      final Pagma pagm1 = new Pagma();
+      pagm1.setCode(null);
+      pagm1.setActionUnitaires(listeAu);
+      support.create(pagm1);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "le code ne peut etre null");
+    }
+
+  }
+
+  @Test
+  public void testNullEntity() {
+    try {
+      support.create(null);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "l'objet pagma ne peut etre null");
+    }
+  }
 }

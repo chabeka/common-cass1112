@@ -69,9 +69,6 @@ public class ActionUnitaire implements Comparable<ActionUnitaire> {
       final ActionUnitaire actionUnitaire = (ActionUnitaire) obj;
       areEquals = code.equals(actionUnitaire.getCode())
           && description.equals(actionUnitaire.getDescription());
-      if (!description.equals(actionUnitaire.getDescription())) {
-        LOGGER.warn("codes:" + code + "/" + actionUnitaire.getCode() + ", descriptions:" + description + "/" + actionUnitaire.getDescription());
-      }
     }
 
     return areEquals;

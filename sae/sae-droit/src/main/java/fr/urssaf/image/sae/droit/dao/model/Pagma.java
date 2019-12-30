@@ -71,9 +71,6 @@ public class Pagma implements Comparable<Pagma> {
       areEquals = code.equals(pagma.getCode())
           && actionUnitaires.size() == pagma.getActionUnitaires().size()
           && actionUnitaires.containsAll(pagma.getActionUnitaires());
-      if (!areEquals) {
-        LOGGER.warn("code:" + code + "/" + getCode() + ", actionUnitaires:" + actionUnitaires + "/" + pagma.getActionUnitaires());
-      }
     }
 
     return areEquals;

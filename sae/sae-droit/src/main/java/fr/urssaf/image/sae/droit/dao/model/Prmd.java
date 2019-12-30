@@ -108,14 +108,6 @@ public class Prmd implements Comparable<Prmd> {
           && metadata.keySet().size() == prmd.getMetadata().keySet()
           .size()
           && metadata.keySet().containsAll(prmd.getMetadata().keySet());
-      if (!areEquals) {
-        LOGGER.warn("code:" + code + "/" + getCode()
-        + ", description:" + description + "/" + prmd.getDescription()
-        + ", lucene:" + lucene + "/" + prmd.getLucene()
-        + ", bean:" + bean + "/" + prmd.getBean()
-            + ", metadata:" + metadata + "/" + prmd.getMetadata()
-            );
-      }
     }
 
     return areEquals;

@@ -101,9 +101,6 @@ public class FormatControlProfil implements Comparable<FormatControlProfil> {
         return false;
       }
     } else if (!controlProfil.equals(other.controlProfil)) {
-
-      LOGGER.warn("code:" + formatCode + "/" + getFormatCode() + ", controlProfil:" + controlProfil + "/" + other.getControlProfil());
-
       return false;
     }
     if (description == null) {
@@ -111,7 +108,6 @@ public class FormatControlProfil implements Comparable<FormatControlProfil> {
         return false;
       }
     } else if (!description.equals(other.description)) {
-      LOGGER.warn("code:" + formatCode + "/" + getFormatCode() + ", description:" + description + "/" + other.getDescription());
       return false;
     }
     if (formatCode == null) {

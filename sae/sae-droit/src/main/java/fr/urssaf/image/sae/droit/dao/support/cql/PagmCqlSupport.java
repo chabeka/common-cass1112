@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.droit.dao.support.cql;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,7 +14,6 @@ import org.springframework.util.Assert;
 import fr.urssaf.image.sae.droit.dao.cql.IPagmDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.modelcql.PagmCql;
-import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.utils.PagmUtils;
 
 /**
@@ -107,28 +105,11 @@ public class PagmCqlSupport {
    */
   private void saveOrUpdate(final PagmCql pagmCql) {
     Assert.notNull(pagmCql, "l'objet pagm ne peut etre null");
-
-    final boolean isValidCode = true;
-    final String errorKey = "";
+    Assert.notNull(pagmCql.getIdClient(), "le code client ne peut etre null");
 
 
-    if (isValidCode) {
+    pagmdaocql.saveWithMapper(pagmCql);
 
-      // recuperation de l'objet ayant le meme code dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau
-      final Optional<PagmCql> pagmOpt = pagmdaocql.findWithMapperById(pagmCql.getCode());
-      if (pagmOpt.isPresent()) {
-        final PagmCql pagmFromBD = pagmOpt.get();
-
-        pagmdaocql.saveWithMapper(pagmFromBD);
-      } else {
-        pagmdaocql.saveWithMapper(pagmCql);
-      }
-    } else {
-      throw new DroitRuntimeException(
-                                      "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                          + errorKey + " n'est pas supportée");
-    }
 
   }
 

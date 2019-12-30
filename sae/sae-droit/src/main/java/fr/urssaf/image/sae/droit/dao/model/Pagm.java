@@ -198,19 +198,8 @@ public class Pagm {
           || compressionPdfActive.equals(pagm.getCompressionPdfActive()))
           && (seuilCompressionPdf == null && pagm.getSeuilCompressionPdf() == null 
           || seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf()));
-      if (!areEquals) {
-        LOGGER.warn("code:" + code + "/" + getCode() + ", description:" + description + "/" + pagm.getDescription()
-        + ", pagma:" + pagma + "/" + pagm.getPagma()
-        + ", pagmf:" + pagmf + "/" + pagm.getPagmf()
-        + ", pagmp:" + pagmp + "/" + pagm.getPagmp()
-        + ", parametres:" + parametres.keySet() + "/" + pagm.getParametres().keySet()
-        + ", compressionPdfActive:" + compressionPdfActive + "/" + pagm.getCompressionPdfActive()
-        + ", seuilCompressionPdf:" + seuilCompressionPdf + "/" + pagm.getSeuilCompressionPdf()
 
-            );
-      }
     }
-
     return areEquals;
   }
 

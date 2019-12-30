@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.droit.dao.support.cql;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,6 @@ import org.springframework.util.Assert;
 import fr.urssaf.image.sae.droit.dao.ContratServiceDao;
 import fr.urssaf.image.sae.droit.dao.cql.IContratServiceDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
-import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 
 /**
  * Classe de support de la classe {@link ContratServiceDao}
@@ -88,28 +86,8 @@ public class ContratServiceCqlSupport {
    */
   private void saveOrUpdate(final ServiceContract contratService) {
     Assert.notNull(contratService, "l'objet contratService ne peut etre null");
-
-    final boolean isValidCode = true;
-    final String errorKey = "";
-
-    if (isValidCode) {
-
-      // recuperation de l'objet ayant le meme code dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau
-      final Optional<ServiceContract> contratServiceOpt = contratservicedaocql.findWithMapperById(contratService.getCodeClient());
-      if (contratServiceOpt.isPresent()) {
-        final ServiceContract contratServiceFromBD = contratServiceOpt.get();
-
-        contratservicedaocql.saveWithMapper(contratServiceFromBD);
-      } else {
-        contratservicedaocql.saveWithMapper(contratService);
-      }
-    } else {
-      throw new DroitRuntimeException(
-                                      "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                          + errorKey + " n'est pas supportée");
-    }
-
+    Assert.notNull(contratService.getCodeClient(), "le code client ne peut etre null");
+    contratservicedaocql.saveWithMapper(contratService);
   }
   /**
    * {@inheritDoc}

@@ -177,6 +177,58 @@ public class PrmdCqlSupportTest {
 
       Assert.assertTrue("le code " + code + " doit etre trouvé", found);
     }
+  }
 
+  @Test
+  public void testUpdate() {
+
+    final Prmd prmd1 = new Prmd();
+    prmd1.setCode(CODE1);
+    prmd1.setDescription(DESCRIPTION1);
+    prmd1.setLucene(LUCENE1);
+    prmd1.setBean(BEAN1);
+    prmd1.setMetadata(MAP1);
+
+    support.create(prmd1);
+
+    final Prmd prmd1bis = new Prmd();
+    prmd1bis.setCode(CODE1);
+    prmd1bis.setDescription("description2");
+    prmd1bis.setLucene(LUCENE1);
+    prmd1bis.setBean(BEAN1);
+    prmd1bis.setMetadata(MAP1);
+
+    support.create(prmd1bis);
+
+    final Prmd prmdResult = support.find(CODE1);
+    Assert.assertEquals(prmdResult, prmd1bis);
+  }
+
+  @Test
+  public void testNullCodeValue() {
+    try {
+
+      final Prmd prmd1 = new Prmd();
+      prmd1.setCode(null);
+
+      support.create(prmd1);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "le code ne peut etre null");
+
+    }
+
+  }
+
+  @Test
+  public void testNullEntity() {
+    try {
+      support.create(null);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "l'objet prmd ne peut etre null");
+    }
   }
 }

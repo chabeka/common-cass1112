@@ -230,14 +230,6 @@ public class ServiceContract implements Comparable<ServiceContract> {
           && description.equals(contract.getDescription())
           && libelle.equals(contract.getLibelle())
           && viDuree.equals(contract.getViDuree());
-      if (!areEquals) {
-        LOGGER.warn("codeClient:" + codeClient + "/" + getCodeClient()
-        + ", description:" + description + "/" + contract.getDescription()
-        + ", libelle:" + libelle + "/" + contract.getLibelle()
-        + ", description:" + description + "/" + contract.getDescription()
-        + ", viDuree:" + viDuree + "/" + contract.getViDuree()
-            );
-      }
     }
 
     return areEquals;

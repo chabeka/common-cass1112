@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.droit.dao.support.cql;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.droit.dao.cql.IPagmpDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
-import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 
 /**
  * Support de la classe DAO {@link IPagmpDaoCql}
@@ -78,28 +76,11 @@ public class PagmpCqlSupport {
    */
   private void saveOrUpdate(final Pagmp pagmp) {
     Assert.notNull(pagmp, "l'objet pagmp ne peut etre null");
-
-    final boolean isValidCode = true;
-    final String errorKey = "";
+    Assert.notNull(pagmp.getCode(), "le code ne peut etre null");
 
 
-    if (isValidCode) {
+    pagmpdaocql.saveWithMapper(pagmp);
 
-      // recuperation de l'objet ayant le meme code dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau
-      final Optional<Pagmp> pagmpOpt = pagmpdaocql.findWithMapperById(pagmp.getCode());
-      if (pagmpOpt.isPresent()) {
-        final Pagmp pagmFromBD = pagmpOpt.get();
-
-        pagmpdaocql.saveWithMapper(pagmFromBD);
-      } else {
-        pagmpdaocql.saveWithMapper(pagmp);
-      }
-    } else {
-      throw new DroitRuntimeException(
-                                      "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                          + errorKey + " n'est pas supportée");
-    }
 
   }
 

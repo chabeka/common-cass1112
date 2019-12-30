@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.droit.dao.support.cql;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.droit.dao.cql.IFormatControlProfilDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
-import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 
@@ -53,7 +51,7 @@ public class FormatControlProfilCqlSupport {
     if (formatControl == null) {
       // pas en base
       throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
-                                                                          .loadMessage("erreur.format.control.delete", code));
+                                                     .loadMessage("erreur.format.control.delete", code));
     }
     formatcontrolprofildaocql.deleteById(code);
 
@@ -89,28 +87,7 @@ public class FormatControlProfilCqlSupport {
   private void saveOrUpdate(final FormatControlProfil formatControlProfil) {
     Assert.notNull(formatControlProfil, "l'objet formatcontrolprofil  ne peut etre null");
 
-    final boolean isValidCode = true;
-    final String errorKey = "";
-
-
-    if (isValidCode) {
-
-      // recuperation de l'objet ayant le meme codeevt dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau
-      final Optional<FormatControlProfil> formatControlProfilOpt = formatcontrolprofildaocql.findWithMapperById(formatControlProfil.getFormatCode());
-      if (formatControlProfilOpt.isPresent()) {
-        final FormatControlProfil formatControlProfiFromBD = formatControlProfilOpt.get();
-
-
-        formatcontrolprofildaocql.saveWithMapper(formatControlProfiFromBD);
-      } else {
-        formatcontrolprofildaocql.saveWithMapper(formatControlProfil);
-      }
-    } else {
-      throw new DroitRuntimeException(
-                                      "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                          + errorKey + " n'est pas supportée");
-    }
+    formatcontrolprofildaocql.saveWithMapper(formatControlProfil);
 
   }
 

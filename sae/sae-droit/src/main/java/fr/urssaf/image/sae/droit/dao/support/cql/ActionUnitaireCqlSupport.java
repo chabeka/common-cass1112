@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.droit.dao.support.cql;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.droit.dao.cql.IActionUnitaireDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
-import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 
 /**
  * Support de la classe DAO {@link IActionUnitaireDaoCql}
@@ -84,31 +82,9 @@ public class ActionUnitaireCqlSupport {
    * @param actionUnitaire
    */
   private void saveOrUpdate(final ActionUnitaire actionUnitaire) {
-    Assert.notNull(actionUnitaire, "l'objet actionUnitaire ne peut etre null");
-
-    final boolean isValidCode = true;
-    final String errorKey = "";
-
-
-
-    if (isValidCode) {
-
-      // recuperation de l'objet ayant le meme codeevt dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau
-      final Optional<ActionUnitaire> actionUnitaireOpt = actionunitairedaocql.findWithMapperById(actionUnitaire.getCode());
-      if (actionUnitaireOpt.isPresent()) {
-        final ActionUnitaire actionUnitaireFromBD = actionUnitaireOpt.get();
-
-        actionunitairedaocql.saveWithMapper(actionUnitaireFromBD);
-      } else {
-        actionunitairedaocql.saveWithMapper(actionUnitaire);
-      }
-    } else {
-      throw new DroitRuntimeException(
-                                      "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                          + errorKey + " n'est pas supportée");
-    }
-
+    Assert.notNull(actionUnitaire, "l'objet actionUnitaire ne peut être null");
+    Assert.notNull(actionUnitaire.getCode(), "le code ne peut être null");
+    actionunitairedaocql.saveWithMapper(actionUnitaire);
   }
 
   /**
