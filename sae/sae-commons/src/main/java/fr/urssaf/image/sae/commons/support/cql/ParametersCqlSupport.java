@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.bo.Parameter;
 import fr.urssaf.image.sae.commons.bo.ParameterRowType;
 import fr.urssaf.image.sae.commons.bo.ParameterType;
@@ -31,6 +32,9 @@ public class ParametersCqlSupport {
   @Autowired
   IParametersDaoCql parametersDaoCql;
 
+  @Autowired
+  JobClockSupport jobClockSupport;
+
   public ParametersCqlSupport(final IParametersDaoCql parametersDaoCql) {
     this.parametersDaoCql = parametersDaoCql;
 
@@ -45,9 +49,9 @@ public class ParametersCqlSupport {
    * @param clock
    *           horloge de la création
    */
-  public final void create(final ParameterCql parametersCql) {
+  public final void create(final ParameterCql parametersCql, final long clock) {
 
-    saveOrUpdate(parametersCql);
+    saveOrUpdate(parametersCql, clock);
   }
 
   /**
@@ -58,7 +62,7 @@ public class ParametersCqlSupport {
    */
   public void delete(final ParameterRowType parametersCql) {
     Assert.notNull(parametersCql, "le code ne peut etre null");
-    parametersDaoCql.deleteById(parametersCql.getValue());
+    parametersDaoCql.deleteById(parametersCql.getValue(), jobClockSupport.currentCLock());
 
   }
 
@@ -103,7 +107,7 @@ public class ParametersCqlSupport {
    * 
    * @param parametersCql
    */
-  private void saveOrUpdate(final ParameterCql parametersCql) {
+  private void saveOrUpdate(final ParameterCql parametersCql, final long clock) {
     Assert.notNull(parametersCql, "l'objet parameters ne peut etre null");
 
     final boolean isValidCode = true;
@@ -116,9 +120,9 @@ public class ParametersCqlSupport {
       final Optional<ParameterCql> parametersOpt = parametersDaoCql.findWithMapperById(parametersCql.getTypeParameters().getValue());
       if (parametersOpt.isPresent() && parametersOpt.get().getName().equals(parametersCql.getName())) {
         final ParameterCql parametersFromBD = parametersOpt.get();
-        parametersDaoCql.saveWithMapper(parametersFromBD);
+        parametersDaoCql.saveWithMapper(parametersFromBD, clock);
       } else {
-        parametersDaoCql.saveWithMapper(parametersCql);
+        parametersDaoCql.saveWithMapper(parametersCql, clock);
       }
     } else {
       throw new ParameterRuntimeException(

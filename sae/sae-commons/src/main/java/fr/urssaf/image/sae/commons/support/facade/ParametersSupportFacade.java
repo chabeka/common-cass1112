@@ -69,13 +69,13 @@ public class ParametersSupportFacade {
       break;
 
     case MODE_API.DATASTAX:
-      parametersCqlSupport.create(parameterCql);
+      parametersCqlSupport.create(parameterCql, clockSupport.currentCLock());
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       parametersSupport.create(parameter, rowKey, clockSupport.currentCLock());
-      parametersCqlSupport.create(parameterCql);
+      parametersCqlSupport.create(parameterCql, clockSupport.currentCLock());
 
       break;
 
