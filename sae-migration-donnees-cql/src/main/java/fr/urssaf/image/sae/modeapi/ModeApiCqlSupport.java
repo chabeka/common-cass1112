@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 
 /**
@@ -22,6 +23,9 @@ public class ModeApiCqlSupport {
 
   @Autowired
   IModeAPIDaoCql modeApiDaoCql;
+
+  @Autowired
+  JobClockSupport clockSupport;
 
   final static String[] LIST_CF_NAME = {Constantes.CF_TRACE_DESTINATAIRE, Constantes.CF_TRACE_JOURNAL_EVT,
                                         Constantes.CF_TRACE_JOURNAL_EVT_INDEX, Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC,
@@ -64,7 +68,7 @@ public class ModeApiCqlSupport {
    */
   public void delete(final String code) {
     Assert.notNull(code, "le code ne peut etre null");
-    modeApiDaoCql.deleteById(code);
+    modeApiDaoCql.deleteById(code, clockSupport.currentCLock());
 
   }
 

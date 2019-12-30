@@ -19,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.bo.Parameter;
 import fr.urssaf.image.sae.commons.bo.ParameterRowType;
 import fr.urssaf.image.sae.commons.bo.ParameterType;
@@ -38,6 +39,9 @@ import fr.urssaf.image.sae.utils.CompareUtils;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 
 public class MigrationParametersTest {
+
+  @Autowired
+  JobClockSupport clockSupport;
 
   @Autowired
   private ParametersCqlSupport supportCql;
@@ -135,7 +139,7 @@ public class MigrationParametersTest {
       parametersCql.setTypeParameters(ParameterRowType.CORBEILLE);
       parametersCql.setName(listTypes[i]);
       parametersCql.setValue(listValues[i]);
-      supportCql.create(parametersCql);
+      supportCql.create(parametersCql, clockSupport.currentCLock());
       i++;
     }
 
