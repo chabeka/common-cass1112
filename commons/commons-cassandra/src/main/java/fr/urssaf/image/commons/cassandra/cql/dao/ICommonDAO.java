@@ -108,19 +108,31 @@ public interface ICommonDAO<T, ID> {
   }
 
   /**
+   * Sauvegarde l'entité T fournie en utilisant le {@link Mapper} de datastax avec un timestamp definit
+   * sur la colonnne
+   *
+   * @param entity
+   *          entité à sauvegarder
+   * @return L'entité sauvegardée
+   */
+  public default T saveWithMapper(final T entity, final long timestamp) {
+    getMapper().save(entity, Option.timestamp(timestamp));
+    return entity;
+  }
+
+  /**
    * Sauvegarde l'entité T fournie en utilisant le {@link com.datastax.driver.mapping.Mapper} de datastax
    * avec une date d'expiration. A la fin de cette date d'expiration, la donnée est supprimer de la base
    *
    * @param entity
-   *           entité à sauvegarder
-   *           *
+   *          entité à sauvegarder
+   *          *
    * @param ttl
-   *           date d'expiration exprimé en seconde
+   *          date d'expiration exprimé en seconde
    * @return l'entité sauvegardée
    */
   public default T saveWithMapper(final T entity, final int ttl) {
-    getMapper().setDefaultSaveOptions(Option.ttl(ttl));
-    getMapper().save(entity);
+    getMapper().save(entity, Option.ttl(ttl));
     return entity;
   }
 
