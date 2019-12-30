@@ -159,4 +159,9 @@ public class JobQueueCql implements Serializable, Comparable<JobQueueCql> {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return "JobQueueCql [key=" + key + ", idJob=" + idJob + ", type=" + type + ", jobParameters=" + jobParameters + "]";
+  }
+
 }

@@ -13,15 +13,15 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
 public interface IJobsQueueDaoCql extends IGenericDAO<JobQueueCql, String> {
 
-   public void deleteByIdAndIndexColumn(final UUID id, final String key);
+  public void deleteByIdAndIndexColumn(final UUID id, final String key, long clock);
 
-   public Iterator<JobQueueCql> getUnreservedJobRequest();
+  public Iterator<JobQueueCql> getUnreservedJobRequest();
 
-   public Iterator<JobQueueCql> getNonTerminatedSimpleJobs(String hostname);
+  public Iterator<JobQueueCql> getNonTerminatedSimpleJobs(String hostname);
 
-   public Optional<JobQueueCql> findByIdAndIndexColumn(final UUID id, final String key);
+  public Optional<JobQueueCql> findByIdAndIndexColumn(final UUID id, final String key);
 
-   // public List<JobQueueCql> getNonTerminatedJobs(String key);
+  // public List<JobQueueCql> getNonTerminatedJobs(String key);
 
-   public Optional<JobQueueCql> findByIndexedColumn(final UUID idjob);
+  public Optional<JobQueueCql> findByIndexedColumn(final UUID idjob);
 }

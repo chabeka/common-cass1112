@@ -11,9 +11,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
+import com.datastax.driver.mapping.Mapper.Option;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
@@ -27,7 +27,7 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 @Repository
 public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> implements IJobsQueueDaoCql {
 
-   /**
+  /**
    * @param ccf
    */
   public JobsQueueDaoCqlImpl(final CassandraCQLClientFactory ccf) {
@@ -72,18 +72,15 @@ public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> imp
    * {@inheritDoc}
    */
   @Override
-  public void deleteByIdAndIndexColumn(final UUID id, final String key) {
+  public void deleteByIdAndIndexColumn(final UUID id, final String key, final long clock) {
     Assert.notNull(id, " id est requis");
     Assert.notNull(key, " key est requis");
-    final Delete delete = QueryBuilder.delete().from(ccf.getKeyspace(), getTypeArgumentsName());
-    final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
-    Assert.notNull(keyField, "La clé de l'entité à supprimer ne peut être null");
 
-    final String keyName = keyField.getName();
-    delete.where(eq(keyName, key));
-    delete.where(eq(JOB_ID, id));
-    // getMapper().setDefaultDeleteOptions(Option.timestamp(clock));
-    getMapper().map(getSession().execute(delete));
+    final Optional<JobQueueCql> opt = findByIdAndIndexColumn(id, key);
+    if (opt.isPresent()) {
+      getMapper().delete(opt.get(), Option.timestamp(clock));
+    }
+
   }
 
   /**
