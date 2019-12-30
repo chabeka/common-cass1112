@@ -20,6 +20,7 @@ import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.Mapper;
+import com.datastax.driver.mapping.Mapper.Option;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
@@ -148,18 +149,13 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * {@inheritDoc}
    */
   @Override
-  public void deleteById(final ID id) {
+  public void deleteById(final ID id, final long clock) {
     Assert.notNull(id, " l'id est requis");
-    final Delete delete = QueryBuilder.delete().from(ccf.getKeyspace(), getTypeArgumentsName());
 
-    final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
-
-
-    Assert.notNull(keyField, "La clé de l'entité à supprimer ne peut être null");
-
-    final String keyName = keyField.getName();
-    delete.where(eq(keyName, id));
-    getMapper().map(getSession().execute(delete));
+    final Optional<T> opt = findWithMapperById(id);
+    if (opt.isPresent()) {
+      getMapper().delete(opt.get(), Option.timestamp(clock));
+    }
   }
 
   /**
