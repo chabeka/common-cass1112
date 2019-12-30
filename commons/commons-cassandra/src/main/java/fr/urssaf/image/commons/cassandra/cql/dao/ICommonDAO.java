@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.commons.cassandra.cql.dao;
 
+import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.core.querybuilder.Truncate;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.Mapper.Option;
@@ -230,6 +233,35 @@ public interface ICommonDAO<T, ID> {
     getSession().execute(statement);
   }
 
+  /**
+   * Recuperer le timestamp d'une colonne quelconque en fonction de l'identifiant
+   * et du nom de colonne. <br>
+   * <br>
+   * Cette methode s'applique à toutes les colonnes de la table sauf la colonne de la clé primaire.
+   * En cas d'appel sur la clé primaire on risque d'avoir une exception avec le message
+   * suivant:<br>
+   * <b>Cannot use selection function writeTime on PRIMARY KEY part first_name</b>
+   * 
+   * @param id
+   *          l'identifiant de la colonne
+   * @param columnName
+   *          le nom de la colonne
+   * @return
+   */
+  public default long getColunmWriteTime(final ID id, final String columnName) {
+    Assert.notNull(id, "L'identifiant ne peut être null");
+
+    // recuperer le nom de la primary key
+    final Field keyField = ColumnUtil.getSimplePartionKeyField(getDaoType());
+    Assert.notNull(keyField, "La clé de l'entité à chercher ne peut être null");
+    final String keyName = keyField.getName();
+
+    // recuperer le timestamp de la colonne id
+    final Select select = QueryBuilder.select().column(columnName).writeTime(columnName).as("timestamp").from(getCcf().getKeyspace(), getTypeArgumentsName());
+    select.where(eq(keyName.toLowerCase(), id));
+    final Row row = getSession().execute(select).one();
+    return row.getLong("timestamp");
+  }
   /**
    * La session sur le keyspace dans le cluster
    *
