@@ -344,4 +344,9 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     getDao().saveWithMapper(entity, clock);
     return entity;
   }
+
+  public T save(final T entity) {
+    getDao().saveWithMapper(entity);
+    return entity;
+  }
 }
