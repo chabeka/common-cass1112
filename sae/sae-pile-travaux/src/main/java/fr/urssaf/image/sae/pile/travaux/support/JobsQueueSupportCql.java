@@ -129,41 +129,6 @@ public class JobsQueueSupportCql {
     jobsQueueDaoCql.getCcf().getSession().execute(query);
   }
 
-  /**
-   * Suppression du job de la file d'exécution/réservation du job.
-   *
-   * @param idJob
-   *           identifiant du job
-   * @param reservedBy
-   *           Hostname ou IP du serveur qui a réservé/exécuté le job
-   * @param clock
-   *           horloge de suppression du job de la file d'exécution/réservation
-   */
-  public final void supprimerJobDeJobsAllQueues(final UUID idJob, final long clock) {
-
-    // suppression du job de la table
-    final Optional<JobQueueCql> opt = getJobQueueByIndexedColumn(idJob);
-    if (opt.isPresent()) {
-      final JobQueueCql job = opt.get();
-      jobsQueueDaoCql.deleteByIdAndIndexColumn(job.getIdJob(), job.getKey(), clock);
-    }
-
-  }
-
-  /**
-   * Suppression du job de la liste des jobs reservés
-   *
-   * @param idJob
-   * @param reservedBy
-   * @param clock
-   */
-  public final void deleteJobFromJobsReserved(final UUID idJob, final String reservedBy, final long clock) {
-
-    // Opération 1: Suppression du job de la liste de la file d'attente
-    if (StringUtils.isNotEmpty(reservedBy)) {
-      jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, reservedBy, clock);
-    }
-  }
 
   /**
    * Met à jour le Job afin qu’il soit à nouveau éligible au lancement par
@@ -287,7 +252,4 @@ public class JobsQueueSupportCql {
     this.jobsQueueDaoCql = jobsQueueDaoCql;
   }
 
-  public long getJobHistoryColunmWriteTime(final String id, final String columnName) {
-    return jobsQueueDaoCql.getColunmWriteTime(id, columnName);
-  }
 }

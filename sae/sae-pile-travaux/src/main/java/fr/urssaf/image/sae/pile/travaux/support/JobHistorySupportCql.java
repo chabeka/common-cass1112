@@ -93,7 +93,4 @@ public class JobHistorySupportCql {
     this.jobHistoryDaoCql = jobHistoryDaoCql;
   }
 
-  public long getJobHistoryColunmWriteTime(final UUID id, final String columnName) {
-    return jobHistoryDaoCql.getColunmWriteTime(id, columnName);
-  }
 }

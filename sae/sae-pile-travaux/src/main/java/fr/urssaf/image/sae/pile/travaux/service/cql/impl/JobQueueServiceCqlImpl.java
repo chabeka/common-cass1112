@@ -184,7 +184,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       // Timestamp de l'opération
       // Il faut vérifier le décalage de temps
       // calcul du clock
-      final long clock = getCurrentColumnClock(jobRequest, STATE);
+      final long clock = getJobRequestCurrentColumnClock(jobRequest, STATE);
 
       // Lecture des propriétés du job dont on a besoin
       final String type = jobRequest.getType();
@@ -270,7 +270,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       throw new JobInexistantException(idJob);
     }
 
-    final long clock = getCurrentColumnClock(jobRequest, STATE);
+    final long clock = getJobRequestCurrentColumnClock(jobRequest, STATE);
 
     // Ecriture dans la CF "JobRequest"
     jobRequestSupportCql.passerEtatEnCoursJobRequest(idJob,
@@ -312,7 +312,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
     // TODO: Vérifier que le job est à l'état STARTING
 
-    final long clock = getCurrentColumnClock(jobRequest, STATE);
+    final long clock = getJobRequestCurrentColumnClock(jobRequest, STATE);
 
     // Ecriture dans la CF "JobRequest"
     jobRequestSupportCql.passerEtatTermineJobRequest(idJob,
@@ -396,7 +396,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
     // Timestamp de l'opération
     // Il faut vérifier le décalage de temps
     // calcul du clock
-    final long clock = getCurrentColumnClock(jobRequest, DOC_COUNT_TRAITE);
+    final long clock = getJobRequestCurrentColumnClock(jobRequest, DOC_COUNT_TRAITE);
 
     // Ecriture dans la CF "JobRequest"
     jobRequestSupportCql.renseignerDocCountTraiteDansJobRequest(idJob,
@@ -436,10 +436,16 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       throw new JobInexistantException(idJob);
     }
 
-    // Timestamp de l'opération
-    // Il faut vérifier le décalage de temps
-    // calcul du clock
-    final long clock = getCurrentColumnClock(jobRequest, PID2);
+    long clock;
+    if (pid == null) {
+
+      clock = jobClockSupport.currentCLock();
+
+    } else {
+
+      clock = getJobRequestCurrentColumnClock(jobRequest, PID2);
+
+    }
 
     // Ecriture dans la CF "JobRequest"
     jobRequestSupportCql.renseignerPidDansJobRequest(idJob, pid, clock);
@@ -464,10 +470,17 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       throw new JobInexistantException(idJob);
     }
 
-    // Timestamp de l'opération
-    // Il faut vérifier le décalage de temps
-    // calcul du clock
-    final long clock = getCurrentColumnClock(jobRequest, DOC_COUNT);
+    long clock;
+
+    if (nbDocs == null) {
+
+      clock = jobClockSupport.currentCLock();
+
+    } else {
+
+      clock = getJobRequestCurrentColumnClock(jobRequest, DOC_COUNT);
+
+    }
 
     // Ecriture dans la CF "JobRequest"
     jobRequestSupportCql.renseignerDocCountDansJobRequest(idJob, nbDocs, clock);
@@ -492,10 +505,17 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       throw new JobInexistantException(idJob);
     }
 
-    // Timestamp de l'opération
-    // Il faut vérifier le décalage de temps
-    // calcul du clock
-    final long clock = getCurrentColumnClock(jobRequest, TO_CHECK_FLAG);
+    long clock;
+
+    if (toCheckFlag == null) {
+
+      clock = jobClockSupport.currentCLock();
+
+    } else {
+
+      clock = getJobRequestCurrentColumnClock(jobRequest, TO_CHECK_FLAG);
+
+    }
 
     // Ecriture dans la CF "JobRequest"
     jobRequestSupportCql.renseignerCheckFlagDansJobRequest(idJob,
@@ -524,7 +544,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       return;
     }
 
-    final long clock = getCurrentColumnClock(jobRequest, STATE);
+    final long clock = getJobRequestCurrentColumnClock(jobRequest, STATE);
 
     // Suppression de la CF "JobRequest"
     jobRequestSupportCql.deleteJobRequest(idJob, clock);
@@ -534,7 +554,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
     // if the job is reserved
 
-    jobsQueueSupportCql.supprimerJobDeJobsAllQueues(idJob, clock);
+    jobsQueueSupportCql.supprimerJobDeJobsQueues(idJob, reservedBy, clock);
 
     // Suppression de la CF "JobHistory"
     jobHistorySupportCql.supprimerHistorique(idJob, clock);
@@ -558,7 +578,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       // Timestamp de l'opération
       // Il faut vérifier le décalage de temps
       // calcul du clock
-      final long clock = getCurrentColumnClock(jobRequest, STATE);
+      final long clock = getJobRequestCurrentColumnClock(jobRequest, STATE);
 
       // Ecriture dans la CF "JobRequest"
       jobRequestSupportCql.resetJob(idJob, etat, clock);
@@ -601,7 +621,13 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
    * @param clock
    *           horloge.
    */
-  private void addJobQueue(final JobToCreate jobToCreate, final Long clock) {
+  private void addJobQueue(final JobToCreate jobToCreate, Long clock) {
+
+    if (clock == null) {
+      // Timestamp de l'opération
+      // Pas besoin de gérer le décalage ici : on ne fait que la création
+      clock = jobClockSupport.currentCLock();
+    }
 
     jobsQueueSupportCql.ajouterJobDansJobQueuesEnWaiting(jobToCreate.getIdJob(),
                                                          jobToCreate.getType(),
@@ -646,11 +672,11 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       return;
     }
 
-    final long clock = getCurrentColumnClock(jobRequest, STATE);
+    final long clock = getJobRequestCurrentColumnClock(jobRequest, STATE);
 
     // Suppression de la CF "JobQueues"
     final String reservedBy = jobRequest.getReservedBy();
-    jobsQueueSupportCql.supprimerJobDeJobsAllQueues(idJob, clock);
+    jobsQueueSupportCql.supprimerJobDeJobsQueues(idJob, reservedBy, clock);
   }
 
   @Override
@@ -660,7 +686,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
     if (jobRequest == null) {
       return;
     }
-    final long clock = getCurrentColumnClock(jobRequest, STATE);
+    final long clock = getJobRequestCurrentColumnClock(jobRequest, STATE);
 
     jobRequestSupportCql.changerEtatJobRequest(idJob, stateJob, endingDate, message, clock);
   }
@@ -673,17 +699,17 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       return;
     }
 
-    final long clock = getCurrentColumnClock(jobRequest, STATE);
+    final long clock = getJobRequestCurrentColumnClock(jobRequest, STATE);
 
     // Suppression de la CF "JobQueues"
     final String reservedBy = jobRequest.getReservedBy();
-    jobsQueueSupportCql.supprimerJobDeJobsAllQueues(uuidJob, clock);
+    jobsQueueSupportCql.supprimerJobDeJobsQueues(uuidJob, reservedBy, clock);
 
     final String SemaphoreReserved = Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement;
-    jobsQueueSupportCql.supprimerJobDeJobsAllQueues(uuidJob, clock);
+    jobsQueueSupportCql.supprimerJobDeJobsQueues(uuidJob, SemaphoreReserved, clock);
   }
 
-  private long getCurrentColumnClock(final JobRequestCql jobRequest, final String columnName) {
+  private long getJobRequestCurrentColumnClock(final JobRequestCql jobRequest, final String columnName) {
     // Timestamp de l'opération
     // Il faut vérifier le décalage de temps
     // calcul du clock
