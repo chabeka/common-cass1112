@@ -105,6 +105,7 @@ public interface ICommonDAO<T, ID> {
    *           entité à sauvegarder
    * @return L'entité sauvegardée
    */
+
   public default T saveWithMapper(final T entity) {
     getMapper().save(entity);
     return entity;
@@ -159,6 +160,17 @@ public interface ICommonDAO<T, ID> {
   public default void deleteWithMapper(final T entity) {
     Assert.notNull(entity, " l'entity est requis");
     getMapper().delete(entity);
+  }
+
+  /**
+   * Supprime l'entité T fournit en utilisant le {@ Mapper}.
+   *
+   * @param entité
+   *          à surpprimer
+   */
+  public default void deleteWithMapper(final T entity, final long clock) {
+    Assert.notNull(entity, " l'entity est requis");
+    getMapper().delete(entity, clock);
   }
 
   /**
