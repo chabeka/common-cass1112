@@ -132,13 +132,13 @@ public class DictionarySupportFacade {
       break;
 
     case MODE_API.DATASTAX:
-      dictionaryCqlSupport.deleteElement(identifiant, value);
+      dictionaryCqlSupport.deleteElement(identifiant, value, clockSupport.currentCLock());
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       dictionarySupport.deleteElement(identifiant, value, clockSupport.currentCLock());
-      dictionaryCqlSupport.deleteElement(identifiant, value);
+      dictionaryCqlSupport.deleteElement(identifiant, value, clockSupport.currentCLock());
       break;
 
     default:

@@ -25,7 +25,9 @@ public class DictionaryCqlSupport {
   @Autowired
   IDictionaryDaoCql dictionaryDaoCql;
 
-
+  public DictionaryCqlSupport(final IDictionaryDaoCql dictionaryDaoCql) {
+    this.dictionaryDaoCql = dictionaryDaoCql;
+  }
 
   /**
    * Ajout d'une entrée au dictionnaire, le créé s'il n'existe pas
@@ -52,12 +54,12 @@ public class DictionaryCqlSupport {
    * @param value
    *          Valeur de l'entrée à supprimer
    */
-  public final void deleteElement(final String identifiant, final String value) {
+  public final void deleteElement(final String identifiant, final String value, final long clock) {
     final Optional<Dictionary> dictionaryOpt = dictionaryDaoCql.findWithMapperById(identifiant);
     if (dictionaryOpt.isPresent()) {
       final Dictionary dictionaryFromBD = dictionaryOpt.get();
       if (dictionaryFromBD.getEntries().remove(value)) {
-        dictionaryDaoCql.saveWithMapper(dictionaryFromBD);
+        dictionaryDaoCql.saveWithMapper(dictionaryFromBD, clock);
       }
     }
   }

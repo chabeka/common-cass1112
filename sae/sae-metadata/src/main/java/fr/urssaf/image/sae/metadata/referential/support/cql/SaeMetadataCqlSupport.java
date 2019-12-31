@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.metadata.referential.support.cql;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -46,7 +45,7 @@ public class SaeMetadataCqlSupport {
    * @param metadata
    */
   public final void modify(final MetadataReference metadata) {
-    checkCodeCourtInexistant(metadata.getShortCode());
+    checkCodeCourtExistant(metadata.getShortCode());
     saveOrUpdate(metadata);
   }
 
@@ -58,25 +57,7 @@ public class SaeMetadataCqlSupport {
    */
   private void saveOrUpdate(final MetadataReference metadata) {
     Assert.notNull(metadata, "l'objet metadata ne peut etre null");
-
-    final boolean isValidCode = true;
-    final String errorKey = "metadata";
-    if (isValidCode) {
-      // recuperation de l'objet ayant le meme code long dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau
-      final String id = metadata.getLongCode();
-      final Optional<MetadataReference> metadataOpt = metadataDaoCql.findWithMapperById(id);
-      if (metadataOpt.isPresent()) {
-        final MetadataReference metadataFromBD = metadataOpt.get();
-        metadataDaoCql.saveWithMapper(metadataFromBD);
-      } else {
         metadataDaoCql.saveWithMapper(metadata);
-      }
-    } else {
-      throw new MetadataRuntimeException(
-                                         "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                             + errorKey + " n'est pas supportée");
-    }
   }
 
   /**
@@ -135,6 +116,24 @@ public class SaeMetadataCqlSupport {
       }
     }
     return listConsultables;
+  }
+
+  private void checkCodeCourtExistant(final String codeCourt) {
+    final List<MetadataReference> metadatas = findAll();
+    boolean found = false;
+    int index = 0;
+
+    while (!found && index < metadatas.size()) {
+      if (codeCourt.equalsIgnoreCase(metadatas.get(index).getShortCode())) {
+        found = true;
+      }
+
+      index++;
+    }
+
+    if (found) {
+      throw new MetadataRuntimeException("Code court déjà existant : '" + codeCourt + "'");
+    }
   }
 
   private void checkCodeCourtInexistant(final String codeCourt) {

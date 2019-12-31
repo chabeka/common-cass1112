@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.metadata.referential.support.cql;
 
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -131,7 +133,7 @@ public class DictionarySupportCqlTest {
 
     final Dictionary dictExistant = dictSupport.find(id);
     Assert.assertTrue(dictExistant.getEntries().size() > 0);
-    dictSupport.deleteElement(id, value);
+    dictSupport.deleteElement(id, value, new Date().getTime());
     final Dictionary deletedDict = dictSupport.find(id);
     Assert.assertTrue(deletedDict.getEntries().size() == 0);
   }
@@ -151,7 +153,7 @@ public class DictionarySupportCqlTest {
     dictSupport.addElement(id, value1);
     final Dictionary dictExistant = dictSupport.find(id);
     Assert.assertTrue(dictExistant.getEntries().size() == 1);
-    dictSupport.deleteElement(id, value2);
+    dictSupport.deleteElement(id, value2, new Date().getTime());
     final Dictionary deletedDict = dictSupport.find(id);
     Assert.assertTrue(dictExistant.getEntries().equals(
                                                        deletedDict.getEntries()));

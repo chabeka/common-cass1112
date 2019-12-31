@@ -70,7 +70,6 @@ public class Dictionary implements Comparable<Dictionary> {
         return false;
       }
     } else if (!entries.equals(other.entries)) {
-      LOGGER.warn("identifiant:" + identifiant + "/" + getIdentifiant() + ", entries:" + entries + "/" + other.entries);
       return false;
     }
     if (identifiant == null) {
