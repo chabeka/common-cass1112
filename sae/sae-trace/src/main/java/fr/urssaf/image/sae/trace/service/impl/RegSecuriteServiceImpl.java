@@ -69,8 +69,8 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   public JobClockSupport getClockSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
-    ) {
-      // nothing => le clock est gerer automatiquement par datastax
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
+      regSecuriteCqlService.getClockSupport();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
@@ -179,7 +179,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = regSecuriteCqlService.getSupport().delete(dateIndex);
+      nbTracesPurgees = regSecuriteCqlService.getSupport().delete(dateIndex, getClockSupport().currentCLock());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = regSecuriteThriftService.getSupport()
           .delete(dateIndex,
@@ -189,7 +189,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       nbTracesPurgees = regSecuriteThriftService.getSupport().delete(dateIndex,
                                                                      getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
-      nbTracesPurgees = nbTracesPurgees + regSecuriteCqlService.getSupport().delete(dateIndex);
+      nbTracesPurgees = nbTracesPurgees + regSecuriteCqlService.getSupport().delete(dateIndex, getClockSupport().currentCLock());
     }
     return nbTracesPurgees;
   }

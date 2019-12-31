@@ -58,6 +58,8 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
 
   private final TraceFileSupport traceFileSupport;
 
+  private final JobClockSupport clockSupport;
+
   /**
    * @param support
    *           Support de la classe DAO TraceJournalEvtDao
@@ -75,9 +77,10 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
     supportcql = support;
     this.loggerSupport = loggerSupport;
     this.traceFileSupport = traceFileSupport;
+    this.clockSupport = clockSupport;
   }
 
-  public JournalEvtCqlServiceImpl(final CassandraCQLClientFactory ccf) {
+  public JournalEvtCqlServiceImpl(final CassandraCQLClientFactory ccf, final JobClockSupport clockSupport) {
 
     final ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl(ccf);
     dao.setCcf(ccf);
@@ -91,6 +94,7 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
     supportcql = support;
     loggerSupport = new LoggerSupport();
     traceFileSupport = new TraceFileSupport();
+    this.clockSupport = clockSupport;
   }
 
   /**
@@ -188,6 +192,10 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
   public TraceJournalEvtCql lecture(final UUID identifiant) {
     final Optional<TraceJournalEvtCql> traceOpt = supportcql.find(identifiant);
     return traceOpt.orElse(null);
+  }
+
+  public JobClockSupport getClockSupport() {
+    return clockSupport;
   }
 
 }

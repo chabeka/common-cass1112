@@ -56,7 +56,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          horloge de la création
    */
   @SuppressWarnings("unchecked")
-  public void create(final T trace) {
+  public void create(final T trace, final long clock) {
 
     getDao().saveWithMapper(trace);
 
@@ -89,7 +89,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          la liste des entités {@link T}
    */
   @SuppressWarnings("unchecked")
-  public void saveAllTraces(final Iterable<T> entites) {
+  public void saveAllTraces(final Iterable<T> entites, final long clock) {
     getDao().saveAll(entites);
   }
 
@@ -100,7 +100,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          la liste des entités {@link I}
    */
   @SuppressWarnings("unchecked")
-  public void saveAllIndex(final Iterable<I> entites) {
+  public void saveAllIndex(final Iterable<I> entites, final long clock) {
     getIndexDao().saveAll(entites);
   }
 
@@ -115,7 +115,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return le nombre de traces purgées
    */
   @SuppressWarnings("unchecked")
-  public long delete(final Date date) {
+  public long delete(final Date date, final long clock) {
     long nbTracesPurgees = 0;
 
 
@@ -123,18 +123,14 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
 
     if (iterator.hasNext()) {
 
-
       // Suppression des traces de la CF TraceJournalEvt
-      nbTracesPurgees = deleteRecords(iterator);
-
-      // Suppression des traces de la CF TraceJournalEvt
-      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator); // EC 20190918
+      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator, clock); // EC 20190918
 
 
       // suppression de l'index
       final Iterator<I> indexToDelete = getIterator(date);
       while (indexToDelete.hasNext()) {
-        getIndexDao().delete(indexToDelete.next());
+        getIndexDao().deleteWithMapper(indexToDelete.next(), clock);
       }
     }
     return nbTracesPurgees;
@@ -264,26 +260,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   long deleteRecords(final Iterator<I> iterator, final long clock) {
     long result = 0;
     while (iterator.hasNext()) {
-      getDao().deleteById(getTraceId(iterator.next()));
-      result++;
-    }
-    return result;
-  }
-
-  /**
-   * Suppression des traces dans les registres ou journaux
-   *
-   * @param iterator
-   *          Iterateur contenant les traces
-   * @param clock
-   *          l'horloge de la suppression
-   * @return le nombre d'enregistrements supprimés
-   */
-  @SuppressWarnings("unchecked")
-  long deleteRecords(final Iterator<I> iterator) {
-    long result = 0;
-    while (iterator.hasNext()) {
-      getDao().deleteById(getTraceId(iterator.next()));
+      getDao().deleteById(getTraceId(iterator.next()), clock);
       result++;
     }
     return result;
@@ -363,8 +340,8 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * Ajout save
    * EC
    */
-  public T save(final T entity) {
-    getDao().saveWithMapper(entity);
+  public T save(final T entity, final long clock) {
+    getDao().saveWithMapper(entity, clock);
     return entity;
   }
 }

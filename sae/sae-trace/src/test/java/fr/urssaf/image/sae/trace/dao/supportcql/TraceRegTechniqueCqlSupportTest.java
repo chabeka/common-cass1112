@@ -63,7 +63,7 @@ public class TraceRegTechniqueCqlSupportTest {
   }
 
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(TraceRegTechniqueCqlSupportTest.class);
+      .getLogger(TraceRegTechniqueCqlSupportTest.class);
 
   @Autowired
   private TraceRegTechniqueCqlSupport support;
@@ -115,7 +115,7 @@ public class TraceRegTechniqueCqlSupportTest {
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
     createTrace(uuid);
 
-    final long nbTracesPurgees = support.delete(new Date());
+    final long nbTracesPurgees = support.delete(new Date(), new Date().getTime());
 
     final Optional<TraceRegTechniqueCql> securiteOp = support.find(uuid);
     Assert.assertFalse("aucune trace ne doit etre touvée", securiteOp.isPresent());
@@ -210,6 +210,6 @@ public class TraceRegTechniqueCqlSupportTest {
     trace.setLogin(LOGIN);
     trace.setInfos(INFOS);
 
-    support.create(trace);
+    support.create(trace, new Date().getTime());
   }
 }

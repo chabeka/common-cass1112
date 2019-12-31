@@ -337,7 +337,7 @@ public class JournalEvtCqlServiceDatasTest extends AbstractServiceCqlTest {
     trace.setInfos(INFOS);
     trace.setPagms(Arrays.asList("PAGM " + suffixe));
 
-    support.create(trace);
+    support.create(trace, new Date().getTime());
   }
 
   private void createTrace(final Date date, final String suffixe, final UUID id) {
@@ -349,7 +349,7 @@ public class JournalEvtCqlServiceDatasTest extends AbstractServiceCqlTest {
     trace.setInfos(INFOS);
     trace.setPagms(Arrays.asList("PAGM " + suffixe));
 
-    support.create(trace);
+    support.create(trace, new Date().getTime());
   }
 
 }

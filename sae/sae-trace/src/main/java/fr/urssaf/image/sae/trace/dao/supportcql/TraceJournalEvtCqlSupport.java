@@ -157,7 +157,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
   public final void addIndexDoc(final TraceJournalEvtCql trace, final String idDoc, final long clock) {
     final TraceJournalEvtIndexDocCql traceJournal = new TraceJournalEvtIndexDocCql(trace);
     traceJournal.setIdentifiantIndex(java.util.UUID.fromString(idDoc));
-    indexjDocDao.saveWithMapper(traceJournal);
+    indexjDocDao.saveWithMapper(traceJournal, clock);
   }
 
   /**
@@ -193,7 +193,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    *          Horloge de création
    */
   public final void deleteIndexDoc(final UUID idDoc, final long clock) {
-    indexjDocDao.deleteById(idDoc);
+    indexjDocDao.deleteById(idDoc, clock);
   }
 
   /**

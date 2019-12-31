@@ -246,6 +246,6 @@ public class RegTechniqueCqlServiceDatasTest extends AbstractServiceCqlTest {
     trace.setStacktrace(STACK + suffixe);
     trace.setInfos(INFOS);
 
-    support.create(trace);
+    support.create(trace, new Date().getTime());
   }
 }

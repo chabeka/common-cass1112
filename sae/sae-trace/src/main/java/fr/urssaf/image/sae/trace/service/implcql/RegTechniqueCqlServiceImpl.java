@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
@@ -33,12 +34,13 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 @Service
 public class RegTechniqueCqlServiceImpl implements RegTechniqueServiceCql {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(RegTechniqueCqlServiceImpl.class);
+
   private final TraceRegTechniqueCqlSupport support;
 
   private final LoggerSupport loggerSupport;
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(RegTechniqueCqlServiceImpl.class);
+  private final JobClockSupport clockSupport;
 
   /**
    * Constructeur
@@ -51,13 +53,14 @@ public class RegTechniqueCqlServiceImpl implements RegTechniqueServiceCql {
    *           Support pour l'écriture des traces applicatives
    */
   @Autowired
-  public RegTechniqueCqlServiceImpl(final TraceRegTechniqueCqlSupport support, final LoggerSupport loggerSupport) {
+  public RegTechniqueCqlServiceImpl(final TraceRegTechniqueCqlSupport support, final JobClockSupport clockSupport, final LoggerSupport loggerSupport) {
     super();
     this.support = support;
+    this.clockSupport = clockSupport;
     this.loggerSupport = loggerSupport;
   }
 
-  public RegTechniqueCqlServiceImpl(final CassandraCQLClientFactory ccf) {
+  public RegTechniqueCqlServiceImpl(final CassandraCQLClientFactory ccf, final JobClockSupport clockSupport) {
 
     final ITraceRegTechniqueCqlDao dao = new TraceRegTechniqueDaoImpl(ccf);
     dao.setCcf(ccf);
@@ -67,6 +70,7 @@ public class RegTechniqueCqlServiceImpl implements RegTechniqueServiceCql {
 
     final TraceRegTechniqueCqlSupport support = new TraceRegTechniqueCqlSupport(dao, indexDao, timeUUIDSupport);
     this.support = support;
+    this.clockSupport = clockSupport;
     loggerSupport = new LoggerSupport(); 
   }
 
@@ -103,4 +107,9 @@ public class RegTechniqueCqlServiceImpl implements RegTechniqueServiceCql {
     final Optional<TraceRegTechniqueCql> traceOpt = support.find(identifiant);
     return traceOpt.orElse(null);
   }
+
+  public JobClockSupport getClockSupport() {
+    return clockSupport;
+  }
+
 }

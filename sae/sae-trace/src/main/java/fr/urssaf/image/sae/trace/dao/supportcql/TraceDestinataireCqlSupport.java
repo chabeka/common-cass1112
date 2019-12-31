@@ -85,7 +85,7 @@ public class TraceDestinataireCqlSupport {
    *           horloge de la création
    */
   public void create(final TraceDestinataire trace, final long clock) {
-    saveOrUpdate(trace);
+    saveOrUpdate(trace, clock);
   }
 
   /**
@@ -98,7 +98,7 @@ public class TraceDestinataireCqlSupport {
    */
   public void delete(final String code, final long clock) {
     Assert.notNull(code, "le code ne peut etre null");
-    destinatairecqldao.deleteById(code);
+    destinatairecqldao.deleteById(code, clock);
 
   }
 
@@ -135,7 +135,7 @@ public class TraceDestinataireCqlSupport {
    * @param trace
    *          la trace à Sauvegarder/updater
    */
-  private void saveOrUpdate(final TraceDestinataire trace) {
+  private void saveOrUpdate(final TraceDestinataire trace, final long clock) {
     Assert.notNull(trace, "l'objet traceDestinataire ne peut etre null");
 
     boolean isValidCode = true;
@@ -171,9 +171,9 @@ public class TraceDestinataireCqlSupport {
           }
         }
         traceFromBD.setDestinataires(destinatairesFromDB);
-        destinatairecqldao.saveWithMapper(traceFromBD);
+        destinatairecqldao.saveWithMapper(traceFromBD, clock);
       } else {
-        destinatairecqldao.saveWithMapper(trace);
+        destinatairecqldao.saveWithMapper(trace, clock);
       }
     } else {
       throw new TraceRuntimeException(
