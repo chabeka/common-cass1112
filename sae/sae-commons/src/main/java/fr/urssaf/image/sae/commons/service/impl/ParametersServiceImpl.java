@@ -499,9 +499,6 @@ public class ParametersServiceImpl implements ParametersService {
   @Override
   public final String getVersionRndNumero() throws ParameterNotFoundException {
 
-    final Parameter parameter = parametersSupport.find(ParameterType.VERSION_RND_NUMERO,
-                                                       ParameterRowType.RND);
-    final String numero = (String) parameter.getValue();
     return (String) parametersSupport.find(ParameterType.VERSION_RND_NUMERO,
                                            ParameterRowType.RND)
         .getValue();

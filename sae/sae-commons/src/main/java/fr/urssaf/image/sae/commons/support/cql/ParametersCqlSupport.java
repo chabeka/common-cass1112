@@ -6,19 +6,16 @@ package fr.urssaf.image.sae.commons.support.cql;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.bo.Parameter;
 import fr.urssaf.image.sae.commons.bo.ParameterRowType;
 import fr.urssaf.image.sae.commons.bo.ParameterType;
 import fr.urssaf.image.sae.commons.bo.cql.ParameterCql;
 import fr.urssaf.image.sae.commons.dao.cql.IParametersDaoCql;
-import fr.urssaf.image.sae.commons.exception.ParameterRuntimeException;
 import fr.urssaf.image.sae.commons.utils.ParametersUtils;
 
 
@@ -32,12 +29,25 @@ public class ParametersCqlSupport {
   @Autowired
   IParametersDaoCql parametersDaoCql;
 
-  @Autowired
-  JobClockSupport jobClockSupport;
 
   public ParametersCqlSupport(final IParametersDaoCql parametersDaoCql) {
     this.parametersDaoCql = parametersDaoCql;
 
+  }
+
+  /**
+   * Ajout d'une colonne de paramètre
+   * 
+   * @param parameter
+   *          parametre a inserer
+   * @param rowKey
+   *          nom de la ligne
+   * @param clock
+   *          horloge de la création
+   */
+  public final void create(final ParameterCql parametersCql) {
+
+    saveOrUpdate(parametersCql);
   }
   /**
    * Ajout d'une colonne de paramètre
@@ -60,9 +70,9 @@ public class ParametersCqlSupport {
    * @param code
    *          identifiant de la pagmCql
    */
-  public void delete(final ParameterRowType parametersCql) {
+  public void delete(final ParameterRowType parametersCql, final long clock) {
     Assert.notNull(parametersCql, "le code ne peut etre null");
-    parametersDaoCql.deleteById(parametersCql.getValue(), jobClockSupport.currentCLock());
+    parametersDaoCql.deleteById(parametersCql.getValue(), clock);
 
   }
 
@@ -110,25 +120,21 @@ public class ParametersCqlSupport {
   private void saveOrUpdate(final ParameterCql parametersCql, final long clock) {
     Assert.notNull(parametersCql, "l'objet parameters ne peut etre null");
 
-    final boolean isValidCode = true;
-    final String errorKey = "";
 
-    if (isValidCode) {
+    parametersDaoCql.saveWithMapper(parametersCql,clock);
 
-      // recuperation de l'objet ayant le meme code dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau attention en cql il faut la même rowkey et le même type
-      final Optional<ParameterCql> parametersOpt = parametersDaoCql.findWithMapperById(parametersCql.getTypeParameters().getValue());
-      if (parametersOpt.isPresent() && parametersOpt.get().getName().equals(parametersCql.getName())) {
-        final ParameterCql parametersFromBD = parametersOpt.get();
-        parametersDaoCql.saveWithMapper(parametersFromBD, clock);
-      } else {
-        parametersDaoCql.saveWithMapper(parametersCql, clock);
-      }
-    } else {
-      throw new ParameterRuntimeException(
-                                          "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                              + errorKey + " n'est pas supportée");
-    }
+
+  }
+
+  /**
+   * Enregistre le parametersCql
+   * 
+   * @param parametersCql
+   */
+  private void saveOrUpdate(final ParameterCql parametersCql) {
+    Assert.notNull(parametersCql, "l'objet parameters ne peut etre null");
+
+    parametersDaoCql.saveWithMapper(parametersCql);
 
   }
 
