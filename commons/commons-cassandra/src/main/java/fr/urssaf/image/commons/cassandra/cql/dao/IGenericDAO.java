@@ -61,6 +61,13 @@ public interface IGenericDAO<T, ID> extends ICommonDAO<T, ID> {
    *
    * @param id
    */
+  void deleteById(final ID id);
+
+  /**
+   * Supprime l'entité T avec l'ID
+   *
+   * @param id
+   */
   void deleteById(ID id, long clock);
 
   /**

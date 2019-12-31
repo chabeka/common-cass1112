@@ -149,6 +149,19 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * {@inheritDoc}
    */
   @Override
+  public void deleteById(final ID id) {
+    Assert.notNull(id, " l'id est requis");
+
+    final Optional<T> opt = findWithMapperById(id);
+    if (opt.isPresent()) {
+      getMapper().delete(opt.get());
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public void deleteById(final ID id, final long clock) {
     Assert.notNull(id, " l'id est requis");
 
