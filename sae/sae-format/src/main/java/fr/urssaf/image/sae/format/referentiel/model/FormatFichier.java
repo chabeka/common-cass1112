@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.format.referentiel.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -12,6 +15,8 @@ import com.datastax.driver.mapping.annotations.Table;
  * */
 @Table(name = "referentielformatcql")
 public class FormatFichier implements Comparable<FormatFichier> {
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(FormatFichier.class);
   @PartitionKey
   @Column(name = "idFormat")
   private String idFormat;

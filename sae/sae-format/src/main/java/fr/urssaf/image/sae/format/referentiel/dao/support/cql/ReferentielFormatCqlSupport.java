@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.format.referentiel.dao.support.cql;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -162,24 +161,7 @@ public class ReferentielFormatCqlSupport {
   private void saveOrUpdate(final FormatFichier formatFichier) {
     Assert.notNull(formatFichier, "l'objet formatFichier ne peut etre null");
 
-    final boolean isValidCode = true;
-    final String errorKey = "formatFichier";
-    if (isValidCode) {
-      // recuperation de l'objet ayant le meme codeevt dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau
-      final String id = formatFichier.getIdFormat();
-      final Optional<FormatFichier> formatFichierOpt = referentielFormatDaoCql.findWithMapperById(id);
-      if (formatFichierOpt.isPresent()) {
-        final FormatFichier formatFichierFromBD = formatFichierOpt.get();
-        // on enregistre la modification
-        referentielFormatDaoCql.saveWithMapper(formatFichierFromBD);
-      } else {
-        referentielFormatDaoCql.saveWithMapper(formatFichier);
-      }
-    } else {
-      throw new ReferentielRuntimeException(
-                                            "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                                + errorKey + " n'est pas supportée");
-    }
+    referentielFormatDaoCql.saveWithMapper(formatFichier);
+
   }
 }
