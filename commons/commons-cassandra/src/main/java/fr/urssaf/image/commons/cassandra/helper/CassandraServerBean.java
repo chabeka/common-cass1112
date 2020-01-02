@@ -88,7 +88,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
       created = true;
     }
     if (dataSetsCql != null) {
-      // La deuxième fois, on ne recréé le keyspace que s'il n'est pas d�ja créé
+      // La deuxième fois, on ne recréé le keyspace que s'il n'est pas déja créé
       loadDatasets(!created, MODE_API.DATASTAX, dataSetsCql);
     }
   }
@@ -391,7 +391,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
    * l'initialisation du serveur cassandra
    *
    * @param dataSet
-   *          Jeu de donn�es
+   *          Jeu de données
    */
   public void setDataSet(final String dataSet) {
 

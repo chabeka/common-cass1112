@@ -159,6 +159,8 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
   }
 
   /**
+   * Le facteur 1000 est utilisé car le paramètre de Option.timestamp doit être en microsecondes
+   * alors que tous les clock utilisés sont en millisecondes
    * {@inheritDoc}
    */
   @Override
@@ -167,7 +169,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
 
     final Optional<T> opt = findWithMapperById(id);
     if (opt.isPresent()) {
-      getMapper().delete(opt.get(), Option.timestamp(clock));
+      getMapper().delete(opt.get(), Option.timestamp(clock * 1000));
     }
   }
 

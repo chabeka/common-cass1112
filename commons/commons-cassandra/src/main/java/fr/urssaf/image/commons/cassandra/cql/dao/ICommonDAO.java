@@ -120,7 +120,7 @@ public interface ICommonDAO<T, ID> {
    * @return L'entité sauvegardée
    */
   public default T saveWithMapper(final T entity, final long timestamp) {
-    getMapper().save(entity, Option.timestamp(timestamp));
+    getMapper().save(entity, Option.timestamp(timestamp*1000));
     return entity;
   }
   /**
@@ -132,7 +132,7 @@ public interface ICommonDAO<T, ID> {
    * @return L'entité sauvegardée
    */
   public default T saveWithMapper(final T entity, final int ttl, final long clock) {
-    getMapper().save(entity, Option.ttl(ttl), Option.timestamp(clock));
+    getMapper().save(entity, Option.ttl(ttl), Option.timestamp(clock*1000));
     return entity;
   }
   /**
@@ -170,7 +170,7 @@ public interface ICommonDAO<T, ID> {
    */
   public default void deleteWithMapper(final T entity, final long clock) {
     Assert.notNull(entity, " l'entity est requis");
-    getMapper().delete(entity, Option.timestamp(clock));
+    getMapper().delete(entity, Option.timestamp(clock * 1000));
   }
 
   /**
