@@ -83,7 +83,7 @@ public class MigrationJobRequest implements IMigration {
     int count;
     int nbTotalRow = 0;
 
-    // Map contenant key = (numero d'iteration)
+    // Map contenant key = (numero d'iteration = mapKey)
     // value=(liste des UUID des objets de l'iteration)
     final Map<Integer, List<UUID>> map = new HashMap<>();
 

@@ -6,10 +6,10 @@ package fr.urssaf.image.sae.utils;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.UUID;
 
 /**
- * TODO (AC75095028) Description du type
- *
+ * Classe utile pour le fichier de reprise en cas de coupure lors de la migration
  */
 public class RepriseFileUtils {
 
@@ -33,9 +33,9 @@ public class RepriseFileUtils {
 
     RandomAccessFile fileHandler = null;
     try {
-      fileHandler = new RandomAccessFile(file, "r");
+      fileHandler = new RandomAccessFile(file, "rw");
       final long fileLength = fileHandler.length() - 1;
-      final StringBuilder sb = new StringBuilder();
+      StringBuilder sb = new StringBuilder();
 
       for (long filePointer = fileLength; filePointer != -1; filePointer--) {
         fileHandler.seek(filePointer);
@@ -45,13 +45,29 @@ public class RepriseFileUtils {
           if (filePointer == fileLength) {
             continue;
           }
-          break;
+          // on verifie que la ligne correspond à un UUID valide
+          final boolean isValidUUID = valideUUID(sb.reverse().toString());
+          if (isValidUUID) {
+            break;
+          } else {
+            fileHandler.setLength(fileLength + 1);
+            sb = new StringBuilder();
+            continue;
+          }
 
         } else if (readByte == 0xD) {
           if (filePointer == fileLength - 1) {
             continue;
           }
-          break;
+          // on verifie que la ligne correspond à un UUID valide
+          final boolean isValidUUID = valideUUID(sb.reverse().toString());
+          if (isValidUUID) {
+            break;
+          } else {
+            fileHandler.setLength(fileLength + 1);
+            sb = new StringBuilder();
+            continue;
+          }
         }
 
         sb.append((char) readByte);
@@ -76,4 +92,18 @@ public class RepriseFileUtils {
     }
 
   }
+
+  /*
+   * verifie que la chaine de String correspond bien à un UUID valide
+   */
+  public static boolean valideUUID(final String strKey) {
+    try {
+      UUID.fromString(strKey);
+    }
+    catch (final IllegalArgumentException e) {
+      return false;
+    }
+    return true;
+  }
+
 }

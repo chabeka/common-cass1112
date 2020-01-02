@@ -162,7 +162,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
           currentlistUUID.add(key);
           // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
           if (lastlistUUID == null || !lastlistUUID.contains(key)) {
-            supportcql.save(trThToCql);
+            supportcql.save(trThToCql, new Date().getTime());
             totalCount++;
           }
 
