@@ -1,6 +1,6 @@
 #!/bin/bash
 # 
-# description: Lance ou arr�te les outils du SAE.
+# description: Lance ou arrête les outils du SAE.
  
 # Source function library
 . /etc/rc.d/init.d/functions
@@ -46,7 +46,7 @@ stop(){
 		RETVAL=$(service $PROG_CASSANDRA status)
 		echo -n "$RETVAL"
 		if [ "$RETVAL" = "$PROG_CASSANDRA is stopped" ]; then
-			#echo -n "$PROG_CASSANDRA arr�te"
+			#echo -n "$PROG_CASSANDRA arrête"
 			success "OK"
 			echo -e "\n"
 			sleep 5
@@ -88,14 +88,14 @@ delete(){
 	rm -rf /var/lib/cassandra/*
 	RETVAL=$(ls -lR /var/lib/cassandra/ | grep ^- | wc -l)
 	if [ $RETVAL -eq 0 ]; then
-		echo "Le contenu du dossier /var/lib/cassandra ont �t� supprim�"
+		echo "Le contenu du dossier /var/lib/cassandra ont été supprimé"
 	else
 		echo "La supression des fichiers du dossier /var/lib/cassandra a echoue"
 	fi
 	rm -f /var/log/cassandra/*
 	RETVAL=$(ls -lR /var/log/cassandra/ | grep ^- | wc -l)
 	if [ $RETVAL -eq 0 ]; then
-		echo "Le contenu du dossier /var/log/cassandra ont �t� supprim�"
+		echo "Le contenu du dossier /var/log/cassandra ont été supprimé"
 	else
 		echo "La supression des fichiers du dossier /var/log/cassandra a echoue"
 	fi
@@ -117,7 +117,7 @@ delete(){
 	if [ $? -eq 0 ]; then
 		echo "Creation des authentifications OK"
 	else
-		echo "Erreur sur la cr�ation des authentifications"
+		echo "Erreur sur la création des authentifications"
 		return $?
 	fi
 	nodetool -h $(hostname) -u root -pw regina4932 repair system_auth
@@ -137,9 +137,9 @@ delete(){
 	fi
 	cassandra-cli -h $(hostname)  -u root -pw regina4932 -f /etc/cassandra/schema/dfce-1.0.1-schema.txt
 	if [ $? -eq 0 ]; then
-		echo "La cr�ation de la base de donn�e Cassandra pour DFCE OK"
+		echo "La création de la base de donnée Cassandra pour DFCE OK"
 	else
-		echo "Erreur lors de cr�ation de la base de donn�e Cassandra pour DFCE. Lancement du processus de reprise..."
+		echo "Erreur lors de création de la base de donnée Cassandra pour DFCE. Lancement du processus de reprise..."
 		sleep 10
 		gerererreurdfceschema
 	fi
@@ -149,7 +149,7 @@ delete(){
 
 repart() {
 	echo "Lancement du processus de repartition entre les 2 serveurs Cassandra: "	
-	#R�cup�ration des IP et Token des serveurs du cluster.
+	#Récupération des IP et Token des serveurs du cluster.
 	IPSERVEUR1=$(ifconfig | awk '{ if (/inet addr:/) { print substr($2,6,15); exit; } }')
 	echo "IP serveur 1 = $IPSERVEUR1"
 	IPSERVEUR2=$(nodetool -h $(hostname) -u root -pw regina4932 ring | awk -v var=$IPSERVEUR1 '{ if ($1 != var && /Up/) { print $1 } }')
@@ -223,7 +223,7 @@ repart() {
 }
  
 gerererreurdfceschema() {
-	echo "Processus de reprise de l'installation de la base de donn�es Cassandra pour DFCE :"
+	echo "Processus de reprise de l'installation de la base de données Cassandra pour DFCE :"
 	SRC_DIRECTORY="/etc/cassandra/schema/"
 	FILESRCNAME="dfce-1.0.1-schema.txt"
 	SRC="$SRC_DIRECTORY$FILESRCNAME"
@@ -234,12 +234,12 @@ gerererreurdfceschema() {
 	cd $SRC_DIRECTORY
 	
 	touch $FILETRVNAME
-	#Suppression de toutes les lignes pr�cedent la ligne contenant "ADMIN group creation.".
+	#Suppression de toutes les lignes précedent la ligne contenant "ADMIN group creation.".
 	sed -n -e '/.*ADMIN group creation.*/,$ w dfce-1.0.1-schema-trv.txt' $SRC
-	#Ajout de la ligne "use Docubase;" au d�but du fichier.
+	#Ajout de la ligne "use Docubase;" au début du fichier.
 	sed -i '1 i\ use Docubase;' $SRC_TRV
 
-	echo "La cr�ation de la base de donn�e Cassandra pour DFCE"
+	echo "La création de la base de donnée Cassandra pour DFCE"
 	cassandra-cli -h $(hostname)  -u root -pw regina4932 -f $SRC_TRV
 	if [ $? -eq 0 ]; then
 		rm -rf $SRC_TRV
@@ -251,7 +251,7 @@ gerererreurdfceschema() {
 		failure "KO"
 		echo -e "\n"
 		sleep 5
-		echo "Erreur lors de cr�ation de la base de donn�e Cassandra pour DFCE. Modifier le fichier dfce-1.0.1-schema.txt (cf. Document install)"
+		echo "Erreur lors de création de la base de donnée Cassandra pour DFCE. Modifier le fichier dfce-1.0.1-schema.txt (cf. Document install)"
 		return $?
 	fi
 }

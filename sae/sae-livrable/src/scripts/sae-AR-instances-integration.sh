@@ -100,7 +100,7 @@ stop(){
 		RETVAL=$(service $PROG_TOMCAT status)
 		echo -n "$RETVAL"
 		if [ "$RETVAL" = "[HAWAI] - Status du service TOMCAT : stop" ]; then
-			#echo -n "$PROG_TOMCAT arr�te"
+			#echo -n "$PROG_TOMCAT arrête"
 			success "OK"
 			echo -e "\n"
 			sleep 5
@@ -126,7 +126,7 @@ stop(){
 		RETVAL=$(service $PROG_ZOOKEEPER status)
 		echo -n "$RETVAL"
 		if [ $"$RETVAL" = "[HAWAI] - Status du service ZOOKEEPER : stop" ]; then
-			#echo -n "$PROG_ZOOKEEPER arr�te"
+			#echo -n "$PROG_ZOOKEEPER arrête"
 			success "OK"
 			echo -e "\n"
 			sleep 5

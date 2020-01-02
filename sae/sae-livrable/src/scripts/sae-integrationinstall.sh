@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# description: Lance ou arr�te l'ordonnanceur du SAE.
+# description: Lance ou arrête l'ordonnanceur du SAE.
 
 . /etc/rc.d/init.d/functions
 
@@ -8,9 +8,9 @@ GED_CONCERNEE="$2"
 
 PROG_NAME=@PROJECT_NAME@-integrationinstall
 
-# Les sorties sont redirig�es dans ce fichier. 
-# Ce n'est pas un fichier de log � proprement parl�
-# car les logs applicatifs sont g�r�s via logback.
+# Les sorties sont redirigées dans ce fichier. 
+# Ce n'est pas un fichier de log à proprement parlé
+# car les logs applicatifs sont gérés via logback.
 OUT_FILE="@LOGS_PATH@/$PROG_NAME.out"
 
 PID_FILE="/var/run/$PROG_NAME.pid"
@@ -22,7 +22,7 @@ start() {
     echo -n "Demarage de l'installation de la base SAE $GED_CONCERNEE... "
 
     if [ -e $PID_FILE ] && [ -e /proc/`cat "$PID_FILE"` ]; then
-        echo "Le programme est d�ja d�marr�."
+        echo "Le programme est déja démarré."
         return 1
     fi
 
@@ -47,7 +47,7 @@ stop() {
     echo -n "Arret de l'installation de la base SAE... "
 
     if [ ! -e $LOCK_FILE ]; then
-        echo "L'outil d' installation de la base SAE n'est pas d�marr�."
+        echo "L'outil d' installation de la base SAE n'est pas démarré."
         return 1
     fi
 
