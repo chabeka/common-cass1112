@@ -289,7 +289,7 @@ Met la base Cassandra du SAE en version 14 (Ajout de nouvelles métadonnées scr
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151200
 
 11-2) Lot 151201SAE
-Met la base Cassandra du SAE en version 15 (Création de l'action unitaire ajout_note suite bug lot 151200, méta Note passée en non transférable, Plus de trim gauche et droite sur méta IdGed, Taille max de IdTraitementMasse et IdTraitementMasseInterne à 36, Taille max NumeroPiece � 12)
+Met la base Cassandra du SAE en version 15 (Création de l'action unitaire ajout_note suite bug lot 151200, méta Note passée en non transférable, Plus de trim gauche et droite sur méta IdGed, Taille max de IdTraitementMasse et IdTraitementMasseInterne à 36, Taille max NumeroPiece à 12)
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151201
 
 // ------------------------------------------
