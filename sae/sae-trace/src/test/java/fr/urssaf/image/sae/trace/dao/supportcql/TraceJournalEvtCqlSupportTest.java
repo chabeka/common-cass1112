@@ -112,13 +112,15 @@ public class TraceJournalEvtCqlSupportTest {
 
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace, new Date().getTime());
+    final long timestamp = new Date().getTime();
+    cqlsupport.create(trace, timestamp);
 
-    final long nbTracesPurgees = cqlsupport.delete(new Date(), new Date().getTime());
+    final long time2 = new Date().getTime();
+    final long nbTracesPurgees = cqlsupport.delete(new Date(), time2);
 
     final Optional<TraceJournalEvtCql> securiteOpt = cqlsupport.find(uuid);
-    Assert.assertFalse("aucune trace ne doit etre touvée", securiteOpt.isPresent());
 
+    Assert.assertFalse("aucune trace ne doit etre touvée", securiteOpt.isPresent());
     Assert.assertEquals("Le nombre de traces purgées est incorrect", 1L, nbTracesPurgees);
 
   }

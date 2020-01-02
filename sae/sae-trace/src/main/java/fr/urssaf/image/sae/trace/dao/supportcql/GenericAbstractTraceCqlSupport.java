@@ -58,13 +58,14 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   @SuppressWarnings("unchecked")
   public void create(final T trace, final long clock) {
 
-    getDao().saveWithMapper(trace);
+
+    getDao().saveWithMapper(trace, clock);
 
     // création de l'index
     final I index = getIndexFromTrace(trace);
 
     // final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
-    getIndexDao().saveWithMapper(index);
+    getIndexDao().saveWithMapper(index, clock);
 
     /*
      * try {
@@ -124,7 +125,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     if (iterator.hasNext()) {
 
       // Suppression des traces de la CF TraceJournalEvt
-      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator, clock); // EC 20190918
+      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator, clock);
 
 
       // suppression de l'index

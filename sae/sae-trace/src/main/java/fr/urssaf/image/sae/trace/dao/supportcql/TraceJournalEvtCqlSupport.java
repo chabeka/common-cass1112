@@ -212,4 +212,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
     return trace.getIdentifiant();
   }
 
+  public final long getWriteTime(final UUID idDoc, final String columnName) {
+    return tracejdao.getColunmWriteTime(idDoc, columnName);
+  }
 }
