@@ -27,69 +27,69 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 @SuppressWarnings("PMD")
 public class ArchivableControlServicesImplTest{
-	
-   @Autowired   
-   private MetadataControlServices controlService;
-   
-   @Autowired
-   private CassandraServerBean server;
 
-   /**
-	 * Fournit des données pour valider la méthode
-	 * {@link MetadataControlServicesImpl#checkArchivableMetadata(SAEDocument)}
-	 * 
-	 * @param withoutFault
-	 *            : boolean qui permet de prendre en compte un intrus
-	 * @return Un objet de type {@link SAEDocument}
-	 * @throws FileNotFoundException
-	 *             Exception levé lorsque le fichier n'existe pas.
-	 */
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	public final SAEDocument archivableData(final boolean withoutFault)
-			throws FileNotFoundException {
-		 List<SAEMetadata> metadatas =null;
-		if (withoutFault) {
-			metadatas = MetadataDataProviderUtils
-					.getSAEMetadata(Constants.ARCHIVABLE_FILE_1);
-		} else {
-			metadatas = MetadataDataProviderUtils
-					.getSAEMetadata(Constants.ARCHIVABLE_FILE_2);
-		}
-		return new SAEDocument(null, metadatas);
-	}
-	
+  @Autowired   
+  private MetadataControlServices controlService;
+
+  @Autowired
+  private CassandraServerBean server;
+
+  /**
+   * Fournit des données pour valider la méthode
+   * {@link MetadataControlServicesImpl#checkArchivableMetadata(SAEDocument)}
+   * 
+   * @param withoutFault
+   *            : boolean qui permet de prendre en compte un intrus
+   * @return Un objet de type {@link SAEDocument}
+   * @throws FileNotFoundException
+   *             Exception levé lorsque le fichier n'existe pas.
+   */
+  @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+  public final SAEDocument archivableData(final boolean withoutFault)
+      throws FileNotFoundException {
+    List<SAEMetadata> metadatas =null;
+    if (withoutFault) {
+      metadatas = MetadataDataProviderUtils
+          .getSAEMetadata(Constants.ARCHIVABLE_FILE_1);
+    } else {
+      metadatas = MetadataDataProviderUtils
+          .getSAEMetadata(Constants.ARCHIVABLE_FILE_2);
+    }
+    return new SAEDocument(null, metadatas);
+  }
 
 
-	/**
-	 * Vérifie que la liste ne contenant pas d'intrus est valide
-	 * 
-	 * @throws FileNotFoundException
-	 *             Exception levé lorsque le fichier n'existe pas.
-	 */
-	@Test
-	public void checkArchivableMetadataWithoutNotArchivaleMetadata()
-			throws FileNotFoundException {
-		Assert.assertTrue(controlService.checkArchivableMetadata(
-				archivableData(true)).isEmpty());
-	}
-	/**
-	 * Vérifie que la liste  contenant un intrus n'est valide
-	 * 
-	 * @throws FileNotFoundException
-	 *             Exception levé lorsque le fichier n'existe pas.
-	 */
-	@Test
-	public void checkArchivableMetadataWithNotArchivaleMetadata()
-			throws FileNotFoundException {
-		Assert.assertTrue(!controlService.checkArchivableMetadata(
-				archivableData(false)).isEmpty());
-	}
 
-	
-   @After
-   public void after() throws Exception {
+  /**
+   * Vérifie que la liste ne contenant pas d'intrus est valide
+   * 
+   * @throws FileNotFoundException
+   *             Exception levé lorsque le fichier n'existe pas.
+   */
+  @Test
+  public void checkArchivableMetadataWithoutNotArchivaleMetadata()
+      throws FileNotFoundException {
+    Assert.assertTrue(controlService.checkArchivableMetadata(
+                                                             archivableData(true)).isEmpty());
+  }
+  /**
+   * Vérifie que la liste  contenant un intrus n'est valide
+   * 
+   * @throws FileNotFoundException
+   *             Exception levé lorsque le fichier n'existe pas.
+   */
+  @Test
+  public void checkArchivableMetadataWithNotArchivaleMetadata()
+      throws FileNotFoundException {
+    Assert.assertTrue(!controlService.checkArchivableMetadata(
+                                                              archivableData(false)).isEmpty());
+  }
 
-      server.resetData(true, MODE_API.HECTOR);
 
-   }
+  @After
+  public void after() throws Exception {
+
+    server.resetData(true, MODE_API.HECTOR);
+
+  }
 }
