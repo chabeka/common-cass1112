@@ -170,7 +170,7 @@ public interface ICommonDAO<T, ID> {
    */
   public default void deleteWithMapper(final T entity, final long clock) {
     Assert.notNull(entity, " l'entity est requis");
-    getMapper().delete(entity, clock);
+    getMapper().delete(entity, Option.timestamp(clock));
   }
 
   /**
