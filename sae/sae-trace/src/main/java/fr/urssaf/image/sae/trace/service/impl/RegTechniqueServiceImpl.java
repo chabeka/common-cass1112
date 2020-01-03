@@ -84,7 +84,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
-      regTechniqueServiceCql.getClockSupport();
+      return regTechniqueServiceCql.getClockSupport();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return regTechniqueServiceThrift.getClockSupport();
