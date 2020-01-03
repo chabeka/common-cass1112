@@ -94,6 +94,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
     // Clé de depart de l'itération
     UUID startKey = null;
+
+    // nombre total de Row traité
     int totalRow = 0;
 
     // Gestion du ficher d'enregistrement des clés en cas de reprise

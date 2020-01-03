@@ -47,7 +47,7 @@ public class MigrationTraceJournalEvtTest {
 
   private static final Date DATE = new Date();
 
-  int NB_ROWS = 200;
+  int NB_ROWS = 100;
 
   @Autowired
   TraceJournalEvtIndexDao indexDao;
@@ -153,7 +153,7 @@ public class MigrationTraceJournalEvtTest {
     trace.setInfos(INFOSCQL);
     trace.setPagms(Arrays.asList("PAGM  + suffixe"));
 
-    supportCql.create(trace);
+    supportCql.create(trace, new Date().getTime());
   }
 
   private void createTraceThrift(final UUID uuid) {

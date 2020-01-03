@@ -232,7 +232,6 @@ public class MigrationPileTravauxTest {
 
     for (int i = 0; i < 101; i++) {
       final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      System.out.println(idJob);
 
       final Date dateCreation = new Date();
       final Map<String, String> jobParam = new HashMap<>();

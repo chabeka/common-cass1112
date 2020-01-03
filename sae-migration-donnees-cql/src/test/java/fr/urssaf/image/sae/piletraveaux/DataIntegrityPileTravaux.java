@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
@@ -67,10 +68,19 @@ public class DataIntegrityPileTravaux {
   @Autowired
   MigrationJobRequest migJobR;
 
+  @Autowired
+  private CassandraServerBean cassandraServer;
+
   List<UUID> idsJob = new ArrayList<>();
+
+  @Autowired
+  private CassandraServerBean server;
+
 
   @Before
   public void init() throws Exception {
+
+    // cassandraServer.resetData(false, MODE_API.DATASTAX);
 
     final Keyspace keyspace = ccf.getKeyspace();
 
@@ -83,7 +93,7 @@ public class DataIntegrityPileTravaux {
 
   private void populateTableThrift() throws Exception {
 
-    for (int i = 0; i < 1005; i++) {
+    for (int i = 0; i < 1000; i++) {
       final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       idsJob.add(idJob);
 
@@ -99,66 +109,15 @@ public class DataIntegrityPileTravaux {
       job.setDocCount(100);
       job.setSaeHost("saeHost" + i);
       job.setCreationDate(dateCreation);
-      final String jobKey = new String("jobKey" + 1);
+      final String jobKey = new String("jobKey" + i);
       job.setJobKey(jobKey.getBytes());
       jobQueueService.addJob(job);
     }
 
   }
 
-  private void addHistory() {
-
-
-    final int i = 0;
-    for (final UUID idJob : idsJob) {
-      if (i < 10) {
-        final Date date = new Date();
-        final long timestamp = date.getTime();
-        jobQueueService.addHistory(idJob,
-                                   TimeUUIDUtils
-                                   .getTimeUUID(new Date().getTime() + 1),
-            "message n°1");
-      }
-      if (i < 30) {
-        final Date date = new Date();
-        final long timestamp = date.getTime();
-        jobQueueService.addHistory(idJob,
-                                   TimeUUIDUtils
-                                   .getTimeUUID(new Date().getTime() + 1),
-            "message n°1");
-
-        jobQueueService.addHistory(idJob,
-                                   TimeUUIDUtils
-                                   .getTimeUUID(new Date().getTime() + 2),
-            "message n°2");
-      }
-      if (i < 60) {
-        final Date date = new Date();
-        final long timestamp = date.getTime();
-        jobQueueService.addHistory(idJob,
-                                   TimeUUIDUtils
-                                   .getTimeUUID(new Date().getTime() + 1),
-            "message n°1");
-
-        jobQueueService.addHistory(idJob,
-                                   TimeUUIDUtils
-                                   .getTimeUUID(new Date().getTime() + 2),
-            "message n°2");
-        jobQueueService.addHistory(idJob,
-                                   TimeUUIDUtils
-                                   .getTimeUUID(new Date().getTime() + 3),
-            "message n°3");
-        jobQueueService.addHistory(idJob,
-                                   TimeUUIDUtils
-                                   .getTimeUUID(new Date().getTime() + 4),
-            "message n°4");
-      }
-
-    }
-  }
-
   @Test
-  public void sliceQueryTest() throws Exception {
+  public void sliceQueryJobRequestTest() throws Exception {
 
     populateTableThrift();
 
@@ -178,7 +137,6 @@ public class DataIntegrityPileTravaux {
   public void sliceQueryJobHistoryTest() throws Exception {
 
     populateTableThrift();
-    addHistory();
 
     migJobH.migrationFromThriftToCql();
 

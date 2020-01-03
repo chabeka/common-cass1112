@@ -147,7 +147,7 @@ public class MigrationTraceRegTechniqueTest {
     trace.setInfos(INFOSCQL);
     trace.setPagms(Arrays.asList("PAGM  + suffixe"));
 
-    supportCql.create(trace);
+    supportCql.create(trace, new Date().getTime());
   }
 
   private void createTraceThrift(final UUID uuid) {
