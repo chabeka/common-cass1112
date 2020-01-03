@@ -118,7 +118,7 @@ public class App {
 
       LOG.info(" _____________________________________________");
       LOG.info("|                                             |");
-      LOG.info("|  INITIALISATION DU MODE DUAL THRIFT         |");
+      LOG.info("|  MODE DUAL THRIFT                           |");
       LOG.info("|_____________________________________________|");
 
       final ModeApiCqlSupport modeApiCqlSupport = context.getBean(ModeApiCqlSupport.class);
@@ -127,10 +127,17 @@ public class App {
 
       LOG.info(" _____________________________________________");
       LOG.info("|                                             |");
-      LOG.info("|  TEMPORISATION 1 min                  |");
+      LOG.info("|  TEMPORISATION 1 min                        |");
       LOG.info("|_____________________________________________|");
 
-      Thread.sleep(60000);
+      try {
+        Thread.sleep(60000);
+      }
+      catch (final InterruptedException e) {
+        System.out.println("InterruptedException : " + e.getMessage());
+      }
+
+
 
       LOG.info(" _____________________________________________");
       LOG.info("|                                             |");
@@ -552,10 +559,29 @@ public class App {
 
       LOG.info(" _____________________________________________");
       LOG.info("|                                             |");
-      LOG.info("|  INITIALISATION DU MODE DUAL CQL            |");
+      LOG.info("|              MODE DUAL CQL                  |");
       LOG.info("|_____________________________________________|");
 
       modeApiCqlSupport.initTables(MODE_API.DUAL_MODE_READ_CQL);
+
+      LOG.info(" _____________________________________________");
+      LOG.info("|                                             |");
+      LOG.info("|           TEMPORISATION 1 min               |");
+      LOG.info("|_____________________________________________|");
+
+      try {
+        Thread.sleep(60000);
+      }
+      catch (final InterruptedException e) {
+        System.out.println("InterruptedException : " + e.getMessage());
+      }
+
+      LOG.info(" _____________________________________________");
+      LOG.info("|                                             |");
+      LOG.info("|                MODE CQL                     |");
+      LOG.info("|_____________________________________________|");
+
+      modeApiCqlSupport.initTables(MODE_API.DATASTAX);
 
     } else {
 

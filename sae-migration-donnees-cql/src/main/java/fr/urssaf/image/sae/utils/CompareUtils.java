@@ -26,7 +26,7 @@ public class CompareUtils {
     // On trie les listes
     Collections.sort(list1);
     Collections.sort(list2);
-    // on renvoie un booléen de comparaions des listes
+    // on renvoie un booléen de comparaisons des listes
     return list1.equals(list2);
   }
 }

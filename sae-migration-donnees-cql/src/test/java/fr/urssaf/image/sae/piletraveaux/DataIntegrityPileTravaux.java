@@ -73,9 +73,7 @@ public class DataIntegrityPileTravaux {
 
   List<UUID> idsJob = new ArrayList<>();
 
-  @Autowired
-  private CassandraServerBean server;
-
+  final static int NB_ROWS = 10000;
 
   @Before
   public void init() throws Exception {
@@ -93,7 +91,7 @@ public class DataIntegrityPileTravaux {
 
   private void populateTableThrift() throws Exception {
 
-    for (int i = 0; i < 1000; i++) {
+    for (int i = 0; i < NB_ROWS; i++) {
       final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       idsJob.add(idJob);
 
@@ -164,6 +162,6 @@ public class DataIntegrityPileTravaux {
     catch (final Exception e) {
       fail("Les données dans la base thrift et cql de la table JobHistory et JobHistoryCql  doivent être égales");
     }
-
   }
+
 }

@@ -116,7 +116,7 @@ public class MigrationJobinstanceToJobExecution extends MigrationJob implements 
     // comparaison de deux listes
     final boolean isListEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
     if (isListEq) {
-      LOG.info("MIGRATION_JobInstanceToExecution -- Les listes metadata sont identiques");
+      LOG.info("MIGRATION_JobInstanceToExecution -- Les listes metadata sont identiques  , nb=" + listJobThrift.size());
     } else {
       LOG.warn("MIGRATION_JobInstanceToExecution -- ATTENTION: Les listes metadata sont différentes ");
     }

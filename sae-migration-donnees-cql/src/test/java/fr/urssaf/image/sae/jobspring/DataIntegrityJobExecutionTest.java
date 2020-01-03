@@ -54,7 +54,7 @@ public class DataIntegrityJobExecutionTest {
 
   private static final String MY_JOB_NAME = "job_test_execution";
 
-  private static int NB_ROWS = 1005;
+  private static int NB_ROWS = 100;
 
   private TestingServer zkServer;
 
@@ -145,12 +145,10 @@ public class DataIntegrityJobExecutionTest {
 
     populateTableThrift();
 
-
     // migration de la table JobInstance
     migJobInst.migrationFromThriftToCql();
     final boolean isJonInst = migJobInst.compareJobInstance();
     Assert.assertTrue("les elements des tables JobInstance cql et thrift doivent être egaux", isJonInst);
-
     migJobInstByNameIndex.migrationFromThriftToCql();
     final boolean isJobInstByName = migJobInstByNameIndex.compareJobInstanceByName();
     Assert.assertTrue("les elements des tables JobInstancesByName cql et thrift doivent être egaux", isJobInstByName);

@@ -123,7 +123,7 @@ public class MigrationJobExecutionsRunning extends MigrationJob implements IMigr
     // comparaison de deux listes
     final boolean isListEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
     if (isListEq) {
-      LOG.info("MIGRATION_JobExecutionsRunning -- Les listes metadata sont identiques");
+      LOG.info("MIGRATION_JobExecutionsRunning -- Les listes metadata sont identiques , nb=" + listJobThrift.size());
     } else {
       LOG.warn("MIGRATION_JobExecutionsRunning -- ATTENTION: Les listes metadata sont différentes ");
     }

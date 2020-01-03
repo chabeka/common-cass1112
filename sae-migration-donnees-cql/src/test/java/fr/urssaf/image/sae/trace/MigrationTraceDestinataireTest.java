@@ -93,12 +93,12 @@ public class MigrationTraceDestinataireTest {
 
   @Test
   public void sliceQueryTest() {
-    populateTableThrift();
+    // populateTableThrift();
     //populateTableCql();
 
     try {
       mtracedesti.comparTraceDestinataireFromCQlandThrift();
-	} catch (Exception e) {
+    } catch (final Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }

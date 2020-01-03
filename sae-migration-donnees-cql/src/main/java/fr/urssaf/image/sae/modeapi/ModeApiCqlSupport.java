@@ -107,28 +107,7 @@ public class ModeApiCqlSupport {
   private void saveOrUpdate(final ModeAPI modeAPI) {
     Assert.notNull(modeAPI, "l'objet modeAPI ne peut etre null");
 
-    final boolean isValidCode = true;
-    final String errorKey = "";
-
-
-
-    if (isValidCode) {
-
-      // recuperation de l'objet ayant le meme cfname dans la base cassandra. S'il en existe un, on l'update
-      // sinon on en cré un nouveau
-      final Optional<ModeAPI> modeAPIOpt = modeApiDaoCql.findWithMapperById(modeAPI.getCfname());
-      if (modeAPIOpt.isPresent()) {
-        final ModeAPI modeAPIFromBD = modeAPIOpt.get();
-        modeAPIFromBD.setMode(modeAPI.getMode());
-        modeApiDaoCql.saveWithMapper(modeAPIFromBD);
-      } else {
-        modeApiDaoCql.saveWithMapper(modeAPI);
-      }
-    } else {
-      throw new ModeAPIRuntimeException(
-                                        "Impossible de créer l'enregistrement demandé. " + "La clé "
-                                            + errorKey + " n'est pas supportée");
-    }
+    modeApiDaoCql.saveWithMapper(modeAPI);
 
   }
 
