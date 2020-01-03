@@ -95,7 +95,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
     //
     try {
 
-      file = RepriseFileUtils.getKeysFile(getKeyFileDir(), TRACE_REG_SECURITE_TXT);
+      file = RepriseFileUtils.getKeysFile(RepriseFileUtils.getKeyFileDir(), TRACE_REG_SECURITE_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
 
@@ -242,7 +242,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
     FileWriter fWriter;
     //
     try {
-      file = RepriseFileUtils.getKeysFile(getKeyFileDir(), TRACE_REG_SECURITE_INDEX_TXT);
+      file = RepriseFileUtils.getKeysFile(RepriseFileUtils.getKeyFileDir(), TRACE_REG_SECURITE_INDEX_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
 
