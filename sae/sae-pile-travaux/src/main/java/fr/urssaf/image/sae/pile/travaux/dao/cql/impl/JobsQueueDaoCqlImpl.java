@@ -78,7 +78,7 @@ public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> imp
 
     final Optional<JobQueueCql> opt = findByIdAndIndexColumn(id, key);
     if (opt.isPresent()) {
-      getMapper().delete(opt.get(), Option.timestamp(clock*1000));
+      getMapper().delete(opt.get(), Option.timestamp(clock));
     }
 
   }
