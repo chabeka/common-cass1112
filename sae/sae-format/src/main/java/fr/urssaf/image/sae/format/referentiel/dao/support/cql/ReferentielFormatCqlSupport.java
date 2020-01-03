@@ -160,7 +160,7 @@ public class ReferentielFormatCqlSupport {
    */
   private void saveOrUpdate(final FormatFichier formatFichier) {
     Assert.notNull(formatFichier, "l'objet formatFichier ne peut etre null");
-
+    Assert.notNull(formatFichier.getIdFormat(), "L'identifiant ne peut être null");
     referentielFormatDaoCql.saveWithMapper(formatFichier);
 
   }
