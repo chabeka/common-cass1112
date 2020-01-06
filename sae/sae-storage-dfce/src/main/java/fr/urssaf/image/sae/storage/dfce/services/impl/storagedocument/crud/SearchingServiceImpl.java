@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -92,6 +93,7 @@ SearchingService {
 
   @Value("${sae.nom.instance.plateforme}")
   private String nomPlateforme;
+
 
   /**
    * {@inheritDoc}
@@ -448,14 +450,26 @@ SearchingService {
         .createChainedFilter();
 
     final List<AbstractFilter> listeFiltres = paginatedLuceneCriteria.getFilters();
-    // On parcourt les filtres pour les ajouter à la chainedFilter
+    
+    //Recuperation des ValueFilter dans la liste et ajout dans la chainedFilter
+    Map<String, List<AbstractFilter>> mapF = getValueFilter(listeFiltres);
+    if(!mapF.isEmpty()) {
+  	  
+  	  for(Map.Entry<String, List<AbstractFilter>> entry : mapF.entrySet()){
+  		  String shortCode = entry.getKey();
+  		  List<String> list = new ArrayList<>();
+  		  for(final AbstractFilter filtre : entry.getValue()) {
+  			  final Object value = ((ValueFilter) filtre).getValue();
+      		  list.add((String) value);
+  		  }
+  		  chainedFilter.addTermsFilter(shortCode, list, ChainedFilterOperator.AND);
+  	  }  	  
+    }
+    
+    // On parcourt les autres types de filtres pour les ajouter à la chainedFilter
     for (final AbstractFilter filtre : listeFiltres) {
-      if (filtre instanceof ValueFilter) {
-        final Object value = ((ValueFilter) filtre).getValue();
-        chainedFilter.addTermFilter(filtre.getShortCode(),
-                                    (String) value,
-                                    ChainedFilterOperator.AND);
-      } else if (filtre instanceof RangeFilter) {
+      
+      if (filtre instanceof RangeFilter) {
         final Object minValue = ((RangeFilter) filtre).getMinValue();
         final Object maxValue = ((RangeFilter) filtre).getMaxValue();
         final String typeMeta = referentielMeta.get(
@@ -519,6 +533,40 @@ SearchingService {
     return chainedFilter;
   }
 
+  /**
+   * Evo #232945
+   * On prend une liste de filtre de tout type  et on retourne une map contenant une liste de {@link ValueFilter}
+   * associé à leur shord code<br>
+   * <b>Exemple</b> (ValueFilter,RangeFilter,
+   * 										ValueFilter,NotRangeFilter,ValueFilter,ValueFilter)<br>
+   * On retourne une {@link Map} contenant (key = ShortCode, value = List de ValueFilter correspondant au shortCode)
+   * @param listeFiltres
+   * @return filtresMap
+   */
+  private Map<String, List<AbstractFilter>> getValueFilter(List<AbstractFilter> listeFiltres) {
+	   final Map<String, List<AbstractFilter>> filtresMap = new HashMap<String, List<AbstractFilter>>();
+	   for (final AbstractFilter ff : listeFiltres) {
+		   // si valueFilter
+		   if (ff instanceof ValueFilter) {
+			   String shortCode =  ff.getShortCode();
+			   // test si le cas de ce filtre n'a pas encore été traité
+			   if(filtresMap.get(shortCode) == null) {
+				   List<AbstractFilter> lFilters = new ArrayList<>();
+				   for (final AbstractFilter f1 : listeFiltres) {
+					   String shortCode1 =  f1.getShortCode();
+					   if(shortCode.equals(shortCode1)) {
+						   lFilters.add(f1);
+					   }
+				   }
+				   if(lFilters.size() != 0) {
+					   filtresMap.put(shortCode, lFilters);
+				   }
+			   }
+		   }
+	   }
+	return filtresMap;
+	   
+  }
   /**
    * Convertion d'une liste de métadonnées String en liste de SorageMetadata
    *
