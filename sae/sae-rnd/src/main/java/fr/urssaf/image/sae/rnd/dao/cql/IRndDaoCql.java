@@ -7,8 +7,7 @@ import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 
 /**
- * TODO (AC75095351) Description du type
- *
+ * (AC75095351) Interface pour manipuler le TypeDocument (CF RndCql) en mode Cql
  */
 public interface IRndDaoCql extends IGenericDAO<TypeDocument, String> {
 

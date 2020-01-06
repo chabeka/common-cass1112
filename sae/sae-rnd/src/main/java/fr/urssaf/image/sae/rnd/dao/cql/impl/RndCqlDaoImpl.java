@@ -1,6 +1,3 @@
-/**
- *  TODO (AC75095351) Description du fichier
- */
 package fr.urssaf.image.sae.rnd.dao.cql.impl;
 
 import javax.annotation.PostConstruct;

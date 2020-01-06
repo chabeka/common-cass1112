@@ -46,23 +46,11 @@ public class RndCqlSupport {
                                                                  typeDoc.getCode() });
 
 
-
-    // Le code activité peut être null
-    if (typeDoc.getCodeActivite() != null) {
-      /*
-       * rndDao.ecritCodeActivite(Integer.valueOf(typeDoc.getCodeActivite()),
-       * updater, clock);
-       */
-    }
     // Si le code fonction est null, alors il s'agit d'un code temporaire et
     // on le met à 0
-    String codeFonction = "0";
     if (typeDoc.getCodeFonction() == null
         && typeDoc.getType().equals(TypeCode.TEMPORAIRE)) {
-      codeFonction = "0";
       typeDoc.setCodeFonction("0");
-    } else {
-      codeFonction = typeDoc.getCodeFonction();
     }
     rndDaoCql.saveWithMapper(typeDoc);
 
@@ -102,39 +90,5 @@ public class RndCqlSupport {
     }
     return list;
   }
-
-  /**
-   * Construction d'un objet {@link TypeDocument} à  partir du réultat de la
-   * requête
-   *
-   * @param result
-   *          {@link ColumnFamilyResult}
-   * @return {@link TypeDocument}
-   */
-  /*
-   * private TypeDocument getTypeDocFromResult(
-   * final ColumnFamilyResult<String, String> result) {
-   * TypeDocument typeDoc = null;
-   * if (result != null && result.hasResults()) {
-   * typeDoc = new TypeDocument();
-   * typeDoc.setCode(result.getKey());
-   * typeDoc.setCloture(result.getBoolean(RndDao.RND_CLOTURE));
-   * // Code activité et code fonction peuvent être nul (ex code temporaire)
-   * if (result.getInteger(RndDao.RND_CODE_ACTIVITE) != null) {
-   * typeDoc.setCodeActivite(result.getInteger(RndDao.RND_CODE_ACTIVITE)
-   * .toString());
-   * }
-   * if (result.getInteger(RndDao.RND_CODE_FONCTION) != null) {
-   * typeDoc.setCodeFonction(result.getInteger(RndDao.RND_CODE_FONCTION)
-   * .toString());
-   * }
-   * typeDoc.setDureeConservation(result
-   * .getInteger(RndDao.RND_DUREE_CONSERVATION));
-   * typeDoc.setLibelle(result.getString(RndDao.RND_LIBELLE));
-   * typeDoc.setType(TypeCode.valueOf(result.getString(RndDao.RND_TYPE)).getValue());
-   * }
-   * return typeDoc;
-   * }
-   */
 
 }

@@ -1,9 +1,5 @@
 /**
- *  TODO (AC75095351) Description du fichier
- */
-
-/**
- * TODO (AC75095351) Description du type
+ * Enumération TypeCode
  *
  */
 
@@ -13,9 +9,9 @@ package fr.urssaf.image.sae.rnd.modele;
  * Type possible des types de document
  */
 public enum TypeCode {
-                          ARCHIVABLE_AED("Type de document archivable AED"),
-                          NON_ARCHIVABLE_AED("Type de document non archivable AED"),
-                          TEMPORAIRE("Type de document temporaire");
+  ARCHIVABLE_AED("Type de document archivable AED"),
+  NON_ARCHIVABLE_AED("Type de document non archivable AED"),
+  TEMPORAIRE("Type de document temporaire");
 
   private String description;
 
