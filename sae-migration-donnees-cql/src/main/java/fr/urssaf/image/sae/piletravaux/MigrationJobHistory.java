@@ -164,10 +164,10 @@ public class MigrationJobHistory {
           // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
           if (lastlistUUID == null || !lastlistUUID.contains(currentKey)) {
             cqldao.saveWithMapper(jobH);
-            mapTrace = new HashMap<>();
             totalRow++;
           }
 
+          mapTrace = new HashMap<>();
           // ecriture dans le fichier
           bWriter.append(currentKey.toString());
           bWriter.newLine();
