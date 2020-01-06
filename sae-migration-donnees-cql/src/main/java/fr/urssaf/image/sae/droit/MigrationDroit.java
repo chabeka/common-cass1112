@@ -1,6 +1,3 @@
-/**
- *   (AC75095028) 
- */
 package fr.urssaf.image.sae.droit;
 
 import java.util.Date;

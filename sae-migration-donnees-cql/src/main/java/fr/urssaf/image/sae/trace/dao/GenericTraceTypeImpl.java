@@ -1,5 +1,5 @@
 /**
- *  TODO (AC75095028) Description du fichier
+ *  (AC75095028) 
  */
 package fr.urssaf.image.sae.trace.dao;
 

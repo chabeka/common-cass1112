@@ -40,7 +40,7 @@ import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
- * Classe permettant de faire la grigration de données de la table {@link JobStep}
+ * Classe permettant de faire la migration de données de la table {@link JobStep}
  * de thrift vers cql ou de cql vers thrift
  */
 @Component

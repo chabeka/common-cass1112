@@ -33,6 +33,10 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
+/**
+ * Classe permettant de faire la migration de données de la table {@link Jobinstance}
+ * de thrift vers cql ou de cql vers thrift
+ */
 @Component
 public class MigrationJobInstance extends MigrationJob implements IMigration {
 

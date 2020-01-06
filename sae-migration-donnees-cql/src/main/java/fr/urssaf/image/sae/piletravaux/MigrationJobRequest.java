@@ -1,6 +1,3 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
 package fr.urssaf.image.sae.piletravaux;
 
 import java.io.BufferedWriter;
@@ -43,9 +40,6 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
-/**
- * TODO (AC75095028) Description du type
- */
 @Component
 public class MigrationJobRequest implements IMigration {
 

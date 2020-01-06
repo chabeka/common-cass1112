@@ -30,8 +30,8 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
- *
- *
+ * Classe permettant de faire la migration de données de la table {@link JobSteps}
+ * de thrift vers cql ou de cql vers thrift
  */
 @Component
 public class MigrationJobSteps extends MigrationJob implements IMigration {

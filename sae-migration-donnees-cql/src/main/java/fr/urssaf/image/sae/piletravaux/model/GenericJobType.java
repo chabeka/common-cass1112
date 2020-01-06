@@ -1,6 +1,3 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
 package fr.urssaf.image.sae.piletravaux.model;
 
 import java.nio.ByteBuffer;

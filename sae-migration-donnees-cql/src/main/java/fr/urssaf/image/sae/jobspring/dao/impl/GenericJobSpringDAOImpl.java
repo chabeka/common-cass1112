@@ -13,7 +13,7 @@ import fr.urssaf.image.sae.jobspring.dao.IGenericJobSpringDAO;
 import fr.urssaf.image.sae.jobspring.model.GenericJobSpring;
 
 /**
- * TODO (AC75095028) Description du type
+ * (AC75095028) Implémentation de l'interface IGenericJobSpringDAO
  */
 @Repository
 public class GenericJobSpringDAOImpl extends GenericDAOImpl<GenericJobSpring, ByteBuffer> implements IGenericJobSpringDAO {

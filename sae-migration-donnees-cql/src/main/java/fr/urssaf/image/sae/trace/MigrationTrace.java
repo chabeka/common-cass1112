@@ -1,5 +1,5 @@
 /**
- *  TODO (AC75095028) Description du fichier
+ *   (AC75095028) 
  */
 package fr.urssaf.image.sae.trace;
 
@@ -12,7 +12,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.sae.trace.dao.IGenericTraceTypeDao;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe de migration Trace
  */
 public class MigrationTrace {
 

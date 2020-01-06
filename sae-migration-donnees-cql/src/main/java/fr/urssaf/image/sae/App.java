@@ -16,8 +16,6 @@ import fr.urssaf.image.sae.droit.MigrationPagma;
 import fr.urssaf.image.sae.droit.MigrationPagmf;
 import fr.urssaf.image.sae.droit.MigrationPagmp;
 import fr.urssaf.image.sae.droit.MigrationPrmd;
-import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
-import fr.urssaf.image.sae.droit.dao.support.cql.ActionUnitaireCqlSupport;
 import fr.urssaf.image.sae.format.MigrationReferentielFormat;
 import fr.urssaf.image.sae.jobspring.MigrationJobExecution;
 import fr.urssaf.image.sae.jobspring.MigrationJobExecutionToJobStep;
@@ -116,14 +114,18 @@ public class App {
       // ################### Initialisation des flags modeAPI en mode DUAL THRIFT ###################
       // ############################################################################################
 
+      final ModeApiCqlSupport modeApiCqlSupport = context.getBean(ModeApiCqlSupport.class);
+
+
       LOG.info(" _____________________________________________");
       LOG.info("|                                             |");
       LOG.info("|  MODE DUAL THRIFT                           |");
       LOG.info("|_____________________________________________|");
 
-      final ModeApiCqlSupport modeApiCqlSupport = context.getBean(ModeApiCqlSupport.class);
 
-      modeApiCqlSupport.initTables(MODE_API.DUAL_MODE_READ_THRIFT);
+      if (all) {
+        modeApiCqlSupport.initTables(MODE_API.DUAL_MODE_READ_THRIFT);
+      }
 
       LOG.info(" _____________________________________________");
       LOG.info("|                                             |");
@@ -138,7 +140,6 @@ public class App {
       }
 
 
-
       LOG.info(" _____________________________________________");
       LOG.info("|                                             |");
       LOG.info("|  DEBUT MIGRATION                            |");
@@ -150,8 +151,8 @@ public class App {
 
       if ("DroitActionUnitaire".equals(cfName) || all) {
         final MigrationActionUnitaire migrationActionUnitaire = context.getBean(MigrationActionUnitaire.class);
-        final ActionUnitaireSupport supportThrift = context.getBean(ActionUnitaireSupport.class);
-        final ActionUnitaireCqlSupport supportCql = context.getBean(ActionUnitaireCqlSupport.class);
+        // final ActionUnitaireSupport supportThrift = context.getBean(ActionUnitaireSupport.class);
+        // final ActionUnitaireCqlSupport supportCql = context.getBean(ActionUnitaireCqlSupport.class);
         if (THRIFT_TO_CQL.equals(migrateTo)) {
           migrationActionUnitaire.migrationFromThriftToCql();
         } else if (CQL_TO_THRIFT.equals(migrateTo)) {
@@ -599,6 +600,7 @@ public class App {
     LOG.info("|                           |");
     LOG.info("|    FIN PROGRAMME - MAIN   |");
     LOG.info("|___________________________|");
+    System.exit(0);
   }
 
   /**

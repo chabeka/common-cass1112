@@ -1,6 +1,3 @@
-/**
- *  TODO (AC75095351) Description du fichier
- */
 package fr.urssaf.image.sae.droit.model;
 
 import java.io.UnsupportedEncodingException;
@@ -13,11 +10,12 @@ import org.slf4j.LoggerFactory;
 import com.datastax.driver.mapping.annotations.Transient;
 
 /**
+ * (AC75095351)
  * Cette classe est utilisée juste pour l'extraction des données dans les tables thrift avec une requete cql.
- * La classe est utilisée que pour la migration des données pour les tables <b>Trace</b>.<br>
+ * La classe est utilisée que pour la migration des données pour les tables <b>Droit</b>.<br>
  * Le schema de la table thrift doit correspondre au schema suivant:<br>
  * <ul>
- * <li><b>CREATE TABLE "Keysapce"."NomDeLaTable" (</b></li>
+ * <li><b>CREATE TABLE "Keyspace"."NomDeLaTable" (</b></li>
  * <li>-- key blob,</li>
  * <li>-- column1 text,</li>
  * <li>-- value blob</li>

@@ -1,5 +1,5 @@
 /**
- *  TODO (AC75095028) Description du fichier
+ *   (AC75095028) 
  */
 package fr.urssaf.image.sae.trace;
 
@@ -50,7 +50,7 @@ import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe de migration TraceJournalEvt
  */
 @Component
 public class MigrationTraceJournalEvt extends MigrationTrace {

@@ -1,5 +1,5 @@
 /**
- *  TODO (AC75095028) Description du fichier
+ *   (AC75095028) 
  */
 package fr.urssaf.image.sae.trace;
 
@@ -26,7 +26,7 @@ import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import junit.framework.Assert;
 
 /**
- * TODO (AC75095028) Description du type
+ * Classe de test de migration des TraceDestinataire
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-migration-test.xml" })
@@ -99,7 +99,6 @@ public class MigrationTraceDestinataireTest {
     try {
       mtracedesti.comparTraceDestinataireFromCQlandThrift();
     } catch (final Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 

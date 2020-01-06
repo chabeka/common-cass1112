@@ -1,6 +1,3 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
 package fr.urssaf.image.sae.jobspring;
 
 import java.util.ArrayList;
@@ -26,6 +23,10 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 
+/**
+ * Classe permettant de faire la migration de données de la table {@link JobinstancesByName}
+ * de thrift vers cql ou de cql vers thrift
+ */
 @Component
 public class MigrationJobInstancesByName extends MigrationJob implements IMigration {
 

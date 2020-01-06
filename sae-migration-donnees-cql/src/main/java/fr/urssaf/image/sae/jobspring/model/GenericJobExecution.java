@@ -1,12 +1,9 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
 package fr.urssaf.image.sae.jobspring.model;
 
 import java.nio.ByteBuffer;
 
 /**
- * TODO (AC75095028) Description du type
+ * (AC75095028) Classe GenericJobExecution
  */
 public class GenericJobExecution {
 

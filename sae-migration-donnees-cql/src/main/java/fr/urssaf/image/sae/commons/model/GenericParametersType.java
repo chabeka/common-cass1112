@@ -14,12 +14,12 @@ import com.datastax.driver.mapping.annotations.Transient;
 
 /**
  * Cette classe est utilisée juste pour l'extraction des données dans les tables thrift avec une requete cql.
- * La classe est utilisée que pour la migration des données pour les tables <b>Trace</b>.<br>
+ * La classe est utilisée que pour la migration des données pour les tables <b>Parameters</b>.<br>
  * Le schema de la table thrift doit correspondre au schema suivant:<br>
  * <ul>
  * <li><b>CREATE TABLE "Keysapce"."NomDeLaTable" (</b></li>
  * <li>-- key blob,</li>
- * <li>-- column1 text,</li>
+ * <li>-- column1 blob,</li>
  * <li>-- value blob</li>
  * <li><b>);</b></li>
  * </ul>

@@ -1,6 +1,3 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
 package fr.urssaf.image.sae.piletravaux;
 
 import java.util.ArrayList;
@@ -29,7 +26,7 @@ import fr.urssaf.image.sae.utils.CompareUtils;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 
 /**
- * TODO (AC75095028) Description du type
+ * (AC75095028) Migration CF JobQueue
  */
 @Component
 public class MigrationJobQueue implements IMigration {

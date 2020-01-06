@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.utils.CompareUtils;
 
 /**
- * (AC75095351) Description du type
+ * (AC75095351) Classe de migration de ActionUnitaire
  */
 @Component
 public class MigrationActionUnitaire implements IMigration {

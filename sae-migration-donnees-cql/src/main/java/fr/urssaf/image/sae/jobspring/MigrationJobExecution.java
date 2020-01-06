@@ -34,6 +34,10 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Serializer;
 
+/**
+ * Classe permettant de faire la migration de données de la table {@link JobExecution}
+ * de thrift vers cql ou de cql vers thrift
+ */
 @Component
 public class MigrationJobExecution extends MigrationJob implements IMigration {
 

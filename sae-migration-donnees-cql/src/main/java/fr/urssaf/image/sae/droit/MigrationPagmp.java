@@ -1,6 +1,3 @@
-/**
- *   (AC75095351) 
- */
 package fr.urssaf.image.sae.droit;
 
 import java.util.ArrayList;

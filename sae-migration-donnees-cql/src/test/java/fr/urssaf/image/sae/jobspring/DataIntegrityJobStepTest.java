@@ -1,5 +1,5 @@
 /**
- *  TODO (AC75095028) Description du fichier
+ *   (AC75095028)
  */
 package fr.urssaf.image.sae.jobspring;
 
@@ -38,8 +38,7 @@ import fr.urssaf.image.sae.utils.Dumper;
 import me.prettyprint.hector.api.Keyspace;
 
 /**
- * TODO (AC75095028) Description du type
- *
+ * Classe de test de migration des JobStep
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-migration-test.xml"})

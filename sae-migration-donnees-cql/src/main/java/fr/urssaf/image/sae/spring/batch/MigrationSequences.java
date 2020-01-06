@@ -23,7 +23,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 
 /**
- * (AC75095351) Description du type
+ * (AC75095351) Classe de migration séquences
  */
 @Component
 public class MigrationSequences {

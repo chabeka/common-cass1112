@@ -1,6 +1,3 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
 package fr.urssaf.image.sae.trace;
 
 import java.util.Arrays;
@@ -38,7 +35,7 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
- * TODO (AC75095028) Description du type
+ * (AC75095028) Classe de test de migration des TraceJournalEvt
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-migration-test.xml" })

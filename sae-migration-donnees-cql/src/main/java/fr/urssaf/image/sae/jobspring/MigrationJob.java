@@ -1,6 +1,3 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
 package fr.urssaf.image.sae.jobspring;
 
 import java.util.Date;
@@ -13,7 +10,7 @@ import fr.urssaf.image.sae.jobspring.dao.IGenericJobExecutionDAO;
 import fr.urssaf.image.sae.jobspring.dao.IGenericJobSpringDAO;
 
 /**
- * TODO (AC75095028) Description du type
+ * (AC75095028) Classe générique de migration pour les Jobs
  */
 public class MigrationJob {
 
