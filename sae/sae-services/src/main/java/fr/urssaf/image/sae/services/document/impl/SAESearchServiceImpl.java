@@ -727,7 +727,8 @@ SAESearchService {
       }
       checkExistingFiltresMetadata(codeLongFiltresDifferent);
 
-      checkMetadataDoublon(codeLongFiltresEgal, codeLongFiltresDifferent);
+      // Ne plus faire de check sur les FiltreEgal : Evolution #232945
+      checkMetadataDoublon(codeLongFiltresDifferent);
 
       // Création de la liste des filtres
       final List<AbstractFilter> abstractFilter = creationListeFiltres(
@@ -813,11 +814,9 @@ SAESearchService {
    * @param codeLongFiltresDifferent
    * @throws DoublonFiltresMetadataEx
    */
-  private void checkMetadataDoublon(final List<String> codeLongFiltresEgal,
-                                    final List<String> codeLongFiltresDifferent)
+  private void checkMetadataDoublon(final List<String> codeLongFiltresDifferent)
                                         throws DoublonFiltresMetadataEx {
     final List<String> codeLongFiltres = new ArrayList<>();
-    codeLongFiltres.addAll(codeLongFiltresEgal);
     codeLongFiltres.addAll(codeLongFiltresDifferent);
 
     final Map<String, Integer> comptage = new HashMap<>();
