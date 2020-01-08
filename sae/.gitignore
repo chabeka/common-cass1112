@@ -3,3 +3,6 @@
 /.settings*
 /SyncToy_*
 /target
+*.classpath
+*.project
+*.settings

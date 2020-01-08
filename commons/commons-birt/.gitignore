@@ -1,5 +1,6 @@
 /.classpath
 /.pmd
+/.project
+/.settings
 /derby.log
 /target
-/.classpath
