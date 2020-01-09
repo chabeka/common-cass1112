@@ -1,4 +1,7 @@
 /*.idea
-/target
+/.classpath
+/.project
 /.settings
+/.toDelete
 /dependency-reduced-pom.xml
+/target
