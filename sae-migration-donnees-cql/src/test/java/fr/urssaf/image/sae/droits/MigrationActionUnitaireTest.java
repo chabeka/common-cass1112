@@ -35,7 +35,6 @@ import fr.urssaf.image.sae.utils.CompareUtils;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class MigrationActionUnitaireTest {
 
-  private static final Date DATE = new Date();
 
   @Autowired
   private ActionUnitaireCqlSupport supportCql;
@@ -78,8 +77,8 @@ public class MigrationActionUnitaireTest {
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-      // LOGGER.info("SizeThriftToCqlActionUnitaire=" + listThrift.size());
-      Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+
+      Assert.assertTrue(migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql));
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -126,7 +125,7 @@ public class MigrationActionUnitaireTest {
     for (final String code : listCode) {
       final ActionUnitaire actionUnitaire = new ActionUnitaire();
       actionUnitaire.setCode(code);
-        actionUnitaire.setDescription(listDescription[i]);
+      actionUnitaire.setDescription(listDescription[i]);
       supportThrift.create(actionUnitaire, new Date().getTime());
       i++;
     }

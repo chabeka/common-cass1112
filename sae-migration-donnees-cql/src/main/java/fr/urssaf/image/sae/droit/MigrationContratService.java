@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IContratServiceDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.utils.CompareUtils;
  * (AC75095351) Classe de migration de ContratService
  */
 @Component
-public class MigrationContratService implements IMigration {
+public class MigrationContratService implements IMigrationR {
 
   @Autowired
   private IContratServiceDaoCql contratServiceDaoCql;
@@ -37,7 +37,7 @@ public class MigrationContratService implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql- start ");
 
@@ -47,17 +47,18 @@ public class MigrationContratService implements IMigration {
       contratServiceDaoCql.saveAll(contratsServicesThrift);
     }
     final List<ServiceContract> contratsServicesCql = new ArrayList<>();
-    final Iterator<ServiceContract> ontratsServicesIterator = contratServiceDaoCql.findAllWithMapper();
-    ontratsServicesIterator.forEachRemaining(contratsServicesCql::add);
-    compareContratService(contratsServicesThrift, contratsServicesCql);
+    final Iterator<ServiceContract> contratsServicesIterator = contratServiceDaoCql.findAllWithMapper();
+    contratsServicesIterator.forEachRemaining(contratsServicesCql::add);
+    final boolean result = compareContratService(contratsServicesThrift, contratsServicesCql);
     LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql- end ");
+    return result;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift- start ");
 
@@ -69,8 +70,9 @@ public class MigrationContratService implements IMigration {
       contratServiceSupport.create(contratService, new Date().getTime());
     }
     final List<ServiceContract> contratServicesThrift = contratServiceSupport.findAll();
-    compareContratService(contratServicesThrift, contratsServicesCql);
+    final boolean result = compareContratService(contratServicesThrift, contratsServicesCql);
     LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift- end ");
+    return result;
   }
 
   /**
@@ -79,14 +81,16 @@ public class MigrationContratService implements IMigration {
    * @param contratServicesThrift
    * @param contratServicesCql
    */
-  private void compareContratService(final List<ServiceContract> contratServicesThrift, final List<ServiceContract> contratServicesCql) {
+  private boolean compareContratService(final List<ServiceContract> contratServicesThrift, final List<ServiceContract> contratServicesCql) {
+    final boolean result = CompareUtils.compareListsGeneric(contratServicesThrift, contratServicesCql);
 
-    LOGGER.info("MIGRATION_CONTRAT_SERVICE -- SizeThriftDroitcontratServices=" + contratServicesThrift.size());
-    LOGGER.info("MIGRATION_CONTRAT_SERVICE -- SizeCqlDroitcontratServices=" + contratServicesCql.size());
-    if (CompareUtils.compareListsGeneric(contratServicesThrift, contratServicesCql)) {
+    if (result) {
       LOGGER.info("MIGRATION_CONTRAT_SERVICE -- Les listes ContratService sont identiques");
     } else {
+      LOGGER.info("MIGRATION_CONTRAT_SERVICE -- NbThrift=" + contratServicesThrift.size());
+      LOGGER.info("MIGRATION_CONTRAT_SERVICE -- NbCql=" + contratServicesCql.size());
       LOGGER.warn("MIGRATION_CONTRAT_SERVICE -- ATTENTION: Les listes ContratService sont différentes ");
     }
+    return result;
   }
 }

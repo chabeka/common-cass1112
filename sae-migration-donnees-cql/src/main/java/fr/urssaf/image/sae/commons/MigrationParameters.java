@@ -19,7 +19,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.utils.Bytes;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.commons.bo.Parameter;
 import fr.urssaf.image.sae.commons.bo.ParameterRowType;
 import fr.urssaf.image.sae.commons.bo.ParameterType;
@@ -37,7 +37,7 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
  * (AC75095351) Classe de migration des parameters
  */
 @Component
-public class MigrationParameters implements IMigration {
+public class MigrationParameters implements IMigrationR {
 
   @Autowired
   private IParametersDaoCql parameterDaoCql;
@@ -57,7 +57,7 @@ public class MigrationParameters implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- start ");
 
@@ -109,15 +109,16 @@ public class MigrationParameters implements IMigration {
     final List<ParameterCql> parametersCql = new ArrayList<>();
     final Iterator<ParameterCql> parametersIterator = parameterDaoCql.findAllWithMapper();
     parametersIterator.forEachRemaining(parametersCql::add);
-    compareParameters(getListParametersCqlFromThrift(), parametersCql);
+    final boolean result = compareParameters(getListParametersCqlFromThrift(), parametersCql);
     LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- end:nb= " + nb);
+    return result;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- start ");
 
@@ -131,8 +132,9 @@ public class MigrationParameters implements IMigration {
       parameterSupport.create(parameter, parameterCql.getTypeParameters(), new Date().getTime());
     }
 
-    compareParameters(getListParametersCqlFromThrift(), parametersCql);
+    final boolean result = compareParameters(getListParametersCqlFromThrift(), parametersCql);
     LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- end ");
+    return result;
   }
 
   /**
@@ -165,15 +167,15 @@ public class MigrationParameters implements IMigration {
    * @param parametersThrift
    * @param parametersCql
    */
-  private void compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql) {
-
+  private boolean compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql) {
+    final boolean result = CompareUtils.compareListsGeneric(parametersThrift, parametersCql);
     LOGGER.info("MIGRATION_PARAMETER -- SizeThriftParameter=" + parametersThrift.size());
     LOGGER.info("MIGRATION_PARAMETER -- SizeCqlParameter=" + parametersCql.size());
-    if (CompareUtils.compareListsGeneric(parametersThrift, parametersCql)) {
+    if (result) {
       LOGGER.info("MIGRATION_PARAMETER -- Les listes parameters sont identiques");
     } else {
       LOGGER.warn("MIGRATION_PARAMETER -- ATTENTION: Les listes parameter sont différentes ");
     }
-
+    return result;
   }
 }

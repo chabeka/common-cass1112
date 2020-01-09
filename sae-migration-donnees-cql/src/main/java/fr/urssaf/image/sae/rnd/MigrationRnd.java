@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.rnd.dao.cql.IRndDaoCql;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.utils.CompareUtils;
  * (AC75095351) Classe de migration Rnd Thrift<-> Cql
  */
 @Component
-public class MigrationRnd implements IMigration {
+public class MigrationRnd implements IMigrationR {
 
   @Autowired
   private IRndDaoCql rndDaoCql;
@@ -37,7 +37,7 @@ public class MigrationRnd implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- start ");
 
@@ -49,15 +49,15 @@ public class MigrationRnd implements IMigration {
     final List<TypeDocument> typeDocumentsCql = new ArrayList<>();
     final Iterator<TypeDocument> rndsIterator = rndDaoCql.findAllWithMapper();
     rndsIterator.forEachRemaining(typeDocumentsCql::add);
-    compareRnds(typeDocumentsThrift, typeDocumentsCql);
     LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- end ");
+    return compareRnds(typeDocumentsThrift, typeDocumentsCql);
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_RND - migrationFromCqlTothrift- start ");
 
@@ -70,9 +70,10 @@ public class MigrationRnd implements IMigration {
       rndSupport.ajouterRnd(typeDocument, new Date().getTime());
     }
     final List<TypeDocument> rndsThrift = rndSupport.findAll();
-    compareRnds(rndsThrift, rndsCql);
+
 
     LOGGER.info(" MIGRATION_RND - migrationFromCqlTothrift- end ");
+    return compareRnds(rndsThrift, rndsCql);
   }
 
   /**
@@ -81,16 +82,17 @@ public class MigrationRnd implements IMigration {
    * @param typeDocumentsThrift
    * @param typeDocumentsCql
    */
-  private void compareRnds(final List<TypeDocument> typeDocumentsThrift, final List<TypeDocument> typeDocumentsCql) {
+  private boolean compareRnds(final List<TypeDocument> typeDocumentsThrift, final List<TypeDocument> typeDocumentsCql) {
 
-    LOGGER.info("MIGRATION_RND -- SizeThriftrnd=" + typeDocumentsThrift.size());
-    LOGGER.info("MIGRATION_RND -- SizeCqlrnd=" + typeDocumentsCql.size());
-    if (CompareUtils.compareListsGeneric(typeDocumentsThrift, typeDocumentsCql)) {
+    final boolean result = CompareUtils.compareListsGeneric(typeDocumentsThrift, typeDocumentsCql);
+    if (result) {
       LOGGER.info("MIGRATION_RND -- Les listes rnd sont identiques");
     } else {
+      LOGGER.info("MIGRATION_RND -- NbThrift=" + typeDocumentsThrift.size());
+      LOGGER.info("MIGRATION_RND -- NbCql=" + typeDocumentsCql.size());
       LOGGER.warn("MIGRATION_RND -- ATTENTION: Les listes rnd sont différentes ");
     }
-
+    return result;
   }
 
 }

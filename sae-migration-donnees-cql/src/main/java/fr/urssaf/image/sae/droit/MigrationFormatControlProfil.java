@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IFormatControlProfilDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.utils.CompareUtils;
  * (AC75095351) Classe de migration pour formatControlProfil
  */
 @Component
-public class MigrationFormatControlProfil implements IMigration {
+public class MigrationFormatControlProfil implements IMigrationR {
 
   @Autowired
   private IFormatControlProfilDaoCql formatcontrolprofildaocql;
@@ -34,7 +34,7 @@ public class MigrationFormatControlProfil implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- start ");
 
@@ -45,15 +45,16 @@ public class MigrationFormatControlProfil implements IMigration {
     final List<FormatControlProfil> formatControlProfilsCql = new ArrayList<>();
     final Iterator<FormatControlProfil> formatControlProfilsIterator = formatcontrolprofildaocql.findAllWithMapper();
     formatControlProfilsIterator.forEachRemaining(formatControlProfilsCql::add);
-    compareFormatControlProfil(formatControlProfilsThrift, formatControlProfilsCql);
+    final boolean result = compareFormatControlProfil(formatControlProfilsThrift, formatControlProfilsCql);
     LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- end ");
+    return result;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- start ");
 
@@ -65,8 +66,9 @@ public class MigrationFormatControlProfil implements IMigration {
       formatControlProfilSupport.create(formatControlProfil, new Date().getTime());
     }
     final List<FormatControlProfil> formatControlProfilThrift = formatControlProfilSupport.findAll();
-    compareFormatControlProfil(formatControlProfilThrift, formatControlProfilsCql);
+    final boolean result = compareFormatControlProfil(formatControlProfilThrift, formatControlProfilsCql);
     LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- end ");
+    return result;
   }
 
   /**
@@ -75,15 +77,18 @@ public class MigrationFormatControlProfil implements IMigration {
    * @param formatControlProfilsThrift
    * @param formatControlProfilsCql
    */
-  private void compareFormatControlProfil(final List<FormatControlProfil> formatControlProfilsThrift, final List<FormatControlProfil> formatControlProfilsCql) {
+  private boolean compareFormatControlProfil(final List<FormatControlProfil> formatControlProfilsThrift,
+                                             final List<FormatControlProfil> formatControlProfilsCql) {
 
-    LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- SizeThriftFormatControlProfil=" + formatControlProfilsThrift.size());
-    LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- SizeCqlFormatControlProfil=" + formatControlProfilsCql.size());
+    final boolean result = CompareUtils.compareListsGeneric(formatControlProfilsThrift, formatControlProfilsCql);
     if (CompareUtils.compareListsGeneric(formatControlProfilsThrift, formatControlProfilsCql)) {
       LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- Les listes FormatControlProfil sont identiques");
     } else {
+      LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- NbThrift=" + formatControlProfilsThrift.size());
+      LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- NbCql=" + formatControlProfilsCql.size());
       LOGGER.warn("MIGRATION_FORMAT_CONTROL_PROFIL -- ATTENTION: Les listes FormatControlProfil sont différentes ");
     }
+    return result;
 
   }
 }

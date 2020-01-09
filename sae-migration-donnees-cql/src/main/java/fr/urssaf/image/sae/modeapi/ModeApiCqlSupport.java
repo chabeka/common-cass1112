@@ -6,12 +6,12 @@ package fr.urssaf.image.sae.modeapi;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 
@@ -91,7 +91,7 @@ public class ModeApiCqlSupport {
    * fonction du code fourni en utilisant le mapper
    * 
    * @param code
-   * @return l'enregistrement de l'modeAPI correspondante
+   * @return l'enregistrement du modeAPI correspondant
    */
   public ModeAPI findById(final String code) {
     Assert.notNull(code, "le code ne peut etre null");
@@ -145,5 +145,19 @@ public class ModeApiCqlSupport {
       modeAPI.setMode(mode_API);
       saveOrUpdate(modeAPI);
     }
+  }
+
+  public void updateModeApi(final String mode_API, final String cfName) {
+    final ModeAPI modeAPI;
+    // On update le modeAPI
+    modeAPI = new ModeAPI();
+    modeAPI.setCfname(cfName);
+    modeAPI.setMode(mode_API);
+    saveOrUpdate(modeAPI);
+  }
+
+  public boolean isModeApiDualCqlOrModeApiCql(final String cfName) {
+    final ModeAPI modeAPI = findById(cfName);
+    return modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_CQL) || modeAPI.getMode().equals(MODE_API.DATASTAX);
   }
 }

@@ -101,9 +101,9 @@ public class MigrationJobInstancesByName extends MigrationJob implements IMigrat
     // comparaison de deux listes
     final boolean isListEqual = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
     if (isListEqual) {
-      LOGGER.info("MIGRATION_JobInstancesByNameCql -- Les listes metadata sont identiques, nb=" + listJobThrift.size());
+      LOGGER.info("MIGRATION_JobInstancesByNameCql -- Les listes JobInstancesByName sont identiques, nb=" + listJobThrift.size());
     } else {
-      LOGGER.warn("MIGRATION_JobInstancesByNameCql -- ATTENTION: Les listes metadata sont différentes ");
+      LOGGER.warn("MIGRATION_JobInstancesByNameCql -- ATTENTION: Les listes JobInstancesByName sont différentes ");
     }
 
     return isListEqual;

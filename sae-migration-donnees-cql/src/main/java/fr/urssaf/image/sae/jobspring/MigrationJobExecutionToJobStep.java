@@ -116,9 +116,9 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
     // comparaison de deux listes
     final boolean isBaseEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
     if (isBaseEq) {
-      LOG.info("MIGRATION_JobExecutions -- Les listes metadata sont identiques");
+      LOG.info("MIGRATION_JobExecutionToJobStep -- Les listes JobExecutionToJobStep sont identiques");
     } else {
-      LOG.warn("MIGRATION_JobExecutions -- ATTENTION: Les listes metadata sont différentes ");
+      LOG.warn("MIGRATION_JobExecutionToJobStep -- ATTENTION: Les listes JobExecutionToJobStep sont différentes ");
     }
 
     return isBaseEq;

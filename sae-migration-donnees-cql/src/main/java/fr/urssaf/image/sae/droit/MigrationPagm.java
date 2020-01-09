@@ -87,7 +87,7 @@ public class MigrationPagm {
     final List<PagmCql> pagmsCql = new ArrayList<>();
     final Iterator<PagmCql> pagmsIterator = pagmDaoCql.findAllWithMapper();
     pagmsIterator.forEachRemaining(pagmsCql::add);
-    comparePagms(getListPagmCqlFromThrift(keys), pagmsCql);
+    final boolean result = comparePagms(getListPagmCqlFromThrift(keys), pagmsCql);
 
     LOGGER.debug(" Totale : " + nb);
     return keys;
@@ -139,15 +139,17 @@ public class MigrationPagm {
    * @param pagmThrift
    * @param pagmCql
    */
-  private void comparePagms(final List<PagmCql> pagmThrift, final List<PagmCql> pagmCql) {
+  private boolean comparePagms(final List<PagmCql> pagmThrift, final List<PagmCql> pagmCql) {
 
-    LOGGER.info("MIGRATION_PAGM -- SizeThriftParameter=" + pagmThrift.size());
-    LOGGER.info("MIGRATION_PAGM -- SizeCqlParameter=" + pagmCql.size());
+    final boolean result = CompareUtils.compareListsGeneric(pagmThrift, pagmCql);
     if (CompareUtils.compareListsGeneric(pagmThrift, pagmCql)) {
       LOGGER.info("MIGRATION_PAGM -- Les listes pagm sont identiques");
     } else {
+      LOGGER.info("MIGRATION_PAGM -- NbThrift=" + pagmThrift.size());
+      LOGGER.info("MIGRATION_PAGM -- NbCql=" + pagmCql.size());
       LOGGER.warn("MIGRATION_PAGM -- ATTENTION: Les listes pagm sont différentes ");
     }
+    return result;
   }
 
   /**

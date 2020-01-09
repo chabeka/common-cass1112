@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.format.referentiel.dao.cql.IReferentielFormatDaoCql;
 import fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.utils.CompareUtils;
  * (AC75095351) Classe de migration ReferentielFormat Thrift<-> Cql
  */
 @Component
-public class MigrationReferentielFormat implements IMigration {
+public class MigrationReferentielFormat implements IMigrationR {
 
   @Autowired
   private IReferentielFormatDaoCql referentielFormatDaoCql;
@@ -37,7 +37,7 @@ public class MigrationReferentielFormat implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- start ");
 
@@ -49,15 +49,16 @@ public class MigrationReferentielFormat implements IMigration {
     final List<FormatFichier> formatFichiersCql = new ArrayList<>();
     final Iterator<FormatFichier> formatFichiersIterator = referentielFormatDaoCql.findAllWithMapper();
     formatFichiersIterator.forEachRemaining(formatFichiersCql::add);
-    compareformatFichiers(formatFichiersThrift, formatFichiersCql);
+
     LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- end ");
+    return compareformatFichiers(formatFichiersThrift, formatFichiersCql);
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- start ");
 
@@ -71,9 +72,10 @@ public class MigrationReferentielFormat implements IMigration {
       formatSupport.create(formatFichier, new Date().getTime());
     }
     final List<FormatFichier> formatFichiersThrift = formatSupport.findAll();
-    compareformatFichiers(formatFichiersThrift, formatFichiersCql);
+
 
     LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- end ");
+    return compareformatFichiers(formatFichiersThrift, formatFichiersCql);
   }
 
   /**
@@ -82,14 +84,17 @@ public class MigrationReferentielFormat implements IMigration {
    * @param formatFichiersThrift
    * @param formatFichiersCql
    */
-  private void compareformatFichiers(final List<FormatFichier> formatFichiersThrift, final List<FormatFichier> formatFichiersCql) {
+  private boolean compareformatFichiers(final List<FormatFichier> formatFichiersThrift, final List<FormatFichier> formatFichiersCql) {
 
-    LOGGER.info("MIGRATION_REFERENTIEL_FORMAT -- SizeThriftformatFichier=" + formatFichiersThrift.size());
-    LOGGER.info("MIGRATION_REFERENTIEL_FORMAT -- SizeCqlformatFichier=" + formatFichiersCql.size());
-    if (CompareUtils.compareListsGeneric(formatFichiersThrift, formatFichiersCql)) {
+    final boolean result = CompareUtils.compareListsGeneric(formatFichiersThrift, formatFichiersCql);
+    if (result) {
       LOGGER.info("MIGRATION_REFERENTIEL_FORMAT -- Les listes formatFichier sont identiques");
     } else {
+      LOGGER.info("MIGRATION_REFERENTIEL_FORMAT -- NbThrift=" + formatFichiersThrift.size());
+      LOGGER.info("MIGRATION_REFERENTIEL_FORMAT -- NbCql=" + formatFichiersCql.size());
       LOGGER.warn("MIGRATION_REFERENTIEL_FORMAT -- ATTENTION: Les listes formatFichier sont différentes ");
     }
+    return result;
   }
+
 }

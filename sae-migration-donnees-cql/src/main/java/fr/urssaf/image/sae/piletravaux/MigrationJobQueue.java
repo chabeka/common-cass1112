@@ -136,9 +136,9 @@ public class MigrationJobQueue implements IMigration {
     // comparaison de deux listes
     final boolean isEqBase = CompareUtils.compareListsGeneric(listRToCql, listJobThrift);
     if (isEqBase) {
-      LOGGER.info("MIGRATION_JobQueueCql -- Les listes metadata sont identiques");
+      LOGGER.info("MIGRATION_JobQueueCql -- Les listes JobQueue sont identiques");
     } else {
-      LOGGER.warn("MIGRATION_JobQueueCql -- ATTENTION: Les listes metadata sont différentes ");
+      LOGGER.warn("MIGRATION_JobQueueCql -- ATTENTION: Les listes JobQueue sont différentes ");
     }
 
     return isEqBase;

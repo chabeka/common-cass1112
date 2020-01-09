@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.metadata.referential.dao.cql.IMetadataDaoCql;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.utils.CompareUtils;
  * (AC75095351) Classe de migration Metadata Thrift<-> Cql
  */
 @Component
-public class MigrationMetadata implements IMigration {
+public class MigrationMetadata implements IMigrationR {
 
   @Autowired
   private IMetadataDaoCql metadataDaoCql;
@@ -37,7 +37,7 @@ public class MigrationMetadata implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- start ");
 
@@ -49,15 +49,15 @@ public class MigrationMetadata implements IMigration {
     final List<MetadataReference> metadatasCql = new ArrayList<>();
     final Iterator<MetadataReference> metadatasIterator = metadataDaoCql.findAllWithMapper();
     metadatasIterator.forEachRemaining(metadatasCql::add);
-    compareMetadatas(metadatasThrift, metadatasCql);
     LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- end ");
+    return compareMetadatas(metadatasThrift, metadatasCql);
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- start ");
 
@@ -70,8 +70,8 @@ public class MigrationMetadata implements IMigration {
       metadataSupport.create(metadata, new Date().getTime());
     }
     final List<MetadataReference> metadatasThrift = metadataSupport.findAll();
-    compareMetadatas(metadatasThrift, metadatasCql);
     LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- end ");
+    return compareMetadatas(metadatasThrift, metadatasCql);
   }
 
   /**
@@ -80,15 +80,17 @@ public class MigrationMetadata implements IMigration {
    * @param metadatasThrift
    * @param metadatasCql
    */
-  private void compareMetadatas(final List<MetadataReference> metadatasThrift, final List<MetadataReference> metadatasCql) {
+  private boolean compareMetadatas(final List<MetadataReference> metadatasThrift, final List<MetadataReference> metadatasCql) {
+    final boolean result = CompareUtils.compareListsGeneric(metadatasThrift, metadatasCql);
 
-    LOGGER.info("MIGRATION_METADATA -- SizeThriftmetadata=" + metadatasThrift.size());
-    LOGGER.info("MIGRATION_METADATA -- SizeCqlmetadata=" + metadatasCql.size());
-    if (CompareUtils.compareListsGeneric(metadatasThrift, metadatasCql)) {
+    if (result) {
       LOGGER.info("MIGRATION_METADATA -- Les listes metadata sont identiques");
     } else {
+      LOGGER.info("MIGRATION_METADATA -- NbThrift=" + metadatasThrift.size());
+      LOGGER.info("MIGRATION_METADATA -- NbCql=" + metadatasCql.size());
       LOGGER.warn("MIGRATION_METADATA -- ATTENTION: Les listes metadata sont différentes ");
     }
+    return result;
   }
 
 }

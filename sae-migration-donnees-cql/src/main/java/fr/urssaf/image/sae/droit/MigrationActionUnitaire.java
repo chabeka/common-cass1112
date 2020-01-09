@@ -13,17 +13,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IActionUnitaireDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
+import fr.urssaf.image.sae.droit.model.ActionUnitaireM;
 import fr.urssaf.image.sae.utils.CompareUtils;
 
 /**
  * (AC75095351) Classe de migration de ActionUnitaire
  */
 @Component
-public class MigrationActionUnitaire implements IMigration {
+public class MigrationActionUnitaire implements IMigrationR {
 
   @Autowired
   private IActionUnitaireDaoCql actionUnitaireDaoCql;
@@ -37,7 +38,7 @@ public class MigrationActionUnitaire implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromThriftToCql- start ");
     final List<ActionUnitaire> actionsUnitairesThrift = actionUnitaireSupport.findAll();
@@ -48,15 +49,17 @@ public class MigrationActionUnitaire implements IMigration {
     final List<ActionUnitaire> actionsUnitairesCql = new ArrayList<>();
     final Iterator<ActionUnitaire> actionsUnitairesIterator = actionUnitaireDaoCql.findAllWithMapper();
     actionsUnitairesIterator.forEachRemaining(actionsUnitairesCql::add);
-    compareActionsUnitaires(actionsUnitairesThrift, actionsUnitairesCql);
+    final boolean compare = compareActionsUnitaires(actionsUnitairesThrift, actionsUnitairesCql);
+    logCompare(compare, actionsUnitairesThrift, actionsUnitairesCql);
     LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromThriftToCql- end ");
+    return compare;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromCqlTothrift- start ");
 
@@ -70,8 +73,10 @@ public class MigrationActionUnitaire implements IMigration {
     }
 
     final List<ActionUnitaire> actionsUnitairesThrift = actionUnitaireSupport.findAll();
-    compareActionsUnitaires(actionsUnitairesThrift, actionsUnitairesCql);
+    final boolean compare = compareActionsUnitaires(actionsUnitairesThrift, actionsUnitairesCql);
+    logCompare(compare, actionsUnitairesThrift, actionsUnitairesCql);
     LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromCqlTothrift- end ");
+    return compare;
   }
 
   /**
@@ -80,14 +85,35 @@ public class MigrationActionUnitaire implements IMigration {
    * @param actionsUnitairesThrift
    * @param actionsUnitairesCql
    */
-  private void compareActionsUnitaires(final List<ActionUnitaire> actionsUnitairesThrift, final List<ActionUnitaire> actionsUnitairesCql) {
+  public boolean compareActionsUnitaires(final List<ActionUnitaire> actionsUnitairesThrift, final List<ActionUnitaire> actionsUnitairesCql) {
 
-    LOGGER.info("MIGRATION_ACTION_UNITAIRE -- SizeThriftDroitActionUnitaire=" + actionsUnitairesThrift.size());
-    LOGGER.info("MIGRATION_ACTION_UNITAIRE -- SizeCqlDroitActionUnitaire=" + actionsUnitairesCql.size());
-    if (CompareUtils.compareListsGeneric(actionsUnitairesThrift, actionsUnitairesCql)) {
-      LOGGER.info("MIGRATION_ACTION_UNITAIRE -- Les listes ActionUnitaire sont identiques");
+    final List<ActionUnitaireM> actionsUnitairesThriftM = convertList(actionsUnitairesThrift);
+    final List<ActionUnitaireM> actionsUnitairesCqlM = convertList(actionsUnitairesCql);
+    actionsUnitairesCqlM.get(0).setDescription("M");// TEST comparaison
+
+    return CompareUtils.compareListsGeneric(actionsUnitairesThriftM, actionsUnitairesCqlM);
+  }
+
+  public void logCompare(final boolean compare, final List<ActionUnitaire> actionsUnitairesThrift, final List<ActionUnitaire> actionsUnitairesCql) {
+    if (compare) {
+      LOGGER.info("MIGRATION_ACTION_UNITAIRE -- Les listes ActionUnitaires sont identiques");
     } else {
+      LOGGER.info("MIGRATION_ACTION_UNITAIRE -- NbThrift=" + actionsUnitairesThrift.size());
+      LOGGER.info("MIGRATION_ACTION_UNITAIRE -- NbCql=" + actionsUnitairesCql.size());
       LOGGER.warn("MIGRATION_ACTION_UNITAIRE -- ATTENTION: Les listes ActionUnitaire sont différentes ");
     }
   }
+
+  private List<ActionUnitaireM> convertList(final List<ActionUnitaire> actionsUnitaires) {
+
+    final List<ActionUnitaireM> actionsUnitairesM = new ArrayList<>();
+    for (final ActionUnitaire actionUnitaire : actionsUnitaires) {
+      final ActionUnitaireM actionUnitaireM = new ActionUnitaireM();
+      actionUnitaireM.setCode(actionUnitaire.getCode());
+      actionUnitaireM.setDescription(actionUnitaire.getDescription());
+      actionsUnitairesM.add(actionUnitaireM);
+    }
+    return actionsUnitairesM;
+  }
+
 }

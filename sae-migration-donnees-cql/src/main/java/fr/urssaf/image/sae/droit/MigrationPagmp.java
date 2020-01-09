@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IPagmpDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.utils.CompareUtils;
  * (AC75095351) Classe de migration Pagmp Thrift<-> Cql
  */
 @Component
-public class MigrationPagmp implements IMigration {
+public class MigrationPagmp implements IMigrationR {
 
   @Autowired
   private IPagmpDaoCql pagmpDaoCql;
@@ -34,7 +34,7 @@ public class MigrationPagmp implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- start ");
 
@@ -46,15 +46,16 @@ public class MigrationPagmp implements IMigration {
     final List<Pagmp> pagmpsCql = new ArrayList<>();
     final Iterator<Pagmp> pagmpsIterator = pagmpDaoCql.findAllWithMapper();
     pagmpsIterator.forEachRemaining(pagmpsCql::add);
-    comparePagmps(pagmpsThrift, pagmpsCql);
+    final boolean result = comparePagmps(pagmpsThrift, pagmpsCql);
     LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- end ");
+    return result;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- start ");
 
@@ -66,8 +67,9 @@ public class MigrationPagmp implements IMigration {
       pagmpSupport.create(pagmp, new Date().getTime());
     }
     final List<Pagmp> pagmpsThrift = pagmpSupport.findAll();
-    comparePagmps(pagmpsThrift, pagmpsCql);
+    final boolean result = comparePagmps(pagmpsThrift, pagmpsCql);
     LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- end ");
+    return result;
   }
 
   /**
@@ -76,14 +78,17 @@ public class MigrationPagmp implements IMigration {
    * @param pagmpsThrift
    * @param pagmpsCql
    */
-  private void comparePagmps(final List<Pagmp> pagmpsThrift, final List<Pagmp> pagmpsCql) {
+  private boolean comparePagmps(final List<Pagmp> pagmpsThrift, final List<Pagmp> pagmpsCql) {
 
-    LOGGER.info("MIGRATION_PAGMP -- SizeThriftDroitpagmp=" + pagmpsThrift.size());
-    LOGGER.info("MIGRATION_PAGMP -- SizeCqlDroitpagmp=" + pagmpsCql.size());
-    if (CompareUtils.compareListsGeneric(pagmpsThrift, pagmpsCql)) {
+    final boolean result = CompareUtils.compareListsGeneric(pagmpsThrift, pagmpsCql);
+    if (result) {
       LOGGER.info("MIGRATION_PAGMP -- Les listes pagmp sont identiques");
     } else {
+      LOGGER.info("MIGRATION_PAGMP -- NbThrift=" + pagmpsThrift.size());
+      LOGGER.info("MIGRATION_PAGMP -- NbCql=" + pagmpsCql.size());
       LOGGER.warn("MIGRATION_PAGMP-- ATTENTION: Les listes pagmp sont différentes ");
     }
+    return result;
+
   }
 }

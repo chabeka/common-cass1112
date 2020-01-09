@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.IMigration;
+import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.metadata.referential.dao.cql.IDictionaryDaoCql;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.utils.CompareUtils;
  * (AC75095351) Classe de migration Dictionary Thrift<-> Cql
  */
 @Component
-public class MigrationDictionary implements IMigration {
+public class MigrationDictionary implements IMigrationR {
 
   @Autowired
   private IDictionaryDaoCql dictionaryDaoCql;
@@ -37,7 +37,7 @@ public class MigrationDictionary implements IMigration {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public void migrationFromThriftToCql() {
+  public boolean migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- start ");
 
@@ -49,15 +49,15 @@ public class MigrationDictionary implements IMigration {
     final List<Dictionary> dictionarysCql = new ArrayList<>();
     final Iterator<Dictionary> dictionarysIterator = dictionaryDaoCql.findAllWithMapper();
     dictionarysIterator.forEachRemaining(dictionarysCql::add);
-    compareDictionarys(dictionarysThrift, dictionarysCql);
     LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- end ");
+    return compareDictionarys(dictionarysThrift, dictionarysCql);
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public void migrationFromCqlTothrift() {
+  public boolean migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- start ");
 
@@ -72,9 +72,8 @@ public class MigrationDictionary implements IMigration {
       }
     }
     final List<Dictionary> dictionarysThrift = dictionarySupport.findAll();
-    compareDictionarys(dictionarysThrift, dictionarysCql);
-
     LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- end ");
+    return compareDictionarys(dictionarysThrift, dictionarysCql);
   }
 
   /**
@@ -83,14 +82,16 @@ public class MigrationDictionary implements IMigration {
    * @param dictionarysThrift
    * @param dictionarysCql
    */
-  private void compareDictionarys(final List<Dictionary> dictionarysThrift, final List<Dictionary> dictionarysCql) {
+  private boolean compareDictionarys(final List<Dictionary> dictionarysThrift, final List<Dictionary> dictionarysCql) {
 
-    LOGGER.info("MIGRATION_DICTIONARY -- SizeThriftdictionary=" + dictionarysThrift.size());
-    LOGGER.info("MIGRATION_DICTIONARY -- SizeCqldictionary=" + dictionarysCql.size());
-    if (CompareUtils.compareListsGeneric(dictionarysThrift, dictionarysCql)) {
+    final boolean result = CompareUtils.compareListsGeneric(dictionarysThrift, dictionarysCql);
+    if (result) {
       LOGGER.info("MIGRATION_DICTIONARY -- Les listes dictionary sont identiques");
     } else {
+      LOGGER.info("MIGRATION_DICTIONARY -- NbThrift=" + dictionarysThrift.size());
+      LOGGER.info("MIGRATION_DICTIONARY -- NbCql=" + dictionarysCql.size());
       LOGGER.warn("MIGRATION_DICTIONARY -- ATTENTION: Les listes dictionary sont différentes ");
     }
+    return result;
   }
 }

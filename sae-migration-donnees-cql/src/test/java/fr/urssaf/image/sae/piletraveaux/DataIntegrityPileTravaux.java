@@ -73,7 +73,7 @@ public class DataIntegrityPileTravaux {
 
   List<UUID> idsJob = new ArrayList<>();
 
-  final static int NB_ROWS = 10000;
+  final static int NB_ROWS = 1000;
 
   @Before
   public void init() throws Exception {
