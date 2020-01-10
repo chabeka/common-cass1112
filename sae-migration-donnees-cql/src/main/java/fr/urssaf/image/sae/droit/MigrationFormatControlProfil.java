@@ -14,6 +14,7 @@ import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IFormatControlProfilDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
+import fr.urssaf.image.sae.droit.model.FormatControlProfilM;
 import fr.urssaf.image.sae.utils.CompareUtils;
 
 /**
@@ -77,11 +78,14 @@ public class MigrationFormatControlProfil implements IMigrationR {
    * @param formatControlProfilsThrift
    * @param formatControlProfilsCql
    */
-  private boolean compareFormatControlProfil(final List<FormatControlProfil> formatControlProfilsThrift,
-                                             final List<FormatControlProfil> formatControlProfilsCql) {
+  public boolean compareFormatControlProfil(final List<FormatControlProfil> formatControlProfilsThrift,
+                                            final List<FormatControlProfil> formatControlProfilsCql) {
 
-    final boolean result = CompareUtils.compareListsGeneric(formatControlProfilsThrift, formatControlProfilsCql);
-    if (CompareUtils.compareListsGeneric(formatControlProfilsThrift, formatControlProfilsCql)) {
+    final List<FormatControlProfilM> formatControlProfilsThriftM = convertList(formatControlProfilsThrift);
+    final List<FormatControlProfilM> formatControlProfilsCqlM = convertList(formatControlProfilsCql);
+    formatControlProfilsCqlM.get(0).setDescription("M");
+    final boolean result = CompareUtils.compareListsGeneric(formatControlProfilsThriftM, formatControlProfilsCqlM);
+    if (result) {
       LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- Les listes FormatControlProfil sont identiques");
     } else {
       LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- NbThrift=" + formatControlProfilsThrift.size());
@@ -90,5 +94,16 @@ public class MigrationFormatControlProfil implements IMigrationR {
     }
     return result;
 
+  }
+
+  private List<FormatControlProfilM> convertList(final List<FormatControlProfil> formatControlProfils) {
+
+
+    final List<FormatControlProfilM> formatControlProfilsM = new ArrayList<>();
+    for (final FormatControlProfil formatControlProfil : formatControlProfils) {
+      final FormatControlProfilM formatControlProfilM = new FormatControlProfilM(formatControlProfil);
+      formatControlProfilsM.add(formatControlProfilM);
+    }
+    return formatControlProfilsM;
   }
 }

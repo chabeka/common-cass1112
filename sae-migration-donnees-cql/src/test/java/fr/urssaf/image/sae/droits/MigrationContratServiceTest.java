@@ -24,7 +24,6 @@ import fr.urssaf.image.sae.droit.MigrationContratService;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.ContratServiceCqlSupport;
-import fr.urssaf.image.sae.utils.CompareUtils;
 
 
 
@@ -112,7 +111,7 @@ public class MigrationContratServiceTest {
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-      Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+      Assert.assertTrue(migrationContratService.compareContratService(listThrift, listCql));
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -133,7 +132,7 @@ public class MigrationContratServiceTest {
 
     Assert.assertEquals(listCql.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
-    Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+    Assert.assertTrue(migrationContratService.compareContratService(listThrift, listCql));
   }
 
 

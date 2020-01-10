@@ -25,7 +25,6 @@ import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.serializer.FormatProfilSerializer;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.FormatControlProfilCqlSupport;
-import fr.urssaf.image.sae.utils.CompareUtils;
 
 
 
@@ -86,7 +85,7 @@ public class MigrationFormatControlProfilTest {
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-      Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+      Assert.assertTrue(migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql));
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -105,7 +104,7 @@ public class MigrationFormatControlProfilTest {
     final List<FormatControlProfil> listThrift = supportThrift.findAll();
     Assert.assertEquals(listCql.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
-    Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+    Assert.assertTrue(migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql));
 
   }
 

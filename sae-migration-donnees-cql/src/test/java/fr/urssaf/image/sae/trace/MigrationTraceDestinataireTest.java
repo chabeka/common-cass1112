@@ -97,7 +97,7 @@ public class MigrationTraceDestinataireTest {
     //populateTableCql();
 
     try {
-      mtracedesti.comparTraceDestinataireFromCQlandThrift();
+      mtracedesti.compareTraceDestinataireFromCQlandThrift();
     } catch (final Exception e) {
       e.printStackTrace();
     }

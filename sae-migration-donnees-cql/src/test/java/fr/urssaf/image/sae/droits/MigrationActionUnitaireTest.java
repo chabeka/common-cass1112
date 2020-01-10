@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.droits;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,7 +24,6 @@ import fr.urssaf.image.sae.droit.MigrationActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.ActionUnitaireCqlSupport;
-import fr.urssaf.image.sae.utils.CompareUtils;
 
 
 
@@ -77,8 +77,9 @@ public class MigrationActionUnitaireTest {
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-
-      Assert.assertTrue(migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql));
+      final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql);
+      System.out.println(diff);
+      Assert.assertTrue(diff.getChanges().isEmpty());
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -100,7 +101,7 @@ public class MigrationActionUnitaireTest {
     Assert.assertEquals(listCql.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
     // LOGGER.info("SizeCqlToThriftActionUnitaire=" + listThrift.size());
-    Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+    Assert.assertTrue(migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql).getChanges().isEmpty());
   }
 
   /**

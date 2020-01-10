@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IContratServiceDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
+import fr.urssaf.image.sae.droit.model.ServiceContractM;
 import fr.urssaf.image.sae.utils.CompareUtils;
 
 /**
@@ -81,16 +82,44 @@ public class MigrationContratService implements IMigrationR {
    * @param contratServicesThrift
    * @param contratServicesCql
    */
-  private boolean compareContratService(final List<ServiceContract> contratServicesThrift, final List<ServiceContract> contratServicesCql) {
-    final boolean result = CompareUtils.compareListsGeneric(contratServicesThrift, contratServicesCql);
+  public boolean compareContratService(final List<ServiceContract> contratServicesThrift, final List<ServiceContract> contratServicesCql) {
 
-    if (result) {
+    final List<ServiceContractM> contratServicesThriftM = convertList(contratServicesThrift);
+    final List<ServiceContractM> contratServicesCqlM = convertList(contratServicesCql);
+    // logCompare(result, contratServicesThrift, contratServicesCql);
+
+    return CompareUtils.compareListsGeneric(contratServicesThriftM, contratServicesCqlM);
+  }
+
+  /**
+   * @param contratServicesThrift
+   * @param contratServicesCql
+   * @param result
+   */
+  private void logCompare(final boolean compare, final List<ServiceContract> contratServicesThrift, final List<ServiceContract> contratServicesCql) {
+    if (compare) {
       LOGGER.info("MIGRATION_CONTRAT_SERVICE -- Les listes ContratService sont identiques");
     } else {
       LOGGER.info("MIGRATION_CONTRAT_SERVICE -- NbThrift=" + contratServicesThrift.size());
       LOGGER.info("MIGRATION_CONTRAT_SERVICE -- NbCql=" + contratServicesCql.size());
       LOGGER.warn("MIGRATION_CONTRAT_SERVICE -- ATTENTION: Les listes ContratService sont différentes ");
     }
-    return result;
+  }
+
+  private List<ServiceContractM> convertList(final List<ServiceContract> serviceContracts) {
+
+    final List<ServiceContractM> serviceContractsM = new ArrayList<>();
+    for (final ServiceContract serviceContract : serviceContracts) {
+      final ServiceContractM serviceContractM = new ServiceContractM();
+      serviceContractM.setCodeClient(serviceContract.getCodeClient());
+      serviceContractM.setDescription(serviceContract.getDescription());
+      serviceContractM.setLibelle(serviceContract.getLibelle());
+      serviceContractM.setViDuree(serviceContract.getViDuree());
+      serviceContractM.setViDuree(serviceContract.getViDuree());
+      serviceContractM.setViDuree(serviceContract.getViDuree());
+      serviceContractM.setViDuree(serviceContract.getViDuree());
+      serviceContractsM.add(serviceContractM);
+    }
+    return serviceContractsM;
   }
 }
