@@ -403,6 +403,24 @@
             </executions>
          </plugin>
          
+         <!-- On demande la génération de la Javadoc -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <executions>
+               <execution>
+                  <id>attach-javadocs</id>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <quiet>true</quiet>
+               <additionalparam>-Xdoclint:none</additionalparam>
+            </configuration>
+         </plugin>
+         
          <!-- Plugin permettant l'upload dans nexus de l'artefact (jar) généré -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
