@@ -6,10 +6,15 @@ package fr.urssaf.image.sae.commons;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +34,6 @@ import fr.urssaf.image.sae.commons.dao.cql.IParametersDaoCql;
 import fr.urssaf.image.sae.commons.model.GenericParametersType;
 import fr.urssaf.image.sae.commons.support.ParametersSupport;
 import fr.urssaf.image.sae.commons.utils.ParametersUtils;
-import fr.urssaf.image.sae.utils.CompareUtils;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 
@@ -57,7 +61,7 @@ public class MigrationParameters implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public boolean migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- start ");
 
@@ -109,16 +113,16 @@ public class MigrationParameters implements IMigrationR {
     final List<ParameterCql> parametersCql = new ArrayList<>();
     final Iterator<ParameterCql> parametersIterator = parameterDaoCql.findAllWithMapper();
     parametersIterator.forEachRemaining(parametersCql::add);
-    final boolean result = compareParameters(getListParametersCqlFromThrift(), parametersCql);
+    final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql);
     LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- end:nb= " + nb);
-    return result;
+    return diff;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public boolean migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- start ");
 
@@ -132,9 +136,9 @@ public class MigrationParameters implements IMigrationR {
       parameterSupport.create(parameter, parameterCql.getTypeParameters(), new Date().getTime());
     }
 
-    final boolean result = compareParameters(getListParametersCqlFromThrift(), parametersCql);
+    final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql);
     LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- end ");
-    return result;
+    return diff;
   }
 
   /**
@@ -167,15 +171,14 @@ public class MigrationParameters implements IMigrationR {
    * @param parametersThrift
    * @param parametersCql
    */
-  private boolean compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql) {
-    final boolean result = CompareUtils.compareListsGeneric(parametersThrift, parametersCql);
-    LOGGER.info("MIGRATION_PARAMETER -- SizeThriftParameter=" + parametersThrift.size());
-    LOGGER.info("MIGRATION_PARAMETER -- SizeCqlParameter=" + parametersCql.size());
-    if (result) {
-      LOGGER.info("MIGRATION_PARAMETER -- Les listes parameters sont identiques");
-    } else {
-      LOGGER.warn("MIGRATION_PARAMETER -- ATTENTION: Les listes parameter sont différentes ");
-    }
-    return result;
+  private Diff compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql) {
+    Collections.sort(parametersThrift);
+    Collections.sort(parametersCql);
+    final Javers javers = JaversBuilder
+                                       .javers()
+                                       .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+                                       .build();
+    final Diff diff = javers.compareCollections(parametersThrift, parametersCql, ParameterCql.class);
+    return diff;
   }
 }

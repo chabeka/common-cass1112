@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -111,7 +112,9 @@ public class MigrationContratServiceTest {
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-      Assert.assertTrue(migrationContratService.compareContratService(listThrift, listCql));
+      final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
+      LOGGER.info(diff.toString());
+      Assert.assertTrue(diff.getChanges().isEmpty());
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -132,7 +135,9 @@ public class MigrationContratServiceTest {
 
     Assert.assertEquals(listCql.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
-    Assert.assertTrue(migrationContratService.compareContratService(listThrift, listCql));
+    final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
+    LOGGER.info(diff.toString());
+    Assert.assertTrue(diff.getChanges().isEmpty());
   }
 
 
@@ -178,5 +183,41 @@ public class MigrationContratServiceTest {
     contratService.setVerifNommage(listVerifNommage[i]);
     contratService.setViDuree(listDuree[i]);
     return contratService;
+  }
+
+  @Test
+  public void diffAddTest() {
+
+    populateTableThrift();
+    migrationContratService.migrationFromThriftToCql();
+
+    final List<ServiceContract> listThrift = supportThrift.findAll();
+
+    final ServiceContract contratService = new ServiceContract();
+    contratService.setCodeClient("CODECLIENTADD");
+    contratService.setDescription("DESCADD");
+    supportCql.create(contratService);
+    final List<ServiceContract> listCql = supportCql.findAll();
+    final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: ServiceContract/CODECLIENTADD }"));
+
+  }
+
+  @Test
+  public void diffDescTest() {
+
+    populateTableThrift();
+    migrationContratService.migrationFromThriftToCql();
+
+    final List<ServiceContract> listThrift = supportThrift.findAll();
+    final List<ServiceContract> listCql = supportCql.findAll();
+    listCql.get(0).setDescription("DESCDIFF");
+    final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Contrat de service pour le client SAEL' to 'DESCDIFF' }"));
+
   }
 }

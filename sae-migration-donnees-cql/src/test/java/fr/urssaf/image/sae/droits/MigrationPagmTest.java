@@ -5,9 +5,9 @@ package fr.urssaf.image.sae.droits;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +26,6 @@ import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.modelcql.PagmCql;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmCqlSupport;
-import fr.urssaf.image.sae.utils.CompareUtils;
 
 
 /**
@@ -84,17 +83,18 @@ public class MigrationPagmTest {
     try {
 
       populateTableThrift();
-      final List<Pagm> listThrift = supportThrift.find(ID_CLIENT);
-      final List<String> keys = migrationPagm.migrationFromThriftToCql();
-      final List<PagmCql> listThrift3 = migrationPagm.getListPagmCqlFromThrift(keys);
-      @SuppressWarnings("unused")
-      final List<PagmCql> listThrift2 = supportThrift.findAll();
-
-      final List<PagmCql> listCql = supportCql.findAll();
-
-      Assert.assertEquals(listThrift.size(), listCode.length);
-      Assert.assertEquals(listThrift.size(), listCql.size());
-      Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift3, listCql));
+      // final List<Pagm> listThrift = supportThrift.find(ID_CLIENT);
+      final Diff diff = migrationPagm.migrationFromThriftToCql();
+      /*
+       * final List<String> keys = migrationPagm.migrationFromThriftToCql();
+       * final List<PagmCql> listThrift3 = migrationPagm.getListPagmCqlFromThrift(keys);
+       * @SuppressWarnings("unused")
+       * final List<PagmCql> listThrift2 = supportThrift.findAll();
+       * final List<PagmCql> listCql = supportCql.findAll();
+       * Assert.assertEquals(listThrift.size(), listCode.length);
+       * Assert.assertEquals(listThrift.size(), listCql.size());
+       */
+      Assert.assertTrue(!diff.hasChanges());
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -109,14 +109,16 @@ public class MigrationPagmTest {
   public void migrationFromCqlTothrift() {
     try {
       populateTableCql();
-      migrationPagm.migrationFromCqlTothrift();
-      final List<Pagm> listThrift = supportThrift.find(ID_CLIENT);
-      final List<PagmCql> listCql = supportCql.findAll();
-      final List<String> keys = migrationPagm.migrationFromThriftToCql();
-      final List<PagmCql> listThrift2 = migrationPagm.getListPagmCqlFromThrift(keys);
-      Assert.assertEquals(listCql.size(), listCode.length);
-      Assert.assertEquals(listThrift.size(), listCql.size());
-      Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift2, listCql));
+      final Diff diff = migrationPagm.migrationFromCqlTothrift();
+      /*
+       * final List<Pagm> listThrift = supportThrift.find(ID_CLIENT);
+       * final List<PagmCql> listCql = supportCql.findAll();
+       * final List<String> keys = migrationPagm.migrationFromThriftToCql();
+       * final List<PagmCql> listThrift2 = migrationPagm.getListPagmCqlFromThrift(keys);
+       * Assert.assertEquals(listCql.size(), listCode.length);
+       * Assert.assertEquals(listThrift.size(), listCql.size());
+       */
+      Assert.assertTrue(!diff.hasChanges());
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);

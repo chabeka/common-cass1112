@@ -1,10 +1,15 @@
 package fr.urssaf.image.sae.droit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +19,6 @@ import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IPrmdDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
-import fr.urssaf.image.sae.utils.CompareUtils;
 
 /**
  * (AC75095351) Classe de migration Prmd Thrift<-> Cql
@@ -34,7 +38,7 @@ public class MigrationPrmd implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public boolean migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- start ");
 
@@ -46,16 +50,16 @@ public class MigrationPrmd implements IMigrationR {
     final List<Prmd> prmdsCql = new ArrayList<>();
     final Iterator<Prmd> prmdsIterator = prmdDaoCql.findAllWithMapper();
     prmdsIterator.forEachRemaining(prmdsCql::add);
-    final boolean result = comparePrmds(prmdsThrift, prmdsCql);
+    final Diff diff = comparePrmds(prmdsThrift, prmdsCql);
     LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- end ");
-    return result;
+    return diff;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public boolean migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- start ");
 
@@ -67,9 +71,9 @@ public class MigrationPrmd implements IMigrationR {
       prmdSupport.create(prmd, new Date().getTime());
     }
     final List<Prmd> prmdsThrift = prmdSupport.findAll();
-    final boolean result = comparePrmds(prmdsThrift, prmdsCql);
+    final Diff diff = comparePrmds(prmdsThrift, prmdsCql);
     LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- end ");
-    return result;
+    return diff;
   }
 
   /**
@@ -78,16 +82,16 @@ public class MigrationPrmd implements IMigrationR {
    * @param prmdsThrift
    * @param prmdsCql
    */
-  private boolean comparePrmds(final List<Prmd> prmdsThrift, final List<Prmd> prmdsCql) {
-    final boolean result = CompareUtils.compareListsGeneric(prmdsThrift, prmdsCql);
-    LOGGER.info("MIGRATION_PRMD -- SizeThriftDroitprmd=" + prmdsThrift.size());
-    LOGGER.info("MIGRATION_PRMD -- SizeCqlDroitprmd=" + prmdsCql.size());
-    if (result) {
-      LOGGER.info("MIGRATION_PRMD -- Les listes prmd sont identiques");
-    } else {
-      LOGGER.warn("MIGRATION_PRMD -- ATTENTION: Les listes prmd sont différentes ");
-    }
-    return result;
+  private Diff comparePrmds(final List<Prmd> prmdsThrift, final List<Prmd> prmdsCql) {
+
+    Collections.sort(prmdsThrift);
+    Collections.sort(prmdsCql);
+    final Javers javers = JaversBuilder
+        .javers()
+        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .build();
+    final Diff diff = javers.compareCollections(prmdsThrift, prmdsCql, Prmd.class);
+    return diff;
   }
 
 }

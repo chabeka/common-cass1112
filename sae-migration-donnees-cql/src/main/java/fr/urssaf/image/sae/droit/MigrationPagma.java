@@ -1,10 +1,15 @@
 package fr.urssaf.image.sae.droit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +19,6 @@ import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IPagmaDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
-import fr.urssaf.image.sae.utils.CompareUtils;
 
 /**
  * (AC75095351) Classe de migration Pagma Thrift<-> Cql
@@ -34,7 +38,7 @@ public class MigrationPagma implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public boolean migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_PAGMA - migrationFromThriftToCql- start ");
 
@@ -46,16 +50,16 @@ public class MigrationPagma implements IMigrationR {
     final List<Pagma> pagmasCql = new ArrayList<>();
     final Iterator<Pagma> pagmasIterator = pagmaDaoCql.findAllWithMapper();
     pagmasIterator.forEachRemaining(pagmasCql::add);
-    final boolean result = comparePagmas(pagmasThrift, pagmasCql);
+    final Diff diff = comparePagmas(pagmasThrift, pagmasCql);
     LOGGER.info(" MIGRATION_PAGMA - migrationFromThriftToCql- end ");
-    return result;
+    return diff;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public boolean migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_PAGMA - migrationFromCqlTothrift- start ");
 
@@ -67,9 +71,9 @@ public class MigrationPagma implements IMigrationR {
       pagmaSupport.create(pagma, new Date().getTime());
     }
     final List<Pagma> pagmasThrift = pagmaSupport.findAll();
-    final boolean result = comparePagmas(pagmasThrift, pagmasCql);
+    final Diff diff = comparePagmas(pagmasThrift, pagmasCql);
     LOGGER.info(" MIGRATION_PAGMA - migrationFromCqlTothrift- end ");
-    return result;
+    return diff;
   }
 
   /**
@@ -78,16 +82,15 @@ public class MigrationPagma implements IMigrationR {
    * @param pagmasThrift
    * @param pagmasCql
    */
-  private boolean comparePagmas(final List<Pagma> pagmasThrift, final List<Pagma> pagmasCql) {
+  private Diff comparePagmas(final List<Pagma> pagmasThrift, final List<Pagma> pagmasCql) {
 
-    final boolean result = CompareUtils.compareListsGeneric(pagmasThrift, pagmasCql);
-    if (result) {
-      LOGGER.info("MIGRATION_PAGMA -- Les listes Pagma sont identiques");
-    } else {
-      LOGGER.info("MIGRATION_PAGMA -- NbThrift=" + pagmasThrift.size());
-      LOGGER.info("MIGRATION_PAGMA -- NbCql=" + pagmasCql.size());
-      LOGGER.warn("MIGRATION_PAGMA -- ATTENTION: Les listes Pagma sont différentes ");
-    }
-    return result;
+    Collections.sort(pagmasThrift);
+    Collections.sort(pagmasCql);
+    final Javers javers = JaversBuilder
+        .javers()
+        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .build();
+    final Diff diff = javers.compareCollections(pagmasThrift, pagmasCql, Pagma.class);
+    return diff;
   }
 }

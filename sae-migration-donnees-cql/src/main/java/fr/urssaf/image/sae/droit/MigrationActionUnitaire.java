@@ -96,18 +96,22 @@ public class MigrationActionUnitaire {
      * return CompareUtils.compareListsGeneric(actionsUnitairesThriftM, actionsUnitairesCqlM);
      */
     // actionsUnitairesCql.get(0).setDescription("Javers cool");
-    final ActionUnitaire actionUnitaireSupp = new ActionUnitaire();
-    actionUnitaireSupp.setCode("JAVERSCODE");
-    actionUnitaireSupp.setDescription("JAVERSDESC");
-    actionsUnitairesCql.add(actionUnitaireSupp);
+
+    /*
+     * final ActionUnitaire actionUnitaireSupp = new ActionUnitaire();
+     * actionUnitaireSupp.setCode("JAVERSCODE");
+     * actionUnitaireSupp.setDescription("JAVERSDESC");
+     * actionsUnitairesCql.add(actionUnitaireSupp);
+     */
     Collections.sort(actionsUnitairesThrift);
     Collections.sort(actionsUnitairesCql);
     final Javers javers = JaversBuilder
-        .javers()
+                                       .javers()
                                        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
-        .build();
+                                       .build();
     final Diff diff = javers.compareCollections(actionsUnitairesThrift, actionsUnitairesCql, ActionUnitaire.class);
     return diff;
+
 
   }
 

@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.droits;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -85,7 +86,9 @@ public class MigrationFormatControlProfilTest {
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-      Assert.assertTrue(migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql));
+      final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql);
+      LOGGER.info(diff.toString());
+      Assert.assertTrue(diff.getChanges().isEmpty());
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -102,9 +105,11 @@ public class MigrationFormatControlProfilTest {
     final List<FormatControlProfil> listCql = supportCql.findAll();
     migrationFormatControlProfil.migrationFromCqlTothrift();
     final List<FormatControlProfil> listThrift = supportThrift.findAll();
-    Assert.assertEquals(listCql.size(), listCode.length);
+    Assert.assertEquals(listThrift.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
-    Assert.assertTrue(migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql));
+    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql);
+    LOGGER.info(diff.toString());
+    Assert.assertTrue(diff.getChanges().isEmpty());
 
   }
 

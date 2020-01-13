@@ -4,9 +4,14 @@
 package fr.urssaf.image.sae.spring.batch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -107,5 +112,28 @@ public class MigrationSequences {
       listSequencesThrift.add(sequencesCql);
     }
     return listSequencesThrift;
+  }
+
+  public Diff compareSequences() {
+    // liste d'objet cql venant de la base thrift après transformation
+    final List<SequencesCql> sequencesThrift = findAllThrift(SEQUENCE_KEY);
+
+    // liste venant de la base cql
+
+    final List<SequencesCql> sequencesCql = new ArrayList<>();
+    final Iterator<SequencesCql> it = sequencesDaoCql.findAllWithMapper();
+    while (it.hasNext()) {
+      final SequencesCql sequenceCql = it.next();
+      sequencesCql.add(sequenceCql);
+    }
+    Collections.sort(sequencesThrift);
+    Collections.sort(sequencesCql);
+    final Javers javers = JaversBuilder
+        .javers()
+        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .build();
+    final Diff diff = javers.compareCollections(sequencesThrift, sequencesCql, SequencesCql.class);
+    return diff;
+
   }
 }

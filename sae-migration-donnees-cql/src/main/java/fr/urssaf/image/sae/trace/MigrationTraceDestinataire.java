@@ -78,7 +78,7 @@ public class MigrationTraceDestinataire {
    * Comparer les Objet cql et Thrift
    * @throws Exception
    */
-  public void comparTraceDestinataireFromCQlandThrift() throws Exception {
+  public boolean compareTraceDestinataireFromCQlandThrift() throws Exception {
     // recuperer un iterateur sur la table cql
     // Parcourir les elements et pour chaque element 
     // recuperer un ensemble de X elements dans la table thrift
@@ -103,7 +103,7 @@ public class MigrationTraceDestinataire {
     if(isEqBase) {
       LOGGER.info(" MigrationTraceDestinataire - OK");
     }
-
+    return isEqBase;
   }
 
   /**

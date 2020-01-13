@@ -4,10 +4,15 @@
 package fr.urssaf.image.sae.metadata;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +42,7 @@ public class MigrationMetadata implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public boolean migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql() {
 
     LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- start ");
 
@@ -49,15 +54,15 @@ public class MigrationMetadata implements IMigrationR {
     final List<MetadataReference> metadatasCql = new ArrayList<>();
     final Iterator<MetadataReference> metadatasIterator = metadataDaoCql.findAllWithMapper();
     metadatasIterator.forEachRemaining(metadatasCql::add);
+    final Diff diff = compareMetadatas(metadatasThrift, metadatasCql);
     LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- end ");
-    return compareMetadatas(metadatasThrift, metadatasCql);
+    return diff;
   }
-
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public boolean migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift() {
 
     LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- start ");
 
@@ -70,8 +75,9 @@ public class MigrationMetadata implements IMigrationR {
       metadataSupport.create(metadata, new Date().getTime());
     }
     final List<MetadataReference> metadatasThrift = metadataSupport.findAll();
+    final Diff diff = compareMetadatas(metadatasThrift, metadatasCql);
     LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- end ");
-    return compareMetadatas(metadatasThrift, metadatasCql);
+    return diff;
   }
 
   /**
@@ -80,17 +86,17 @@ public class MigrationMetadata implements IMigrationR {
    * @param metadatasThrift
    * @param metadatasCql
    */
-  private boolean compareMetadatas(final List<MetadataReference> metadatasThrift, final List<MetadataReference> metadatasCql) {
+  private Diff compareMetadatas(final List<MetadataReference> metadatasThrift, final List<MetadataReference> metadatasCql) {
     final boolean result = CompareUtils.compareListsGeneric(metadatasThrift, metadatasCql);
 
-    if (result) {
-      LOGGER.info("MIGRATION_METADATA -- Les listes metadata sont identiques");
-    } else {
-      LOGGER.info("MIGRATION_METADATA -- NbThrift=" + metadatasThrift.size());
-      LOGGER.info("MIGRATION_METADATA -- NbCql=" + metadatasCql.size());
-      LOGGER.warn("MIGRATION_METADATA -- ATTENTION: Les listes metadata sont différentes ");
-    }
-    return result;
+    Collections.sort(metadatasThrift);
+    Collections.sort(metadatasCql);
+    final Javers javers = JaversBuilder
+        .javers()
+        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .build();
+    final Diff diff = javers.compareCollections(metadatasThrift, metadatasCql, MetadataReference.class);
+    return diff;
   }
 
 }

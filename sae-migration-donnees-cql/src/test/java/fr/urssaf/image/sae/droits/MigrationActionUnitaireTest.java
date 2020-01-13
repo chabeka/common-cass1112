@@ -93,7 +93,7 @@ public class MigrationActionUnitaireTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationActionUnitaire.migrationFromCqlTothrift();
+    final Diff diff = migrationActionUnitaire.migrationFromCqlTothrift();
 
     final List<ActionUnitaire> listThrift = supportThrift.findAll();
     final List<ActionUnitaire> listCql = supportCql.findAll();
@@ -101,7 +101,7 @@ public class MigrationActionUnitaireTest {
     Assert.assertEquals(listCql.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
     // LOGGER.info("SizeCqlToThriftActionUnitaire=" + listThrift.size());
-    Assert.assertTrue(migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql).getChanges().isEmpty());
+    Assert.assertTrue(!diff.hasChanges());
   }
 
   /**
@@ -130,6 +130,42 @@ public class MigrationActionUnitaireTest {
       supportThrift.create(actionUnitaire, new Date().getTime());
       i++;
     }
+  }
+
+  @Test
+  public void diffAddTest() {
+
+    populateTableThrift();
+    migrationActionUnitaire.migrationFromThriftToCql();
+
+    final List<ActionUnitaire> listThrift = supportThrift.findAll();
+
+    final ActionUnitaire actionUnitaire = new ActionUnitaire();
+    actionUnitaire.setCode("CODEADD");
+    actionUnitaire.setDescription("DESCADD");
+    supportCql.create(actionUnitaire);
+    final List<ActionUnitaire> listCql = supportCql.findAll();
+    final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: ActionUnitaire/CODEADD }"));
+
+  }
+
+  @Test
+  public void diffDescTest() {
+
+    populateTableThrift();
+    migrationActionUnitaire.migrationFromThriftToCql();
+
+    final List<ActionUnitaire> listThrift = supportThrift.findAll();
+    final List<ActionUnitaire> listCql = supportCql.findAll();
+    listCql.get(0).setDescription("DESCDIFF");
+    final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Ajout de notes' to 'DESCDIFF' }"));
+
   }
 
 

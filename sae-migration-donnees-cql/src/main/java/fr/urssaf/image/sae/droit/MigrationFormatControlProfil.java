@@ -1,10 +1,15 @@
 package fr.urssaf.image.sae.droit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +19,6 @@ import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.droit.dao.cql.IFormatControlProfilDaoCql;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
-import fr.urssaf.image.sae.droit.model.FormatControlProfilM;
-import fr.urssaf.image.sae.utils.CompareUtils;
 
 /**
  * (AC75095351) Classe de migration pour formatControlProfil
@@ -35,7 +38,7 @@ public class MigrationFormatControlProfil implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public boolean migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql() {
 
     LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- start ");
 
@@ -46,16 +49,16 @@ public class MigrationFormatControlProfil implements IMigrationR {
     final List<FormatControlProfil> formatControlProfilsCql = new ArrayList<>();
     final Iterator<FormatControlProfil> formatControlProfilsIterator = formatcontrolprofildaocql.findAllWithMapper();
     formatControlProfilsIterator.forEachRemaining(formatControlProfilsCql::add);
-    final boolean result = compareFormatControlProfil(formatControlProfilsThrift, formatControlProfilsCql);
+    final Diff diff = compareFormatControlProfil(formatControlProfilsThrift, formatControlProfilsCql);
     LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- end ");
-    return result;
+    return diff;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public boolean migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift() {
 
     LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- start ");
 
@@ -67,9 +70,9 @@ public class MigrationFormatControlProfil implements IMigrationR {
       formatControlProfilSupport.create(formatControlProfil, new Date().getTime());
     }
     final List<FormatControlProfil> formatControlProfilThrift = formatControlProfilSupport.findAll();
-    final boolean result = compareFormatControlProfil(formatControlProfilThrift, formatControlProfilsCql);
+    final Diff diff = compareFormatControlProfil(formatControlProfilThrift, formatControlProfilsCql);
     LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- end ");
-    return result;
+    return diff;
   }
 
   /**
@@ -78,32 +81,17 @@ public class MigrationFormatControlProfil implements IMigrationR {
    * @param formatControlProfilsThrift
    * @param formatControlProfilsCql
    */
-  public boolean compareFormatControlProfil(final List<FormatControlProfil> formatControlProfilsThrift,
-                                            final List<FormatControlProfil> formatControlProfilsCql) {
+  public Diff compareFormatControlProfil(final List<FormatControlProfil> formatControlProfilsThrift,
+                                         final List<FormatControlProfil> formatControlProfilsCql) {
 
-    final List<FormatControlProfilM> formatControlProfilsThriftM = convertList(formatControlProfilsThrift);
-    final List<FormatControlProfilM> formatControlProfilsCqlM = convertList(formatControlProfilsCql);
-    formatControlProfilsCqlM.get(0).setDescription("M");
-    final boolean result = CompareUtils.compareListsGeneric(formatControlProfilsThriftM, formatControlProfilsCqlM);
-    if (result) {
-      LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- Les listes FormatControlProfil sont identiques");
-    } else {
-      LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- NbThrift=" + formatControlProfilsThrift.size());
-      LOGGER.info("MIGRATION_FORMAT_CONTROL_PROFIL -- NbCql=" + formatControlProfilsCql.size());
-      LOGGER.warn("MIGRATION_FORMAT_CONTROL_PROFIL -- ATTENTION: Les listes FormatControlProfil sont différentes ");
-    }
-    return result;
-
+    Collections.sort(formatControlProfilsThrift);
+    Collections.sort(formatControlProfilsCql);
+    final Javers javers = JaversBuilder
+        .javers()
+        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .build();
+    final Diff diff = javers.compareCollections(formatControlProfilsThrift, formatControlProfilsCql, FormatControlProfil.class);
+    return diff;
   }
 
-  private List<FormatControlProfilM> convertList(final List<FormatControlProfil> formatControlProfils) {
-
-
-    final List<FormatControlProfilM> formatControlProfilsM = new ArrayList<>();
-    for (final FormatControlProfil formatControlProfil : formatControlProfils) {
-      final FormatControlProfilM formatControlProfilM = new FormatControlProfilM(formatControlProfil);
-      formatControlProfilsM.add(formatControlProfilM);
-    }
-    return formatControlProfilsM;
-  }
 }

@@ -4,10 +4,15 @@
 package fr.urssaf.image.sae.rnd;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +22,6 @@ import fr.urssaf.image.sae.IMigrationR;
 import fr.urssaf.image.sae.rnd.dao.cql.ICorrespondancesDaoCql;
 import fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
-import fr.urssaf.image.sae.utils.CompareUtils;
 
 /**
  * (AC75095351) Classe de migration Rnd Thrift<-> Cql
@@ -37,7 +41,7 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public boolean migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql() {
 
     LOGGER.info(" MigrationCorrespondancesRnd - migrationFromThriftToCql- start ");
 
@@ -49,16 +53,16 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
     final List<Correspondance> correspondancesCql = new ArrayList<>();
     final Iterator<Correspondance> correspondanceRndsIterator = correspondanceDaoCql.findAllWithMapper();
     correspondanceRndsIterator.forEachRemaining(correspondancesCql::add);
-
+    final Diff diff = comparecorrespondancesRnds(correspondancesThrift, correspondancesCql);
     LOGGER.info(" MigrationCorrespondancesRnd - migrationFromThriftToCql- end ");
-    return comparecorrespondancesRnds(correspondancesThrift, correspondancesCql);
+    return diff;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public boolean migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift() {
 
     LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- start ");
 
@@ -83,17 +87,16 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
    * @param correspondancesRndsThrift
    * @param correspondancesRndsCql
    */
-  private boolean comparecorrespondancesRnds(final List<Correspondance> correspondancesRndsThrift, final List<Correspondance> correspondancesRndsCql) {
+  private Diff comparecorrespondancesRnds(final List<Correspondance> correspondancesRndsThrift, final List<Correspondance> correspondancesRndsCql) {
 
-    final boolean result = CompareUtils.compareListsGeneric(correspondancesRndsThrift, correspondancesRndsCql);
-    if (result) {
-      LOGGER.info("MIGRATION_CORRESPONDANCES_RND -- Les listes correspondancesRnd sont identiques");
-    } else {
-      LOGGER.info("MIGRATION_CORRESPONDANCES_RND -- NbThrift=" + correspondancesRndsThrift.size());
-      LOGGER.info("MIGRATION_CORRESPONDANCES_RND -- NbCql=" + correspondancesRndsCql.size());
-      LOGGER.warn("MIGRATION_CORRESPONDANCES_RND -- ATTENTION: Les listes correspondancesRnd sont différentes ");
-    }
-    return result;
+    Collections.sort(correspondancesRndsThrift);
+    Collections.sort(correspondancesRndsCql);
+    final Javers javers = JaversBuilder
+                                       .javers()
+                                       .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+                                       .build();
+    final Diff diff = javers.compareCollections(correspondancesRndsThrift, correspondancesRndsThrift, Correspondance.class);
+    return diff;
   }
 
 

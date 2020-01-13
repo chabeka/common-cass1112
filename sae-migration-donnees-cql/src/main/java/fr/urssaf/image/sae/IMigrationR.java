@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae;
 
+import org.javers.core.diff.Diff;
+
 /**
  * (AC75095028) Interface générique de migration
  */
@@ -8,11 +10,11 @@ public interface IMigrationR {
   /**
    * Migration des données de la table thrift vers la table cql
    */
-  public boolean migrationFromThriftToCql();
+  public Diff migrationFromThriftToCql();
 
   /**
    * Migration des données de la table cql vers la table thrift
    */
-  public boolean migrationFromCqlTothrift();
+  public Diff migrationFromCqlTothrift();
 
 }
