@@ -176,18 +176,10 @@
       
    </fileSets>
       
+    <!-- Le Tar GZ précédemment crée -->
+    <!-- Mis en commentaire, car apparemment on n'en a pas besoin -->
+    <!-- 
 	<files>
-		<!-- <file> <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable.jar 
-			</source> <outputDirectory>sae-documents-executable</outputDirectory> <destName>sae-documents-executable.jar</destName> 
-			</file> <file> <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur.jar 
-			</source> <outputDirectory>sae-ordonnanceur</outputDirectory> <destName>sae-ordonnanceur.jar</destName> 
-			</file> <file> <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj.jar 
-			</source> <outputDirectory>sae-lotinstallmaj</outputDirectory> <destName>sae-lotinstallmaj.jar</destName> 
-			</file> <file> <source>${project.parent.basedir}/sae-integrationinstall/target/sae-integrationinstall.jar 
-			</source> <outputDirectory>sae-integrationinstall</outputDirectory> <destName>sae-integrationinstall.jar</destName> 
-			</file> <file> <source>${project.parent.basedir}/sae-webservices/target/sae-webservices.war 
-			</source> <outputDirectory /> <destName>sae.war</destName> </file> -->
-		<!-- Le Tar GZ précédemment crée -->
 		<file>
 			<source>target/data_sae.tar.gz</source>
 			<outputDirectory />
@@ -195,6 +187,11 @@
 		</file>
 
 	</files>
+   -->
+   
+   <!-- Je ne pense pas que ces dependencySets servent -->
+   <!-- Je les met en commentaire -->
+   <!-- 
 	<dependencySets>
 		<dependencySet>
 			<useProjectArtifact>true</useProjectArtifact>
@@ -237,4 +234,5 @@
 			<outputDirectory />
 		</dependencySet>
 	</dependencySets>
+   -->
 </assembly>
