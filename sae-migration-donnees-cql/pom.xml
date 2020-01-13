@@ -3,7 +3,7 @@
    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
    <modelVersion>4.0.0</modelVersion>
    <artifactId>sae-migration-donnees</artifactId>
-   <name>sae-migration</name>
+   <name>sae-migration-donnees</name>
    <version>${sae.version}</version>
    <description>Scripts de migration des tables de thrift vers CQL</description>
 
@@ -36,13 +36,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees-cql/
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees-cql/
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees-cql/
       </connection>
    </scm>
    
