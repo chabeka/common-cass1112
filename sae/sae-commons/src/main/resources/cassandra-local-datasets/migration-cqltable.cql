@@ -280,7 +280,7 @@ CREATE INDEX jobRequestKey_idx ON jobrequestcql (jobkey);
 ########################  AUTRES TABLES ###########################
 */
 
-CREATE TABLE sequences (
+CREATE TABLE sequencescql (
 	jobidname		text,
     value 			bigint,
 	PRIMARY KEY (jobidname)
