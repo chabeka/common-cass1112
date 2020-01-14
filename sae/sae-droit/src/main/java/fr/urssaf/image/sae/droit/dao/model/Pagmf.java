@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.droit.dao.model;
 
+import org.javers.core.metamodel.annotation.Id;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ public class Pagmf implements Comparable<Pagmf> {
       .getLogger(Pagmf.class);
   @PartitionKey
   @Column(name = "codePagmf")
+  @Id
   private String codePagmf;
 
   @Column(name = "description")

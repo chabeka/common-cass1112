@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.droit.dao.model;
 import java.util.List;
 import java.util.Map;
 
+import org.javers.core.metamodel.annotation.Id;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,6 +26,7 @@ public class Prmd implements Comparable<Prmd> {
   /** identifiant unique du PRMD */
   @PartitionKey
   @Column(name = "code")
+  @Id
   private String code;
 
   /** description du PRMD */

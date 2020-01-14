@@ -72,7 +72,7 @@ public class PagmaSupportFacadeTest {
     // On ajoute un pagm avec la facade sur les tables thrift et cql
     supportFacade.create(pagma);
     // On supprime le pagm cql
-    supportCql.delete(CODE1);
+    supportCql.delete(CODE1, new Date().getTime());
     // On recherche le pagm avec la facade
     final Pagma pagmaFacade = supportFacade.find(CODE1);
     // On recherche le pagm thrift

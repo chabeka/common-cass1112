@@ -142,7 +142,6 @@ public class FormatControlProfilSupportFacade implements IFormatControlProfilFac
   @Override
   public void delete(final String id) throws FormatControlProfilNotFoundException {
 
-    // try {
 
     switch (ModeGestionAPI.getModeApiCf(cfName)) {
 
@@ -151,25 +150,20 @@ public class FormatControlProfilSupportFacade implements IFormatControlProfilFac
       break;
 
     case MODE_API.DATASTAX:
-      formatControlProfilCqlSupport.delete(id);
+      formatControlProfilCqlSupport.delete(id, clockSupport.currentCLock());
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       formatControlProfilSupport.delete(id, clockSupport.currentCLock());
-      formatControlProfilCqlSupport.delete(id);
+      formatControlProfilCqlSupport.delete(id, clockSupport.currentCLock());
       break;
 
     default:
       throw new ModeGestionAPIUnkownException("FormatControlProfilSupportFacade/delete/Mode API inconnu");
     }
 
-    /*
-     * }
-     * catch (final Exception e) {
-     * throw new RuntimeException(e);
-     * }
-     */
+
 
 
   }

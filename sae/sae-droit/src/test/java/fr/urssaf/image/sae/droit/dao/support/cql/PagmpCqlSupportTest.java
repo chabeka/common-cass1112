@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.droit.dao.support.cql;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.After;
@@ -73,7 +74,7 @@ public class PagmpCqlSupportTest {
 
     support.create(pagmp);
 
-    support.delete(CODE1);
+    support.delete(CODE1, new Date().getTime());
 
     final Pagmp res = support.find(CODE1);
 

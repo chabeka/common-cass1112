@@ -45,7 +45,7 @@ public class FormatControlProfilCqlSupport {
    * @param code
    *          identifiant de la formatControlProfil
    */
-  public void delete(final String code) throws FormatControlProfilNotFoundException {
+  public void delete(final String code, final long clock) throws FormatControlProfilNotFoundException {
     Assert.notNull(code, "le code ne peut etre null");
     final FormatControlProfil formatControl = find(code);
     if (formatControl == null) {
@@ -53,7 +53,7 @@ public class FormatControlProfilCqlSupport {
       throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
                                                      .loadMessage("erreur.format.control.delete", code));
     }
-    formatcontrolprofildaocql.deleteById(code);
+    formatcontrolprofildaocql.deleteById(code, clock);
 
   }
 

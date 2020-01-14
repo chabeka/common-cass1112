@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.droit.dao.support.cql;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.After;
@@ -85,7 +86,7 @@ public class PagmaCqlSupportTest {
 
     support.create(pagma);
 
-    support.delete(CODE1);
+    support.delete(CODE1, new Date().getTime());
 
     final Pagma res = support.find(CODE1);
 

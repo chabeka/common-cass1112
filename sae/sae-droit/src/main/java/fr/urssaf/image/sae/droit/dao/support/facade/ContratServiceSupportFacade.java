@@ -133,13 +133,13 @@ public class ContratServiceSupportFacade implements IContratServiceSupportFacade
       break;
 
     case MODE_API.DATASTAX:
-      contratServiceCqlSupport.delete(id);
+      contratServiceCqlSupport.delete(id, clockSupport.currentCLock());
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       contratServiceSupport.delete(id, clockSupport.currentCLock());
-      contratServiceCqlSupport.delete(id);
+      contratServiceCqlSupport.delete(id, clockSupport.currentCLock());
       break;
 
     default:

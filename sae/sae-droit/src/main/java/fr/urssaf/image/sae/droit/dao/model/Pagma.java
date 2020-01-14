@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.droit.dao.model;
 
 import java.util.List;
 
+import org.javers.core.metamodel.annotation.Id;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +24,7 @@ public class Pagma implements Comparable<Pagma> {
   /** code unique du PAGMa */
   @PartitionKey
   @Column(name = "code")
+  @Id
   private String code;
 
   /** liste des codes des actions unitaires du PAGMa */

@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.droit.dao.support.cql;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +96,7 @@ public class PrmdCqlSupportTest {
 
     support.create(prmd);
 
-    support.delete(CODE1);
+    support.delete(CODE1, new Date().getTime());
 
     final Prmd res = support.find(CODE1);
 

@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.droit.dao.support.cql;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -117,7 +118,7 @@ public class ContratServiceCqlDatasSupportTest {
 
     support.create(contract);
 
-    support.delete(LIBELLE1);
+    support.delete(LIBELLE1, new Date().getTime());
 
     final ServiceContract res = support.find(LIBELLE1);
     Assert.assertNull(

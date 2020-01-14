@@ -3,25 +3,28 @@
  */
 package fr.urssaf.image.sae.droit.dao.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.javers.core.metamodel.annotation.Id;
+import org.javers.core.metamodel.annotation.TypeName;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
+
+
 /**
  * Classe de modèle d'une action unitaire
  * Annotation pour Mapping avec la table cql
  */
+@TypeName("ActionUnitaire")
 @Table(name = "droitactionunitairecql")
 public class ActionUnitaire implements Comparable<ActionUnitaire> {
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(ActionUnitaire.class);
+
 
   /** identifiant unique de l'action unitaire. */
   @PartitionKey
   @Column(name = "code")
+  @Id
   private String code;
 
   /** description de l'action unitaire */
@@ -62,16 +65,8 @@ public class ActionUnitaire implements Comparable<ActionUnitaire> {
    * {@inheritDoc}
    */
   @Override
-  public final boolean equals(final Object obj) {
-    boolean areEquals = false;
-
-    if (obj instanceof ActionUnitaire) {
-      final ActionUnitaire actionUnitaire = (ActionUnitaire) obj;
-      areEquals = code.equals(actionUnitaire.getCode())
-          && description.equals(actionUnitaire.getDescription());
-    }
-
-    return areEquals;
+  public final String toString() {
+    return "code : " + code + "\ndescription : " + description;
   }
 
   /**
@@ -82,21 +77,11 @@ public class ActionUnitaire implements Comparable<ActionUnitaire> {
     return super.hashCode();
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final String toString() {
-    return "code : " + code + "\ndescription : " + description;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public int compareTo(final ActionUnitaire o) {
 
-    return getCode().compareTo(o.getCode());
+    return code.compareTo(o.getCode());
   }
+
 
 }

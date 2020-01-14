@@ -131,13 +131,13 @@ public class ActionUnitaireSupportFacade implements ISupportFacade<ActionUnitair
       break;
 
     case MODE_API.DATASTAX:
-      actionUnitaireCqlSupport.delete(id);
+      actionUnitaireCqlSupport.delete(id, clockSupport.currentCLock());
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       actionUnitaireSupport.delete(id, clockSupport.currentCLock());
-      actionUnitaireCqlSupport.delete(id);
+      actionUnitaireCqlSupport.delete(id, clockSupport.currentCLock());
       break;
 
     default:

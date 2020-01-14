@@ -42,9 +42,9 @@ public class PagmfCqlSupport {
    * @param code
    *          identifiant de la pagmf
    */
-  public void delete(final String code) {
+  public void delete(final String code, final long clock) {
     Assert.notNull(code, "le code ne peut etre null");
-    pagmfdaocql.deleteById(code);
+    pagmfdaocql.deleteById(code, clock);
 
   }
 

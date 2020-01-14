@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.droit.dao.modelcql;
 
 import java.util.Map;
 
+import org.javers.core.metamodel.annotation.Id;
+
 import com.datastax.driver.mapping.annotations.ClusteringColumn;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -21,6 +23,7 @@ public class PagmCql implements Comparable<PagmCql> {
   /** code contrat */
   @PartitionKey
   @Column(name = "idClient")
+  @Id
   private String idClient;
 
   /** code intelligible du PAGM */
