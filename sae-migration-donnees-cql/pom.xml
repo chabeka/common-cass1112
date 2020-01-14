@@ -323,6 +323,7 @@
    </dependencies>
 
    <build>
+      <finalName>${project.name}</finalName>
 
       <plugins>
          <!-- On spécifie la version du JDK et l'encodage de caractères des sources -->
