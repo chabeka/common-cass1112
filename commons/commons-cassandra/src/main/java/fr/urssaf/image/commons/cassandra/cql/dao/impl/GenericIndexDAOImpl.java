@@ -21,9 +21,9 @@ import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 /**
  * Implementation de l'Interface {@link IGenericIndexDAO} spécifique aux types index
  *
- * @param <I>
- *          entité I de type indexe
- * @param <ID>
+ * @param <T>
+ *          entité T de type indexe
+ * @param <T>
  *          l'identifiant de l'entité
  */
 public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {

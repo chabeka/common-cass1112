@@ -1,19 +1,15 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
 package fr.urssaf.image.commons.cassandra.cql.dao;
 
 import java.util.Optional;
 
-/**
- * TODO (AC75095028) Description du type
- */
 
 /**
+ * (AC75095028)
  * Classe abstraite pour les DAO CASSANDRA
  *
  * @param <T>
  * @param <ID>
+ * @param <CK>
  */
 public interface IGenericCompositeDAO<T, ID, CK> extends IGenericDAO<T, ID> {
 
@@ -23,6 +19,8 @@ public interface IGenericCompositeDAO<T, ID, CK> extends IGenericDAO<T, ID> {
    *
    * @param id
    *          l'ID de l'entité
+   * @param ck
+   *          Autre partie de clé de partition de l'entité (dans le cas de l'entité Correspondance c'est la version)
    * @return {@link Optional} contenant l'entité ou un {@link Optional} vide si l'entité n'existe pas
    */
 

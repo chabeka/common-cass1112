@@ -30,7 +30,14 @@ import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
 
 /**
- * TODO (AC75095028) Description du type
+ * Implementation de l'Interface {@link IGenericCompositeDAO }
+ * 
+ * @param <T>
+ *          l'entité T
+ * @param <ID>
+ *          l'identifiant de l'entité
+ * @param <CK>
+ *          autre partie de la clé de partition de l'entité
  */
 
 public class GenericDAOCompositeImpl<T, ID, CK> implements IGenericCompositeDAO<T, ID, CK> {

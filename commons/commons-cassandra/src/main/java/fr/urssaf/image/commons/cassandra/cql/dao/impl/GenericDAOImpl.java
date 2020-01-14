@@ -33,7 +33,7 @@ import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
  * @param <T>
  *          l'entité T
  * @param <ID>
- *          l'identifiant de l'entié
+ *          l'identifiant de l'entité
  */
 public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
 
