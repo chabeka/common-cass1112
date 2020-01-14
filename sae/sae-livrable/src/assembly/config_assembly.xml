@@ -52,6 +52,14 @@
          </includes>
          <outputDirectory>sae-lotinstallmaj</outputDirectory>
       </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>logback-sae-migration-donnees.xml</include>
+         </includes>
+         <outputDirectory>sae-lotinstallmaj</outputDirectory>
+      </fileSet>
 
       <fileSet>
          <directory>src/config/</directory>
