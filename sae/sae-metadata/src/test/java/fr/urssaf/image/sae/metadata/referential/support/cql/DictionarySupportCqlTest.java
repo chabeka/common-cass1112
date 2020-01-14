@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.metadata.referential.support.cql;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.After;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
+
 
 
 /**
@@ -157,5 +159,53 @@ public class DictionarySupportCqlTest {
     final Dictionary deletedDict = dictSupport.find(id);
     Assert.assertTrue(dictExistant.getEntries().equals(
                                                        deletedDict.getEntries()));
+  }
+
+  /**
+   * Test d'ajout de deux mêmes éléments dans le dictionnaire
+   */
+
+  @Test
+  public void addTwoSameElementsDictTest()
+      throws DictionaryNotFoundException {
+
+    final String id = "dicExist";
+    final String value1 = "Meta1";
+    final String value2 = "Meta1";
+    // On créé le dictionnaire avec la valeur Meta1
+    dictSupport.addElement(id, value1);
+    Dictionary dictExistant = dictSupport.find(id);
+    Assert.assertTrue(dictExistant.getEntries().size() == 1);
+    dictSupport.addElement(id, value2);
+    dictExistant = dictSupport.find(id);
+    Assert.assertTrue(dictExistant.getEntries().size() == 1);
+
+  }
+
+
+  /**
+   * Test d'ajout de 3 éléments différents dans le dictionnaire
+   */
+
+  @Test
+  public void addDifferent3ElementsDictTest()
+      throws DictionaryNotFoundException {
+
+    final String id = "dicExist";
+    final String value1 = "Meta1";
+    final String value2 = "Meta2";
+    final String value3 = "Meta3";
+
+    // On créé le dictionnaire avec la valeur Meta1
+    dictSupport.addElement(id, value1);
+    Dictionary dictExistant = dictSupport.find(id);
+    Assert.assertTrue(dictExistant.getEntries().size() == 1);
+    dictSupport.addElement(id, value2);
+    dictExistant = dictSupport.find(id);
+    Assert.assertTrue(dictExistant.getEntries().size() == 2);
+    dictSupport.addElement(id, value3);
+    dictExistant = dictSupport.find(id);
+    Assert.assertTrue(dictExistant.getEntries().size() == 3);
+    Assert.assertTrue(dictExistant.getEntries().equals(Arrays.asList(value1, value2, value3)));
   }
 }
