@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel;
 
+import org.javers.core.metamodel.annotation.Id;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -11,11 +13,12 @@ import com.datastax.driver.mapping.annotations.Table;
 /**
  * TODO (AC75095028) Description du type
  */
-@Table(name = "sequences")
+@Table(name = "sequencescql")
 public class SequencesCql implements Comparable<SequencesCql> {
 
   @PartitionKey
   @Column(name = "jobidname")
+  @Id
   private String jobIdName;
 
   private Long value;
@@ -25,7 +28,6 @@ public class SequencesCql implements Comparable<SequencesCql> {
    */
   public SequencesCql() {
     super();
-    // TODO Auto-generated constructor stub
   }
 
   /**

@@ -59,6 +59,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       final JobInstance jobInstanceCql = jobInstanceDaoCql.createJobInstance(jobName, jobParameters);
       final JobInstance jobInstanceThrift = jobInstanceDaoThrift.createJobInstance(jobName, jobParameters);
+      // Suivant le mode on retourne le jobInstance CQL ou THRIFT
       if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
         return jobInstanceCql;
       } else {
