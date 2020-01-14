@@ -55,7 +55,7 @@ public class CorrespondancesRndCqlSupport {
 
 
     // ATTENTION
-    final String idCorrespondance = correspondance.getCodeTemporaire() + SEPARATEUR + correspondance.getVersionCourante();
+    // final String idCorrespondance = correspondance.getCodeTemporaire() + SEPARATEUR + correspondance.getVersionCourante();
 
     rndDaoCql.saveWithMapper(correspondance);
 
