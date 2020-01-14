@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.services.document.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -767,18 +766,11 @@ SAESearchService {
       final long endTime = System.currentTimeMillis();
       final long diff = endTime - startTime;
       if (diff / 1000 >= dureeMaxRequete) {
-        List<String> list;
-        if (indexOrderPreferenceList!=null) {
-          list=indexOrderPreferenceList;
-        }else {
-          list=new ArrayList<>();
-        }
-        final List<String> listIndexOrderPreferenceList = Arrays.asList(prefixeTrc, String.join(",", list), requeteFinal);
-        LOG.warn("{} - Requête de recherche dure plus de "+ dureeMaxRequete +"  secondes - Index utilisé : {} - Requête Lucene utilisée : {}", 
-                 listIndexOrderPreferenceList.toArray());
-        throw new SAESearchServiceEx("Timeout requête soap, durée=" + diff / 1000 + "s");
+        LOG.warn("{} - Requête de recherche dure plus de " + dureeMaxRequete + "  secondes - Index utilisé : {} - Requête Lucene utilisée : {}",
+                 prefixeTrc,
+                 indexOrderPreferenceList,
+                 requeteFinal);
       }
-
     }
     catch (final SAESearchQueryParseException e) {
       throw new SAESearchServiceEx(
