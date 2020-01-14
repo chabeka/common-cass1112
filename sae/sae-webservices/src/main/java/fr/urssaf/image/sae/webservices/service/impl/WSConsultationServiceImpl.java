@@ -78,37 +78,36 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
     * {@inheritDoc}
     */
    @Override
-   public ConsultationResponse consultation(Consultation request)
+   public ConsultationResponse consultation(final Consultation request)
          throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "consultation()";
+      final String prefixeTrc = "consultation()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       // Lecture de l'UUID depuis l'objet de requête de la couche ws
-      UUID uuid = UUID.fromString(request.getConsultation().getIdArchive()
+      final UUID uuid = UUID.fromString(request.getConsultation().getIdArchive()
             .getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             uuid);
 
       // Lecture des métadonnées depuis l'objet de requête de la couche ws
-      ListeMetadonneeCodeType listeMetaWs = request.getConsultation()
+      final ListeMetadonneeCodeType listeMetaWs = request.getConsultation()
             .getMetadonnees();
-
       // Convertit la liste des métadonnées de l'objet de la couche ws vers un
       // objet plus exploitable
-      List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
+      final List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
 
       // Appel de la méthode commune entre avec MTOM et sans MTOM
       // Cette méthode se charge des vérifications et de la levée des AxisFault
-      UntypedDocument untypedDocument = consultationCommune(uuid, listeMetas);
+      final UntypedDocument untypedDocument = consultationCommune(uuid, listeMetas);
 
       // Conversion de l'objet UntypedDocument en un objet de la couche web
       // service
-      List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
+      final List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
             .getUMetadatas());
-      ConsultationResponse response = ObjectConsultationFactory
+      final ConsultationResponse response = ObjectConsultationFactory
             .createConsultationResponse(untypedDocument.getContent(), metadatas);
 
       // Traces debug - sortie méthode
@@ -123,45 +122,45 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
     * {@inheritDoc}
     */
    @Override
-   public ConsultationMTOMResponse consultationMTOM(ConsultationMTOM request)
+   public ConsultationMTOMResponse consultationMTOM(final ConsultationMTOM request)
          throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "consultationMTOM()";
+      final String prefixeTrc = "consultationMTOM()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       // Lecture de l'UUID depuis l'objet de requête de la couche ws
-      UUID uuid = UUID.fromString(request.getConsultationMTOM().getIdArchive()
+      final UUID uuid = UUID.fromString(request.getConsultationMTOM().getIdArchive()
             .getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             uuid);
 
       // Lecture des métadonnées depuis l'objet de requête de la couche ws
-      ListeMetadonneeCodeType listeMetaWs = request.getConsultationMTOM()
+      final ListeMetadonneeCodeType listeMetaWs = request.getConsultationMTOM()
             .getMetadonnees();
 
       // Convertit la liste des métadonnées de l'objet de la couche ws vers un
       // objet plus exploitable
-      List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
+      final List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
 
       // Ajout de la métadonnée FormatFichier si besoin
       // Pour pouvoir récupérer le type MIME par la suite
-      boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
+      final boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
 
       // Appel de la méthode commune entre avec MTOM et sans MTOM
       // Cette méthode se charge des vérifications et de la levée des AxisFault
-      UntypedDocument untypedDocument = consultationCommune(uuid, listeMetas);
+      final UntypedDocument untypedDocument = consultationCommune(uuid, listeMetas);
 
       // Récupération du type MIME et suppression si besoin de FormatFichier
-      String typeMime = typeMimeDepuisFormatFichier(
+      final String typeMime = typeMimeDepuisFormatFichier(
             untypedDocument.getUMetadatas(), fmtFicAjoute);
 
       // Conversion de l'objet UntypedDocument en un objet de la couche web
       // service
-      List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
+      final List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
             .getUMetadatas());
-      ConsultationMTOMResponse response = ObjectConsultationFactory
+      final ConsultationMTOMResponse response = ObjectConsultationFactory
             .createConsultationMTOMResponse(untypedDocument.getContent(),
                   metadatas, typeMime);
 
@@ -178,26 +177,26 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
     */
    @Override
    public ConsultationAffichableResponse consultationAffichable(
-         ConsultationAffichable request) throws ConsultationAxisFault {
+         final ConsultationAffichable request) throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "consultationAffichable()";
+      final String prefixeTrc = "consultationAffichable()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       // Lecture de l'UUID depuis l'objet de requête de la couche ws
-      UUID uuid = UUID.fromString(request.getConsultationAffichable()
+      final UUID uuid = UUID.fromString(request.getConsultationAffichable()
             .getIdArchive().getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             uuid);
 
       // Lecture des métadonnées depuis l'objet de requête de la couche ws
-      ListeMetadonneeCodeType listeMetaWs = request.getConsultationAffichable()
+      final ListeMetadonneeCodeType listeMetaWs = request.getConsultationAffichable()
             .getMetadonnees();
 
       // Convertit la liste des métadonnées de l'objet de la couche ws vers un
       // objet plus exploitable
-      List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
+      final List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
 
       // recuperation du numero de page et du nombre de pages
       Integer numeroPage = null;
@@ -213,23 +212,23 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
       // Ajout de la métadonnée FormatFichier si besoin
       // Pour pouvoir récupérer le type MIME par la suite
-      boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
+      final boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
 
       // Appel de la méthode de consultation affichable
       // Cette méthode se charge des vérifications et de la levée des AxisFault
-      UntypedDocument untypedDocument = consultationAffichable(uuid,
+      final UntypedDocument untypedDocument = consultationAffichable(uuid,
             listeMetas, numeroPage, nombrePages);
 
       // Récupération du type MIME et suppression si besoin de FormatFichier
-      String typeMime = typeMimeDepuisFormatFichier(
+      final String typeMime = typeMimeDepuisFormatFichier(
             untypedDocument.getUMetadatas(), fmtFicAjoute);
 
       // Conversion de l'objet UntypedDocument en un objet de la couche web
       // service
-      List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
+      final List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
             .getUMetadatas());
 
-      ConsultationAffichableResponse response = ObjectConsultationFactory
+      final ConsultationAffichableResponse response = ObjectConsultationFactory
             .createConsultationAffichableResponse(untypedDocument.getContent(),
                   metadatas, typeMime);
 
@@ -240,19 +239,19 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       return response;
    }
 
-   private UntypedDocument consultationCommune(UUID uuid, List<String> listMetas)
+   private UntypedDocument consultationCommune(final UUID uuid, final List<String> listMetas)
          throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "consultationCommune()";
+      final String prefixeTrc = "consultationCommune()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       try {
 
          // Appel de la couche service
-         ConsultParams consultParams = new ConsultParams(uuid, listMetas);
-         UntypedDocument untypedDocument = saeService
+         final ConsultParams consultParams = new ConsultParams(uuid, listMetas);
+         final UntypedDocument untypedDocument = saeService
                .consultation(consultParams);
 
          // Regarde si l'archive a été retrouvée dans le SAE. Si ce n'est pas le
@@ -275,34 +274,34 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
          }
 
-      } catch (SAEConsultationServiceException e) {
+      } catch (final SAEConsultationServiceException e) {
          throw new ConsultationAxisFault(e);
 
-      } catch (UnknownDesiredMetadataEx e) {
+      } catch (final UnknownDesiredMetadataEx e) {
          throw new ConsultationAxisFault("ConsultationMetadonneesInexistante",
                e.getMessage(), e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
+      } catch (final MetaDataUnauthorizedToConsultEx e) {
          throw new ConsultationAxisFault(
                "ConsultationMetadonneesNonAutorisees", e.getMessage(), e);
       }
 
    }
 
-   private UntypedDocument consultationAffichable(UUID uuid,
-         List<String> listMetas, Integer numeroPage, Integer nombrePages)
+   private UntypedDocument consultationAffichable(final UUID uuid,
+         final List<String> listMetas, final Integer numeroPage, final Integer nombrePages)
          throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "consultationAffichable()";
+      final String prefixeTrc = "consultationAffichable()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       try {
 
          // Appel de la couche service
-         ConsultParams consultParams = new ConsultParams(uuid, listMetas,
+         final ConsultParams consultParams = new ConsultParams(uuid, listMetas,
                numeroPage, nombrePages);
-         UntypedDocument untypedDocument = saeService
+         final UntypedDocument untypedDocument = saeService
                .consultationAffichable(consultParams);
 
          // Regarde si l'archive a été retrouvée dans le SAE. Si ce n'est pas le
@@ -325,47 +324,48 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
          }
 
-      } catch (SAEConsultationServiceException e) {
+      } catch (final SAEConsultationServiceException e) {
          throw new ConsultationAxisFault(e);
 
-      } catch (UnknownDesiredMetadataEx e) {
+      } catch (final UnknownDesiredMetadataEx e) {
          throw new ConsultationAxisFault("ConsultationMetadonneesInexistante",
                e.getMessage(), e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
+      } catch (final MetaDataUnauthorizedToConsultEx e) {
          throw new ConsultationAxisFault(
                "ConsultationMetadonneesNonAutorisees", e.getMessage(), e);
-      } catch (SAEConsultationAffichableParametrageException e) {
+      } catch (final SAEConsultationAffichableParametrageException e) {
          throw new ConsultationAxisFault(
                "ConsultationAffichableParametrageIncorrect", e.getMessage(), e);
       }
 
    }
 
-   public ConsultationGNTGNSResponse consultationGNTGNS(
-         ConsultationGNTGNS request) throws SearchingServiceEx,
+   @Override
+  public ConsultationGNTGNSResponse consultationGNTGNS(
+         final ConsultationGNTGNS request) throws SearchingServiceEx,
          ConnectionServiceEx, SAEConsultationServiceException,
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException, RemoteException {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "consultationAffichable()";
+      final String prefixeTrc = "consultationAffichable()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
-      UUID uuid = UUID.fromString(request.getConsultationGNTGNS()
+      final UUID uuid = UUID.fromString(request.getConsultationGNTGNS()
             .getIdArchive().getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             uuid);
 
       // Lecture des métadonnées depuis l'objet de requête de la couche ws
-      ListeMetadonneeCodeType listeMetaWs = request.getConsultationGNTGNS()
+      final ListeMetadonneeCodeType listeMetaWs = request.getConsultationGNTGNS()
             .getMetadonnees();
 
       // Convertit la liste des métadonnées de l'objet de la couche ws vers un
       // objet plus exploitable
-      List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
+      final List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
 
-      boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
+      final boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
 
       // Regarde si l'archive a été retrouvée dans la GNT si ce n'est pas le cas
       // appelle a la GNS via le STUB
@@ -374,24 +374,24 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
             "{} - L'archive demandée n'a pas été retrouvée dans la GNT ({})",
             prefixeTrc, uuid);
 
-      ConsultParams param = new ConsultParams(uuid, listeMetas);
+      final ConsultParams param = new ConsultParams(uuid, listeMetas);
       try {
          // Appelle au service de consultation affichable de la GNS
       // Le document ne se trouve pas en GNT, on consulte en GNS
          
-         UntypedDocument untypedDocument = saeService
+         final UntypedDocument untypedDocument = saeService
                .consultation(param);
          
          if (untypedDocument == null) {
    
             // consultationMTOM si le document existe en GNT
-            MessageContext msgCtx = MessageContext.getCurrentMessageContext();
+            final MessageContext msgCtx = MessageContext.getCurrentMessageContext();
 
             // Creation du client au web service de la GNT
             stub = new SaeServiceStub(adresseGNT);
             
             // Creation de la requete pour l'appelle au web service
-            fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM reqStub = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM();
+            final fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM reqStub = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM();
 
             reqStub
                   .setConsultationMTOM(new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMRequestType());
@@ -410,7 +410,7 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
             if (!org.apache.commons.collections.CollectionUtils
                   .isEmpty(listeMetas)) {
-               fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType codesMetadonnees = buildListeCodesMetadonnes(listeMetas);
+               final fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType codesMetadonnees = buildListeCodesMetadonnes(listeMetas);
                reqStub.getConsultationMTOM().setMetadonnees(codesMetadonnees);
             }
 
@@ -420,7 +420,7 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
                   .setLocalName("consultationMTOM");
 
             fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMResponse resp = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMResponse();
-            ConsultationGNTGNSResponse response = new ConsultationGNTGNSResponse();
+            final ConsultationGNTGNSResponse response = new ConsultationGNTGNSResponse();
             try {
                // Si le document existe sur la GNT appelle au web service
                // consultationMTOM de la GNT
@@ -431,7 +431,7 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
                      .setConsultationGNTGNSResponse(new ConsultationGNTGNSResponseType());
                response.getConsultationGNTGNSResponse().setContenu(
                      resp.getConsultationMTOMResponse().getContenu());
-               List<MetadonneeType> meta = new ArrayList<MetadonneeType>();
+               final List<MetadonneeType> meta = new ArrayList<>();
 
                // Creation de la reponse consultationGNTGNS à retourner
                for (int i = 0; i < resp.getConsultationMTOMResponse()
@@ -452,44 +452,44 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
                                     .getMetadonnee()[i].getValeur()
                                     .getMetadonneeValeurType());
                }
-               ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
+               final ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
 
-               for (MetadonneeType metadonnee : meta) {
+               for (final MetadonneeType metadonnee : meta) {
                   listeMetadonnee.addMetadonnee(metadonnee);
                }
 
                response.getConsultationGNTGNSResponse().setMetadonnees(
                      listeMetadonnee);
                return response;
-            } catch (AxisFault fault) {
-               String faultStr = fault.getFaultMessageContext().getEnvelope()
+            } catch (final AxisFault fault) {
+               final String faultStr = fault.getFaultMessageContext().getEnvelope()
                      .getBody().getFirstElement().getFirstElement()
                      .getFirstElement().getText();
-               String strFinal = faultStr.substring(4);
+               final String strFinal = faultStr.substring(4);
                throw new ConsultationAxisFault(strFinal, fault.getMessage());
             }
          } else {
         
-            String typeMime = typeMimeDepuisFormatFichier(
+            final String typeMime = typeMimeDepuisFormatFichier(
                   untypedDocument.getUMetadatas(), fmtFicAjoute);
 
             // Le document existe en GNS on construit la reponse normalement
-            List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
+            final List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
                   .getUMetadatas());
 
-            ConsultationGNTGNSResponse response = ObjectConsultationFactory
+            final ConsultationGNTGNSResponse response = ObjectConsultationFactory
                   .createConsultationGNTGNSResponse(
                         untypedDocument.getContent(), metadatas, typeMime);
 
             return response;
       }
-      } catch (SAEConsultationServiceException e) {
+      } catch (final SAEConsultationServiceException e) {
          throw new ConsultationAxisFault(e);
 
-      } catch (UnknownDesiredMetadataEx e) {
+      } catch (final UnknownDesiredMetadataEx e) {
          throw new ConsultationAxisFault(
                "ConsultationMetadonneesInexistante", e.getMessage(), e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
+      } catch (final MetaDataUnauthorizedToConsultEx e) {
          throw new ConsultationAxisFault(
                "ConsultationMetadonneesNonAutorisees", e.getMessage(), e);
 //      } catch (SAEConsultationParametrageException e) {
@@ -500,18 +500,18 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
    }
 
    public static fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType buildListeCodesMetadonnes(
-         List<String> codesMetadonnees) {
+         final List<String> codesMetadonnees) {
 
-      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType listeMetadonneeCodeType = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType();
+      final fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType listeMetadonneeCodeType = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType();
 
-      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType[] tabMetadonneeCodeType = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType[codesMetadonnees
+      final fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType[] tabMetadonneeCodeType = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType[codesMetadonnees
             .size()];
       listeMetadonneeCodeType.setMetadonneeCode(tabMetadonneeCodeType);
 
       int indice = 0;
       fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType metadonneeCodeType;
 
-      Iterator<String> iterator = codesMetadonnees.iterator();
+      final Iterator<String> iterator = codesMetadonnees.iterator();
       while (iterator.hasNext()) {
 
          metadonneeCodeType = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType();
@@ -527,7 +527,7 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
    }
 
    private List<String> convertListeMetasWebServiceToService(
-         ListeMetadonneeCodeType listeMetaWs) {
+         final ListeMetadonneeCodeType listeMetaWs) {
 
       if (listeMetaWs == null) {
          return null;
@@ -538,19 +538,19 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
    }
 
    private List<MetadonneeType> convertListeMetasServiceToWebService(
-         List<UntypedMetadata> listeMetasService) {
+         final List<UntypedMetadata> listeMetasService) {
 
-      List<MetadonneeType> metadatas = new ArrayList<MetadonneeType>();
+      final List<MetadonneeType> metadatas = new ArrayList<>();
 
-      for (UntypedMetadata untypedMetadata : CollectionUtils
+      for (final UntypedMetadata untypedMetadata : CollectionUtils
             .loadListNotNull(listeMetasService)) {
 
-         String code = untypedMetadata.getLongCode();
+         final String code = untypedMetadata.getLongCode();
          String valeur = untypedMetadata.getValue();
          if (untypedMetadata.getValue() == null) {
             valeur = StringUtils.EMPTY;
          }
-         MetadonneeType metadonnee = ObjectTypeFactory.createMetadonneeType(
+         final MetadonneeType metadonnee = ObjectTypeFactory.createMetadonneeType(
                code, valeur);
 
          metadatas.add(metadonnee);
@@ -575,10 +575,10 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
     *         false dans le cas contraire
     */
    protected boolean ajouteSiBesoinMetadonneeFormatFichier(
-         List<String> listeMetas) {
+         final List<String> listeMetas) {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "ajouteSiBesoinMetadonneeFormatFichier()";
+      final String prefixeTrc = "ajouteSiBesoinMetadonneeFormatFichier()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
@@ -622,18 +622,18 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
     *            liste des métadonnées
     */
    protected String typeMimeDepuisFormatFichier(
-         List<UntypedMetadata> listeMetas, boolean supprMetaFmtFic)
+         final List<UntypedMetadata> listeMetas, final boolean supprMetaFmtFic)
          throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "typeMimeDepuisFormatFichier()";
+      final String prefixeTrc = "typeMimeDepuisFormatFichier()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       // Cherche la métadonnée FormatFichier
       UntypedMetadata metaFormatFichier = null;
       if (!org.apache.commons.collections.CollectionUtils.isEmpty(listeMetas)) {
-         for (UntypedMetadata meta : listeMetas) {
+         for (final UntypedMetadata meta : listeMetas) {
             if (FORMAT_FICHIER.equals(meta.getLongCode())) {
                metaFormatFichier = meta;
                break;
@@ -661,9 +661,9 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       }
 
       // Convertit le type PRONOM en type MIME
-      String typePronom = metaFormatFichier.getValue();
+      final String typePronom = metaFormatFichier.getValue();
       LOG.debug("{} - Type PRONOM : {}", prefixeTrc, typePronom);
-      String typeMime = convertitPronomEnTypeMime(metaFormatFichier.getValue());
+      final String typeMime = convertitPronomEnTypeMime(metaFormatFichier.getValue());
       LOG.debug("{} - Type Mime déduit : {}", prefixeTrc, typeMime);
 
       // Renvoie du type MIME à l'appelant
@@ -682,11 +682,11 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
     * @return le type MIME correspondant
     * @throws ConsultationAxisFault
     */
-   protected String convertitPronomEnTypeMime(String typePronom)
+   protected String convertitPronomEnTypeMime(final String typePronom)
          throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "convertitPronomEnTypeMime()";
+      final String prefixeTrc = "convertitPronomEnTypeMime()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
@@ -706,7 +706,7 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       try {
          typeMime = referentielFormatService.getFormat(typePronom)
                .getTypeMime();
-      } catch (UnknownFormatException e) {
+      } catch (final UnknownFormatException e) {
          throw new ConsultationAxisFault("FormatFichierInconnu",
                e.getMessage(), e);
       }
