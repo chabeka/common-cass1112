@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.format.referentiel.model;
 
+import org.javers.core.metamodel.annotation.Id;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,10 +16,10 @@ import com.datastax.driver.mapping.annotations.Table;
  * */
 @Table(name = "referentielformatcql")
 public class FormatFichier implements Comparable<FormatFichier> {
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(FormatFichier.class);
+
   @PartitionKey
   @Column(name = "idFormat")
+  @Id
   private String idFormat;
 
   @Column(name = "typeMime")
