@@ -65,7 +65,7 @@ public class ActionUnitaireCqlSupportTest {
     Assert.assertEquals("le code doit être exact", CODE_TEST1, recup.getCode());
     Assert.assertEquals("la description doit être exacte", DESCRIPTION1, recup.getDescription());
 
-    cqlsupport.delete(CODE_TEST1, new Date().getTime());
+    cqlsupport.delete(CODE_TEST1);
     recup = cqlsupport.find(CODE_TEST1);
     Assert.assertNull("aucune référence de l'action unitaire ne doit être trouvée", recup);
   }

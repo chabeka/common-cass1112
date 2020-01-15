@@ -43,9 +43,9 @@ public class ActionUnitaireCqlSupport {
    * @param code
    *          identifiant de la action unitaire
    */
-  public void delete(final String code, final long clock) {
+  public void delete(final String code) {
     Assert.notNull(code, "le code ne peut etre null");
-    actionunitairedaocql.deleteById(code, clock);
+    actionunitairedaocql.deleteById(code);
 
   }
 

@@ -21,7 +21,29 @@ import com.datastax.driver.mapping.annotations.Table;
 public class ActionUnitaire implements Comparable<ActionUnitaire> {
 
 
-  /** identifiant unique de l'action unitaire. */
+  @Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ActionUnitaire other = (ActionUnitaire) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		return true;
+	}
+
+/** identifiant unique de l'action unitaire. */
   @PartitionKey
   @Column(name = "code")
   @Id
@@ -69,13 +91,14 @@ public class ActionUnitaire implements Comparable<ActionUnitaire> {
     return "code : " + code + "\ndescription : " + description;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
-  public final int hashCode() {
-    return super.hashCode();
-  }
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((code == null) ? 0 : code.hashCode());
+	result = prime * result + ((description == null) ? 0 : description.hashCode());
+	return result;
+}
 
   @Override
   public int compareTo(final ActionUnitaire o) {

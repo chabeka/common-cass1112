@@ -42,9 +42,9 @@ public class PrmdCqlSupport {
    * @param code
    *          identifiant de la prmd
    */
-  public void delete(final String code, final long clock) {
+  public void delete(final String code) {
     Assert.notNull(code, "le code ne peut etre null");
-    prmddaocql.deleteById(code, clock);
+    prmddaocql.deleteById(code);
 
   }
 

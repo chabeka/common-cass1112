@@ -47,9 +47,9 @@ public class ContratServiceCqlSupport {
    * @param code
    *          identifiant de la trace
    */
-  public void delete(final String code, final long clock) {
+  public void delete(final String code) {
     Assert.notNull(code, "le code ne peut etre null");
-    contratservicedaocql.deleteById(code,clock);
+    contratservicedaocql.deleteById(code);
 
   }
 

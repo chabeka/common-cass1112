@@ -131,13 +131,13 @@ public class PrmdSupportFacade implements ISupportFacade<Prmd> {
       break;
 
     case MODE_API.DATASTAX:
-      prmdCqlSupport.delete(id, clockSupport.currentCLock());
+      prmdCqlSupport.delete(id);
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       prmdSupport.delete(id, clockSupport.currentCLock());
-      prmdCqlSupport.delete(id, clockSupport.currentCLock());
+      prmdCqlSupport.delete(id);
       break;
 
     default:

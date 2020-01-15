@@ -131,13 +131,13 @@ public class PagmaSupportFacade implements IPagmsSupportFacade<Pagma> {
       break;
 
     case MODE_API.DATASTAX:
-      pagmaCqlSupport.delete(id, clockSupport.currentCLock());
+      pagmaCqlSupport.delete(id);
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       pagmaSupport.delete(id, clockSupport.currentCLock());
-      pagmaCqlSupport.delete(id, clockSupport.currentCLock());
+      pagmaCqlSupport.delete(id);
       break;
 
     default:
@@ -184,13 +184,13 @@ public class PagmaSupportFacade implements IPagmsSupportFacade<Pagma> {
       break;
 
     case MODE_API.DATASTAX:
-      pagmaCqlSupport.delete(id, clockSupport.currentCLock());
+      pagmaCqlSupport.delete(id);
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       pagmaSupport.delete(id, clockSupport.currentCLock(), mutator);
-      pagmaCqlSupport.delete(id, clockSupport.currentCLock());
+      pagmaCqlSupport.delete(id);
       break;
 
     default:

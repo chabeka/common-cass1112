@@ -21,8 +21,7 @@ import com.google.common.base.Objects;
  */
 @Table(name = "droitprmdcql")
 public class Prmd implements Comparable<Prmd> {
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(Prmd.class);
+
   /** identifiant unique du PRMD */
   @PartitionKey
   @Column(name = "code")

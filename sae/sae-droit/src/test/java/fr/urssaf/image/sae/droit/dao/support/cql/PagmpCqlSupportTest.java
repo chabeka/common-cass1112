@@ -74,7 +74,7 @@ public class PagmpCqlSupportTest {
 
     support.create(pagmp);
 
-    support.delete(CODE1, new Date().getTime());
+    support.delete(CODE1);
 
     final Pagmp res = support.find(CODE1);
 

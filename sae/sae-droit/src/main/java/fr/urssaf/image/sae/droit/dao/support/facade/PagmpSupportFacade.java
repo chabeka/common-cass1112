@@ -132,13 +132,13 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
       break;
 
     case MODE_API.DATASTAX:
-      pagmpCqlSupport.delete(id, clockSupport.currentCLock());
+      pagmpCqlSupport.delete(id);
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       pagmpSupport.delete(id, clockSupport.currentCLock());
-      pagmpCqlSupport.delete(id, clockSupport.currentCLock());
+      pagmpCqlSupport.delete(id);
       break;
 
     default:
@@ -186,13 +186,13 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
       break;
 
     case MODE_API.DATASTAX:
-      pagmpCqlSupport.delete(id, clockSupport.currentCLock());
+      pagmpCqlSupport.delete(id);
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       pagmpSupport.delete(id, clockSupport.currentCLock(), mutator);
-      pagmpCqlSupport.delete(id, clockSupport.currentCLock());
+      pagmpCqlSupport.delete(id);
       break;
 
     default:

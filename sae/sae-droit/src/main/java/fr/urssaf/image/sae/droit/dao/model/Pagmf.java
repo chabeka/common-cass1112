@@ -14,8 +14,7 @@ import com.datastax.driver.mapping.annotations.Table;
  */
 @Table(name = "droitpagmfcql")
 public class Pagmf implements Comparable<Pagmf> {
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(Pagmf.class);
+ 
   @PartitionKey
   @Column(name = "codePagmf")
   @Id

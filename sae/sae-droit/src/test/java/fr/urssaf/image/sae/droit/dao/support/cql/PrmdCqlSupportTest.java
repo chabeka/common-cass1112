@@ -96,7 +96,7 @@ public class PrmdCqlSupportTest {
 
     support.create(prmd);
 
-    support.delete(CODE1, new Date().getTime());
+    support.delete(CODE1);
 
     final Prmd res = support.find(CODE1);
 

@@ -43,9 +43,9 @@ public class PagmpCqlSupport {
    * @param code
    *          identifiant de la pagmp
    */
-  public void delete(final String code, final long clock) {
+  public void delete(final String code) {
     Assert.notNull(code, "le code ne peut etre null");
-    pagmpdaocql.deleteById(code, clock);
+    pagmpdaocql.deleteById(code);
 
   }
 

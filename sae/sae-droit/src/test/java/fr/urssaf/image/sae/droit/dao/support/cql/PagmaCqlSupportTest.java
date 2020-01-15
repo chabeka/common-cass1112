@@ -86,7 +86,7 @@ public class PagmaCqlSupportTest {
 
     support.create(pagma);
 
-    support.delete(CODE1, new Date().getTime());
+    support.delete(CODE1);
 
     final Pagma res = support.find(CODE1);
 

@@ -17,8 +17,7 @@ import com.datastax.driver.mapping.annotations.Table;
  */
 @Table(name = "droitpagmpcql")
 public class Pagmp implements Comparable<Pagmp> {
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(Pagmp.class);
+ 
   /** identifiant unique du PAGMp */
   @PartitionKey
   @Column(name = "code")

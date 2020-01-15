@@ -118,7 +118,7 @@ public class ContratServiceCqlDatasSupportTest {
 
     support.create(contract);
 
-    support.delete(LIBELLE1, new Date().getTime());
+    support.delete(LIBELLE1);
 
     final ServiceContract res = support.find(LIBELLE1);
     Assert.assertNull(
