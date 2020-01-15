@@ -73,6 +73,7 @@ public class ParameterCql implements Comparable<ParameterCql> {
   /** Nom du paramètre */
   @ClusteringColumn
   @Column(name = "name")
+  @Id
   private ParameterType name;
 
   /** valeur du paramètre */
