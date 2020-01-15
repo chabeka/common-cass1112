@@ -89,53 +89,14 @@ public class MigrationActionUnitaire {
    */
   public Diff compareActionsUnitaires(final List<ActionUnitaire> actionsUnitairesThrift, final List<ActionUnitaire> actionsUnitairesCql) {
 
-    /*
-     * final List<ActionUnitaireM> actionsUnitairesThriftM = convertList(actionsUnitairesThrift);
-     * final List<ActionUnitaireM> actionsUnitairesCqlM = convertList(actionsUnitairesCql);
-     * actionsUnitairesCqlM.get(0).setDescription("M");
-     * return CompareUtils.compareListsGeneric(actionsUnitairesThriftM, actionsUnitairesCqlM);
-     */
-    // actionsUnitairesCql.get(0).setDescription("Javers cool");
-
-    /*
-     * final ActionUnitaire actionUnitaireSupp = new ActionUnitaire();
-     * actionUnitaireSupp.setCode("JAVERSCODE");
-     * actionUnitaireSupp.setDescription("JAVERSDESC");
-     * actionsUnitairesCql.add(actionUnitaireSupp);
-     */
     Collections.sort(actionsUnitairesThrift);
     Collections.sort(actionsUnitairesCql);
     final Javers javers = JaversBuilder
                                        .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
                                        .build();
     final Diff diff = javers.compareCollections(actionsUnitairesThrift, actionsUnitairesCql, ActionUnitaire.class);
     return diff;
-
-
   }
-
-  /*
-   * public void logCompare(final boolean compare, final List<ActionUnitaire> actionsUnitairesThrift, final List<ActionUnitaire> actionsUnitairesCql) {
-   * if (compare) {
-   * LOGGER.info("MIGRATION_ACTION_UNITAIRE -- Les listes ActionUnitaires sont identiques");
-   * } else {
-   * LOGGER.info("MIGRATION_ACTION_UNITAIRE -- NbThrift=" + actionsUnitairesThrift.size());
-   * LOGGER.info("MIGRATION_ACTION_UNITAIRE -- NbCql=" + actionsUnitairesCql.size());
-   * LOGGER.warn("MIGRATION_ACTION_UNITAIRE -- ATTENTION: Les listes ActionUnitaire sont différentes ");
-   * }
-   * }
-   */
-
-  /*
-   * private List<ActionUnitaireM> convertList(final List<ActionUnitaire> actionsUnitaires) {
-   * final List<ActionUnitaireM> actionsUnitairesM = new ArrayList<>();
-   * for (final ActionUnitaire actionUnitaire : actionsUnitaires) {
-   * final ActionUnitaireM actionUnitaireM = new ActionUnitaireM(actionUnitaire);
-   * actionsUnitairesM.add(actionUnitaireM);
-   * }
-   * return actionsUnitairesM;
-   * }
-   */
 
 }

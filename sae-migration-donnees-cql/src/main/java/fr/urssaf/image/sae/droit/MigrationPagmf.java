@@ -83,12 +83,12 @@ public class MigrationPagmf implements IMigrationR {
    * @param pagmfsThrift
    * @param pagmfsCql
    */
-  private Diff comparePagmfs(final List<Pagmf> pagmfsThrift, final List<Pagmf> pagmfsCql) {
+  public Diff comparePagmfs(final List<Pagmf> pagmfsThrift, final List<Pagmf> pagmfsCql) {
     Collections.sort(pagmfsThrift);
     Collections.sort(pagmfsCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(pagmfsThrift, pagmfsCql, Pagmf.class);
     return diff;

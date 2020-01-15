@@ -171,12 +171,12 @@ public class MigrationParameters implements IMigrationR {
    * @param parametersThrift
    * @param parametersCql
    */
-  private Diff compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql) {
+  public Diff compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql) {
     Collections.sort(parametersThrift);
     Collections.sort(parametersCql);
     final Javers javers = JaversBuilder
                                        .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
                                        .build();
     final Diff diff = javers.compareCollections(parametersThrift, parametersCql, ParameterCql.class);
     return diff;

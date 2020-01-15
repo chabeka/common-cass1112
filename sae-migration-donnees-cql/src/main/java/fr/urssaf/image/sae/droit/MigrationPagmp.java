@@ -82,13 +82,13 @@ public class MigrationPagmp implements IMigrationR {
    * @param pagmpsThrift
    * @param pagmpsCql
    */
-  private Diff comparePagmps(final List<Pagmp> pagmpsThrift, final List<Pagmp> pagmpsCql) {
+  public Diff comparePagmps(final List<Pagmp> pagmpsThrift, final List<Pagmp> pagmpsCql) {
 
     Collections.sort(pagmpsThrift);
     Collections.sort(pagmpsCql);
     final Javers javers = JaversBuilder
                                        .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
                                        .build();
     final Diff diff = javers.compareCollections(pagmpsThrift, pagmpsCql, Pagmp.class);
     return diff;

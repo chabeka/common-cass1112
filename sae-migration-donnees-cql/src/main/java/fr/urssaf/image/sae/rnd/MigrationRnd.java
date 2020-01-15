@@ -87,13 +87,13 @@ public class MigrationRnd implements IMigrationR {
    * @param typeDocumentsThrift
    * @param typeDocumentsCql
    */
-  private Diff compareRnds(final List<TypeDocument> typeDocumentsThrift, final List<TypeDocument> typeDocumentsCql) {
+  public Diff compareRnds(final List<TypeDocument> typeDocumentsThrift, final List<TypeDocument> typeDocumentsCql) {
 
     Collections.sort(typeDocumentsThrift);
     Collections.sort(typeDocumentsCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE) 
         .build();
     final Diff diff = javers.compareCollections(typeDocumentsThrift, typeDocumentsCql, TypeDocument.class);
     return diff;

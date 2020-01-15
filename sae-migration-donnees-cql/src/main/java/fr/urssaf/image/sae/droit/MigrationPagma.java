@@ -82,13 +82,13 @@ public class MigrationPagma implements IMigrationR {
    * @param pagmasThrift
    * @param pagmasCql
    */
-  private Diff comparePagmas(final List<Pagma> pagmasThrift, final List<Pagma> pagmasCql) {
+  public Diff comparePagmas(final List<Pagma> pagmasThrift, final List<Pagma> pagmasCql) {
 
     Collections.sort(pagmasThrift);
     Collections.sort(pagmasCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(pagmasThrift, pagmasCql, Pagma.class);
     return diff;

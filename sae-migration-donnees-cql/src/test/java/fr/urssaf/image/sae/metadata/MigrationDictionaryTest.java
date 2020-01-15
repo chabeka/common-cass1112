@@ -3,9 +3,12 @@
  */
 package fr.urssaf.image.sae.metadata;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.common.collections.Arrays;
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
 import fr.urssaf.image.sae.metadata.referential.support.cql.DictionaryCqlSupport;
@@ -124,4 +128,23 @@ public class MigrationDictionaryTest {
       i++;
     }
   }
+  
+  @Test
+  public void diffAddTest() {
+
+	    populateTableThrift();
+	    migrationDictionary.migrationFromThriftToCql();
+
+	    final List<Dictionary> listThrift = supportThrift.findAll();
+	    supportCql.addElement("IDADD", "ENTRYADD");
+	    final List<Dictionary> listCql = supportCql.findAll();
+	    final Diff diff = migrationDictionary.compareDictionarys(listThrift, listCql);
+	    Assert.assertTrue(diff.hasChanges());
+	    final String changes = diff.getChanges().get(0).toString();
+	    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.metadata.referential.model.Dictionary/IDADD }"));
+
+	  }
+
+	  
+  
 }

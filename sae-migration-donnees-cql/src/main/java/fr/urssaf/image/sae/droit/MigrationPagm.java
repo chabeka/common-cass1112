@@ -150,7 +150,7 @@ public class MigrationPagm {
     Collections.sort(pagmCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(pagmThrift, pagmCql, PagmCql.class);
     return diff;

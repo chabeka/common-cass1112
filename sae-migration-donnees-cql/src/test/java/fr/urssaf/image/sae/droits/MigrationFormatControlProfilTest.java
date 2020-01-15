@@ -23,6 +23,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.MigrationFormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
+import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.serializer.FormatProfilSerializer;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.FormatControlProfilCqlSupport;
@@ -145,5 +146,37 @@ public class MigrationFormatControlProfilTest {
       supportThrift.create(formatControlProfil, new Date().getTime());
       i++;
     }
+  }
+  @Test
+  public void diffAddTest() throws Exception {
+	server.resetData();
+    populateTableThrift();
+    migrationFormatControlProfil.migrationFromThriftToCql();
+    final List<FormatControlProfil> listThrift = supportThrift.findAll();
+    final FormatControlProfil formatControlProfil = new FormatControlProfil();
+    formatControlProfil.setFormatCode("FORMATCODEADD");
+    formatControlProfil.setDescription("DESCADD");
+    supportCql.create(formatControlProfil);
+    final List<FormatControlProfil> listCql = supportCql.findAll();
+    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.FormatControlProfil/FORMATCODEADD }"));
+  }
+
+  @Test
+  public void diffDescTest() throws Exception {
+	  server.resetData();
+    populateTableThrift();
+    migrationFormatControlProfil.migrationFromThriftToCql();
+
+    final List<FormatControlProfil> listThrift = supportThrift.findAll();
+    final List<FormatControlProfil> listCql = supportCql.findAll();
+    listCql.get(0).setDescription("DESCDIFF");
+    
+    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertEquals(changes,"ValueChange{ 'description' value changed from 'format de controle gérant  la validation et l'identification du fmt/354' to 'DESCDIFF' }");
   }
 }

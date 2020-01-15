@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.droits;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.MigrationPagmp;
+import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmpCqlSupport;
@@ -138,4 +140,37 @@ public class MigrationPagmpTest {
       i++;
     }
   }
+  @Test
+  public void diffAddTest() throws Exception {
+    populateTableThrift();
+    migrationPagmp.migrationFromThriftToCql();
+    final List<Pagmp> listThrift = supportThrift.findAll();
+    final Pagmp pagmp = new Pagmp();
+    pagmp.setCode("CODEADD");
+    supportCql.create(pagmp);
+    final List<Pagmp> listCql = supportCql.findAll();
+    final Diff diff = migrationPagmp.comparePagmps(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.Pagmp/CODEADD }"));
+  }
+
+  @Test
+  public void diffDescTest() throws Exception {
+    populateTableThrift();
+    migrationPagmp.migrationFromThriftToCql();
+
+    final List<Pagmp> listThrift = supportThrift.findAll();
+    final List<Pagmp> listCql = supportCql.findAll();
+    listCql.get(0).setDescription("DESCDIFF");
+    
+    final Diff diff = migrationPagmp.comparePagmps(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'PAGM_DCL_RECHERCHE_CONSULTATION_GNS_PAGMp' to 'DESCDIFF' }"));
+  }
+    
+  
+  
+  
 }

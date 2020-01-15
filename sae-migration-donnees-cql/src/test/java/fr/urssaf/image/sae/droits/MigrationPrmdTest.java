@@ -4,9 +4,11 @@
 package fr.urssaf.image.sae.droits;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.droit.MigrationPrmd;
+import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
@@ -154,5 +157,35 @@ public class MigrationPrmdTest {
       supportThrift.create(prmd, new Date().getTime());
       i++;
     }
+  }
+  @Test
+  public void diffAddTest() throws Exception {
+    populateTableThrift();
+    migrationPrmd.migrationFromThriftToCql();
+    final List<Prmd> listThrift = supportThrift.findAll();
+    final Prmd prmd = new Prmd();
+    prmd.setCode("CODEADD");
+    supportCql.create(prmd);
+    final List<Prmd> listCql = supportCql.findAll();
+    final Diff diff = migrationPrmd.comparePrmds(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.Prmd/CODEADD }"));
+  }
+
+  @Test
+  public void diffDescTest() throws Exception {
+    populateTableThrift();
+    migrationPrmd.migrationFromThriftToCql();
+
+    final List<Prmd> listThrift = supportThrift.findAll();
+    final List<Prmd> listCql = supportCql.findAll();
+
+    listCql.get(0).setDescription("DESCDIFF");
+    
+    final Diff diff = migrationPrmd.comparePrmds(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'QP38A RP38.L01' to 'DESCDIFF' }"));
   }
 }

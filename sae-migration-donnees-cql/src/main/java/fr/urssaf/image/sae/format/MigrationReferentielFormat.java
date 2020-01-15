@@ -88,13 +88,13 @@ public class MigrationReferentielFormat implements IMigrationR {
    * @param formatFichiersThrift
    * @param formatFichiersCql
    */
-  private Diff compareformatFichiers(final List<FormatFichier> formatFichiersThrift, final List<FormatFichier> formatFichiersCql) {
+  public Diff compareformatFichiers(final List<FormatFichier> formatFichiersThrift, final List<FormatFichier> formatFichiersCql) {
 
     Collections.sort(formatFichiersThrift);
     Collections.sort(formatFichiersCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(formatFichiersThrift, formatFichiersCql, FormatFichier.class);
     return diff;

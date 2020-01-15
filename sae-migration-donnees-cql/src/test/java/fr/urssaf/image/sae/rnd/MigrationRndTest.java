@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.rnd;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
@@ -154,5 +156,42 @@ public class MigrationRndTest {
     }
 
     return typeDocument;
+  }
+  
+  @Test
+  public void diffAddTest() {
+
+    populateTableThrift();
+    migrationRnd.migrationFromThriftToCql();
+
+    final List<TypeDocument> listThrift = supportThrift.findAll();
+
+    final TypeDocument typeDocument = new TypeDocument();
+    typeDocument.setCode("CODEADD");
+    typeDocument.setLibelle("LIBADD");
+    typeDocument.setCodeFonction("LIBADD");
+    supportCql.ajouterRnd(typeDocument);
+    final List<TypeDocument> listCql = supportCql.findAll();
+    final Diff diff = migrationRnd.compareRnds(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: TypeDocument/CODEADD }"));
+
+  }
+
+  @Test
+  public void diffDescTest() {
+
+    populateTableThrift();
+    migrationRnd.migrationFromThriftToCql();
+
+    final List<TypeDocument> listThrift = supportThrift.findAll();
+    final List<TypeDocument> listCql = supportCql.findAll();
+    listCql.get(0).setLibelle("LIBDIFF");
+    final Diff diff = migrationRnd.compareRnds(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Ajout de notes' to 'DESCDIFF' }"));
+
   }
 }

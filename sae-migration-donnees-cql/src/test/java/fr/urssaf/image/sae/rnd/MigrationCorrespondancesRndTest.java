@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.CorrespondancesRndCqlSupport;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
@@ -133,4 +135,39 @@ public class MigrationCorrespondancesRndTest {
 
     return correspondance;
   }
+  
+  @Test
+  public void diffAddTest() {
+
+	    populateTableThrift();
+	    migrationCorrespondancesRnd.migrationFromThriftToCql();
+
+	    final List<Correspondance> listThrift = supportThrift.getAllCorrespondances();
+
+	    final Correspondance correspondance = new Correspondance();
+	    correspondance.setCodeTemporaire("CODETEMPADD");
+	    correspondance.setVersionCourante("VERSIONADD");
+	    supportCql.ajouterCorrespondance(correspondance);
+	    final List<Correspondance> listCql = supportCql.findAll();
+	    final Diff diff = migrationCorrespondancesRnd.comparecorrespondancesRnds(listThrift, listCql);
+	    Assert.assertTrue(diff.hasChanges());
+	    final String changes = diff.getChanges().get(0).toString();
+	    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.rnd.modele.Correspondance/CODETEMPADD,VERSIONADD }"));
+	  }
+
+	  @Test
+	  public void diffDescTest() {
+
+	    populateTableThrift();
+	    migrationCorrespondancesRnd.migrationFromThriftToCql();
+
+	    final List<Correspondance> listThrift = supportThrift.getAllCorrespondances();
+	    final List<Correspondance> listCql = supportCql.findAll();
+	    listCql.get(0).setCodeDefinitif("DEFDIFF");
+	    final Diff diff = migrationCorrespondancesRnd.comparecorrespondancesRnds(listThrift, listCql);
+	    Assert.assertTrue(diff.hasChanges());
+	    final String changes = diff.getChanges().get(0).toString();
+	    Assert.assertTrue(changes.equals("ValueChange{ 'codeDefinitif' value changed from 'CodeDef5' to 'DEFDIFF' }"));
+	  }
+  
 }

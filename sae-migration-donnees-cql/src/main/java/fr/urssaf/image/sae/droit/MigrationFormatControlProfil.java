@@ -88,7 +88,7 @@ public class MigrationFormatControlProfil implements IMigrationR {
     Collections.sort(formatControlProfilsCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(formatControlProfilsThrift, formatControlProfilsCql, FormatControlProfil.class);
     return diff;

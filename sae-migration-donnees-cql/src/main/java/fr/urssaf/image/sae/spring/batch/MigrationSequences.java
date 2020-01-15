@@ -90,6 +90,23 @@ public class MigrationSequences {
     }
     LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- end ");
   }
+  
+  public void addSequence(String jobIdName, long value) {
+  final ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<>(ccf.getKeyspace(),
+	        SEQUENCE_CF,
+	        StringSerializer.get(),
+	        StringSerializer.get());
+	    // On s'assure que le nouveau timestamp est supérieur à l'ancien
+
+	    final ColumnFamilyUpdater<String, String> updater = template
+	        .createUpdater(SEQUENCE_KEY);
+	  
+
+	
+	      updater.setClock(jobClockSupport.currentCLock());
+	      updater.setLong(jobIdName, value);
+	      template.update(updater);
+  }
 
   /**
    * Retourne tous les enregistrements Thrift sous forme d'entités Cql pour pouvoir comparer facilement les listes avant et après migration
@@ -130,7 +147,7 @@ public class MigrationSequences {
     Collections.sort(sequencesCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(sequencesThrift, sequencesCql, SequencesCql.class);
     return diff;

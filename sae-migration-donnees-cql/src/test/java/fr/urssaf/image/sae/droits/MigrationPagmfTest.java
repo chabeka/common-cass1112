@@ -3,9 +3,11 @@
  */
 package fr.urssaf.image.sae.droits;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,6 +24,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.MigrationPagmf;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
+import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.serializer.FormatProfilSerializer;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
@@ -188,5 +191,39 @@ public class MigrationPagmfTest {
     final FormatProfil formatProfil = FormatProfilSerializer.get().fromBytes(FORMAT_XML.getBytes());
     formatControlProfil.setControlProfil(formatProfil);
     supportFormatControlProfilThrift.create(formatControlProfil, new Date().getTime());
+  }
+  
+  @Test
+  public void diffAddTest() throws Exception {
+    populateTableThrift();
+    migrationPagmf.migrationFromThriftToCql();
+    final List<Pagmf> listThrift = supportThrift.findAll();
+    final Pagmf pagmf = new Pagmf();
+    pagmf.setCodePagmf("CODEADD");
+    supportCql.create(pagmf);
+    final List<Pagmf> listCql = supportCql.findAll();
+    final Diff diff = migrationPagmf.comparePagmfs(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.Pagmf/CODEADD }"));
+  }
+
+  @Test
+  public void diffDescTest() throws Exception {
+    populateTableThrift();
+    migrationPagmf.migrationFromThriftToCql();
+
+    final List<Pagmf> listThrift = supportThrift.findAll();
+    final List<Pagmf> listCql = supportCql.findAll();
+    listCql.get(0).setDescription("DESCDIFF");
+    
+    final Diff diff = migrationPagmf.comparePagmfs(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+ 
+    Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Contrôle sur les fichiers fournis par l’attestation vigilance1' to 'DESCDIFF' }"));
+
+   
+    
   }
 }

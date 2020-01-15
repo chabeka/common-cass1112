@@ -82,13 +82,13 @@ public class MigrationPrmd implements IMigrationR {
    * @param prmdsThrift
    * @param prmdsCql
    */
-  private Diff comparePrmds(final List<Prmd> prmdsThrift, final List<Prmd> prmdsCql) {
+  public Diff comparePrmds(final List<Prmd> prmdsThrift, final List<Prmd> prmdsCql) {
 
     Collections.sort(prmdsThrift);
     Collections.sort(prmdsCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(prmdsThrift, prmdsCql, Prmd.class);
     return diff;

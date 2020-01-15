@@ -88,12 +88,12 @@ public class MigrationDictionary implements IMigrationR {
    * @param dictionarysThrift
    * @param dictionarysCql
    */
-  private Diff compareDictionarys(final List<Dictionary> dictionarysThrift, final List<Dictionary> dictionarysCql) {
+  public Diff compareDictionarys(final List<Dictionary> dictionarysThrift, final List<Dictionary> dictionarysCql) {
     Collections.sort(dictionarysThrift);
     Collections.sort(dictionarysCql);
     final Javers javers = JaversBuilder
                                        .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
                                        .build();
     final Diff diff = javers.compareCollections(dictionarysThrift, dictionarysCql, Dictionary.class);
     return diff;

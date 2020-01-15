@@ -4,12 +4,14 @@
 package fr.urssaf.image.sae.droits;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -186,13 +188,12 @@ public class MigrationContratServiceTest {
   }
 
   @Test
-  public void diffAddTest() {
-
+  public void diffAddTest() throws Exception {
+	server.resetData();
     populateTableThrift();
     migrationContratService.migrationFromThriftToCql();
 
     final List<ServiceContract> listThrift = supportThrift.findAll();
-
     final ServiceContract contratService = new ServiceContract();
     contratService.setCodeClient("CODECLIENTADD");
     contratService.setDescription("DESCADD");
@@ -201,23 +202,23 @@ public class MigrationContratServiceTest {
     final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
-    Assert.assertTrue(changes.equals("NewObject{ new object: ServiceContract/CODECLIENTADD }"));
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.ServiceContract/CODECLIENTADD }"));
 
   }
 
   @Test
-  public void diffDescTest() {
-
+  public void diffDescTest() throws Exception {
+	  server.resetData();
     populateTableThrift();
     migrationContratService.migrationFromThriftToCql();
 
     final List<ServiceContract> listThrift = supportThrift.findAll();
     final List<ServiceContract> listCql = supportCql.findAll();
     listCql.get(0).setDescription("DESCDIFF");
+    
     final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
-    Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Contrat de service pour le client SAEL' to 'DESCDIFF' }"));
-
+    Assert.assertEquals(changes,"ValueChange{ 'description' value changed from 'Contrat de service pour le client V2' to 'DESCDIFF' }");
   }
 }

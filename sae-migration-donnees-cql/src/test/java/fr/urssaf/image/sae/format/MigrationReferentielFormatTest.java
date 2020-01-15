@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.format;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -154,5 +155,35 @@ public class MigrationReferentielFormatTest {
 
     return formatFichier;
   }
+  @Test
+  public void diffAddTest() throws Exception {
+    populateTableThrift();
+    migrationReferentielFormat.migrationFromThriftToCql();
+    final List<FormatFichier> listThrift = supportThrift.findAll();
+    final FormatFichier formatFichier = new FormatFichier();
+    formatFichier.setIdFormat("IDFORMATADD");
+    supportCql.create(formatFichier);
+    final List<FormatFichier> listCql = supportCql.findAll();
+    final Diff diff = migrationReferentielFormat.compareformatFichiers(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.format.referentiel.model.FormatFichier/IDFORMATADD }"));
+  }
 
+  @Test
+  public void diffDescTest() throws Exception {
+    populateTableThrift();
+    migrationReferentielFormat.migrationFromThriftToCql();
+
+    final List<FormatFichier> listThrift = supportThrift.findAll();
+    final List<FormatFichier> listCql = supportCql.findAll();
+    listCql.get(0).setDescription("DESCDIFF");
+    
+    final Diff diff = migrationReferentielFormat.compareformatFichiers(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Fichier MS PowerPoint macro' to 'DESCDIFF' }"));
+  }
+  
+  
 }

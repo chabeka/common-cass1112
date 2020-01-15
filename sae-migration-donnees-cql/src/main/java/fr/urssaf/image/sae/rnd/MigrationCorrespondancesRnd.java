@@ -13,6 +13,7 @@ import org.javers.core.Javers;
 import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
 import org.javers.core.diff.ListCompareAlgorithm;
+import org.javers.core.metamodel.clazz.EntityDefinitionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,15 +88,15 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
    * @param correspondancesRndsThrift
    * @param correspondancesRndsCql
    */
-  private Diff comparecorrespondancesRnds(final List<Correspondance> correspondancesRndsThrift, final List<Correspondance> correspondancesRndsCql) {
+  public Diff comparecorrespondancesRnds(final List<Correspondance> correspondancesRndsThrift, final List<Correspondance> correspondancesRndsCql) {
 
     Collections.sort(correspondancesRndsThrift);
     Collections.sort(correspondancesRndsCql);
     final Javers javers = JaversBuilder
                                        .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
                                        .build();
-    final Diff diff = javers.compareCollections(correspondancesRndsThrift, correspondancesRndsThrift, Correspondance.class);
+    final Diff diff = javers.compareCollections(correspondancesRndsThrift, correspondancesRndsCql, Correspondance.class);
     return diff;
   }
 

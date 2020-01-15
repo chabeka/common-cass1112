@@ -6,7 +6,9 @@ package fr.urssaf.image.sae.jobspring;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.ISequencesDaoCql;
+import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.spring.batch.MigrationSequences;
 import fr.urssaf.image.sae.utils.CompareUtils;
 
@@ -61,23 +64,26 @@ public class MigrationSequencesTest {
   }
 
   /**
-   * Migration des données Rnd vers referentielFormatcql
+   * Migration des données sequencescql vers Sequences
    */
   @Test
   public void migrationFromThriftToCql() {
     try {
 
       populateTableThrift();
-      /*
-       * final List<TypeDocument> listThrift = supportThrift.findAll();
-       * migrationRnd.migrationFromThriftToCql();
-       * final List<TypeDocument> listCql = supportCql.findAll();
-       */
-      /*
-       * Assert.assertEquals(listThrift.size(), listCode.length);
-       * Assert.assertEquals(listThrift.size(), listCql.size());
-       * Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
-       */
+      migrationSequences.migrationFromThriftToCql();
+        final List<SequencesCql> listThrift = migrationSequences.findAllThrift(SEQUENCE_KEY);
+        migrationSequences.migrationFromThriftToCql();
+        final List<SequencesCql> listCql = new ArrayList<>();
+        final Iterator<SequencesCql> it = sequencesDaoCql.findAllWithMapper();
+        while (it.hasNext()) {
+          final SequencesCql sequenceCql = it.next();
+          listCql.add(sequenceCql);
+        }
+        Assert.assertEquals(listThrift.size(), listCode.length);
+        Assert.assertEquals(listThrift.size(), listCql.size());
+        Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+       
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -87,14 +93,13 @@ public class MigrationSequencesTest {
 
   private void populateTableThrift() {
 
-
-    for (final String element : listCode) {
-      //supportThrift.ajouterRnd(createTypeDocument(i), new Date().getTime());
+    for (int i=0;i<listCode.length;i++) {
+    	migrationSequences.addSequence(listCode[i], listValues[i]);
     }
   }
 
   /**
-   * Migration des données droitreferentielFormatcql vers DroitRnd
+   * Migration des données sequencescql vers Sequences
    */
   @Test
   public void migrationFromCqlTothrift() {
@@ -126,4 +131,49 @@ public class MigrationSequencesTest {
       i++;
     }
   }
+  
+  @Test
+  public void diffAddTest() {
+
+    populateTableThrift();
+    migrationSequences.migrationFromThriftToCql();
+  
+
+    final SequencesCql sequenceCql = new SequencesCql();
+    sequenceCql.setJobIdName("JOBADD");
+    sequenceCql.setValue(new Long(2000));
+    sequencesDaoCql.saveWithMapper(sequenceCql);
+    final Iterator<SequencesCql> it=sequencesDaoCql.findAllWithMapper();
+    final List<SequencesCql> listCql=new ArrayList<>();
+    it.forEachRemaining(listCql::add);
+    final Diff diff = migrationSequences.compareSequences();
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql/JOBADD }"));
+
+  }
+
+  @Test
+  public void diffDescTest() {
+
+    populateTableThrift();
+    migrationSequences.migrationFromThriftToCql();
+    final Iterator<SequencesCql> it=sequencesDaoCql.findAllWithMapper();
+    final List<SequencesCql> listCql=new ArrayList<>();
+    it.forEachRemaining(listCql::add);
+    Optional<SequencesCql> sequencesCqlOpt=sequencesDaoCql.findWithMapperById("jobExecutionId");
+    if (sequencesCqlOpt.isPresent()) {
+    	SequencesCql sequencesCql=new SequencesCql();
+    	sequencesCql.setJobIdName(sequencesCqlOpt.get().getJobIdName());
+    	sequencesCql.setValue(Long.valueOf("5000"));
+    	sequencesDaoCql.saveWithMapper(sequencesCql);
+    }
+    
+    final Diff diff = migrationSequences.compareSequences();
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("ValueChange{ 'value' value changed from '1090' to '5000' }"));
+
+  }
+  
 }

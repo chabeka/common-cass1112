@@ -91,7 +91,7 @@ public class MigrationContratService implements IMigrationR {
     Collections.sort(contratServicesCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(contratServicesThrift, contratServicesCql, ServiceContract.class);
     return diff;

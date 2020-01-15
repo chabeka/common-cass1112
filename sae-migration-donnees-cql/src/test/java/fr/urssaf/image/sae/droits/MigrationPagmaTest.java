@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.diff.Diff;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,8 +20,11 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.kenai.jffi.Array;
+
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.MigrationPagma;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmaCqlSupport;
@@ -146,5 +150,53 @@ public class MigrationPagmaTest {
       supportThrift.create(pagma, new Date().getTime());
       i++;
     }
+  }
+  @Test
+  public void diffAddTest() throws Exception {
+	server.resetData();
+    populateTableThrift();
+    migrationPagma.migrationFromThriftToCql();
+    final List<Pagma> listThrift = supportThrift.findAll();
+    final Pagma pagma = new Pagma();
+    pagma.setCode("CODEADD");
+    supportCql.create(pagma);
+    final List<Pagma> listCql = supportCql.findAll();
+    final Diff diff = migrationPagma.comparePagmas(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.Pagma/CODEADD }"));
+  }
+
+  @Test
+  public void diffActionsUnitairesTest() throws Exception {
+    populateTableThrift();
+    migrationPagma.migrationFromThriftToCql();
+
+    final List<Pagma> listThrift = supportThrift.findAll();
+    final List<Pagma> listCql = supportCql.findAll();
+    listCql.get(0).setActionUnitaires(Arrays.asList(new String[]{"ACTDIFF"}));
+    
+    final Diff diff = migrationPagma.comparePagmas(listThrift, listCql);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString().trim();
+    final String shortChanges =changes.substring(0, 51).trim();
+    Assert.assertEquals(shortChanges,"ListChange{ 'actionUnitaires' collection changes :");
+    /*Assert.assertEquals(changes,"ListChange{ 'actionUnitaires' collection changes :\r\n" + 
+    		"  0. 'ajout_doc_attache' changed to 'ACTDIFF'\r\n" + 
+    		"  1. 'ajout_note' removed\r\n" + 
+    		"  2. 'archivage_masse' removed\r\n" + 
+    		"  3. 'archivage_unitaire' removed\r\n" + 
+    		"  4. 'consultation' removed\r\n" + 
+    		"  5. 'copie' removed\r\n" + 
+    		"  6. 'deblocage' removed\r\n" + 
+    		"  7. 'modification' removed\r\n" + 
+    		"  8. 'modification_masse' removed\r\n" + 
+    		"  9. 'recherche' removed\r\n" + 
+    		"  10. 'recherche_iterateur' removed\r\n" + 
+    		"  11. 'reprise_masse' removed\r\n" + 
+    		"  12. 'restore_masse' removed\r\n" + 
+    		"  13. 'suppression' removed\r\n" + 
+    		"  14. 'suppression_masse' removed }".trim());*/
+    
   }
 }

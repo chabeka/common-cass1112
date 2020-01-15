@@ -86,14 +86,14 @@ public class MigrationMetadata implements IMigrationR {
    * @param metadatasThrift
    * @param metadatasCql
    */
-  private Diff compareMetadatas(final List<MetadataReference> metadatasThrift, final List<MetadataReference> metadatasCql) {
+  public Diff compareMetadatas(final List<MetadataReference> metadatasThrift, final List<MetadataReference> metadatasCql) {
     final boolean result = CompareUtils.compareListsGeneric(metadatasThrift, metadatasCql);
 
     Collections.sort(metadatasThrift);
     Collections.sort(metadatasCql);
     final Javers javers = JaversBuilder
         .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.LEVENSHTEIN_DISTANCE)
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = javers.compareCollections(metadatasThrift, metadatasCql, MetadataReference.class);
     return diff;
