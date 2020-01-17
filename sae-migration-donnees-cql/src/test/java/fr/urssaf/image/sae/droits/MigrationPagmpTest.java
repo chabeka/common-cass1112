@@ -6,7 +6,10 @@ package fr.urssaf.image.sae.droits;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,7 +24,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.MigrationPagmp;
-import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmpCqlSupport;
@@ -54,7 +56,10 @@ public class MigrationPagmpTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationPagmpTest.class);
 
-
+  final private Javers javers = JaversBuilder
+                                             .javers()
+                                             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+                                             .build();
 
   String[] listCode = {"PAGM_V2_ARCHIVAGE_QD12K_QD12_L07_PAGMp", "PAGM_DCL_RECHERCHE_CONSULTATION_GNS_PAGMp", "PAGM_V2_ARCHIVAGE_QD12J_RD12_L05_PAGMp",
                        "PAGM_V2_ARCHIVAGE_PCA1E_PCA1_L02_PAGMp", "PAGM_V2_ARCHIVAGE_QDXXA_QD30_L01_PAGMp", "PAGM_V2_ARCHIVAGE_QD17A_QD17_L00_PAGMp"};
@@ -80,7 +85,7 @@ public class MigrationPagmpTest {
     try {
       populateTableThrift();
 
-      migrationPagmp.migrationFromThriftToCql();
+      migrationPagmp.migrationFromThriftToCql(javers);
       final List<Pagmp> listThrift = supportThrift.findAll();
       final List<Pagmp> listCql = supportCql.findAll();
 
@@ -89,7 +94,7 @@ public class MigrationPagmpTest {
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationPagmpTest.LOGGER.debug("exception=" + ex);
     }
   }
 
@@ -100,7 +105,7 @@ public class MigrationPagmpTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationPagmp.migrationFromCqlTothrift();
+    migrationPagmp.migrationFromCqlTothrift(javers);
 
     final List<Pagmp> listThrift = supportThrift.findAll();
     final List<Pagmp> listCql = supportCql.findAll();
@@ -143,13 +148,13 @@ public class MigrationPagmpTest {
   @Test
   public void diffAddTest() throws Exception {
     populateTableThrift();
-    migrationPagmp.migrationFromThriftToCql();
+    migrationPagmp.migrationFromThriftToCql(javers);
     final List<Pagmp> listThrift = supportThrift.findAll();
     final Pagmp pagmp = new Pagmp();
     pagmp.setCode("CODEADD");
     supportCql.create(pagmp);
     final List<Pagmp> listCql = supportCql.findAll();
-    final Diff diff = migrationPagmp.comparePagmps(listThrift, listCql);
+    final Diff diff = migrationPagmp.comparePagmps(listThrift, listCql,javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.Pagmp/CODEADD }"));
@@ -158,19 +163,16 @@ public class MigrationPagmpTest {
   @Test
   public void diffDescTest() throws Exception {
     populateTableThrift();
-    migrationPagmp.migrationFromThriftToCql();
+    migrationPagmp.migrationFromThriftToCql(javers);
 
     final List<Pagmp> listThrift = supportThrift.findAll();
     final List<Pagmp> listCql = supportCql.findAll();
     listCql.get(0).setDescription("DESCDIFF");
-    
-    final Diff diff = migrationPagmp.comparePagmps(listThrift, listCql);
+
+    final Diff diff = migrationPagmp.comparePagmps(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
-     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'PAGM_DCL_RECHERCHE_CONSULTATION_GNS_PAGMp' to 'DESCDIFF' }"));
+    Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'PAGM_DCL_RECHERCHE_CONSULTATION_GNS_PAGMp' to 'DESCDIFF' }"));
   }
-    
-  
-  
-  
+
 }

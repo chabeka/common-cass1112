@@ -10,9 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +40,9 @@ public class MigrationMetadata implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- start ");
+    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- start ");
 
     final List<MetadataReference> metadatasThrift = metadataSupport.findAll();
 
@@ -54,17 +52,17 @@ public class MigrationMetadata implements IMigrationR {
     final List<MetadataReference> metadatasCql = new ArrayList<>();
     final Iterator<MetadataReference> metadatasIterator = metadataDaoCql.findAllWithMapper();
     metadatasIterator.forEachRemaining(metadatasCql::add);
-    final Diff diff = compareMetadatas(metadatasThrift, metadatasCql);
-    LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- end ");
+    final Diff diff = compareMetadatas(metadatasThrift, metadatasCql, javers);
+    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- end ");
     return diff;
   }
   /**
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- start ");
+    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- start ");
 
 
     final Iterator<MetadataReference> metadatasIterator = metadataDaoCql.findAllWithMapper();
@@ -75,8 +73,8 @@ public class MigrationMetadata implements IMigrationR {
       metadataSupport.create(metadata, new Date().getTime());
     }
     final List<MetadataReference> metadatasThrift = metadataSupport.findAll();
-    final Diff diff = compareMetadatas(metadatasThrift, metadatasCql);
-    LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- end ");
+    final Diff diff = compareMetadatas(metadatasThrift, metadatasCql, javers);
+    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- end ");
     return diff;
   }
 
@@ -86,15 +84,12 @@ public class MigrationMetadata implements IMigrationR {
    * @param metadatasThrift
    * @param metadatasCql
    */
-  public Diff compareMetadatas(final List<MetadataReference> metadatasThrift, final List<MetadataReference> metadatasCql) {
-    final boolean result = CompareUtils.compareListsGeneric(metadatasThrift, metadatasCql);
+  public Diff compareMetadatas(final List<MetadataReference> metadatasThrift, final List<MetadataReference> metadatasCql, final Javers javers) {
+    CompareUtils.compareListsGeneric(metadatasThrift, metadatasCql);
 
     Collections.sort(metadatasThrift);
     Collections.sort(metadatasCql);
-    final Javers javers = JaversBuilder
-        .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-        .build();
+
     final Diff diff = javers.compareCollections(metadatasThrift, metadatasCql, MetadataReference.class);
     return diff;
   }

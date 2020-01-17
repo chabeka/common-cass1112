@@ -4,11 +4,13 @@
 package fr.urssaf.image.sae.droits;
 
 import java.io.UnsupportedEncodingException;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +26,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.droit.MigrationPrmd;
-import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
@@ -56,6 +57,10 @@ public class MigrationPrmdTest {
   @Autowired
   private CassandraServerBean server;
 
+  final private Javers javers = JaversBuilder
+      .javers()
+      .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+      .build();
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationPrmdTest.class);
 
@@ -95,7 +100,7 @@ public class MigrationPrmdTest {
   public void migrationFromThriftToCql() {
     try {
       populateTableThrift();
-      migrationPrmd.migrationFromThriftToCql();
+      migrationPrmd.migrationFromThriftToCql(javers);
       final List<Prmd> listThrift = supportThrift.findAll();
       final List<Prmd> listCql = supportCql.findAll();
 
@@ -104,7 +109,7 @@ public class MigrationPrmdTest {
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationPrmdTest.LOGGER.debug("exception=" + ex);
     }
   }
 
@@ -115,7 +120,7 @@ public class MigrationPrmdTest {
   public void migrationFromCqlTothrift() throws UnsupportedEncodingException {
 
     populateTableCql();
-    migrationPrmd.migrationFromCqlTothrift();
+    migrationPrmd.migrationFromCqlTothrift(javers);
 
     final List<Prmd> listThrift = supportThrift.findAll();
     final List<Prmd> listCql = supportCql.findAll();
@@ -161,13 +166,13 @@ public class MigrationPrmdTest {
   @Test
   public void diffAddTest() throws Exception {
     populateTableThrift();
-    migrationPrmd.migrationFromThriftToCql();
+    migrationPrmd.migrationFromThriftToCql(javers);
     final List<Prmd> listThrift = supportThrift.findAll();
     final Prmd prmd = new Prmd();
     prmd.setCode("CODEADD");
     supportCql.create(prmd);
     final List<Prmd> listCql = supportCql.findAll();
-    final Diff diff = migrationPrmd.comparePrmds(listThrift, listCql);
+    final Diff diff = migrationPrmd.comparePrmds(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.Prmd/CODEADD }"));
@@ -176,16 +181,16 @@ public class MigrationPrmdTest {
   @Test
   public void diffDescTest() throws Exception {
     populateTableThrift();
-    migrationPrmd.migrationFromThriftToCql();
+    migrationPrmd.migrationFromThriftToCql(javers);
 
     final List<Prmd> listThrift = supportThrift.findAll();
     final List<Prmd> listCql = supportCql.findAll();
 
     listCql.get(0).setDescription("DESCDIFF");
-    
-    final Diff diff = migrationPrmd.comparePrmds(listThrift, listCql);
+
+    final Diff diff = migrationPrmd.comparePrmds(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
-     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'QP38A RP38.L01' to 'DESCDIFF' }"));
+    Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'QP38A RP38.L01' to 'DESCDIFF' }"));
   }
 }

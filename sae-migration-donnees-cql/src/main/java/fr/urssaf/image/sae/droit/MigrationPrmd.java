@@ -7,9 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +36,9 @@ public class MigrationPrmd implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- start ");
+    MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- start ");
 
     final List<Prmd> prmdsThrift = prmdSupport.findAll();
 
@@ -50,8 +48,8 @@ public class MigrationPrmd implements IMigrationR {
     final List<Prmd> prmdsCql = new ArrayList<>();
     final Iterator<Prmd> prmdsIterator = prmdDaoCql.findAllWithMapper();
     prmdsIterator.forEachRemaining(prmdsCql::add);
-    final Diff diff = comparePrmds(prmdsThrift, prmdsCql);
-    LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- end ");
+    final Diff diff = comparePrmds(prmdsThrift, prmdsCql, javers);
+    MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- end ");
     return diff;
   }
 
@@ -59,9 +57,9 @@ public class MigrationPrmd implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- start ");
+    MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- start ");
 
     final Iterator<Prmd> prmdsCqlIterator = prmdDaoCql.findAllWithMapper();
     final List<Prmd> prmdsCql = new ArrayList<>();
@@ -71,8 +69,8 @@ public class MigrationPrmd implements IMigrationR {
       prmdSupport.create(prmd, new Date().getTime());
     }
     final List<Prmd> prmdsThrift = prmdSupport.findAll();
-    final Diff diff = comparePrmds(prmdsThrift, prmdsCql);
-    LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- end ");
+    final Diff diff = comparePrmds(prmdsThrift, prmdsCql, javers);
+    MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- end ");
     return diff;
   }
 
@@ -82,14 +80,11 @@ public class MigrationPrmd implements IMigrationR {
    * @param prmdsThrift
    * @param prmdsCql
    */
-  public Diff comparePrmds(final List<Prmd> prmdsThrift, final List<Prmd> prmdsCql) {
+  public Diff comparePrmds(final List<Prmd> prmdsThrift, final List<Prmd> prmdsCql, final Javers javers) {
 
     Collections.sort(prmdsThrift);
     Collections.sort(prmdsCql);
-    final Javers javers = JaversBuilder
-        .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-        .build();
+
     final Diff diff = javers.compareCollections(prmdsThrift, prmdsCql, Prmd.class);
     return diff;
   }

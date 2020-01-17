@@ -10,9 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +39,9 @@ public class MigrationContratService implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql- start ");
+    MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql- start ");
 
     final List<ServiceContract> contratsServicesThrift = contratServiceSupport.findAll();
 
@@ -53,8 +51,8 @@ public class MigrationContratService implements IMigrationR {
     final List<ServiceContract> contratsServicesCql = new ArrayList<>();
     final Iterator<ServiceContract> contratsServicesIterator = contratServiceDaoCql.findAllWithMapper();
     contratsServicesIterator.forEachRemaining(contratsServicesCql::add);
-    final Diff diff = compareContratService(contratsServicesThrift, contratsServicesCql);
-    LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql- end ");
+    final Diff diff = compareContratService(contratsServicesThrift, contratsServicesCql, javers);
+    MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql- end ");
     return diff;
   }
 
@@ -62,9 +60,9 @@ public class MigrationContratService implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift- start ");
+    MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift- start ");
 
     final Iterator<ServiceContract> contratsServicesIterator = contratServiceDaoCql.findAllWithMapper();
     final List<ServiceContract> contratsServicesCql = new ArrayList<>();
@@ -74,25 +72,20 @@ public class MigrationContratService implements IMigrationR {
       contratServiceSupport.create(contratService, new Date().getTime());
     }
     final List<ServiceContract> contratServicesThrift = contratServiceSupport.findAll();
-    final Diff diff = compareContratService(contratServicesThrift, contratsServicesCql);
-    LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift- end ");
+    final Diff diff = compareContratService(contratServicesThrift, contratsServicesCql, javers);
+    MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift- end ");
     return diff;
   }
 
   /**
-   * Logs: Comparaison des liste en taille et en contenu
-   * 
    * @param contratServicesThrift
    * @param contratServicesCql
+   * @return Différences, chaîne vide si aucune
    */
-  public Diff compareContratService(final List<ServiceContract> contratServicesThrift, final List<ServiceContract> contratServicesCql) {
+  public Diff compareContratService(final List<ServiceContract> contratServicesThrift, final List<ServiceContract> contratServicesCql, final Javers javers) {
 
     Collections.sort(contratServicesThrift);
     Collections.sort(contratServicesCql);
-    final Javers javers = JaversBuilder
-        .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-        .build();
     final Diff diff = javers.compareCollections(contratServicesThrift, contratServicesCql, ServiceContract.class);
     return diff;
   }

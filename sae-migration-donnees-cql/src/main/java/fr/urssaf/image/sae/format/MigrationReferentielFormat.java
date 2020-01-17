@@ -10,9 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +39,9 @@ public class MigrationReferentielFormat implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- start ");
+    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- start ");
 
     final List<FormatFichier> formatFichiersThrift = formatSupport.findAll();
 
@@ -53,8 +51,8 @@ public class MigrationReferentielFormat implements IMigrationR {
     final List<FormatFichier> formatFichiersCql = new ArrayList<>();
     final Iterator<FormatFichier> formatFichiersIterator = referentielFormatDaoCql.findAllWithMapper();
     formatFichiersIterator.forEachRemaining(formatFichiersCql::add);
-    final Diff diff = compareformatFichiers(formatFichiersThrift, formatFichiersCql);
-    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- end ");
+    final Diff diff = compareformatFichiers(formatFichiersThrift, formatFichiersCql, javers);
+    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- end ");
     return diff;
   }
 
@@ -62,9 +60,9 @@ public class MigrationReferentielFormat implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- start ");
+    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- start ");
 
 
     final Iterator<FormatFichier> formatFichiersIterator = referentielFormatDaoCql.findAllWithMapper();
@@ -76,9 +74,9 @@ public class MigrationReferentielFormat implements IMigrationR {
       formatSupport.create(formatFichier, new Date().getTime());
     }
     final List<FormatFichier> formatFichiersThrift = formatSupport.findAll();
-    final Diff diff = compareformatFichiers(formatFichiersThrift, formatFichiersCql);
+    final Diff diff = compareformatFichiers(formatFichiersThrift, formatFichiersCql, javers);
 
-    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- end ");
+    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- end ");
     return diff;
   }
 
@@ -88,14 +86,11 @@ public class MigrationReferentielFormat implements IMigrationR {
    * @param formatFichiersThrift
    * @param formatFichiersCql
    */
-  public Diff compareformatFichiers(final List<FormatFichier> formatFichiersThrift, final List<FormatFichier> formatFichiersCql) {
+  public Diff compareformatFichiers(final List<FormatFichier> formatFichiersThrift, final List<FormatFichier> formatFichiersCql, final Javers javers) {
 
     Collections.sort(formatFichiersThrift);
     Collections.sort(formatFichiersCql);
-    final Javers javers = JaversBuilder
-        .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-        .build();
+
     final Diff diff = javers.compareCollections(formatFichiersThrift, formatFichiersCql, FormatFichier.class);
     return diff;
   }

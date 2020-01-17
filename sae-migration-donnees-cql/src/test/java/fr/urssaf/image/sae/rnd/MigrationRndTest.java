@@ -6,7 +6,10 @@ package fr.urssaf.image.sae.rnd;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
@@ -52,6 +54,10 @@ public class MigrationRndTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationRndTest.class);
 
+  final private Javers javers = JaversBuilder
+      .javers()
+      .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+      .build();
 
 
   String[] listCode = {"1.2.1.1.3", "9.2.1.1.4", "8.1.2.1.5", "3.2.4.4.1", "4.2.3.1.1", "7.4.1.2.4"};
@@ -90,7 +96,7 @@ public class MigrationRndTest {
 
       populateTableThrift();
       final List<TypeDocument> listThrift = supportThrift.findAll();
-      migrationRnd.migrationFromThriftToCql();
+      migrationRnd.migrationFromThriftToCql(javers);
       final List<TypeDocument> listCql = supportCql.findAll();
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
@@ -98,7 +104,7 @@ public class MigrationRndTest {
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationRndTest.LOGGER.debug("exception=" + ex);
       Assert.assertTrue(false);
     }
   }
@@ -116,7 +122,7 @@ public class MigrationRndTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationRnd.migrationFromCqlTothrift();
+    migrationRnd.migrationFromCqlTothrift(javers);
     final List<TypeDocument> listThrift = supportThrift.findAll();
     final List<TypeDocument> listCql = supportCql.findAll();
 
@@ -157,12 +163,12 @@ public class MigrationRndTest {
 
     return typeDocument;
   }
-  
+
   @Test
   public void diffAddTest() {
 
     populateTableThrift();
-    migrationRnd.migrationFromThriftToCql();
+    migrationRnd.migrationFromThriftToCql(javers);
 
     final List<TypeDocument> listThrift = supportThrift.findAll();
 
@@ -172,7 +178,7 @@ public class MigrationRndTest {
     typeDocument.setCodeFonction("LIBADD");
     supportCql.ajouterRnd(typeDocument);
     final List<TypeDocument> listCql = supportCql.findAll();
-    final Diff diff = migrationRnd.compareRnds(listThrift, listCql);
+    final Diff diff = migrationRnd.compareRnds(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: TypeDocument/CODEADD }"));
@@ -183,12 +189,12 @@ public class MigrationRndTest {
   public void diffDescTest() {
 
     populateTableThrift();
-    migrationRnd.migrationFromThriftToCql();
+    migrationRnd.migrationFromThriftToCql(javers);
 
     final List<TypeDocument> listThrift = supportThrift.findAll();
     final List<TypeDocument> listCql = supportCql.findAll();
     listCql.get(0).setLibelle("LIBDIFF");
-    final Diff diff = migrationRnd.compareRnds(listThrift, listCql);
+    final Diff diff = migrationRnd.compareRnds(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Ajout de notes' to 'DESCDIFF' }"));

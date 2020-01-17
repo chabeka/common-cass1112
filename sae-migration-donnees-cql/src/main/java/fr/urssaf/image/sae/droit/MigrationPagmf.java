@@ -39,9 +39,9 @@ public class MigrationPagmf implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- start ");
+    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- start ");
 
     final List<Pagmf> pagmfsThrift = pagmfSupport.findAll();
 
@@ -52,7 +52,7 @@ public class MigrationPagmf implements IMigrationR {
     final Iterator<Pagmf> pagmfsIterator = pagmfDaoCql.findAllWithMapper();
     pagmfsIterator.forEachRemaining(pagmfsCql::add);
     final Diff diff = comparePagmfs(pagmfsThrift, pagmfsCql);
-    LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- end ");
+    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- end ");
     return diff;
   }
 
@@ -60,9 +60,9 @@ public class MigrationPagmf implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- start ");
+    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- start ");
 
     final Iterator<Pagmf> pagmfs = pagmfDaoCql.findAllWithMapper();
     final List<Pagmf> pagmfsCql = new ArrayList<>();
@@ -73,7 +73,7 @@ public class MigrationPagmf implements IMigrationR {
     }
     final List<Pagmf> pagmfsThrift = pagmfSupport.findAll();
     final Diff diff = comparePagmfs(pagmfsThrift, pagmfsCql);
-    LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- end ");
+    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- end ");
     return diff;
   }
 

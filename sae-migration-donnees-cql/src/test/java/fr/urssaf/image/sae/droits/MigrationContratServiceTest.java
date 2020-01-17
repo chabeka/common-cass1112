@@ -4,14 +4,15 @@
 package fr.urssaf.image.sae.droits;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -54,7 +55,10 @@ public class MigrationContratServiceTest {
   private CassandraServerBean server;
 
 
-
+  final private Javers javers = JaversBuilder
+                                             .javers()
+                                             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+                                             .build();
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationContratServiceTest.class);
 
@@ -108,18 +112,18 @@ public class MigrationContratServiceTest {
       server.resetData();
       populateTableThrift();
 
-      migrationContratService.migrationFromThriftToCql();
+      migrationContratService.migrationFromThriftToCql(javers);
       final List<ServiceContract> listThrift = supportThrift.findAll();
       final List<ServiceContract> listCql = supportCql.findAll();
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-      final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
-      LOGGER.info(diff.toString());
+      final Diff diff = migrationContratService.compareContratService(listThrift, listCql, javers);
+      MigrationContratServiceTest.LOGGER.info(diff.toString());
       Assert.assertTrue(diff.getChanges().isEmpty());
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationContratServiceTest.LOGGER.debug("exception=" + ex);
     }
   }
 
@@ -130,15 +134,15 @@ public class MigrationContratServiceTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationContratService.migrationFromCqlTothrift();
+    migrationContratService.migrationFromCqlTothrift(javers);
 
     final List<ServiceContract> listThrift = supportThrift.findAll();
     final List<ServiceContract> listCql = supportCql.findAll();
 
     Assert.assertEquals(listCql.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
-    final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
-    LOGGER.info(diff.toString());
+    final Diff diff = migrationContratService.compareContratService(listThrift, listCql, javers);
+    MigrationContratServiceTest.LOGGER.info(diff.toString());
     Assert.assertTrue(diff.getChanges().isEmpty());
   }
 
@@ -189,9 +193,9 @@ public class MigrationContratServiceTest {
 
   @Test
   public void diffAddTest() throws Exception {
-	server.resetData();
+    server.resetData();
     populateTableThrift();
-    migrationContratService.migrationFromThriftToCql();
+    migrationContratService.migrationFromThriftToCql(javers);
 
     final List<ServiceContract> listThrift = supportThrift.findAll();
     final ServiceContract contratService = new ServiceContract();
@@ -199,7 +203,7 @@ public class MigrationContratServiceTest {
     contratService.setDescription("DESCADD");
     supportCql.create(contratService);
     final List<ServiceContract> listCql = supportCql.findAll();
-    final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
+    final Diff diff = migrationContratService.compareContratService(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.ServiceContract/CODECLIENTADD }"));
@@ -208,15 +212,15 @@ public class MigrationContratServiceTest {
 
   @Test
   public void diffDescTest() throws Exception {
-	  server.resetData();
+    server.resetData();
     populateTableThrift();
-    migrationContratService.migrationFromThriftToCql();
+    migrationContratService.migrationFromThriftToCql(javers);
 
     final List<ServiceContract> listThrift = supportThrift.findAll();
     final List<ServiceContract> listCql = supportCql.findAll();
     listCql.get(0).setDescription("DESCDIFF");
-    
-    final Diff diff = migrationContratService.compareContratService(listThrift, listCql);
+
+    final Diff diff = migrationContratService.compareContratService(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertEquals(changes,"ValueChange{ 'description' value changed from 'Contrat de service pour le client V2' to 'DESCDIFF' }");

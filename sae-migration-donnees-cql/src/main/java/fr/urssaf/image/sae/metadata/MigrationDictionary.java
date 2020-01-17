@@ -10,9 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +39,9 @@ public class MigrationDictionary implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- start ");
+    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- start ");
 
     final List<Dictionary> dictionarysThrift = dictionarySupport.findAll();
 
@@ -53,8 +51,8 @@ public class MigrationDictionary implements IMigrationR {
     final List<Dictionary> dictionarysCql = new ArrayList<>();
     final Iterator<Dictionary> dictionarysIterator = dictionaryDaoCql.findAllWithMapper();
     dictionarysIterator.forEachRemaining(dictionarysCql::add);
-    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- end ");
-    final Diff diff = compareDictionarys(dictionarysThrift, dictionarysCql);
+    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- end ");
+    final Diff diff = compareDictionarys(dictionarysThrift, dictionarysCql, javers);
     return diff;
   }
 
@@ -62,9 +60,9 @@ public class MigrationDictionary implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- start ");
+    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- start ");
 
 
     final Iterator<Dictionary> dictionarysIterator = dictionaryDaoCql.findAllWithMapper();
@@ -77,8 +75,8 @@ public class MigrationDictionary implements IMigrationR {
       }
     }
     final List<Dictionary> dictionarysThrift = dictionarySupport.findAll();
-    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- end ");
-    final Diff diff = compareDictionarys(dictionarysThrift, dictionarysCql);
+    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- end ");
+    final Diff diff = compareDictionarys(dictionarysThrift, dictionarysCql, javers);
     return diff;
   }
 
@@ -88,13 +86,10 @@ public class MigrationDictionary implements IMigrationR {
    * @param dictionarysThrift
    * @param dictionarysCql
    */
-  public Diff compareDictionarys(final List<Dictionary> dictionarysThrift, final List<Dictionary> dictionarysCql) {
+  public Diff compareDictionarys(final List<Dictionary> dictionarysThrift, final List<Dictionary> dictionarysCql, final Javers javers) {
     Collections.sort(dictionarysThrift);
     Collections.sort(dictionarysCql);
-    final Javers javers = JaversBuilder
-                                       .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-                                       .build();
+
     final Diff diff = javers.compareCollections(dictionarysThrift, dictionarysCql, Dictionary.class);
     return diff;
   }

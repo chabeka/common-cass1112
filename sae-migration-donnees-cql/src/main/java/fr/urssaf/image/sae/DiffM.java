@@ -10,24 +10,39 @@ import org.javers.core.diff.Diff;
  *
  */
 public class DiffM {
-  private boolean result;
+  private boolean resultMigration;
+
+  public boolean isResultMigration() {
+    return resultMigration;
+  }
+
+  public void setResultMigration(final boolean resultMigration) {
+    this.resultMigration = resultMigration;
+  }
+
+  private boolean resultCompare;
+
+  public boolean isResultCompare() {
+    return resultCompare;
+  }
+
+  public void setResultCompare(final boolean resultCompare) {
+    this.resultCompare = resultCompare;
+  }
 
   private Diff diff;
 
-  /**
-   * @return the result
-   */
-  public boolean isResult() {
-    return result;
+  private String message;
+
+  public String getMessage() {
+    return message;
   }
 
-  /**
-   * @param result
-   *          the result to set
-   */
-  public void setResult(final boolean result) {
-    this.result = result;
+  public void setMessage(final String message) {
+    this.message = message;
   }
+
+
 
   /**
    * @return the diff

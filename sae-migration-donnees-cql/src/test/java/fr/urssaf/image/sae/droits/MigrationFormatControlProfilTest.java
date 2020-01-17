@@ -6,7 +6,10 @@ package fr.urssaf.image.sae.droits;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,7 +26,6 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.MigrationFormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
-import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.serializer.FormatProfilSerializer;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.FormatControlProfilCqlSupport;
@@ -51,6 +53,11 @@ public class MigrationFormatControlProfilTest {
 
   @Autowired
   private CassandraServerBean server;
+
+  final private Javers javers = JaversBuilder
+      .javers()
+      .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+      .build();
 
 
 
@@ -81,18 +88,18 @@ public class MigrationFormatControlProfilTest {
     try {
 
       populateTableThrift();
-      migrationFormatControlProfil.migrationFromThriftToCql();
+      migrationFormatControlProfil.migrationFromThriftToCql(javers);
       final List<FormatControlProfil> listThrift = supportThrift.findAll();
       final List<FormatControlProfil> listCql = supportCql.findAll();
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-      final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql);
-      LOGGER.info(diff.toString());
+      final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql, javers);
+      MigrationFormatControlProfilTest.LOGGER.info(diff.toString());
       Assert.assertTrue(diff.getChanges().isEmpty());
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationFormatControlProfilTest.LOGGER.debug("exception=" + ex);
     }
   }
 
@@ -104,12 +111,12 @@ public class MigrationFormatControlProfilTest {
 
     populateTableCql();
     final List<FormatControlProfil> listCql = supportCql.findAll();
-    migrationFormatControlProfil.migrationFromCqlTothrift();
+    migrationFormatControlProfil.migrationFromCqlTothrift(javers);
     final List<FormatControlProfil> listThrift = supportThrift.findAll();
     Assert.assertEquals(listThrift.size(), listCode.length);
     Assert.assertEquals(listThrift.size(), listCql.size());
-    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql);
-    LOGGER.info(diff.toString());
+    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql, javers);
+    MigrationFormatControlProfilTest.LOGGER.info(diff.toString());
     Assert.assertTrue(diff.getChanges().isEmpty());
 
   }
@@ -149,16 +156,16 @@ public class MigrationFormatControlProfilTest {
   }
   @Test
   public void diffAddTest() throws Exception {
-	server.resetData();
+    server.resetData();
     populateTableThrift();
-    migrationFormatControlProfil.migrationFromThriftToCql();
+    migrationFormatControlProfil.migrationFromThriftToCql(javers);
     final List<FormatControlProfil> listThrift = supportThrift.findAll();
     final FormatControlProfil formatControlProfil = new FormatControlProfil();
     formatControlProfil.setFormatCode("FORMATCODEADD");
     formatControlProfil.setDescription("DESCADD");
     supportCql.create(formatControlProfil);
     final List<FormatControlProfil> listCql = supportCql.findAll();
-    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql);
+    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.FormatControlProfil/FORMATCODEADD }"));
@@ -166,15 +173,15 @@ public class MigrationFormatControlProfilTest {
 
   @Test
   public void diffDescTest() throws Exception {
-	  server.resetData();
+    server.resetData();
     populateTableThrift();
-    migrationFormatControlProfil.migrationFromThriftToCql();
+    migrationFormatControlProfil.migrationFromThriftToCql(javers);
 
     final List<FormatControlProfil> listThrift = supportThrift.findAll();
     final List<FormatControlProfil> listCql = supportCql.findAll();
     listCql.get(0).setDescription("DESCDIFF");
-    
-    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql);
+
+    final Diff diff = migrationFormatControlProfil.compareFormatControlProfil(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertEquals(changes,"ValueChange{ 'description' value changed from 'format de controle gérant  la validation et l'identification du fmt/354' to 'DESCDIFF' }");

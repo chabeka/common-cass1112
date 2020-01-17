@@ -10,10 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
-import org.javers.core.metamodel.clazz.EntityDefinitionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,9 +39,9 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MigrationCorrespondancesRnd - migrationFromThriftToCql- start ");
+    MigrationCorrespondancesRnd.LOGGER.info(" MigrationCorrespondancesRnd - migrationFromThriftToCql- start ");
 
     final List<Correspondance> correspondancesThrift = correspondancesSupport.getAllCorrespondances();
 
@@ -54,8 +51,8 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
     final List<Correspondance> correspondancesCql = new ArrayList<>();
     final Iterator<Correspondance> correspondanceRndsIterator = correspondanceDaoCql.findAllWithMapper();
     correspondanceRndsIterator.forEachRemaining(correspondancesCql::add);
-    final Diff diff = comparecorrespondancesRnds(correspondancesThrift, correspondancesCql);
-    LOGGER.info(" MigrationCorrespondancesRnd - migrationFromThriftToCql- end ");
+    final Diff diff = comparecorrespondancesRnds(correspondancesThrift, correspondancesCql, javers);
+    MigrationCorrespondancesRnd.LOGGER.info(" MigrationCorrespondancesRnd - migrationFromThriftToCql- end ");
     return diff;
   }
 
@@ -63,9 +60,9 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- start ");
+    MigrationCorrespondancesRnd.LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- start ");
 
 
     final Iterator<Correspondance> correspondancesIterator = correspondanceDaoCql.findAllWithMapper();
@@ -78,8 +75,8 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
 
     final List<Correspondance> correspondanceRndsThrift = correspondancesSupport.getAllCorrespondances();
 
-    LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- end ");
-    return   comparecorrespondancesRnds(correspondanceRndsThrift, correspondanceRndsCql);
+    MigrationCorrespondancesRnd.LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- end ");
+    return comparecorrespondancesRnds(correspondanceRndsThrift, correspondanceRndsCql, javers);
   }
 
   /**
@@ -88,14 +85,12 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
    * @param correspondancesRndsThrift
    * @param correspondancesRndsCql
    */
-  public Diff comparecorrespondancesRnds(final List<Correspondance> correspondancesRndsThrift, final List<Correspondance> correspondancesRndsCql) {
+  public Diff comparecorrespondancesRnds(final List<Correspondance> correspondancesRndsThrift, final List<Correspondance> correspondancesRndsCql,
+                                         final Javers javers) {
 
     Collections.sort(correspondancesRndsThrift);
     Collections.sort(correspondancesRndsCql);
-    final Javers javers = JaversBuilder
-                                       .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-                                       .build();
+
     final Diff diff = javers.compareCollections(correspondancesRndsThrift, correspondancesRndsCql, Correspondance.class);
     return diff;
   }

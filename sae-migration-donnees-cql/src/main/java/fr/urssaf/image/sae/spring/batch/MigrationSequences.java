@@ -55,13 +55,13 @@ public class MigrationSequences {
 
   public void migrationFromThriftToCql() {
 
-    LOGGER.info(" MigrationSequences - migrationFromThriftToCql- start ");
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- start ");
 
-    final List<SequencesCql> listThrift = findAllThrift(SEQUENCE_KEY);
+    final List<SequencesCql> listThrift = findAllThrift(MigrationSequences.SEQUENCE_KEY);
     // Enregistrement des données Thrift dans la table Cql
     sequencesDaoCql.saveAll(listThrift);
 
-    LOGGER.info(" MigrationSequences - migrationFromThriftToCql- end ");
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- end ");
   }
 
   /**
@@ -69,43 +69,39 @@ public class MigrationSequences {
    */
   public void migrationFromCqlTothrift() {
 
-    LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- start ");
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- start ");
     // Recherche des valeurs Cql
     final Iterator<SequencesCql> it = sequencesDaoCql.findAllWithMapper();
 
     final ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<>(ccf.getKeyspace(),
-        SEQUENCE_CF,
+        MigrationSequences.SEQUENCE_CF,
         StringSerializer.get(),
         StringSerializer.get());
     // On s'assure que le nouveau timestamp est supérieur à l'ancien
 
     final ColumnFamilyUpdater<String, String> updater = template
-        .createUpdater(SEQUENCE_KEY);
+        .createUpdater(MigrationSequences.SEQUENCE_KEY);
     while (it.hasNext()) {
-
       final SequencesCql sequencesCql=it.next();
       updater.setClock(jobClockSupport.currentCLock());
       updater.setLong(sequencesCql.getJobIdName(), sequencesCql.getValue());
       template.update(updater);
     }
-    LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- end ");
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- end ");
   }
-  
-  public void addSequence(String jobIdName, long value) {
-  final ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<>(ccf.getKeyspace(),
-	        SEQUENCE_CF,
-	        StringSerializer.get(),
-	        StringSerializer.get());
-	    // On s'assure que le nouveau timestamp est supérieur à l'ancien
 
-	    final ColumnFamilyUpdater<String, String> updater = template
-	        .createUpdater(SEQUENCE_KEY);
-	  
+  public void addSequence(final String jobIdName, final long value) {
+    final ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<>(ccf.getKeyspace(),
+        MigrationSequences.SEQUENCE_CF,
+        StringSerializer.get(),
+        StringSerializer.get());
+    // On s'assure que le nouveau timestamp est supérieur à l'ancien
 
-	
-	      updater.setClock(jobClockSupport.currentCLock());
-	      updater.setLong(jobIdName, value);
-	      template.update(updater);
+    final ColumnFamilyUpdater<String, String> updater = template
+        .createUpdater(MigrationSequences.SEQUENCE_KEY);
+    updater.setClock(jobClockSupport.currentCLock());
+    updater.setLong(jobIdName, value);
+    template.update(updater);
   }
 
   /**
@@ -116,7 +112,7 @@ public class MigrationSequences {
   public List<SequencesCql> findAllThrift(final String key) {
     final List<SequencesCql> listSequencesThrift = new ArrayList<>();
     final ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<>(ccf.getKeyspace(),
-        SEQUENCE_CF,
+        MigrationSequences.SEQUENCE_CF,
         StringSerializer.get(),
         StringSerializer.get());
     final ColumnFamilyResult<String, String> result = template.queryColumns(key);
@@ -133,16 +129,16 @@ public class MigrationSequences {
 
   public Diff compareSequences() {
     // liste d'objet cql venant de la base thrift après transformation
-    final List<SequencesCql> sequencesThrift = findAllThrift(SEQUENCE_KEY);
-
+    final List<SequencesCql> sequencesThrift = findAllThrift(MigrationSequences.SEQUENCE_KEY);
     // liste venant de la base cql
-
     final List<SequencesCql> sequencesCql = new ArrayList<>();
     final Iterator<SequencesCql> it = sequencesDaoCql.findAllWithMapper();
     while (it.hasNext()) {
       final SequencesCql sequenceCql = it.next();
       sequencesCql.add(sequenceCql);
     }
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- nbThrift={} ", sequencesThrift.size());
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- nbCql={} ", sequencesCql.size());
     Collections.sort(sequencesThrift);
     Collections.sort(sequencesCql);
     final Javers javers = JaversBuilder

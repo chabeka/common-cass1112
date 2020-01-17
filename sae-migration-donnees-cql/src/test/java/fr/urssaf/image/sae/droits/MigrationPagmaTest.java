@@ -7,7 +7,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -20,11 +23,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.kenai.jffi.Array;
-
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.MigrationPagma;
-import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmaCqlSupport;
@@ -55,7 +55,10 @@ public class MigrationPagmaTest {
   @Autowired
   private CassandraServerBean server;
 
-
+  final private Javers javers = JaversBuilder
+                                             .javers()
+                                             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+                                             .build();
 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationPagmaTest.class);
@@ -92,7 +95,7 @@ public class MigrationPagmaTest {
   public void migrationFromThriftToCql() {
     try {
       populateTableThrift();
-      migrationPagma.migrationFromThriftToCql();
+      migrationPagma.migrationFromThriftToCql(javers);
       final List<Pagma> listThrift = supportThrift.findAll();
       final List<Pagma> listCql = supportCql.findAll();
 
@@ -101,7 +104,7 @@ public class MigrationPagmaTest {
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationPagmaTest.LOGGER.debug("exception=" + ex);
     }
   }
 
@@ -112,7 +115,7 @@ public class MigrationPagmaTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationPagma.migrationFromCqlTothrift();
+    migrationPagma.migrationFromCqlTothrift(javers);
 
     final List<Pagma> listThrift = supportThrift.findAll();
     final List<Pagma> listCql = supportCql.findAll();
@@ -153,15 +156,15 @@ public class MigrationPagmaTest {
   }
   @Test
   public void diffAddTest() throws Exception {
-	server.resetData();
+    server.resetData();
     populateTableThrift();
-    migrationPagma.migrationFromThriftToCql();
+    migrationPagma.migrationFromThriftToCql(javers);
     final List<Pagma> listThrift = supportThrift.findAll();
     final Pagma pagma = new Pagma();
     pagma.setCode("CODEADD");
     supportCql.create(pagma);
     final List<Pagma> listCql = supportCql.findAll();
-    final Diff diff = migrationPagma.comparePagmas(listThrift, listCql);
+    final Diff diff = migrationPagma.comparePagmas(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.droit.dao.model.Pagma/CODEADD }"));
@@ -170,13 +173,13 @@ public class MigrationPagmaTest {
   @Test
   public void diffActionsUnitairesTest() throws Exception {
     populateTableThrift();
-    migrationPagma.migrationFromThriftToCql();
+    migrationPagma.migrationFromThriftToCql(javers);
 
     final List<Pagma> listThrift = supportThrift.findAll();
     final List<Pagma> listCql = supportCql.findAll();
     listCql.get(0).setActionUnitaires(Arrays.asList(new String[]{"ACTDIFF"}));
-    
-    final Diff diff = migrationPagma.comparePagmas(listThrift, listCql);
+
+    final Diff diff = migrationPagma.comparePagmas(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString().trim();
     final String shortChanges =changes.substring(0, 51).trim();
@@ -197,6 +200,6 @@ public class MigrationPagmaTest {
     		"  12. 'restore_masse' removed\r\n" + 
     		"  13. 'suppression' removed\r\n" + 
     		"  14. 'suppression_masse' removed }".trim());*/
-    
+
   }
 }

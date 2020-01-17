@@ -3,11 +3,13 @@
  */
 package fr.urssaf.image.sae.droits;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +26,6 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.MigrationPagmf;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
-import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.serializer.FormatProfilSerializer;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
@@ -69,7 +70,10 @@ public class MigrationPagmfTest {
   @Autowired
   private CassandraServerBean server;
 
-
+  final private Javers javers = JaversBuilder
+                                             .javers()
+                                             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+                                             .build();
 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationPagmfTest.class);
@@ -102,7 +106,7 @@ public class MigrationPagmfTest {
     try {
 
       populateTableThrift();
-      migrationPagmf.migrationFromThriftToCql();
+      migrationPagmf.migrationFromThriftToCql(javers);
       final List<Pagmf> listThrift = supportThrift.findAll();
       final List<Pagmf> listCql = supportCql.findAll();
 
@@ -111,7 +115,7 @@ public class MigrationPagmfTest {
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationPagmfTest.LOGGER.debug("exception=" + ex);
     }
   }
 
@@ -122,7 +126,7 @@ public class MigrationPagmfTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationPagmf.migrationFromCqlTothrift();
+    migrationPagmf.migrationFromCqlTothrift(javers);
 
     final List<Pagmf> listThrift = supportThrift.findAll();
     final List<Pagmf> listCql = supportCql.findAll();
@@ -155,10 +159,10 @@ public class MigrationPagmfTest {
    */
   private void addFormatControlProfilCql() {
     final FormatControlProfil formatControlProfil = new FormatControlProfil();
-    formatControlProfil.setFormatCode(FORMAT_CODE);
-    formatControlProfil.setDescription(FORMAT_DESCRIPTION);
+    formatControlProfil.setFormatCode(MigrationPagmfTest.FORMAT_CODE);
+    formatControlProfil.setDescription(MigrationPagmfTest.FORMAT_DESCRIPTION);
     // Deserialisation
-    final FormatProfil formatProfil = FormatProfilSerializer.get().fromBytes(FORMAT_XML.getBytes());
+    final FormatProfil formatProfil = FormatProfilSerializer.get().fromBytes(MigrationPagmfTest.FORMAT_XML.getBytes());
     formatControlProfil.setControlProfil(formatProfil);
     supportFormatControlProfilCql.create(formatControlProfil);
   }
@@ -185,18 +189,18 @@ public class MigrationPagmfTest {
    */
   private void addFormatControlProfilThrift() {
     final FormatControlProfil formatControlProfil = new FormatControlProfil();
-    formatControlProfil.setFormatCode(FORMAT_CODE);
-    formatControlProfil.setDescription(FORMAT_DESCRIPTION);
+    formatControlProfil.setFormatCode(MigrationPagmfTest.FORMAT_CODE);
+    formatControlProfil.setDescription(MigrationPagmfTest.FORMAT_DESCRIPTION);
     // Deserialisation
-    final FormatProfil formatProfil = FormatProfilSerializer.get().fromBytes(FORMAT_XML.getBytes());
+    final FormatProfil formatProfil = FormatProfilSerializer.get().fromBytes(MigrationPagmfTest.FORMAT_XML.getBytes());
     formatControlProfil.setControlProfil(formatProfil);
     supportFormatControlProfilThrift.create(formatControlProfil, new Date().getTime());
   }
-  
+
   @Test
   public void diffAddTest() throws Exception {
     populateTableThrift();
-    migrationPagmf.migrationFromThriftToCql();
+    migrationPagmf.migrationFromThriftToCql(javers);
     final List<Pagmf> listThrift = supportThrift.findAll();
     final Pagmf pagmf = new Pagmf();
     pagmf.setCodePagmf("CODEADD");
@@ -211,19 +215,19 @@ public class MigrationPagmfTest {
   @Test
   public void diffDescTest() throws Exception {
     populateTableThrift();
-    migrationPagmf.migrationFromThriftToCql();
+    migrationPagmf.migrationFromThriftToCql(javers);
 
     final List<Pagmf> listThrift = supportThrift.findAll();
     final List<Pagmf> listCql = supportCql.findAll();
     listCql.get(0).setDescription("DESCDIFF");
-    
+
     final Diff diff = migrationPagmf.comparePagmfs(listThrift, listCql);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
- 
+
     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Contrôle sur les fichiers fournis par l’attestation vigilance1' to 'DESCDIFF' }"));
 
-   
-    
+
+
   }
 }

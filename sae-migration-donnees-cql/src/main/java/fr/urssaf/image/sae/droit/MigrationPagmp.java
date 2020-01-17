@@ -7,9 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +36,9 @@ public class MigrationPagmp implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- start ");
+    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- start ");
 
     final List<Pagmp> pagmpsThrift = pagmpSupport.findAll();
 
@@ -50,8 +48,8 @@ public class MigrationPagmp implements IMigrationR {
     final List<Pagmp> pagmpsCql = new ArrayList<>();
     final Iterator<Pagmp> pagmpsIterator = pagmpDaoCql.findAllWithMapper();
     pagmpsIterator.forEachRemaining(pagmpsCql::add);
-    final Diff diff = comparePagmps(pagmpsThrift, pagmpsCql);
-    LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- end ");
+    final Diff diff = comparePagmps(pagmpsThrift, pagmpsCql, javers);
+    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- end ");
     return diff;
   }
 
@@ -59,9 +57,9 @@ public class MigrationPagmp implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- start ");
+    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- start ");
 
     final Iterator<Pagmp> pagmps = pagmpDaoCql.findAllWithMapper();
     final List<Pagmp> pagmpsCql = new ArrayList<>();
@@ -71,8 +69,8 @@ public class MigrationPagmp implements IMigrationR {
       pagmpSupport.create(pagmp, new Date().getTime());
     }
     final List<Pagmp> pagmpsThrift = pagmpSupport.findAll();
-    final Diff diff = comparePagmps(pagmpsThrift, pagmpsCql);
-    LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- end ");
+    final Diff diff = comparePagmps(pagmpsThrift, pagmpsCql, javers);
+    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- end ");
     return diff;
   }
 
@@ -82,14 +80,10 @@ public class MigrationPagmp implements IMigrationR {
    * @param pagmpsThrift
    * @param pagmpsCql
    */
-  public Diff comparePagmps(final List<Pagmp> pagmpsThrift, final List<Pagmp> pagmpsCql) {
+  public Diff comparePagmps(final List<Pagmp> pagmpsThrift, final List<Pagmp> pagmpsCql, final Javers javers) {
 
     Collections.sort(pagmpsThrift);
     Collections.sort(pagmpsCql);
-    final Javers javers = JaversBuilder
-                                       .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-                                       .build();
     final Diff diff = javers.compareCollections(pagmpsThrift, pagmpsCql, Pagmp.class);
     return diff;
 

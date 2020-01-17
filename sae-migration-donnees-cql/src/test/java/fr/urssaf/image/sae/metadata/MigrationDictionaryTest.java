@@ -3,12 +3,13 @@
  */
 package fr.urssaf.image.sae.metadata;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.javers.common.collections.Arrays;
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,7 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
 import fr.urssaf.image.sae.metadata.referential.support.cql.DictionaryCqlSupport;
@@ -52,7 +52,10 @@ public class MigrationDictionaryTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationDictionaryTest.class);
 
-
+  final private Javers javers = JaversBuilder
+                                             .javers()
+                                             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+                                             .build();
 
   String[] listIdentifiants = {"Dict1", "Dict2", "Dict3",
                                "Dict4", "Dict5"};
@@ -79,14 +82,14 @@ public class MigrationDictionaryTest {
 
       populateTableThrift();
       final List<Dictionary> listThrift = supportThrift.findAll();
-      migrationDictionary.migrationFromThriftToCql();
+      migrationDictionary.migrationFromThriftToCql(javers);
       final List<Dictionary> listCql = supportCql.findAll();
       Assert.assertEquals(listThrift.size(), listIdentifiants.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationDictionaryTest.LOGGER.debug("exception=" + ex);
       Assert.assertTrue(false);
     }
   }
@@ -108,7 +111,7 @@ public class MigrationDictionaryTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationDictionary.migrationFromCqlTothrift();
+    migrationDictionary.migrationFromCqlTothrift(javers);
     final List<Dictionary> listThrift = supportThrift.findAll();
     final List<Dictionary> listCql = supportCql.findAll();
     Assert.assertEquals(listCql.size(), listIdentifiants.length);
@@ -128,23 +131,23 @@ public class MigrationDictionaryTest {
       i++;
     }
   }
-  
+
   @Test
   public void diffAddTest() {
 
-	    populateTableThrift();
-	    migrationDictionary.migrationFromThriftToCql();
+    populateTableThrift();
+    migrationDictionary.migrationFromThriftToCql(javers);
 
-	    final List<Dictionary> listThrift = supportThrift.findAll();
-	    supportCql.addElement("IDADD", "ENTRYADD");
-	    final List<Dictionary> listCql = supportCql.findAll();
-	    final Diff diff = migrationDictionary.compareDictionarys(listThrift, listCql);
-	    Assert.assertTrue(diff.hasChanges());
-	    final String changes = diff.getChanges().get(0).toString();
-	    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.metadata.referential.model.Dictionary/IDADD }"));
+    final List<Dictionary> listThrift = supportThrift.findAll();
+    supportCql.addElement("IDADD", "ENTRYADD");
+    final List<Dictionary> listCql = supportCql.findAll();
+    final Diff diff = migrationDictionary.compareDictionarys(listThrift, listCql, javers);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.metadata.referential.model.Dictionary/IDADD }"));
 
-	  }
+  }
 
-	  
-  
+
+
 }

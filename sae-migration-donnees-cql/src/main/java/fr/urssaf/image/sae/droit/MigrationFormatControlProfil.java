@@ -7,9 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +36,9 @@ public class MigrationFormatControlProfil implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- start ");
+    MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- start ");
 
     final List<FormatControlProfil> formatControlProfilsThrift = formatControlProfilSupport.findAll();
     if (!formatControlProfilsThrift.isEmpty()) {
@@ -49,8 +47,8 @@ public class MigrationFormatControlProfil implements IMigrationR {
     final List<FormatControlProfil> formatControlProfilsCql = new ArrayList<>();
     final Iterator<FormatControlProfil> formatControlProfilsIterator = formatcontrolprofildaocql.findAllWithMapper();
     formatControlProfilsIterator.forEachRemaining(formatControlProfilsCql::add);
-    final Diff diff = compareFormatControlProfil(formatControlProfilsThrift, formatControlProfilsCql);
-    LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- end ");
+    final Diff diff = compareFormatControlProfil(formatControlProfilsThrift, formatControlProfilsCql, javers);
+    MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- end ");
     return diff;
   }
 
@@ -58,9 +56,9 @@ public class MigrationFormatControlProfil implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- start ");
+    MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- start ");
 
     final Iterator<FormatControlProfil> formatControlProfils = formatcontrolprofildaocql.findAllWithMapper();
     final List<FormatControlProfil> formatControlProfilsCql = new ArrayList<>();
@@ -70,8 +68,8 @@ public class MigrationFormatControlProfil implements IMigrationR {
       formatControlProfilSupport.create(formatControlProfil, new Date().getTime());
     }
     final List<FormatControlProfil> formatControlProfilThrift = formatControlProfilSupport.findAll();
-    final Diff diff = compareFormatControlProfil(formatControlProfilThrift, formatControlProfilsCql);
-    LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- end ");
+    final Diff diff = compareFormatControlProfil(formatControlProfilThrift, formatControlProfilsCql, javers);
+    MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- end ");
     return diff;
   }
 
@@ -82,14 +80,11 @@ public class MigrationFormatControlProfil implements IMigrationR {
    * @param formatControlProfilsCql
    */
   public Diff compareFormatControlProfil(final List<FormatControlProfil> formatControlProfilsThrift,
-                                         final List<FormatControlProfil> formatControlProfilsCql) {
+                                         final List<FormatControlProfil> formatControlProfilsCql, final Javers javers) {
 
     Collections.sort(formatControlProfilsThrift);
     Collections.sort(formatControlProfilsCql);
-    final Javers javers = JaversBuilder
-        .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-        .build();
+
     final Diff diff = javers.compareCollections(formatControlProfilsThrift, formatControlProfilsCql, FormatControlProfil.class);
     return diff;
   }

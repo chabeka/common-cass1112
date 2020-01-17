@@ -7,7 +7,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.CorrespondancesRndCqlSupport;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
@@ -50,6 +52,11 @@ public class MigrationCorrespondancesRndTest {
   @Autowired
   private CassandraServerBean server;
 
+  final private Javers javers = JaversBuilder
+                                             .javers()
+                                             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+                                             .build();
+
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationCorrespondancesRndTest.class);
 
   private final static int nbCorrespondances = 6;
@@ -70,20 +77,20 @@ public class MigrationCorrespondancesRndTest {
 
       populateTableThrift();
       final List<Correspondance> listThrift = supportThrift.getAllCorrespondances();
-      migrationCorrespondancesRnd.migrationFromThriftToCql();
+      migrationCorrespondancesRnd.migrationFromThriftToCql(javers);
       final List<Correspondance> listCql = supportCql.findAll();
-      Assert.assertEquals(listThrift.size(), nbCorrespondances);
+      Assert.assertEquals(listThrift.size(), MigrationCorrespondancesRndTest.nbCorrespondances);
       Assert.assertEquals(listThrift.size(), listCql.size());
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationCorrespondancesRndTest.LOGGER.debug("exception=" + ex);
       Assert.assertTrue(false);
     }
   }
 
   private void populateTableThrift() {
-    for (int i = 0; i < nbCorrespondances; i++) {
+    for (int i = 0; i < MigrationCorrespondancesRndTest.nbCorrespondances; i++) {
       supportThrift.ajouterCorrespondance(createCorrespondance(i), new Date().getTime());
     }
   }
@@ -95,7 +102,7 @@ public class MigrationCorrespondancesRndTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationCorrespondancesRnd.migrationFromCqlTothrift();
+    migrationCorrespondancesRnd.migrationFromCqlTothrift(javers);
     final List<Correspondance> listThrift = supportThrift.getAllCorrespondances();
     final List<Correspondance> listCql = supportCql.findAll();
 
@@ -109,7 +116,7 @@ public class MigrationCorrespondancesRndTest {
    * On crée les enregistrements dans la table correspondancesrndcql
    */
   private void populateTableCql() {
-    for (int i = 0; i < nbCorrespondances; i++) {
+    for (int i = 0; i < MigrationCorrespondancesRndTest.nbCorrespondances; i++) {
       supportCql.ajouterCorrespondance(createCorrespondance(i));
     }
   }
@@ -135,39 +142,39 @@ public class MigrationCorrespondancesRndTest {
 
     return correspondance;
   }
-  
+
   @Test
   public void diffAddTest() {
 
-	    populateTableThrift();
-	    migrationCorrespondancesRnd.migrationFromThriftToCql();
+    populateTableThrift();
+    migrationCorrespondancesRnd.migrationFromThriftToCql(javers);
 
-	    final List<Correspondance> listThrift = supportThrift.getAllCorrespondances();
+    final List<Correspondance> listThrift = supportThrift.getAllCorrespondances();
 
-	    final Correspondance correspondance = new Correspondance();
-	    correspondance.setCodeTemporaire("CODETEMPADD");
-	    correspondance.setVersionCourante("VERSIONADD");
-	    supportCql.ajouterCorrespondance(correspondance);
-	    final List<Correspondance> listCql = supportCql.findAll();
-	    final Diff diff = migrationCorrespondancesRnd.comparecorrespondancesRnds(listThrift, listCql);
-	    Assert.assertTrue(diff.hasChanges());
-	    final String changes = diff.getChanges().get(0).toString();
-	    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.rnd.modele.Correspondance/CODETEMPADD,VERSIONADD }"));
-	  }
+    final Correspondance correspondance = new Correspondance();
+    correspondance.setCodeTemporaire("CODETEMPADD");
+    correspondance.setVersionCourante("VERSIONADD");
+    supportCql.ajouterCorrespondance(correspondance);
+    final List<Correspondance> listCql = supportCql.findAll();
+    final Diff diff = migrationCorrespondancesRnd.comparecorrespondancesRnds(listThrift, listCql, javers);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.rnd.modele.Correspondance/CODETEMPADD,VERSIONADD }"));
+  }
 
-	  @Test
-	  public void diffDescTest() {
+  @Test
+  public void diffDescTest() {
 
-	    populateTableThrift();
-	    migrationCorrespondancesRnd.migrationFromThriftToCql();
+    populateTableThrift();
+    migrationCorrespondancesRnd.migrationFromThriftToCql(javers);
 
-	    final List<Correspondance> listThrift = supportThrift.getAllCorrespondances();
-	    final List<Correspondance> listCql = supportCql.findAll();
-	    listCql.get(0).setCodeDefinitif("DEFDIFF");
-	    final Diff diff = migrationCorrespondancesRnd.comparecorrespondancesRnds(listThrift, listCql);
-	    Assert.assertTrue(diff.hasChanges());
-	    final String changes = diff.getChanges().get(0).toString();
-	    Assert.assertTrue(changes.equals("ValueChange{ 'codeDefinitif' value changed from 'CodeDef5' to 'DEFDIFF' }"));
-	  }
-  
+    final List<Correspondance> listThrift = supportThrift.getAllCorrespondances();
+    final List<Correspondance> listCql = supportCql.findAll();
+    listCql.get(0).setCodeDefinitif("DEFDIFF");
+    final Diff diff = migrationCorrespondancesRnd.comparecorrespondancesRnds(listThrift, listCql, javers);
+    Assert.assertTrue(diff.hasChanges());
+    final String changes = diff.getChanges().get(0).toString();
+    Assert.assertTrue(changes.equals("ValueChange{ 'codeDefinitif' value changed from 'CodeDef5' to 'DEFDIFF' }"));
+  }
+
 }

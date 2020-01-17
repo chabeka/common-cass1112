@@ -6,7 +6,10 @@ package fr.urssaf.image.sae.format;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,6 +52,10 @@ public class MigrationReferentielFormatTest {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationReferentielFormatTest.class);
 
+  final private Javers javers = JaversBuilder
+      .javers()
+      .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+      .build();
 
 
   String[] listIdFormat = {"xls", "html", "pptm", "fmt/353", "pdf"};
@@ -88,14 +95,14 @@ public class MigrationReferentielFormatTest {
 
       populateTableThrift();
       final List<FormatFichier> listThrift = supportThrift.findAll();
-      migrationReferentielFormat.migrationFromThriftToCql();
+      migrationReferentielFormat.migrationFromThriftToCql(javers);
       final List<FormatFichier> listCql = supportCql.findAll();
       Assert.assertEquals(listThrift.size(), listIdFormat.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
       Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationReferentielFormatTest.LOGGER.debug("exception=" + ex);
       Assert.assertTrue(false);
     }
   }
@@ -115,7 +122,7 @@ public class MigrationReferentielFormatTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    migrationReferentielFormat.migrationFromCqlTothrift();
+    migrationReferentielFormat.migrationFromCqlTothrift(javers);
     final List<FormatFichier> listThrift = supportThrift.findAll();
     final List<FormatFichier> listCql = supportCql.findAll();
     Assert.assertEquals(listCql.size(), listIdFormat.length);
@@ -158,13 +165,13 @@ public class MigrationReferentielFormatTest {
   @Test
   public void diffAddTest() throws Exception {
     populateTableThrift();
-    migrationReferentielFormat.migrationFromThriftToCql();
+    migrationReferentielFormat.migrationFromThriftToCql(javers);
     final List<FormatFichier> listThrift = supportThrift.findAll();
     final FormatFichier formatFichier = new FormatFichier();
     formatFichier.setIdFormat("IDFORMATADD");
     supportCql.create(formatFichier);
     final List<FormatFichier> listCql = supportCql.findAll();
-    final Diff diff = migrationReferentielFormat.compareformatFichiers(listThrift, listCql);
+    final Diff diff = migrationReferentielFormat.compareformatFichiers(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.sae.format.referentiel.model.FormatFichier/IDFORMATADD }"));
@@ -173,17 +180,17 @@ public class MigrationReferentielFormatTest {
   @Test
   public void diffDescTest() throws Exception {
     populateTableThrift();
-    migrationReferentielFormat.migrationFromThriftToCql();
+    migrationReferentielFormat.migrationFromThriftToCql(javers);
 
     final List<FormatFichier> listThrift = supportThrift.findAll();
     final List<FormatFichier> listCql = supportCql.findAll();
     listCql.get(0).setDescription("DESCDIFF");
-    
-    final Diff diff = migrationReferentielFormat.compareformatFichiers(listThrift, listCql);
+
+    final Diff diff = migrationReferentielFormat.compareformatFichiers(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
-     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Fichier MS PowerPoint macro' to 'DESCDIFF' }"));
+    Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Fichier MS PowerPoint macro' to 'DESCDIFF' }"));
   }
-  
-  
+
+
 }

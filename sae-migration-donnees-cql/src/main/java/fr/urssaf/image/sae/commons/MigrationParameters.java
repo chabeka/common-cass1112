@@ -12,9 +12,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +59,9 @@ public class MigrationParameters implements IMigrationR {
    * Migration de la CF Thrift vers la CF cql
    */
   @Override
-  public Diff migrationFromThriftToCql() {
+  public Diff migrationFromThriftToCql(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- start ");
+    MigrationParameters.LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- start ");
 
     final Iterator<GenericParametersType> it = genericdao.findAllByCFName("Parameters", ccf.getKeyspace().getKeyspaceName());
 
@@ -92,11 +90,11 @@ public class MigrationParameters implements IMigrationR {
           // enregistrement
           parameterDaoCql.saveWithMapper(parameterCql);
         } else {
-          LOGGER.error("Les énumérations sont inconnues");
+          MigrationParameters.LOGGER.error("Les énumérations sont inconnues");
         }
       }
       catch (final Exception e) {
-        LOGGER.error(e.getMessage());
+        MigrationParameters.LOGGER.error(e.getMessage());
         // Pb de conversion on teste une conversion en long
         final String value = Bytes.toRawHexString(byteArray);
         final BigInteger value2 = new BigInteger(value, 16);
@@ -104,7 +102,7 @@ public class MigrationParameters implements IMigrationR {
         if (parameterCql.getName() != null && parameterCql.getTypeParameters() != null) {
           parameterDaoCql.saveWithMapper(parameterCql);
         } else {
-          LOGGER.error("Les énumérations sont inconnues");
+          MigrationParameters.LOGGER.error("Les énumérations sont inconnues");
         }
       }
       nb++;
@@ -113,8 +111,8 @@ public class MigrationParameters implements IMigrationR {
     final List<ParameterCql> parametersCql = new ArrayList<>();
     final Iterator<ParameterCql> parametersIterator = parameterDaoCql.findAllWithMapper();
     parametersIterator.forEachRemaining(parametersCql::add);
-    final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql);
-    LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- end:nb= " + nb);
+    final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql, javers);
+    MigrationParameters.LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- end:nb= " + nb);
     return diff;
   }
 
@@ -122,9 +120,9 @@ public class MigrationParameters implements IMigrationR {
    * Migration de la CF cql vers la CF Thrift
    */
   @Override
-  public Diff migrationFromCqlTothrift() {
+  public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- start ");
+    MigrationParameters.LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- start ");
 
     final Iterator<ParameterCql> parametersCqlIterator = parameterDaoCql.findAllWithMapper();
     final List<ParameterCql> parametersCql = new ArrayList<>();
@@ -136,8 +134,8 @@ public class MigrationParameters implements IMigrationR {
       parameterSupport.create(parameter, parameterCql.getTypeParameters(), new Date().getTime());
     }
 
-    final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql);
-    LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- end ");
+    final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql, javers);
+    MigrationParameters.LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- end ");
     return diff;
   }
 
@@ -171,13 +169,9 @@ public class MigrationParameters implements IMigrationR {
    * @param parametersThrift
    * @param parametersCql
    */
-  public Diff compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql) {
+  public Diff compareParameters(final List<ParameterCql> parametersThrift, final List<ParameterCql> parametersCql, final Javers javers) {
     Collections.sort(parametersThrift);
     Collections.sort(parametersCql);
-    final Javers javers = JaversBuilder
-                                       .javers()
-                                       .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-                                       .build();
     final Diff diff = javers.compareCollections(parametersThrift, parametersCql, ParameterCql.class);
     return diff;
   }

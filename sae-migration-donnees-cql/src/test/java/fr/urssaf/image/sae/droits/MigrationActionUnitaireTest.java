@@ -6,7 +6,10 @@ package fr.urssaf.image.sae.droits;
 import java.util.Date;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,6 +51,11 @@ public class MigrationActionUnitaireTest {
   @Autowired
   private CassandraServerBean server;
 
+  final private Javers javers = JaversBuilder
+                                             .javers()
+                                             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+                                             .build();
+
 
 
 
@@ -71,18 +79,18 @@ public class MigrationActionUnitaireTest {
   public void migrationFromThriftToCql() {
     try {
       populateTableThrift();
-      migrationActionUnitaire.migrationFromThriftToCql();
+      migrationActionUnitaire.migrationFromThriftToCql(javers);
       final List<ActionUnitaire> listThrift = supportThrift.findAll();
       final List<ActionUnitaire> listCql = supportCql.findAll();
 
       Assert.assertEquals(listThrift.size(), listCode.length);
       Assert.assertEquals(listThrift.size(), listCql.size());
-      final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql);
+      final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql, javers);
       System.out.println(diff);
       Assert.assertTrue(diff.getChanges().isEmpty());
     }
     catch (final Exception ex) {
-      LOGGER.debug("exception=" + ex);
+      MigrationActionUnitaireTest.LOGGER.debug("exception=" + ex);
     }
   }
 
@@ -93,7 +101,7 @@ public class MigrationActionUnitaireTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
-    final Diff diff = migrationActionUnitaire.migrationFromCqlTothrift();
+    final Diff diff = migrationActionUnitaire.migrationFromCqlTothrift(javers);
 
     final List<ActionUnitaire> listThrift = supportThrift.findAll();
     final List<ActionUnitaire> listCql = supportCql.findAll();
@@ -136,7 +144,7 @@ public class MigrationActionUnitaireTest {
   public void diffAddTest() {
 
     populateTableThrift();
-    migrationActionUnitaire.migrationFromThriftToCql();
+    migrationActionUnitaire.migrationFromThriftToCql(javers);
 
     final List<ActionUnitaire> listThrift = supportThrift.findAll();
 
@@ -145,7 +153,7 @@ public class MigrationActionUnitaireTest {
     actionUnitaire.setDescription("DESCADD");
     supportCql.create(actionUnitaire);
     final List<ActionUnitaire> listCql = supportCql.findAll();
-    final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql);
+    final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: ActionUnitaire/CODEADD }"));
@@ -156,12 +164,12 @@ public class MigrationActionUnitaireTest {
   public void diffDescTest() {
 
     populateTableThrift();
-    migrationActionUnitaire.migrationFromThriftToCql();
+    migrationActionUnitaire.migrationFromThriftToCql(javers);
 
     final List<ActionUnitaire> listThrift = supportThrift.findAll();
     final List<ActionUnitaire> listCql = supportCql.findAll();
     listCql.get(0).setDescription("DESCDIFF");
-    final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql);
+    final Diff diff = migrationActionUnitaire.compareActionsUnitaires(listThrift, listCql, javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("ValueChange{ 'description' value changed from 'Ajout de notes' to 'DESCDIFF' }"));
