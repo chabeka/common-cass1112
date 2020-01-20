@@ -3,6 +3,7 @@ package fr.urssaf.image.sae;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.javers.common.collections.Arrays;
 import org.javers.core.Javers;
 import org.javers.core.JaversBuilder;
 import org.javers.core.diff.ListCompareAlgorithm;
@@ -66,7 +67,7 @@ public class App {
   /**
    * LOGGER
    */
-  private static final Logger LOG = LoggerFactory.getLogger(App.class);
+  private static Logger LOG = null;
 
   /**
    * sens de la migration de la table thrift vers la table cql
@@ -82,6 +83,9 @@ public class App {
   private static String MESSAGE_NON_IMPL="Le  traitement pour  la  table {} n'est pas implémenté";
 
   public static void main(final String[] args) throws Exception {
+
+    // System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "/hawai/data/ged/sae-lotinstallmaj/logback-sae-migration-donnees.xml");
+    LOG = LoggerFactory.getLogger(App.class);
 
     App.LOG.info(" ___________________________");
     App.LOG.info("|                           |");
@@ -164,8 +168,17 @@ public class App {
             App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfNameTemp, javers);
           }
         } else {
-          nbTablesTraitees = 1;
-          App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfName, javers);
+          if (Arrays.asList(tabCfName).contains(cfName)) {
+            nbTablesTraitees = 1;
+            App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfName, javers);
+          } else {
+            App.LOG.info(" _________________________________________________________");
+            App.LOG.info("|                                                         |");
+            App.LOG.info("|  ERREUR: PROBLEME DE PARAMETRE                          |");
+            App.LOG.info("|_________________________________________________________|");
+            App.LOG.info("|             Cfname incorrect                            |");
+            App.LOG.info("|_________________________________________________________|");
+          }
         }
         final List<ModeAPI> modeAPIs = modeApiCqlSupport.findAll();
         App.resumeMigration(nbTablesAMigrer, nbTablesTraitees, modeAPIs);
@@ -178,6 +191,7 @@ public class App {
         App.LOG.info("|  Il faut préciser, dans la ligne de commande, le chemin |");
         App.LOG.info("|  complet du fichier de configuration du SAE.            |");
         App.LOG.info("|_________________________________________________________|");
+        // on sort du programme
 
       }
 
@@ -833,12 +847,12 @@ public class App {
   }
 
   private static void resumeMigration(final int nbTablesAMigrer, final int nbTablesTraitees, final List<ModeAPI> listModeAPI) {
-    final String messageTablesAMigrer = "Nb de tables à migrer:";
-    final String messageTablesNonMigrees = "Nb de tables non migrées:";
+    final String messageTablesAMigrer = "Nb de tables a migrer:";
+    final String messageTablesNonMigrees = "Nb de tables non migrees:";
     final String messageTablesEnCoursMigration = "Nb de tables en cours de migration:";
-    final String messageTablesTraitees = "Nb de tables traitées:";
-    final String messageTablesMigrees = "Nb de tables migrées:";
-    final String fin = "                                                                       |";
+    final String messageTablesTraitees = "Nb de tables traitees:";
+    final String messageTablesMigrees = "Nb de tables migrees:";
+    final String fin = "                                                                        |";
     final String finTablesAmigrer = fin.substring(String.valueOf(nbTablesAMigrer).length() + messageTablesAMigrer.length(), fin.length());
     final String finTablesTraitees = fin.substring(String.valueOf(nbTablesTraitees).length() + messageTablesTraitees.length(), fin.length());
 
