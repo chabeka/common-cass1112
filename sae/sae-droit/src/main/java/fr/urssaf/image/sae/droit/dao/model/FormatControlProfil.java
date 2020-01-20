@@ -14,44 +14,7 @@ import com.datastax.driver.mapping.annotations.Table;
 @Table(name = "droitformatcontrolprofilcql")
 public class FormatControlProfil implements Comparable<FormatControlProfil> {
 
-
-  @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((controlProfil == null) ? 0 : controlProfil.hashCode());
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((formatCode == null) ? 0 : formatCode.hashCode());
-		return result;
-	}
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		FormatControlProfil other = (FormatControlProfil) obj;
-		if (controlProfil == null) {
-			if (other.controlProfil != null)
-				return false;
-		} else if (!controlProfil.equals(other.controlProfil))
-			return false;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (formatCode == null) {
-			if (other.formatCode != null)
-				return false;
-		} else if (!formatCode.equals(other.formatCode))
-			return false;
-		return true;
-	}
-
-@PartitionKey
+  @PartitionKey
   @Column(name = "formatCode")
   @Id
   private String formatCode;
@@ -62,6 +25,53 @@ public class FormatControlProfil implements Comparable<FormatControlProfil> {
   @Column(name = "controlProfil")
   @Frozen
   private FormatProfil controlProfil;
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (controlProfil == null ? 0 : controlProfil.hashCode());
+    result = prime * result + (description == null ? 0 : description.hashCode());
+    result = prime * result + (formatCode == null ? 0 : formatCode.hashCode());
+    return result;
+  }
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final FormatControlProfil other = (FormatControlProfil) obj;
+    if (controlProfil == null) {
+      if (other.controlProfil != null) {
+        return false;
+      }
+    } else if (!controlProfil.equals(other.controlProfil)) {
+      return false;
+    }
+    if (description == null) {
+      if (other.description != null) {
+        return false;
+      }
+    } else if (!description.equals(other.description)) {
+      return false;
+    }
+    if (formatCode == null) {
+      if (other.formatCode != null) {
+        return false;
+      }
+    } else if (!formatCode.equals(other.formatCode)) {
+      return false;
+    }
+    return true;
+  }
+
+
 
 
   /**
