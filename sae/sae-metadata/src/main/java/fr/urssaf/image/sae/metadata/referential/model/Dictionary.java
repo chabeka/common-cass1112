@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.metadata.referential.model;
 import java.util.List;
 
 import org.javers.core.metamodel.annotation.Id;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -19,7 +17,7 @@ public class Dictionary implements Comparable<Dictionary> {
 
   @PartitionKey
   @Column(name = "identifiant")
-  @Id
+  @Id // Comparaison Javers
   private String identifiant;
 
   @Column(name = "listEntries")

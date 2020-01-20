@@ -5,8 +5,6 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.javers.core.metamodel.annotation.Id;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -60,7 +58,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
 
   @PartitionKey
   @Column(name = "longCode")
-  @Id
+  @Id // Comparaison Javers
   private String longCode;
 
   @Column(name = "sCode")
