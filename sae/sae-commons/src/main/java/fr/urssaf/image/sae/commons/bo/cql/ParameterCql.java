@@ -20,6 +20,22 @@ import fr.urssaf.image.sae.commons.bo.ParameterType;
 @Table(name = "parameterscql")
 public class ParameterCql implements Comparable<ParameterCql> {
 
+  /** Type paramètre */
+  @PartitionKey
+  @Column(name = "typeParameters")
+  @Id // Comparaison Javers
+  private ParameterRowType typeParameters;
+
+  /** Nom du paramètre */
+  @ClusteringColumn
+  @Column(name = "name")
+  @Id
+  private ParameterType name;
+
+  /** valeur du paramètre */
+  @Column(name = "value")
+  private Object value;
+
   /**
    * @return the typeParameters
    */
@@ -65,20 +81,7 @@ public class ParameterCql implements Comparable<ParameterCql> {
     this.value = value;
   }
 
-  /** Type paramètre */
-  @PartitionKey
-  @Column(name = "typeParameters")
-  @Id
-  private ParameterRowType typeParameters;
-  /** Nom du paramètre */
-  @ClusteringColumn
-  @Column(name = "name")
-  @Id
-  private ParameterType name;
 
-  /** valeur du paramètre */
-  @Column(name = "value")
-  private Object value;
 
   /**
    * {@inheritDoc}
