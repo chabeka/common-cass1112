@@ -29,8 +29,6 @@ import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithread
 
 /**
  * Classe d'écoute du transfert de masse
- * 
- *
  */
 @Component
 public class TransfertListener extends AbstractListener {
@@ -57,7 +55,7 @@ public class TransfertListener extends AbstractListener {
     */
    @BeforeProcess
    public final void beforeProcess(
-         final JAXBElement<UntypedDocument> untypedType) {
+                                   final JAXBElement<UntypedDocument> untypedType) {
 
       incrementCount();
    }
@@ -66,7 +64,7 @@ public class TransfertListener extends AbstractListener {
     * Incrémente le nombre de document traité de 1
     */
    protected final void incrementCount() {
-      ExecutionContext context = getStepExecution().getExecutionContext();
+      final ExecutionContext context = getStepExecution().getExecutionContext();
 
       int valeur = context.getInt(Constantes.CTRL_INDEX);
       valeur++;
@@ -82,9 +80,9 @@ public class TransfertListener extends AbstractListener {
       final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> list = executor
             .getIntegratedDocuments();
 
-      final ConcurrentLinkedQueue<UUID> listUuid = new ConcurrentLinkedQueue<UUID>();
+      final ConcurrentLinkedQueue<UUID> listUuid = new ConcurrentLinkedQueue<>();
       if (CollectionUtils.isNotEmpty(list)) {
-         for (TraitementMasseIntegratedDocument document : list) {
+         for (final TraitementMasseIntegratedDocument document : list) {
             listUuid.add(document.getIdentifiant());
          }
       }
@@ -124,11 +122,12 @@ public class TransfertListener extends AbstractListener {
     */
    @OnProcessError
    public final void logProcessError(final Object documentType,
-         final Exception exception) {
+                                     final Exception exception) {
       getCodesErreurListe().add(Constantes.ERR_BUL002);
       getIndexErreurListe().add(
-            getStepExecution().getExecutionContext().getInt(
-                  Constantes.CTRL_INDEX));
+                                getStepExecution().getExecutionContext()
+                                .getInt(
+                                        Constantes.CTRL_INDEX));
       LOGGER.warn("Erreur lors du transfert de document", exception);
       getErrorMessageList().add(exception.getMessage());
    }
@@ -142,7 +141,8 @@ public class TransfertListener extends AbstractListener {
          try {
             LOGGER.debug("en attente de reprise de travail");
             Thread.sleep(THREAD_SLEEP);
-         } catch (InterruptedException e) {
+         }
+         catch (final InterruptedException e) {
             LOGGER.info("Impossible de traiter l'interruption", e);
          }
       }
@@ -152,8 +152,8 @@ public class TransfertListener extends AbstractListener {
     * Réalisé après le chunk
     */
    @AfterChunk
-   public final void afterChunk() {
-      AbstractInsertionMasseRuntimeException exception = executor
+   protected final void afterChunk() {
+      final AbstractInsertionMasseRuntimeException exception = executor
             .getInsertionMasseException();
 
       if (exception != null) {
@@ -173,7 +173,7 @@ public class TransfertListener extends AbstractListener {
       ExitStatus status = getStepExecution().getExitStatus();
 
       final JobExecution jobExecution = getStepExecution().getJobExecution();
-      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
+      final ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
       if (CollectionUtils.isEmpty(errorMessageList)) {
          status = ExitStatus.COMPLETED;
       } else {
@@ -183,17 +183,17 @@ public class TransfertListener extends AbstractListener {
       executor.shutdown();
       executor.waitFinishInsertion();
 
-      final ConcurrentLinkedQueue<UUID> list = this.getIntegratedDocuments();
+      final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
 
-      jobExecution.getExecutionContext().put(Constantes.NB_INTEG_DOCS,
-            executor.getIntegratedDocuments().size());
+      jobExecution.getExecutionContext()
+      .put(Constantes.NB_INTEG_DOCS,
+           executor.getIntegratedDocuments().size());
 
       jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
 
       getStepExecution().setWriteCount(list.size());
 
-      final AbstractInsertionMasseRuntimeException exception = executor
-            .getInsertionMasseException();
+      final AbstractInsertionMasseRuntimeException exception = executor.getInsertionMasseException();
 
       if (exception != null) {
 
@@ -205,27 +205,29 @@ public class TransfertListener extends AbstractListener {
    }
 
    private ExitStatus gestionException(
-         final AbstractInsertionMasseRuntimeException exception) {
+                                       final AbstractInsertionMasseRuntimeException exception) {
 
-      String trcPrefix = "gestionException()";
+      final String trcPrefix = "gestionException()";
 
-      ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
-      ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
-      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
+      final ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
+      final ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
+      final ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
 
       ExitStatus status;
 
       try {
          throw exception.getCause();
-      } catch (InterruptionTraitementException e) {
-         
-         String messageError = "Le transfert de masse en mode 'Partiel' a été interrompue. "
+      }
+      catch (final InterruptionTraitementException e) {
+
+         final String messageError = "Le transfert de masse en mode 'Partiel' a été interrompu. "
                + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
          LOGGER.warn("{} - " + messageError, trcPrefix);
          LOGGER.warn("{} - " + e.toString(), trcPrefix);
 
-         getStepExecution().getJobExecution().getExecutionContext()
-               .put(Constantes.FLAG_BUL003, Boolean.TRUE);
+         getStepExecution().getJobExecution()
+         .getExecutionContext()
+         .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
          codes.add(Constantes.ERR_TR_BUL001);
          index.add(exception.getIndex());
@@ -233,7 +235,8 @@ public class TransfertListener extends AbstractListener {
 
          status = ExitStatus.FAILED;
 
-      } catch (Exception e) {
+      }
+      catch (final Exception e) {
 
          LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
 
@@ -245,7 +248,7 @@ public class TransfertListener extends AbstractListener {
          }
 
          LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
-         
+
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
          errorMessageList.add(message);

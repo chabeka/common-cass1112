@@ -8,15 +8,13 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * 
  * 
  */
-public class InsertionMasseRuntimeException extends
-      AbstractInsertionMasseRuntimeException {
+public class InsertionMasseRuntimeException extends AbstractInsertionMasseRuntimeException {
 
    private static final long serialVersionUID = 1L;
 
    private final StorageDocument storageDocument;
 
    /**
-    * 
     * @param index
     *           index dans le sommaire où l'insertion a échoué
     * @param storageDocument
@@ -24,8 +22,8 @@ public class InsertionMasseRuntimeException extends
     * @param cause
     *           cause de l'échec
     */
-   public InsertionMasseRuntimeException(int index,
-         StorageDocument storageDocument, Exception cause) {
+   public InsertionMasseRuntimeException(final int index,
+                                         final StorageDocument storageDocument, final Exception cause) {
       super(index, cause);
       this.storageDocument = storageDocument;
    }
