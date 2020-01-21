@@ -38,7 +38,7 @@ public class EnvironmentBuilder {
    }
 
    /**
-    * @return Le code de l'environnement
+    * @return Le code de l'environnement (dans le référentiel ged_batch_docs_executable)
     */
    public String getEnvCode() {
       return envCode;
@@ -46,7 +46,7 @@ public class EnvironmentBuilder {
 
    /**
     * @param code
-    *           Le code de l'environnement
+    *           Le code de l'environnement (dans le référentiel ged_batch_docs_executable)
     */
    public EnvironmentBuilder setEnvCode(final String code) {
       envCode = code;

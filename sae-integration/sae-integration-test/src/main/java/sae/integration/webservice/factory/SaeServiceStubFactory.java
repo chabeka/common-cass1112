@@ -23,7 +23,11 @@ public class SaeServiceStubFactory {
 
    static final String RECHERCHE_DOCUMENTAIRE_PASS = "y0TvbCdu9YJn";
 
+   static final String WATT_PASS = "x454AbFt5pUg";
+
    static final String CIME_PASS = "fIgMbK0ifknz";
+
+   static final String SATURNE_PASS = "8F7MFQEWS9Me";
 
    static final int TIMEOUT_IN_MS = 10 * 60 * 1000;
 
@@ -37,7 +41,6 @@ public class SaeServiceStubFactory {
             Arrays.asList("PAGM_RECHERCHE_DOCUMENTAIRE_GNT"),
             "CS_RECHERCHE_DOCUMENTAIRE",
             VI_LOGIN);
-
       return getSaeService(url, handler);
    }
 
@@ -47,7 +50,29 @@ public class SaeServiceStubFactory {
             Arrays.asList("PAGM_RECHERCHE_DOCUMENTAIRE_GNS"),
             "CS_RECHERCHE_DOCUMENTAIRE",
             VI_LOGIN);
+      return getSaeService(url, handler);
+   }
 
+   public static SaeServicePortType getServiceForWattGNT(final String url) {
+      final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("WATT.p12",
+            WATT_PASS,
+            Arrays.asList("PAGM_WATT_ARCHIVAGE_GNT", "PAGM_WATT_AUTRES_GNT"),
+            "CS_WATT",
+            VI_LOGIN);
+      return getSaeService(url, handler);
+   }
+
+   public static SaeServicePortType getServiceForSaturneGNT(final String url) {
+      final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("SATURNE.p12",
+            SATURNE_PASS,
+            Arrays.asList("PAGM_SATURNE_DEBLOCAGE",
+                  "PAGM_SATURNE_OPC_GNT",
+                  "PAGM_SATURNE_SUPPRESSION_RESTORE",
+                  "PAGM_SATURNE_WATT_ADDT_GNT",
+                  "PAGM_SATURNE_WATT_MAJI_GNT",
+                  "PAGM_SATURNE_WATT_PURGE_GNT"),
+            "CS_SATURNE",
+            VI_LOGIN);
       return getSaeService(url, handler);
    }
 
@@ -73,6 +98,15 @@ public class SaeServiceStubFactory {
       final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("CIME.p12",
             CIME_PASS,
             Arrays.asList("PAGM_CIME_GNT_COTISANT"),
+            "CS_CIME",
+            VI_LOGIN);
+      return getSaeService(url, handler);
+   }
+
+   public static SaeServicePortType getServiceForCimeGNSCotisant(final String url) {
+      final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("CIME.p12",
+            CIME_PASS,
+            Arrays.asList("PAGM_CIME_GNS_COTISANT"),
             "CS_CIME",
             VI_LOGIN);
       return getSaeService(url, handler);

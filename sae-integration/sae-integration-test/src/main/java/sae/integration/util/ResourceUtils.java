@@ -1,7 +1,9 @@
 package sae.integration.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.StandardCopyOption;
 
 import org.apache.commons.io.IOUtils;
 
@@ -32,6 +34,20 @@ public final class ResourceUtils {
       final InputStream stream = loadResource(object, path);
       try {
          return IOUtils.toString(stream);
+      }
+      catch (final IOException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public static void copyResourceToFile(final Object object, final String resourcePath, final String outFilePath) {
+      try {
+         final InputStream stream = loadResource(object, resourcePath);
+         java.nio.file.Files.copy(
+               stream,
+               new File(outFilePath).toPath(),
+               StandardCopyOption.REPLACE_EXISTING);
+         stream.close();
       }
       catch (final IOException e) {
          throw new RuntimeException(e);

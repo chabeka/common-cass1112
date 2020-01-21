@@ -51,7 +51,25 @@ public class ModificationRattrapageTest {
       metadataToReturn.getMetadonneeCode().add("DateArchivage");
       final boolean simulationMode = true;
       final String newCodeOrga = "UR437";
-      modifyCodeOrganismeProprietaire(service, simulationMode, fixedMetadatas, varyingMetadata, newCodeOrga);
+      modifyOneMetaByIteration(service, simulationMode, fixedMetadatas, varyingMetadata, "CodeOrganismeProprietaire", newCodeOrga);
+   }
+
+   @Test
+   /**
+    * Rattrapage sur UR117 : produit injecté avec le statut "TESTGEN" au lieu de "PRET"
+    */
+   public void rattrapageUR117_Statut() throws Exception {
+      final SaeServicePortType service = SaeServiceStubFactory
+            .getServiceForRechercheDocumentaireGNT("http://hwi69progednatgntcot1boweb1.cer69.recouv/ged/services/SaeService/");
+
+      final ListeMetadonneeType fixedMetadatas = new ListeMetadonneeType();
+      SoapBuilder.addMeta(fixedMetadatas, "IdTraitementMasse", "70A45EAB-A3A8-4F37-92F8-E66A1A9A83C0");
+      SoapBuilder.addMeta(fixedMetadatas, "StatutWATT", "TESTGEN");
+      SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", "UR117");
+      final String newStatut = "PRET";
+      final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeMetadata("DateArchivage", "20200101", "20200110");
+      final boolean simulationMode = true;
+      modifyOneMetaByIteration(service, simulationMode, fixedMetadatas, varyingMetadata, "StatutWATT", newStatut);
    }
 
    @Test
@@ -72,11 +90,11 @@ public class ModificationRattrapageTest {
       final String newCodeOrga = "UR247";
       final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeMetadata("DateArchivage", "20190911", "20190914");
       final boolean simulationMode = true;
-      modifyCodeOrganismeProprietaire(service, simulationMode, fixedMetadatas, varyingMetadata, newCodeOrga);
+      modifyOneMetaByIteration(service, simulationMode, fixedMetadatas, varyingMetadata, "CodeOrganismeProprietaire", newCodeOrga);
    }
 
    /**
-    * Utilise une recherche paginée pour modifier "en masse" le CodeOrganismeProprietaire de documents
+    * Utilise une recherche paginée pour modifier "en masse" une métadonnée sur des documents
     * 
     * @param service
     *           Service d'accès GNT/GNS
@@ -86,11 +104,13 @@ public class ModificationRattrapageTest {
     *           Les métadonnées fixes pour la recherche par itérateur
     * @param varyingMetadata
     *           La métadonnée variable pour la recherche par itérateur
-    * @param newCodeOrga
-    *           La valeur à mettre dans CodeOrganismeProprietaire
+    * @param metaCodeToModify
+    *           Code de la métadonnée à modifier
+    * @param newMetaValue
+    *           La valeur à mettre dans la métadonnée à modifier
     */
-   private void modifyCodeOrganismeProprietaire(final SaeServicePortType service, final boolean simulationMode,
-         final ListeMetadonneeType fixedMetadatas, final RangeMetadonneeType varyingMetadata, final String newCodeOrga) {
+   private void modifyOneMetaByIteration(final SaeServicePortType service, final boolean simulationMode,
+         final ListeMetadonneeType fixedMetadatas, final RangeMetadonneeType varyingMetadata, final String metaCodeToModify, final String newMetaValue) {
 
       final RechercheParIterateurRequestType searchRequest = new RechercheParIterateurRequestType();
       final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
@@ -114,8 +134,8 @@ public class ModificationRattrapageTest {
             LOGGER.debug("{} {}", UUID, dateArchivage);
 
             if (!simulationMode) {
-               // Lancement de la modification unitaire pour modifier CodeOrganismeProprietaire
-               ModificationUtils.sendModification(service, UUID, "CodeOrganismeProprietaire", newCodeOrga);
+               // Lancement de la modification unitaire pour modifier la méta à modifier
+               ModificationUtils.sendModification(service, UUID, metaCodeToModify, newMetaValue);
             }
             counter++;
          }

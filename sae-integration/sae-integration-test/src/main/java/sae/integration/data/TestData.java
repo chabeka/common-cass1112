@@ -1,5 +1,8 @@
 package sae.integration.data;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
@@ -57,7 +60,7 @@ public class TestData {
     *         Le fichier PDF prêt à être archivé
     */
    public static DataFileType getPdfFile(final ListeMetadonneeType listMetasType) {
-      return getFile("documents/testDoc.pdf", "fmt/354", "1", listMetasType);
+      return getFileFromResource("documents/testDoc.pdf", "fmt/354", "1", listMetasType);
    }
 
    /**
@@ -70,7 +73,7 @@ public class TestData {
     *         Le fichier TIFF prêt à être archivé
     */
    public static DataFileType getTiffFile(final ListeMetadonneeType listMetasType) {
-      return getFile("documents/testDoc.tif", "fmt/353", "1", listMetasType);
+      return getFileFromResource("documents/testDoc.tif", "fmt/353", "1", listMetasType);
    }
 
    /**
@@ -83,13 +86,46 @@ public class TestData {
     *         Le fichier TXT prêt à être archivé
     */
    public static DataFileType getTxtFile(final ListeMetadonneeType listMetasType) {
-      return getFile("documents/testDoc.txt", "x-fmt/111", "1", listMetasType);
+      return getFileFromResource("documents/testDoc.txt", "x-fmt/111", "1", listMetasType);
    }
 
-   public static DataFileType getFile(final String resourcePath, final String formatPronom, final String nbPages, final ListeMetadonneeType metaList) {
+   public static DataFileType getFileFromResource(final String resourcePath, final String formatPronom, final String nbPages,
+         final ListeMetadonneeType metaList) {
       final String nomFichier = Paths.get(resourcePath).getFileName().toString();
       final InputStream contenu = TestData.class.getClassLoader().getResourceAsStream(resourcePath);
 
+      return getFileFromStream(nomFichier, contenu, formatPronom, nbPages, metaList);
+   }
+
+   /**
+    * Construit un objet DataFileType à partir d'un fichier local
+    * Alimente les métadonnées relatives à ce fichier
+    * 
+    * @param filePath
+    *           Chemin du fichier
+    * @param formatPronom
+    * @param nbPages
+    *           Nombre de pages du fichier
+    * @param listMetasType
+    *           métadonnées à alimenter
+    * @return
+    *         Le fichier TXT prêt à être archivé
+    */
+   public static DataFileType getFileFromPath(final String filePath, final String formatPronom, final String nbPages, final ListeMetadonneeType metaList) {
+      final File f = new File(filePath);
+      InputStream contenu;
+      try {
+         contenu = new FileInputStream(f);
+      }
+      catch (final FileNotFoundException e) {
+         throw new RuntimeException(e);
+      }
+      final String nomFichier = f.getName();
+      return getFileFromStream(nomFichier, contenu, formatPronom, nbPages, metaList);
+   }
+
+   private static DataFileType getFileFromStream(final String nomFichier,
+         final InputStream contenu, final String formatPronom, final String nbPages, final ListeMetadonneeType metaList) {
       final DataFileType dataFile = new DataFileType();
       dataFile.setFileName(nomFichier);
       byte[] contenuBytes;

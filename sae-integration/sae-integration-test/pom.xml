@@ -291,6 +291,12 @@
          <artifactId>sshj</artifactId>
          <version>${sshj.version}</version>
       </dependency>
+      
+      <dependency>
+         <groupId>com.jcabi</groupId>
+         <artifactId>jcabi-xml</artifactId>
+         <version>0.22.1</version>
+      </dependency>
    </dependencies>
 
 </project>

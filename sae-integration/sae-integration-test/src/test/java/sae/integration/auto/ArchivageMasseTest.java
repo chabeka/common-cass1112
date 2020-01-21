@@ -37,7 +37,7 @@ public class ArchivageMasseTest {
    public void archivageOK() throws Exception {
       // final Environment environnement = Environments.GNT_PIC;
       // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(environnement.getUrl());
-      final Environment environnement = Environments.MIG_GNT;
+      final Environment environnement = Environments.GNS_INT_PAJE;
       final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNS(environnement.getUrl());
 
       // Création du sommaire, avec deux documents

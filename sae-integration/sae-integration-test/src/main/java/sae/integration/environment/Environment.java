@@ -35,7 +35,7 @@ public class Environment {
    }
 
    /**
-    * @return L'url du service
+    * @return Le code de l'environnement, dans le référentiel ged_batch_docs_executable
     */
    public String getEnvCode() {
       return envCode;

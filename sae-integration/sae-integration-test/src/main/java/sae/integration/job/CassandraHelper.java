@@ -3,6 +3,7 @@ package sae.integration.job;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +18,7 @@ import com.netflix.astyanax.connectionpool.impl.ConnectionPoolConfigurationImpl;
 import com.netflix.astyanax.connectionpool.impl.CountingConnectionPoolMonitor;
 import com.netflix.astyanax.connectionpool.impl.SimpleAuthenticationCredentials;
 import com.netflix.astyanax.impl.AstyanaxConfigurationImpl;
+import com.netflix.astyanax.model.Column;
 import com.netflix.astyanax.model.ConsistencyLevel;
 import com.netflix.astyanax.thrift.ThriftFamilyFactory;
 
@@ -162,6 +164,31 @@ public class CassandraHelper {
 
       final OperationResult<Void> result = batch.execute();
       LOGGER.debug("Insertion du job {} dans cassandra en {} ms", jobId, result.getLatency(TimeUnit.MILLISECONDS));
+   }
+
+   /**
+    * Utilisé pour re-réserver un job, par exemple dans le cas où sont statut est passé en FAILED
+    * 
+    * @param jobId
+    *           id du job
+    */
+   public void reserveJobAgain(final UUID jobId) throws Exception {
+
+      final Column<String> row = saeKeyspace.prepareQuery(JobRequestCF.get())
+            .getKey(jobId)
+            .getColumn("state")
+            .execute()
+            .getResult();
+      final String state = row.getStringValue();
+      LOGGER.info("Etat actuel du job {} : {}", jobId, state);
+
+      if (!StringUtils.isEmpty(state)) {
+         final MutationBatch batch = saeKeyspace.prepareMutationBatch();
+         batch.withRow(JobRequestCF.get(), jobId)
+         .putColumn("state", "RESERVED");
+         final OperationResult<Void> result = batch.execute();
+         LOGGER.info("Réservation du job {} dans cassandra en {} ms", jobId, result.getLatency(TimeUnit.MILLISECONDS));
+      }
    }
 
 }

@@ -39,7 +39,15 @@ public class Environments {
 
    public static final Environment MIG_GNT;
 
-   public static final Environment LOCALHOST;
+   /**
+    * Environnement utilisé pour lancer les traitements de masse localement
+    */
+   public static final Environment LOCAL_BATCH;
+
+   /**
+    * Environnement utilisé pour lancer les webservices localement
+    */
+   public static final Environment LOCAL_SERVICE;
 
    private Environments() {
       // Classe statique
@@ -88,7 +96,7 @@ public class Environments {
             .setAppliServer("hwi31intgnspajeboappli1.gidn.recouv")
             .setEcdeMountPoint("/hawai/data/ecde_cnp69-evsgidn")
             .setEcdeName("cnp69-evsgidn.cer69.recouv")
-            .setCassandraServers("cnp69intgnsp1cas1.gidn.recouv")
+            .setCassandraServers("cnp69intgnsp1cas1.cer69.recouv")
             .build();
 
       GNT_INT_CESU = new EnvironmentBuilder()
@@ -191,13 +199,24 @@ public class Environments {
             .setEcdeName("cnp6gns-evsgivn.urdom.ad.recouv")
             .setCassandraServers("cnp31miggntcas3.cer31.recouv")
             .build();
-      LOCALHOST = new EnvironmentBuilder()
-            .setUrl("http://localhost:8080/sae-webservices/services/SaeService/")
-            .setEnvCode("TODO")
+
+      final LocalConfiguration localConfig = LocalConfiguration.getInstance();
+      LOCAL_BATCH = new EnvironmentBuilder()
+            .setUrl("http://" + localConfig.getAppliServer() + ":8080/ged/services/SaeService/")
+            .setEnvCode("LOCAL_BATCH")
             .setAppliServer("localhost")
-            .setEcdeMountPoint("TODO")
-            .setEcdeName("TODO")
-            .setCassandraServers("TODO")
+            .setEcdeMountPoint(localConfig.getEcdeMountPoint())
+            .setEcdeName(localConfig.getEcdeName())
+            .setCassandraServers(localConfig.getCassandraServers())
+            .build();
+
+      LOCAL_SERVICE = new EnvironmentBuilder()
+            .setUrl("http://localhost:8080/sae-webservices/services/SaeService/")
+            .setEnvCode("LOCAL_SERVICE")
+            .setAppliServer("localhost")
+            .setEcdeMountPoint(localConfig.getEcdeMountPoint())
+            .setEcdeName(localConfig.getEcdeName())
+            .setCassandraServers(localConfig.getCassandraServers())
             .build();
 
    }
