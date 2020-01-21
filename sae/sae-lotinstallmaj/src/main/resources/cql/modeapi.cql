@@ -55,3 +55,4 @@ INSERT INTO modeapi(cfname, mode) VALUES ('parameters' , 'DUAL_MODE_READ_THRIFT'
 INSERT INTO modeapi(cfname, mode) VALUES ('dictionary' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('metadata' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('referentielformat' , 'DUAL_MODE_READ_THRIFT');
+INSERT INTO modeapi(cfname, mode) VALUES ('sequences' , 'DUAL_MODE_READ_THRIFT');
