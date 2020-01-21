@@ -77,7 +77,6 @@ public class MigrationActionUnitaire implements IMigrationR {
 
     final List<ActionUnitaire> actionsUnitairesThrift = actionUnitaireSupport.findAll();
     final Diff compare = compareActionsUnitaires(actionsUnitairesThrift, actionsUnitairesCql, javers);
-    // logCompare(compare, actionsUnitairesThrift, actionsUnitairesCql);
     MigrationActionUnitaire.LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromCqlTothrift- end ");
     return compare;
   }

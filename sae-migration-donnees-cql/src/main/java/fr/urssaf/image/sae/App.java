@@ -211,6 +211,7 @@ public class App {
    */
   private static void migrationCfName(final ApplicationContext context, final String migrateTo, final ModeApiCqlSupport modeApiCqlSupport,
                                       final String cfName, final Javers javers) {
+
     // On effectue la migration que si le mode n'est pas cql (dual ou non)
     if (modeApiCqlSupport.isModeThriftOrDualThrift(cfName)) {
       final DiffM diffM = App.migration(context, cfName, modeApiCqlSupport, migrateTo, javers);
@@ -222,7 +223,6 @@ public class App {
         App.setModeApiCF(modeApiCqlSupport, cfName, MODE_API.DUAL_MODE_READ_CQL);
         // temporisation
         App.temporisation();
-        // setTableCql(cfName, modeApiCqlSupport);
         modeApiCqlSupport.updateModeApi(MODE_API.DATASTAX, cfName);
         App.logMode(cfName, MODE_API.DATASTAX);
 
@@ -292,10 +292,10 @@ public class App {
    * @param cfName
    */
   private static void logMode(final String cfName, final String mode) {
-    final String fin = "                                                 |";
+    final String fin = "                                                     |";
     App.LOG.info(" _____________________________________________________________________________");
     App.LOG.info("|                                                                             |");
-    App.LOG.info("|                MODE: {} {}{}", mode, cfName, fin.substring(cfName.length() + mode.length() - 3, fin.length()));
+    App.LOG.info("|                MODE: {} {}{}", mode, cfName, fin.substring(cfName.length() + mode.length() - 1, fin.length()));
     App.LOG.info("|_____________________________________________________________________________|");
 
   }
@@ -333,19 +333,27 @@ public class App {
   private static DiffM migration(final ApplicationContext context, final String cfName,
                                  final ModeApiCqlSupport modeApiCqlSupport, final String migrateTo, final Javers javers) {
 
-    boolean result = false;
     final DiffM diffM = new DiffM();
 
     try {
-      // On passe en mode dual thrift
+      // On passe en mode dual thrift pour que l'écriture se fasse aussi en cql
       App.setModeApiCF(modeApiCqlSupport, cfName, MODE_API.DUAL_MODE_READ_THRIFT);
       // temporisation
       App.temporisation();
 
+      /*
+       * Pour chaque table spécifiée on effectue la migration, et on n'effectue la comparaison pour vérifier les données
+       * que sur les tables avec un faible volume de données. On n'effectue donc pas la comparaison pour toutes tables de
+       * trace (excepté TraceDestinataires) ainsi que pour JobHistory.
+       * Pour les tables suivantes: correspondancesrnd, dictionary, droitactionunitaire,
+       * droitcontratservice, droitformatcontrolprofil,droitpagm, droitpagma, droitpagmf,
+       * droitpagmp, droitprmd, metadata,parameters,referentielformat, rnd, sequences,
+       * la comparaison se fait à la suite de la migration (dans la même méthode et c'est Javers qui est utilisé pour
+       * la comparaison)
+       */
       switch (cfName) {
 
       // Droits
-
       case Constantes.CF_DROIT_ACTION_UNITAIRE:
         final MigrationActionUnitaire migrationActionUnitaire = context.getBean(MigrationActionUnitaire.class);
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
@@ -512,13 +520,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobHistory.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobHistory.compareJobHistoryCql();
+          diffM.setResultCompare(true);
+          // result = migrationJobHistory.compareJobHistoryCql();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobHistory.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobHistory.compareJobHistoryCql();
+          diffM.setResultCompare(true);
+          // result = migrationJobHistory.compareJobHistoryCql();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOB_REQUEST:
@@ -526,13 +535,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobRequest.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobRequest.compareJobRequestCql();
+          diffM.setResultCompare(true);
+          diffM.setResultCompare(migrationJobRequest.compareJobRequestCql());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobRequest.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobRequest.compareJobRequestCql();
+          diffM.setResultCompare(migrationJobRequest.compareJobRequestCql());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBS_QUEUE:
@@ -540,13 +549,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobQueue.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobQueue.compareJobQueueCql();
+          diffM.setResultCompare(migrationJobQueue.compareJobQueueCql());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobQueue.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobQueue.compareJobQueueCql();
+          diffM.setResultCompare(migrationJobQueue.compareJobQueueCql());
         }
-        diffM.setResultCompare(result);
         break;
 
         // Jobs Spring Batch
@@ -556,13 +564,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobInstance.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobInstance.compareJobInstance();
+          diffM.setResultCompare(migrationJobInstance.compareJobInstance());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobInstance.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobInstance.compareJobInstance();
+          diffM.setResultCompare(migrationJobInstance.compareJobInstance());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBINSTANCES_BY_NAME:
@@ -571,13 +578,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobInstancesByName.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobInstancesByName.compareJobInstanceByName();
+          diffM.setResultCompare(migrationJobInstancesByName.compareJobInstanceByName());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobInstancesByName.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobInstancesByName.compareJobInstanceByName();
+          diffM.setResultCompare(migrationJobInstancesByName.compareJobInstanceByName());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBEXECUTION:
@@ -585,13 +591,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobExecution.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobExecution.compareJobExecution();
+          diffM.setResultCompare(migrationJobExecution.compareJobExecution());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecution.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobExecution.compareJobExecution();
+          diffM.setResultCompare(migrationJobExecution.compareJobExecution());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBEXECUTIONS:
@@ -599,13 +604,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobExecutions.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobExecutions.compareJobExecutions();
+          diffM.setResultCompare(migrationJobExecutions.compareJobExecutions());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecutions.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobExecutions.compareJobExecutions();
+          diffM.setResultCompare(migrationJobExecutions.compareJobExecutions());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBSTEP:
@@ -613,13 +617,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobStep.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobStep.compareJobStepCql();
+          diffM.setResultCompare(migrationJobStep.compareJobStepCql());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobStep.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobStep.compareJobStepCql();
+          diffM.setResultCompare(migrationJobStep.compareJobStepCql());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBSTEPS:
@@ -627,13 +630,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobSteps.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobSteps.compareJobStepsCql();
+          diffM.setResultCompare(migrationJobSteps.compareJobStepsCql());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobSteps.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobSteps.compareJobStepsCql();
+          diffM.setResultCompare(migrationJobSteps.compareJobStepsCql());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBEXECUTION_TO_JOBSTEP:
@@ -642,13 +644,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobExecutionToJobStep.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobExecutionToJobStep.compareJobExecutionsToStep();
+          diffM.setResultCompare(migrationJobExecutionToJobStep.compareJobExecutionsToStep());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecutionToJobStep.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobExecutionToJobStep.compareJobExecutionsToStep();
+          diffM.setResultCompare(migrationJobExecutionToJobStep.compareJobExecutionsToStep());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBINSTANCE_TO_JOBEXECUTION:
@@ -657,13 +658,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobinstanceToJobExecution.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobinstanceToJobExecution.compareJobInstanceToExecution();
+          diffM.setResultCompare(migrationJobinstanceToJobExecution.compareJobInstanceToExecution());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobinstanceToJobExecution.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationJobinstanceToJobExecution.compareJobInstanceToExecution();
+          diffM.setResultCompare(migrationJobinstanceToJobExecution.compareJobInstanceToExecution());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_JOBEXECUTIONS_RUNNING:
@@ -672,12 +672,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobExecutionsRunning.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationJobExecutionsRunning.compareJobExecutionsRunning();
+          diffM.setResultCompare(migrationJobExecutionsRunning.compareJobExecutionsRunning());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecutionsRunning.migrationFromCqlTothrift();
-          result = migrationJobExecutionsRunning.compareJobExecutionsRunning();
+          diffM.setResultMigration(true);
+          diffM.setResultCompare(migrationJobExecutionsRunning.compareJobExecutionsRunning());
         }
-        diffM.setResultCompare(result);
         break;
 
         // Traces
@@ -688,13 +688,12 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceDestinataire.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceDestinataire.compareTraceDestinataireFromCQlandThrift();
+          diffM.setResultCompare(migrationTraceDestinataire.compareTraceDestinataireFromCQlandThrift());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceDestinataire.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          result = migrationTraceDestinataire.compareTraceDestinataireFromCQlandThrift();
+          diffM.setResultCompare(migrationTraceDestinataire.compareTraceDestinataireFromCQlandThrift());
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_REG_EXPLOITATION:
@@ -703,12 +702,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceRegExploitation.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceRegExploitation.traceComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegExploitation.traceComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
-          // migrationTraceRegExploitation.migrationFromCqlTothrift(); TODO
-          result = migrationTraceRegExploitation.traceComparator();
+          migrationTraceRegExploitation.migrationFromCqlToThrift();
+          diffM.setResultMigration(true);
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegExploitation.traceComparator();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_REG_EXPLOITATION_INDEX:
@@ -717,12 +718,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceRegExploitationIndex.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceRegExploitationIndex.indexComparator();
+          diffM.setResultCompare(true);
+          // result=migrationTraceRegExploitationIndex.traceComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
-          // migrationTraceRegExploitation.migrationFromCqlTothrift(); TODO
-          result = migrationTraceRegExploitationIndex.indexComparator();
+          migrationTraceRegExploitationIndex.migrationFromCqlToThrift();
+          diffM.setResultMigration(true);
+          diffM.setResultCompare(true);
+          // result=migrationTraceRegExploitationIndex.traceComparator();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_JOURNAL_EVT:
@@ -731,13 +734,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceJournalEvt.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceJournalEvt.traceComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceJournalEvt.traceComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceJournalEvt.migrationFromCqlToThrift();
           diffM.setResultMigration(true);
-          result = migrationTraceJournalEvt.traceComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceJournalEvt.traceComparator();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_JOURNAL_EVT_INDEX:
@@ -746,13 +750,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceJournalEvtIndex.migIndexFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceJournalEvtIndex.indexComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceJournalEvtIndex.indexComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceJournalEvtIndex.migrationIndexFromCqlToThrift();
           diffM.setResultMigration(true);
-          result = migrationTraceJournalEvtIndex.indexComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceJournalEvtIndex.indexComparator();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC:
@@ -761,13 +766,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceJournalEvtIndexDoc.migrationIndexDocFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceJournalEvtIndexDoc.indexDocComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceJournalEvtIndexDoc.indexDocComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceJournalEvtIndexDoc.migrationIndexDocFromCqlToThrift();
           diffM.setResultMigration(true);
-          result = migrationTraceJournalEvtIndexDoc.indexDocComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceJournalEvtIndexDoc.indexDocComparator();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_REG_TECHNIQUE:
@@ -776,12 +782,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceRegTechnique.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceRegTechnique.traceComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegTechnique.traceComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceRegTechnique.migrationFromCqlToThrift();
-          result = migrationTraceRegTechnique.traceComparator();
+          diffM.setResultMigration(true);
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegTechnique.traceComparator();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_REG_TECHNIQUE_INDEX:
@@ -790,13 +798,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceRegTechniqueIndex.migrationIndexFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceRegTechniqueIndex.indexComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegTechniqueIndex.indexComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceRegTechniqueIndex.migrationIndexFromCqlToThrift();
           diffM.setResultMigration(true);
-          result = migrationTraceRegTechniqueIndex.indexComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegTechniqueIndex.indexComparator();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_REG_SECURITE:
@@ -805,13 +814,14 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceRegSecurite.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceRegSecurite.traceComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegSecurite.traceComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceRegSecurite.migrationFromCqlToThrift();
           diffM.setResultMigration(true);
-          result = migrationTraceRegSecurite.traceComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegSecurite.traceComparator();
         }
-        diffM.setResultCompare(result);
         break;
 
       case Constantes.CF_TRACE_REG_SECURITE_INDEX:
@@ -820,14 +830,16 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationTraceRegSecuriteIndex.migrationIndexFromThriftToCql();
           diffM.setResultMigration(true);
-          result = migrationTraceRegSecuriteIndex.indexComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegSecuriteIndex.indexComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceRegSecuriteIndex.migrationIndexFromCqlToThrift();
           diffM.setResultMigration(true);
-          result = migrationTraceRegSecuriteIndex.indexComparator();
+          diffM.setResultCompare(true);
+          // result = migrationTraceRegSecuriteIndex.indexComparator();
         }
-        diffM.setResultCompare(result);
         break;
+
       default:
         diffM.setResultMigration(false);
         diffM.setResultCompare(false);
@@ -835,7 +847,7 @@ public class App {
 
         break;
       }
-      diffM.setResultMigration(result);
+
 
     } catch (final Exception e) {
       diffM.setResultMigration(false);
@@ -847,7 +859,7 @@ public class App {
   }
 
   private static void resumeMigration(final int nbTablesAMigrer, final int nbTablesTraitees, final List<ModeAPI> listModeAPI) {
-    final String messageTablesAMigrer = "Nb de tables a migrer:";
+    final String messageTablesAMigrer = "Nb théorique de tables a migrer:";
     final String messageTablesNonMigrees = "Nb de tables non migrees:";
     final String messageTablesEnCoursMigration = "Nb de tables en cours de migration:";
     final String messageTablesTraitees = "Nb de tables traitees:";
@@ -864,10 +876,9 @@ public class App {
     {
       if (modeAPI.getMode().equals(MODE_API.DATASTAX)) {
         listModeAPIMigrees.add(modeAPI);
-      } else if (modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_THRIFT)
-          || modeAPI.getMode().equals(MODE_API.HECTOR)) {
+      } else if (modeAPI.getMode().equals(MODE_API.HECTOR)) {
         listModeAPINonMigrees.add(modeAPI);
-      }else if (modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_CQL)
+      } else if (modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_THRIFT)
           ) {
         listModeAPIEnCoursMigration.add(modeAPI);
       }

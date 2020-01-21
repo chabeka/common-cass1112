@@ -117,7 +117,7 @@ public class RepriseFileUtils {
       final Properties prop = new Properties();
 
       if (input == null) {
-        System.out.println("Problème de chargement du fichier propertie");
+        System.out.println("Problème de chargement du fichier properties");
         return "";
       }
 

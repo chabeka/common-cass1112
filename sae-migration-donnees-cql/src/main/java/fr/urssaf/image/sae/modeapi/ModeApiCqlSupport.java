@@ -161,9 +161,18 @@ public class ModeApiCqlSupport {
     return modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_THRIFT) || modeAPI.getMode().equals(MODE_API.HECTOR);
   }
 
+  public boolean isModeThrift(final String cfName) {
+    final ModeAPI modeAPI = findById(cfName);
+    return modeAPI.getMode().equals(MODE_API.HECTOR);
+  }
   public boolean isModeDualCql(final String cfName) {
     final ModeAPI modeAPI = findById(cfName);
     return modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_CQL);
+  }
+
+  public boolean isModeDualThrift(final String cfName) {
+    final ModeAPI modeAPI = findById(cfName);
+    return modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_THRIFT);
   }
 
   public boolean isModeCql(final String cfName) {
