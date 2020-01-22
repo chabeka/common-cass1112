@@ -59,9 +59,11 @@ public class MigrationSequences {
 
     final List<SequencesCql> listThrift = findAllThrift(MigrationSequences.SEQUENCE_KEY);
     // Enregistrement des données Thrift dans la table Cql
-    sequencesDaoCql.saveAll(listThrift);
+    final List<SequencesCql> listCql = sequencesDaoCql.saveAll(listThrift);
 
     MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- end ");
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- nbThrift={} ", listThrift.size());
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- nbCql= {} ", listCql.size());
   }
 
   /**
@@ -72,7 +74,8 @@ public class MigrationSequences {
     MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- start ");
     // Recherche des valeurs Cql
     final Iterator<SequencesCql> it = sequencesDaoCql.findAllWithMapper();
-
+    final List<SequencesCql> listCql = new ArrayList<>();
+    it.forEachRemaining(listCql::add);
     final ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<>(ccf.getKeyspace(),
         MigrationSequences.SEQUENCE_CF,
         StringSerializer.get(),
@@ -87,7 +90,10 @@ public class MigrationSequences {
       updater.setLong(sequencesCql.getJobIdName(), sequencesCql.getValue());
       template.update(updater);
     }
+    final List<SequencesCql> listThrift = findAllThrift(MigrationSequences.SEQUENCE_KEY);
     MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- end ");
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- nbThrift={} ", listThrift.size());
+    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- nbCql= {} ", listCql.size());
   }
 
   public void addSequence(final String jobIdName, final long value) {

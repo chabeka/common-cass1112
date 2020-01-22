@@ -83,8 +83,9 @@ public class MigrationJobQueue implements IMigration {
       nb++;
     }
 
-    LOGGER.debug(" Totale : " + nb);
-    LOGGER.debug(" MigrationJobQueue - migrationFromThriftToCql - end");
+
+    LOGGER.info(" MigrationJobQueue - migrationFromThriftToCql - end");
+    LOGGER.info("  MigrationJobQueue - migrationFromThriftToCql  Total : " + nb);
 
   }
 
@@ -110,8 +111,9 @@ public class MigrationJobQueue implements IMigration {
       nb++;
     }
 
-    LOGGER.debug(" Totale : " + nb);
+
     LOGGER.debug(" MigrationJobQueue - migrationFromCqlToThrift end");
+    LOGGER.debug(" MigrationJobQueue - migrationFromCqlToThrift Total : " + nb);
 
   }
 

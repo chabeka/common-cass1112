@@ -61,7 +61,7 @@ public class MigrationParameters implements IMigrationR {
   @Override
   public Diff migrationFromThriftToCql(final Javers javers) {
 
-    MigrationParameters.LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- start ");
+    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromThriftToCql- start ");
 
     final Iterator<GenericParametersType> it = genericdao.findAllByCFName("Parameters", ccf.getKeyspace().getKeyspaceName());
 
@@ -90,7 +90,7 @@ public class MigrationParameters implements IMigrationR {
           // enregistrement
           parameterDaoCql.saveWithMapper(parameterCql);
         } else {
-          MigrationParameters.LOGGER.error("Les énumérations sont inconnues");
+          MigrationParameters.LOGGER.error("MigrationParameters - migrationFromThriftToCql-Les énumérations sont inconnues");
         }
       }
       catch (final Exception e) {
@@ -102,7 +102,7 @@ public class MigrationParameters implements IMigrationR {
         if (parameterCql.getName() != null && parameterCql.getTypeParameters() != null) {
           parameterDaoCql.saveWithMapper(parameterCql);
         } else {
-          MigrationParameters.LOGGER.error("Les énumérations sont inconnues");
+          MigrationParameters.LOGGER.error("MigrationParameters - migrationFromThriftToCql-Les énumérations sont inconnues");
         }
       }
       nb++;
@@ -112,7 +112,8 @@ public class MigrationParameters implements IMigrationR {
     final Iterator<ParameterCql> parametersIterator = parameterDaoCql.findAllWithMapper();
     parametersIterator.forEachRemaining(parametersCql::add);
     final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql, javers);
-    MigrationParameters.LOGGER.info(" MIGRATION_PARAMETER - migrationFromThriftToCql- end:nb= " + nb);
+    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromThriftToCql- end");
+    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromThriftToCql- Total={} ", nb);
     return diff;
   }
 
@@ -122,7 +123,7 @@ public class MigrationParameters implements IMigrationR {
   @Override
   public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    MigrationParameters.LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- start ");
+    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromCqlTothrift- start ");
 
     final Iterator<ParameterCql> parametersCqlIterator = parameterDaoCql.findAllWithMapper();
     final List<ParameterCql> parametersCql = new ArrayList<>();
@@ -135,7 +136,8 @@ public class MigrationParameters implements IMigrationR {
     }
 
     final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql, javers);
-    MigrationParameters.LOGGER.info(" MIGRATION_PARAMETER - migrationFromCqlTothrift- end ");
+    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromCqlTothrift- end");
+    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromCqlTothrift- end: Total={} ", parametersCql.size());
     return diff;
   }
 

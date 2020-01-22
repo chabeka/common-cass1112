@@ -170,7 +170,7 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
 
     } while (count == blockSize);
 
-    LOG.debug(" Nb total de cle dans la CF: " + totalKey);
+    LOG.info("MigrationJobStep - migrationFromThriftToCql- Nb total de cle dans la CF: " + totalKey);
     LOG.info("MigrationJobStep - migrationFromThriftToCql - FIN");
   }
 
@@ -179,19 +179,21 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
    */
   @Override
   public void migrationFromCqlTothrift() {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigrationJobStep - migrationFromCqlTothrift - DEBUT");
-    }
+
+    LOG.info("MigrationJobStep - migrationFromCqlTothrift - DEBUT");
 
     final Iterator<JobStepCql> it = jobdaocql.findAllWithMapper();
+    int nb = 0;
     while (it.hasNext()) {
       final JobStepCql stepCql = it.next();
       final StepExecution stepEx = JobTranslateUtils.getStepExecutionFromStpeCql(null, stepCql);
       saveStepExecutionToCassandra(stepEx, stepCql.getJobExecutionId());
+      nb++;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigrationJobStep - migrationFromCqlTothrift - DEBUT");
-    }
+
+    LOG.info("MigrationJobStep - migrationFromCqlTothrift - FIN");
+    LOG.info("MigrationJobStep - migrationFromCqlTothrift - Total:{}", nb);
+
   }
 
   // ############################################################

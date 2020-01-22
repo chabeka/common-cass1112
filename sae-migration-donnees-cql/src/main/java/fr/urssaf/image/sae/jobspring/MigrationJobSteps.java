@@ -43,12 +43,12 @@ public class MigrationJobSteps extends MigrationJob implements IMigration {
 
   @Override
   public void migrationFromThriftToCql() {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(" MigrationJobSteps - migrationFromThriftToCql - DEBUT ");
-    }
+
+    LOG.info(" MigrationJobSteps - migrationFromThriftToCql - DEBUT ");
+
 
     final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBSTEPS_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
-
+    int nb = 0;
     while (it.hasNext()) {
       final Row row = (Row) it.next();
       final Long id = row.getLong("column1");
@@ -60,18 +60,18 @@ public class MigrationJobSteps extends MigrationJob implements IMigration {
       jobcql.setJobName(jobName);
       jobcql.setStepName(stepName);
       jobStepsExeDao.saveWithMapper(jobcql);
+      nb++;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(" MigrationJobSteps - migrationFromThriftToCql - FIN   ");
-    }
+
+    LOG.info(" MigrationJobSteps - migrationFromThriftToCql - FIN   ");
+    LOG.info(" MigrationJobSteps - migrationFromThriftToCql - Total:  {} ", nb);
+
   }
 
   @Override
   public void migrationFromCqlTothrift() {
 
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(" MigrationJobSteps - migrationFromCqlTothrift - DEBUT ");
-    }
+    LOG.info(" MigrationJobSteps - migrationFromCqlTothrift - DEBUT ");
 
     final Serializer<String> sSlz = StringSerializer.get();
     final Serializer<byte[]> bSlz = BytesArraySerializer.get();
@@ -79,7 +79,7 @@ public class MigrationJobSteps extends MigrationJob implements IMigration {
     final Mutator<byte[]> mutator = HFactory.createMutator(ccfthrift.getKeyspace(), bSlz);
 
     final Iterator<JobStepsCql> it = jobStepsExeDao.findAllWithMapper();
-
+    int nb = 0;
     while (it.hasNext()) {
       final JobStepsCql stepCql = it.next();
 
@@ -94,11 +94,11 @@ public class MigrationJobSteps extends MigrationJob implements IMigration {
                            Constante.JOBSTEPS_CFNAME,
                            HFactory.createColumn(stepId, value, lSlz, CompositeSerializer.get()));
       mutator.execute();
+      nb++;
     }
 
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(" MigrationJobSteps - migrationFromCqlTothrift - FIN   ");
-    }
+    LOG.info(" MigrationJobSteps - migrationFromCqlTothrift - FIN   ");
+    LOG.info(" MigrationJobSteps - migrationFromCqlTothrift - Total:  {} ", nb);
 
   }
 

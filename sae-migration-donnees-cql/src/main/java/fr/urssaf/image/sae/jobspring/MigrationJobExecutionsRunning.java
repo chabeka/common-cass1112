@@ -41,12 +41,11 @@ public class MigrationJobExecutionsRunning extends MigrationJob implements IMigr
 
   @Override
   public void migrationFromThriftToCql() {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(" MigrationJobExecutionsRunning - migrationFromThriftToCql - DEBUT ");
-    }
+
+    LOG.info(" MigrationJobExecutionsRunning - migrationFromThriftToCql - DEBUT ");
 
     final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBEXECUTIONS_RUNNING_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
-
+    int nb = 0;
     while (it.hasNext()) {
       final Row row = (Row) it.next();
       final String key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
@@ -59,20 +58,19 @@ public class MigrationJobExecutionsRunning extends MigrationJob implements IMigr
         jobExes.setValue(value);
 
         jobExeToJobR.saveWithMapper(jobExes);
+        nb++;
       }
 
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(" MigrationJobExecutionsRunning - migrationFromThriftToCql - FIN   ");
-    }
+    LOG.info(" MigrationJobExecutionsRunning - migrationFromThriftToCql - FIN   ");
+    LOG.info(" MigrationJobExecutionsRunning - migrationFromThriftToCql - Total:{}   ", nb);
+
   }
 
   @Override
   public void migrationFromCqlTothrift() {
 
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - DEBUT ");
-    }
+    LOG.info(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - DEBUT ");
 
     final Serializer<String> sSlz = StringSerializer.get();
     final Serializer<byte[]> bSlz = BytesArraySerializer.get();
@@ -82,7 +80,7 @@ public class MigrationJobExecutionsRunning extends MigrationJob implements IMigr
     final Mutator<byte[]> mutator = HFactory.createMutator(ccfthrift.getKeyspace(), bSlz);
 
     final Iterator<JobExecutionsRunningCql> it = jobExeToJobR.findAllWithMapper();
-
+    int nb = 0;
     while (it.hasNext()) {
       final JobExecutionsRunningCql jobExToJR = it.next();
       final String jobName = jobExToJR.getJobName();
@@ -95,11 +93,11 @@ public class MigrationJobExecutionsRunning extends MigrationJob implements IMigr
                            Constante.JOBEXECUTIONS_RUNNING_CFNAME,
                            HFactory.createColumn(jobExecutionId, empty, lSlz, bSlz));
       mutator.execute();
+      nb++;
     }
 
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - FIN   ");
-    }
+    LOG.info(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - FIN   ");
+    LOG.info(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - Total:   ", nb);
 
   }
 

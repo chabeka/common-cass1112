@@ -81,7 +81,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
    */
   @Override
   public void migrationFromThriftToCql() {
-    LOGGER.debug(" migrationFromThriftToCql start");
+    LOGGER.info(" MigrationJobExecution- migrationFromThriftToCql start");
 
     // itérateur nous permettant de parcourir toutes les lignes de la CF
     final Iterator<GenericJobExecution> it = genericJobExdao.findAllByCFName(JOBEXECUTION_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
@@ -119,9 +119,8 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
       jobdaocqlForMig.saveWithMapper(jobExecutionCql);
       nbRow++;
     }
-
-    LOGGER.debug(" migrationFromThriftToCql total row" + nbRow);
-    LOGGER.debug(" migrationFromThriftToCql end");
+    LOGGER.info("MigrationJobExecution- migrationFromThriftToCql end");
+    LOGGER.info("MigrationJobExecution- migrationFromThriftToCql total :{}", nbRow);
   }
 
   /**
@@ -129,13 +128,16 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
    */
   @Override
   public void migrationFromCqlTothrift() {
-
+    LOGGER.info(" MigrationJobExecution- migrationFromCqlTothrift start");
     final Iterator<JobExecutionCql> it = jobdaocql.findAllWithMapper();
     while (it.hasNext()) {
       final JobExecution jobexe = JobTranslateUtils.JobExecutionCqlToJobExecution(it.next(), null);
       saveJobExecutionToCassandra(jobexe);
     }
-
+    final List<JobExecutionCql> listCql = new ArrayList<>();
+    it.forEachRemaining(listCql::add);
+    LOGGER.info("MigrationJobExecution- migrationFromCqlTothrift end");
+    LOGGER.info("MigrationJobExecution- migrationFromCqlTothrift total :{}", listCql.size());
   }
 
   // ############################################################

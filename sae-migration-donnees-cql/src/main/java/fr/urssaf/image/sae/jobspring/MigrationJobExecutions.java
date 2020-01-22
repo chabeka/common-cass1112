@@ -42,11 +42,11 @@ public class MigrationJobExecutions extends MigrationJob implements IMigration {
   @Override
   public void migrationFromThriftToCql() {
 
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigrationJobExecutions - migrationFromThriftToCql - DEBUT");
-    }
-    final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(JOBEXECUTIONS_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
 
+    LOG.info("MigrationJobExecutions - migrationFromThriftToCql - DEBUT");
+
+    final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(JOBEXECUTIONS_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
+    int nb = 0;
     while (it.hasNext()) {
       final Row row = (Row) it.next();
       final String key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
@@ -64,19 +64,20 @@ public class MigrationJobExecutions extends MigrationJob implements IMigration {
       if (!ALL_JOBS_KEY.equals(key)) {
         jobExesdao.saveWithMapper(jobExes);
       }
+      nb++;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigrationJobExecutions - migrationFromThriftToCql - FIN");
-    }
+
+    LOG.info("MigrationJobExecutions - migrationFromThriftToCql - FIN");
+    LOG.info("MigrationJobExecutions - migrationFromThriftToCql - Total:{} ", nb);
+
   }
 
   @Override
   public void migrationFromCqlTothrift() {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigrationJobExecutions - migrationFromCqlTothrift - DEBU");
-    }
-    final Iterator<JobExecutionsCql> it = jobExesdao.findAllWithMapper();
+    LOG.info("MigrationJobExecutions - migrationFromCqlTothrift - DEBUT");
 
+    final Iterator<JobExecutionsCql> it = jobExesdao.findAllWithMapper();
+    int nb = 0;
     while (it.hasNext()) {
 
       final JobExecutionsCql job = it.next();
@@ -93,11 +94,12 @@ public class MigrationJobExecutions extends MigrationJob implements IMigration {
       mutator.addInsertion(sSlz.toBytes(ALL_JOBS_KEY), JOBEXECUTIONS_CFNAME, HFactory.createColumn(jobExecutionId, empty, lSlz, bSlz));
 
       mutator.execute();
+      nb++;
+    }
 
-    }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigrationJobExecutions - migrationFromCqlTothrift - FIN");
-    }
+    LOG.info("MigrationJobExecutions - migrationFromCqlTothrift - FIN");
+    LOG.info("MigrationJobExecutions - migrationFromThriftToCql - Total:{} ", nb);
+
   }
 
   // ############################################################

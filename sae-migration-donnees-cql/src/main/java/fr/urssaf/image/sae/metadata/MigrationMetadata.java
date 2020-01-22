@@ -54,6 +54,8 @@ public class MigrationMetadata implements IMigrationR {
     metadatasIterator.forEachRemaining(metadatasCql::add);
     final Diff diff = compareMetadatas(metadatasThrift, metadatasCql, javers);
     MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- end ");
+    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- nbThrift={} ",metadatasThrift.size());
+    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- nbCql={} ", metadatasCql.size());
     return diff;
   }
   /**
@@ -75,6 +77,8 @@ public class MigrationMetadata implements IMigrationR {
     final List<MetadataReference> metadatasThrift = metadataSupport.findAll();
     final Diff diff = compareMetadatas(metadatasThrift, metadatasCql, javers);
     MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- end ");
+    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- nbThrift={} ", metadatasThrift.size());
+    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromCqlTothrift- nbCql={} ", metadatasCql.size());
     return diff;
   }
 

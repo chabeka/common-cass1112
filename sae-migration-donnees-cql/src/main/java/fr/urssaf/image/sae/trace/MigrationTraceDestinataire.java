@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,11 +52,14 @@ public class MigrationTraceDestinataire {
     LOGGER.info(" MigrationTraceDestinataire - migrationFromThriftToCql- start ");
 
     final List<TraceDestinataire> traces = supportTDesti.findAll();
+    List<TraceDestinataire> tracesCql = new ArrayList<>();
     if (!traces.isEmpty()) {
-      destinatairedao.saveAll(traces);
+      tracesCql = destinatairedao.saveAll(traces);
     }
 
     LOGGER.info(" MigrationTraceDestinataire - migrationFromThriftToCql- end ");
+    LOGGER.info(" MigrationTraceDestinataire - migrationFromThriftToCql- nbThrift={} ", traces.size());
+    LOGGER.info(" MigrationTraceDestinataire - migrationFromThriftToCql- nbCql={} ", tracesCql.size());
   }
 
   /**
@@ -66,12 +70,19 @@ public class MigrationTraceDestinataire {
     LOGGER.info(" MigrationTraceDestinataire - migrationFromCqlTothrift- start ");
 
     final Iterator<TraceDestinataire> new_traces = destinatairedao.findAllWithMapper();
+    final List<TraceDestinataire> tracesCql = new ArrayList<>();
+    new_traces.forEachRemaining(tracesCql::add);
+
     while (new_traces.hasNext()) {
+
       final TraceDestinataire nextTrace = new_traces.next();
       supportTDesti.create(nextTrace, new Date().getTime());
-    }
 
+    }
+    final List<TraceDestinataire> traces = supportTDesti.findAll();
     LOGGER.info(" MigrationTraceDestinataire - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MigrationTraceDestinataire - migrationFromCqlTothrift- nbThrift={} ", traces.size());
+    LOGGER.info(" MigrationTraceDestinataire - migrationFromCqlTothrift- nbCql={} ", tracesCql.size());
   }
 
   /**

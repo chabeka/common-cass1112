@@ -82,7 +82,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
    */
   public int migrationFromThriftToCql() throws Exception {
 
-    LOGGER.debug(" MigrationTraceRegTechnique migrationFromThriftToCql Start");
+    LOGGER.info(" MigrationTraceRegTechnique-migrationFromThriftToCql Start");
 
     // Clé de depart de l'itération
     UUID startKey = null;
@@ -139,7 +139,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
         final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
 
         if (lastRow == null) {
-          LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
+          LOGGER.error("MigrationTraceRegTechnique-migrationFromThriftToCql-La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
           break;
         }
         startKey = lastRow.getKey();
@@ -190,9 +190,8 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
-
-    LOGGER.debug(" Totale : " + totalCount);
-    LOGGER.debug(" MigrationTraceRegTechnique migrationFromThriftToCql end");
+    LOGGER.info(" MigrationTraceRegTechnique migrationFromThriftToCql end");
+    LOGGER.info(" MigrationTraceRegTechnique migrationFromThriftToCql-Total : " + totalCount);
 
     return totalCount;
   }

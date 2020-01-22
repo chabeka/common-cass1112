@@ -50,6 +50,8 @@ public class MigrationPrmd implements IMigrationR {
     prmdsIterator.forEachRemaining(prmdsCql::add);
     final Diff diff = comparePrmds(prmdsThrift, prmdsCql, javers);
     MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- end ");
+    MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- nbThrift={} ", prmdsThrift.size());
+    MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromThriftToCql- nbCql={} ", prmdsCql.size());
     return diff;
   }
 
@@ -71,6 +73,8 @@ public class MigrationPrmd implements IMigrationR {
     final List<Prmd> prmdsThrift = prmdSupport.findAll();
     final Diff diff = comparePrmds(prmdsThrift, prmdsCql, javers);
     MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- end ");
+    MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- nbThrift={} ", prmdsThrift.size());
+    MigrationPrmd.LOGGER.info(" MIGRATION_PRMD - migrationFromCqlTothrift- nbCql={} ", prmdsCql.size());
     return diff;
   }
 

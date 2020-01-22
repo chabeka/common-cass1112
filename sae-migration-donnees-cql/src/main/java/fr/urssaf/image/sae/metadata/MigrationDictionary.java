@@ -52,6 +52,8 @@ public class MigrationDictionary implements IMigrationR {
     final Iterator<Dictionary> dictionarysIterator = dictionaryDaoCql.findAllWithMapper();
     dictionarysIterator.forEachRemaining(dictionarysCql::add);
     MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- end ");
+    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- nbThrift= {}", dictionarysThrift.size());
+    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- nbCql= {} ", dictionarysCql.size());
     final Diff diff = compareDictionarys(dictionarysThrift, dictionarysCql, javers);
     return diff;
   }
@@ -76,6 +78,8 @@ public class MigrationDictionary implements IMigrationR {
     }
     final List<Dictionary> dictionarysThrift = dictionarySupport.findAll();
     MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- end ");
+    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- nbThrift= {}", dictionarysThrift.size());
+    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- nbCql= {} ", dictionarysCql.size());
     final Diff diff = compareDictionarys(dictionarysThrift, dictionarysCql, javers);
     return diff;
   }

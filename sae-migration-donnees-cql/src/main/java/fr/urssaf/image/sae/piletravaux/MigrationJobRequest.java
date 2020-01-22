@@ -187,8 +187,8 @@ public class MigrationJobRequest implements IMigration {
       }
     }
 
-    LOGGER.debug(" Totale : " + totalRow);
-    LOGGER.debug(" MigrationJobRequest - migrationFromThriftToCql - end");
+    LOGGER.info(" MigrationJobRequest - migrationFromThriftToCql - end");
+    LOGGER.info(" MigrationJobRequest - migrationFromThriftToCql -Total : " + totalRow);
 
   }
 
@@ -225,8 +225,8 @@ public class MigrationJobRequest implements IMigration {
       nb++;
     }
 
-    LOGGER.debug(" Totale : " + nb);
-    LOGGER.debug(" MigrationJobRequest - migrationFromCqlToThrift end");
+    LOGGER.info(" MigrationJobRequest - migrationFromCqlToThrift end");
+    LOGGER.info(" MigrationJobRequest - migrationFromCqlToThrift Totale : " + nb);
 
   }
 

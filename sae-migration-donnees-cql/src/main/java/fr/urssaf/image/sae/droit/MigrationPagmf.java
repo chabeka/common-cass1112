@@ -53,6 +53,8 @@ public class MigrationPagmf implements IMigrationR {
     pagmfsIterator.forEachRemaining(pagmfsCql::add);
     final Diff diff = comparePagmfs(pagmfsThrift, pagmfsCql);
     MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- end ");
+    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- nbThrift= {} ", pagmfsThrift.size());
+    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- nbCql= {} ", pagmfsCql.size());
     return diff;
   }
 
@@ -74,6 +76,8 @@ public class MigrationPagmf implements IMigrationR {
     final List<Pagmf> pagmfsThrift = pagmfSupport.findAll();
     final Diff diff = comparePagmfs(pagmfsThrift, pagmfsCql);
     MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- end ");
+    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- nbThrift= {} ", pagmfsThrift.size());
+    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- nbCql= {} ", pagmfsCql.size());
     return diff;
   }
 

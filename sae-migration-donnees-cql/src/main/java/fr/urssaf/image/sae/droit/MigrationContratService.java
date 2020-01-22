@@ -53,6 +53,8 @@ public class MigrationContratService implements IMigrationR {
     contratsServicesIterator.forEachRemaining(contratsServicesCql::add);
     final Diff diff = compareContratService(contratsServicesThrift, contratsServicesCql, javers);
     MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql- end ");
+    MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql-nbThrift={}  ", contratsServicesThrift.size());
+    MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql-nbCql={}  ", contratsServicesCql.size());
     return diff;
   }
 
@@ -71,9 +73,11 @@ public class MigrationContratService implements IMigrationR {
       contratsServicesCql.add(contratService);
       contratServiceSupport.create(contratService, new Date().getTime());
     }
-    final List<ServiceContract> contratServicesThrift = contratServiceSupport.findAll();
-    final Diff diff = compareContratService(contratServicesThrift, contratsServicesCql, javers);
+    final List<ServiceContract> contratsServicesThrift = contratServiceSupport.findAll();
+    final Diff diff = compareContratService(contratsServicesThrift, contratsServicesCql, javers);
     MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift- end ");
+    MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift-nbThrift={}  ", contratsServicesThrift.size());
+    MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromCqlTothrift-nbCql={}  ", contratsServicesCql.size());
     return diff;
   }
 

@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.javers.common.collections.Arrays;
@@ -79,13 +80,15 @@ public class App {
    */
   private static final String CQL_TO_THRIFT = "CQL_TO_THRIFT";
 
-  private static String MESSAGE_DONNEES_DIFF="Les données thrift et cql pour {} sont différentes";
+  private static String MESSAGE_DONNEES_DIFF = "Les donnees thrift et cql pour {} sont différentes";
   private static String MESSAGE_NON_IMPL="Le  traitement pour  la  table {} n'est pas implémenté";
 
   public static void main(final String[] args) throws Exception {
 
     // System.setProperty(ContextInitializer.CONFIG_FILE_PROPERTY, "/hawai/data/ged/sae-lotinstallmaj/logback-sae-migration-donnees.xml");
     LOG = LoggerFactory.getLogger(App.class);
+    final long debutMigration = Calendar.getInstance().getTimeInMillis();
+
 
     App.LOG.info(" ___________________________");
     App.LOG.info("|                           |");
@@ -181,7 +184,7 @@ public class App {
           }
         }
         final List<ModeAPI> modeAPIs = modeApiCqlSupport.findAll();
-        App.resumeMigration(nbTablesAMigrer, nbTablesTraitees, modeAPIs);
+        App.resumeMigration(nbTablesAMigrer, nbTablesTraitees, modeAPIs, debutMigration);
       } else {
 
         App.LOG.info(" _________________________________________________________");
@@ -217,7 +220,7 @@ public class App {
       final DiffM diffM = App.migration(context, cfName, modeApiCqlSupport, migrateTo, javers);
       if (diffM.getDiff() != null && !diffM.getDiff().hasChanges() || diffM.isResultCompare()) {
         if (diffM.getDiff() != null && !diffM.getDiff().hasChanges()) {
-          App.LOG.info("Les données thrift et cql sont identiques pour la table: {}", cfName);
+          App.LOG.info("Les donnees thrift et cql sont identiques pour la table: {}", cfName);
         }
         // On passe en mode dual cql
         App.setModeApiCF(modeApiCqlSupport, cfName, MODE_API.DUAL_MODE_READ_CQL);
@@ -858,15 +861,17 @@ public class App {
     return diffM;
   }
 
-  private static void resumeMigration(final int nbTablesAMigrer, final int nbTablesTraitees, final List<ModeAPI> listModeAPI) {
-    final String messageTablesAMigrer = "Nb théorique de tables a migrer:";
+  private static void resumeMigration(final int nbTablesAMigrer, final int nbTablesTraitees, final List<ModeAPI> listModeAPI, final long debutMigration) {
+    final String messageTablesAMigrer = "Nb theorique de tables a migrer:";
     final String messageTablesNonMigrees = "Nb de tables non migrees:";
     final String messageTablesEnCoursMigration = "Nb de tables en cours de migration:";
     final String messageTablesTraitees = "Nb de tables traitees:";
     final String messageTablesMigrees = "Nb de tables migrees:";
+    final String messageDuree = "Duree de la migration :";
     final String fin = "                                                                        |";
     final String finTablesAmigrer = fin.substring(String.valueOf(nbTablesAMigrer).length() + messageTablesAMigrer.length(), fin.length());
     final String finTablesTraitees = fin.substring(String.valueOf(nbTablesTraitees).length() + messageTablesTraitees.length(), fin.length());
+
 
     final List<ModeAPI> listModeAPIMigrees = new ArrayList<>();
     final List<ModeAPI> listModeAPINonMigrees = new ArrayList<>();
@@ -888,6 +893,13 @@ public class App {
     final String finTablesNonMigrees = fin.substring(String.valueOf(listModeAPINonMigrees.size()).length() + messageTablesNonMigrees.length(), fin.length());
     final String finTablesEnCoursMigration = fin.substring(String.valueOf(listModeAPIEnCoursMigration.size()).length() + messageTablesEnCoursMigration.length(),
                                                            fin.length());
+    final long duree = (Calendar.getInstance().getTimeInMillis() - debutMigration) / 1000;
+
+    final long dureeS = duree % 60;
+    final long dureeM = duree / 60 % 60;
+    final long dureeH = duree / 3600;
+    final String chaineDuree = String.format("%d h %d min %d s", dureeH, dureeM, dureeS);
+    final String finDuree = fin.substring(String.valueOf(chaineDuree).length() + messageDuree.length(), fin.length());
 
     App.LOG.info(" _____________________________________________________________________________");
     App.LOG.info("|                                                                             |");
@@ -898,6 +910,7 @@ public class App {
     App.LOG.info("|    {} {}{}", messageTablesMigrees, listModeAPIMigrees.size(), finTablesMigrees);
     App.LOG.info("|    {} {}{}", messageTablesNonMigrees, listModeAPINonMigrees.size(), finTablesNonMigrees);
     App.LOG.info("|    {} {}{}", messageTablesEnCoursMigration, listModeAPIEnCoursMigration.size(), finTablesEnCoursMigration);
+    App.LOG.info("|    {} {}{}", messageDuree, chaineDuree, finDuree);
     App.LOG.info("|_____________________________________________________________________________|");
 
   }

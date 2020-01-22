@@ -65,7 +65,7 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
    */
   @Override
   public void migrationFromThriftToCql() {
-    LOGGER.debug(" migrationFromThriftToCql start");
+    LOGGER.info(" MigrationJobInstance-migrationFromThriftToCql start");
 
     final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
     final RangeSlicesQuery<byte[], byte[], byte[]> rangeSlicesQuery = HFactory
@@ -133,13 +133,13 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
 
     } while (count == blockSize);
 
-    LOGGER.debug(" Nb total d'entrées dans la CF : " + nbRows);
-    LOGGER.debug(" migrationIndexFromThriftToCql end");
+    LOGGER.info(" MigrationJobInstance-migrationFromThriftToCql end");
+    LOGGER.info(" MigrationJobInstance-migrationFromThriftToCql-Nb total d'entrées dans la CF : " + nbRows);
 
   }
 
   public JobInstance getTraceFromResult(final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row) {
-
+    LOGGER.info(" MigrationJobInstance-migrationFromThriftToCql start");
     String name = null;
     Integer version = null;
     Long instanceId = null;
@@ -185,11 +185,14 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
         StringSerializer.get());
 
     final Iterator<JobInstanceCql> it = jobInstancedaoCql.findAllWithMapper();
+    int nb = 0;
     while (it.hasNext()) {
       final JobInstance job = JobTranslateUtils.getJobInstanceToJobInstanceCql(it.next());
       saveJobInstance(job);
+      nb++;
     }
-
+    LOGGER.info(" MigrationJobInstance-migrationFromCqlTothrift end");
+    LOGGER.info(" MigrationJobInstance-migrationFromCqlTothrift-Nb total d'entrées dans la CF : " + nb);
   }
 
   // #############################################################################################

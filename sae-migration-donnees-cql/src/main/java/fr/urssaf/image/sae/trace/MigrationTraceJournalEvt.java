@@ -91,7 +91,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    * @throws Exception
    */
   public int migrationFromThriftToCql() {
-
+    LOGGER.info("  MigrationTraceJournalEvt -migrationFromThriftToCql debut");
     // Clé de depart de l'itération
     UUID startKey = null;
 
@@ -148,7 +148,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
 
         if (lastRow == null) {
-          LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
+          LOGGER.error(" MigrationTraceJournalEvt -La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
           break;
         }
         startKey = lastRow.getKey();
@@ -200,9 +200,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
-
-    LOGGER.debug(" Totale : " + totalRow);
-    LOGGER.debug(" migrationFromThriftToCql end");
+    LOGGER.info("  MigrationTraceJournalEvt - migrationFromThriftToCql end");
+    LOGGER.info("  MigrationTraceJournalEvt - migrationFromThriftToCql-Total: " + totalRow);
 
     return totalRow;
   }
@@ -212,7 +211,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    */
   public int migrationFromCqlToThrift() {
 
-    LOGGER.debug(" migrationFromCqlToThrift start");
+    LOGGER.debug(" MigrationTraceJournalEvt - migrationFromCqlToThrift start");
 
     final Iterator<TraceJournalEvtCql> tracej = supportcql.findAll();
     // final List<TraceJournalEvtCql> nb_Rows = Lists.newArrayList(tracej);
@@ -225,9 +224,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       supportJThrift.create(traceTrhift, times);
       nb++;
     }
-
-    LOGGER.debug(" Totale : " + nb);
-    LOGGER.debug(" migrationFromCqlToThrift end");
+    LOGGER.info("  MigrationTraceJournalEvt - migrationFromCqlToThrift end");
+    LOGGER.info(" MigrationTraceJournalEvt -migrationFromCqlToThrift- Total : " + nb);
 
     return nb;
   }
@@ -237,7 +235,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    */
   public int migrationIndexFromCqlToThrift() {
 
-    LOGGER.debug(" migrationIndexFromCqlToThrift start");
+    LOGGER.info(" MigrationTraceJournalEvt-migrationIndexFromCqlToThrift start");
     int nb = 0;
     final Iterator<TraceJournalEvtIndexCql> it = supportcql.findAllIndex();
     while (it.hasNext()) {
@@ -254,8 +252,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       nb++;
     }
 
-    LOGGER.debug(" Totale : " + nb);
-    LOGGER.debug(" migrationIndexFromCqlToThrift end");
+    LOGGER.info(" MigrationTraceJournalEvt-migrationIndexFromCqlToThrift Total : " + nb);
+    LOGGER.info(" MigrationTraceJournalEv-migrationIndexFromCqlToThrift end");
 
     return nb;
   }
@@ -269,7 +267,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    */
   public int migIndexFromThriftToCql() throws IOException {
 
-    LOGGER.debug(" migrationIndexFromThriftToCql start");
+    LOGGER.info(" MigrationTraceJournalEvt-migrationIndexFromThriftToCql start");
 
     int nbTotalIndex = 0;
     // Clé de depart de l'itération
@@ -320,8 +318,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       }
     }
 
-    LOGGER.debug(" Totale : " + nbTotalIndex);
-    LOGGER.debug(" migrationIndexFromThriftToCql end");
+    LOGGER.info(" MigrationTraceJournalEvt-migrationIndexFromThriftToCql-Total : " + nbTotalIndex);
+    LOGGER.info(" MigrationTraceJournalEvt-migrationIndexFromThriftToCql end");
 
     return nbTotalIndex;
   }
@@ -333,7 +331,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    */
   public int migrationIndexDocFromThriftToCql() throws Exception {
 
-    LOGGER.debug(" migrationIndexDocFromThriftToCql start");
+    LOGGER.info("MigrationTraceJournalEvt- migrationIndexDocFromThriftToCql start");
 
     // Clé de depart de l'itération
     String startKey = "";
@@ -386,7 +384,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         final me.prettyprint.hector.api.beans.Row<String, String, byte[]> lastRow = orderedRows.peekLast();
 
         if (lastRow == null) {
-          LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
+          LOGGER.error("MigrationTraceJournalEvt- migrationIndexDocFromThriftToCql-La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
           break;
         }
         startKey = lastRow.getKey();
@@ -439,8 +437,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       }
     }
 
-    LOGGER.debug(" Nb total de cle dans la CF: " + totalKey);
-    LOGGER.debug(" migrationIndexFromThriftToCql end");
+    LOGGER.debug(" MigrationTraceJournalEvt- migrationIndexDocFromThriftToCql-Nb total de cle dans la CF: " + totalKey);
+    LOGGER.debug(" MigrationTraceJournalEvt- migrationIndexDocFromThriftToCql end");
 
     return totalKey;
 
@@ -451,7 +449,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    */
   public int migrationIndexDocFromCqlToThrift() {
 
-    LOGGER.debug(" migrationIndexDoc_From_Cql_To_Thrift start");
+    LOGGER.info(" MigrationTraceJournalEvt-migrationIndexDoc_From_Cql_To_Thrift start");
 
     int nb = 0;
     final Iterator<TraceJournalEvtIndexDocCql> it = indexDocDaocql.findAll();
@@ -465,8 +463,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       nb++;
     }
 
-    LOGGER.debug(" Totale : " + nb);
-    LOGGER.debug(" migrationIndexDoc_From_Cql_To_Thrift end");
+    LOGGER.info(" MigrationTraceJournalEvt-migrationIndexDoc_From_Cql_To_Thrift end");
+    LOGGER.info(" Total : " + nb);
 
     return nb;
   }

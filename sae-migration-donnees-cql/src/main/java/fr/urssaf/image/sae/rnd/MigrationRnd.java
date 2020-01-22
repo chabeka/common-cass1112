@@ -53,6 +53,8 @@ public class MigrationRnd implements IMigrationR {
     rndsIterator.forEachRemaining(typeDocumentsCql::add);
     final Diff diff = compareRnds(typeDocumentsThrift, typeDocumentsCql, javers);
     MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- end ");
+    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", typeDocumentsThrift.size());
+    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbCql={} ", typeDocumentsCql.size());
     return diff;
   }
 
@@ -76,6 +78,8 @@ public class MigrationRnd implements IMigrationR {
 
     final Diff diff = compareRnds(rndsThrift, rndsCql, javers);
     MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromCqlTothrift- end ");
+    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", rndsThrift.size());
+    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", rndsCql.size());
     return diff;
   }
 

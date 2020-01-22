@@ -53,6 +53,8 @@ public class MigrationReferentielFormat implements IMigrationR {
     formatFichiersIterator.forEachRemaining(formatFichiersCql::add);
     final Diff diff = compareformatFichiers(formatFichiersThrift, formatFichiersCql, javers);
     MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- end ");
+    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- nbThrift={} ", formatFichiersThrift.size());
+    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- nbCql={} ", formatFichiersCql.size());
     return diff;
   }
 
@@ -77,6 +79,8 @@ public class MigrationReferentielFormat implements IMigrationR {
     final Diff diff = compareformatFichiers(formatFichiersThrift, formatFichiersCql, javers);
 
     MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- end ");
+    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- nbThrift={} ", formatFichiersThrift.size());
+    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- nbCql={} ", formatFichiersCql.size());
     return diff;
   }
 

@@ -68,7 +68,7 @@ public class MigrationJobHistory {
    */
   public int migrationFromThriftToCql() {
 
-    LOGGER.debug("MigrationJobHistory --  migrationFromThriftToCql start");
+    LOGGER.info("MigrationJobHistory --  migrationFromThriftToCql start");
 
     // Clé de depart de l'itération
     UUID startKey = null;
@@ -193,8 +193,9 @@ public class MigrationJobHistory {
       }
     }
 
-    LOGGER.debug(" Totale : " + totalRow);
+
     LOGGER.debug("MigrationJobHistory --  migrationFromThriftToCql end");
+    LOGGER.info(" MigrationJobHistory --  migrationFromThriftToCql Total : " + totalRow);
 
     return totalRow;
   }
@@ -223,8 +224,8 @@ public class MigrationJobHistory {
       nb++;
     }
 
-    LOGGER.debug(" Totale : " + nb);
-    LOGGER.debug(" MigrationJobHistory - migrationFromCqlToThrift end");
+    LOGGER.info(" MigrationJobHistory - migrationFromCqlToThrift end");
+    LOGGER.info("  MigrationJobHistory - migrationFromCqlToThrift Total : " + nb);
   }
 
   // ############################################################

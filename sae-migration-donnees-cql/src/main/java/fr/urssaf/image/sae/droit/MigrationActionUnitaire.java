@@ -54,6 +54,8 @@ public class MigrationActionUnitaire implements IMigrationR {
     actionsUnitairesIterator.forEachRemaining(actionsUnitairesCql::add);
     final Diff compare = compareActionsUnitaires(actionsUnitairesThrift, actionsUnitairesCql, javers);
     MigrationActionUnitaire.LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromThriftToCql- end ");
+    MigrationActionUnitaire.LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromThriftToCql- nbThrift={} ", actionsUnitairesThrift);
+    MigrationActionUnitaire.LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromThriftToCql- nbCql={} ", actionsUnitairesCql);
     return compare;
   }
 
@@ -78,6 +80,8 @@ public class MigrationActionUnitaire implements IMigrationR {
     final List<ActionUnitaire> actionsUnitairesThrift = actionUnitaireSupport.findAll();
     final Diff compare = compareActionsUnitaires(actionsUnitairesThrift, actionsUnitairesCql, javers);
     MigrationActionUnitaire.LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromCqlTothrift- end ");
+    MigrationActionUnitaire.LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromCqlTothrift- nbThrift={} ", actionsUnitairesThrift);
+    MigrationActionUnitaire.LOGGER.info(" MIGRATION_ACTION_UNITAIRE - migrationFromCqlTothrift- nbCql={} ", actionsUnitairesCql);
     return compare;
   }
 

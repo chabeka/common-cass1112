@@ -82,7 +82,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
    */
   public int migrationFromThriftToCql() throws Exception {
 
-    LOGGER.debug(" MigrationTraceRegSecurite migrationFromThriftToCql Start");
+    LOGGER.info(" MigrationTraceRegSecurite-migrationFromThriftToCql Start");
 
     // Clé de depart de l'itération
     UUID startKey = null;
@@ -139,7 +139,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
         final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
 
         if (lastRow == null) {
-          LOGGER.error("La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
+          LOGGER.error("MigrationTraceRegSecurite-migrationFromThriftToCql-La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
           break;
         }
         startKey = lastRow.getKey();
@@ -191,9 +191,9 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
-
-    LOGGER.debug(" Totale : " + totalCount);
-    LOGGER.debug(" MigrationTraceRegSecurite migrationFromThriftToCql end");
+    
+    LOGGER.debug(" MigrationTraceRegSecurite-migrationFromThriftToCql end");
+    LOGGER.debug(" MigrationTraceRegSecurite-migrationFromThriftToCql-Total : " + totalCount);
 
     return totalCount;
   }
@@ -232,7 +232,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
    */
   public int migrationIndexFromThriftToCql() {
 
-    LOGGER.info(" MigrationTraceRegSecurite migrationIndexFromThriftToCql ---------- DEBUT");
+    LOGGER.info(" MigrationTraceRegSecurite-migrationIndexFromThriftToCql ---------- DEBUT");
 
     int nbRow = 0;
     Date starDate = DateUtils.addYears(DATE, -5);
@@ -282,8 +282,8 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
       }
     }
 
-    LOGGER.info(" MigrationTraceRegSecurite migrationIndexFromThriftToCql Total nbRow: ---------- " + nbRow);
-    LOGGER.info(" MigrationTraceRegSecurite migrationIndexFromThriftToCql ---------- FIN");
+    LOGGER.info(" MigrationTraceRegSecurite-migrationIndexFromThriftToCql Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" MigrationTraceRegSecurite-migrationIndexFromThriftToCql ---------- FIN");
     return nbRow;
 
   }
@@ -311,8 +311,8 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
       nbRow++;
     }
 
-    LOGGER.info(" MigrationTraceRegSecurite migrationIndexFromCqlToThrift Total nbRow: ---------- " + nbRow);
-    LOGGER.info(" MigrationTraceRegSecurite migrationIndexFromCqlToThrift ---------- FIN");
+    LOGGER.info(" MigrationTraceRegSecurite-migrationIndexFromCqlToThrift Total nbRow: ---------- " + nbRow);
+    LOGGER.info(" MigrationTraceRegSecurite-migrationIndexFromCqlToThrift ---------- FIN");
   }
 
   // TEST DES DONNEES

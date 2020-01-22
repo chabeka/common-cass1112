@@ -41,17 +41,16 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
 
   @Override
   public void migrationFromThriftToCql() {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigationJobExecutionToJobStep - migrationFromThriftToCql - DEBUT");
-    }
+
+    LOG.info("MigationJobExecutionToJobStep - migrationFromThriftToCql - DEBUT");
 
     final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
-
+    int nb = 0;
     while (it.hasNext()) {
       final Row row = (Row) it.next();
       final Long jobExecutionId = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
       final Long idStep = row.getLong("column1");
-      final byte[] value = BytesArraySerializer.get().fromByteBuffer(row.getBytes("value"));
+      // final byte[] value = BytesArraySerializer.get().fromByteBuffer(row.getBytes("value"));
 
       final JobExecutionToJobStepCql jobcql = new JobExecutionToJobStepCql();
       jobcql.setJobStepId(idStep);
@@ -59,24 +58,25 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
       // la value n'est pas renseignée dans l'ancien système
       jobcql.setValue("");
       jobExeToJobStepDao.saveWithMapper(jobcql);
+      nb++;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigationJobExecutionToJobStep - migrationFromThriftToCql - FIN");
-    }
+
+    LOG.info("MigationJobExecutionToJobStep - migrationFromThriftToCql - FIN");
+    LOG.info("MigationJobExecutionToJobStep - migrationFromCqlTothrift - Total: {}", nb);
+
   }
 
   @Override
   public void migrationFromCqlTothrift() {
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigationJobExecutionToJobStep - migrationFromCqlTothrift - DEBUT");
-    }
+
+    LOG.info("MigationJobExecutionToJobStep - migrationFromCqlTothrift - DEBUT");
 
     final Iterator<JobExecutionToJobStepCql> it = jobExeToJobStepDao.findAllWithMapper();
     final Serializer<String> sSlz = StringSerializer.get();
     final Serializer<byte[]> bSlz = BytesArraySerializer.get();
     final Serializer<Long> lSlz = LongSerializer.get();
     final Mutator<byte[]> mutator = HFactory.createMutator(ccfthrift.getKeyspace(), bSlz);
-
+    int nb = 0;
     while (it.hasNext()) {
       final JobExecutionToJobStepCql jobStepExeCql = it.next();
 
@@ -88,10 +88,10 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
                            Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME,
                            HFactory.createColumn(jobStepExeCql.getJobStepId(), new byte[0], lSlz, bSlz));
       mutator.execute();
+      nb++;
     }
-    if (LOG.isDebugEnabled()) {
-      LOG.debug("MigationJobExecutionToJobStep - migrationFromCqlTothrift - FIN");
-    }
+    LOG.info("MigationJobExecutionToJobStep - migrationFromCqlTothrift - FIN");
+    LOG.info("MigationJobExecutionToJobStep - migrationFromCqlTothrift - Total: {}", nb);
 
   }
 

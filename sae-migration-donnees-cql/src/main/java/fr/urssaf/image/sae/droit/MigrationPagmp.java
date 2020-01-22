@@ -50,6 +50,8 @@ public class MigrationPagmp implements IMigrationR {
     pagmpsIterator.forEachRemaining(pagmpsCql::add);
     final Diff diff = comparePagmps(pagmpsThrift, pagmpsCql, javers);
     MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- end ");
+    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- nbThrift= {} ", pagmpsThrift.size());
+    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- nbCql= {} ", pagmpsCql.size());
     return diff;
   }
 
@@ -71,6 +73,8 @@ public class MigrationPagmp implements IMigrationR {
     final List<Pagmp> pagmpsThrift = pagmpSupport.findAll();
     final Diff diff = comparePagmps(pagmpsThrift, pagmpsCql, javers);
     MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- end ");
+    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- nbThrift= {} ", pagmpsThrift.size());
+    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- nbCql= {} ", pagmpsCql.size());
     return diff;
   }
 

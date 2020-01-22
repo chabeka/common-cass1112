@@ -49,6 +49,8 @@ public class MigrationFormatControlProfil implements IMigrationR {
     formatControlProfilsIterator.forEachRemaining(formatControlProfilsCql::add);
     final Diff diff = compareFormatControlProfil(formatControlProfilsThrift, formatControlProfilsCql, javers);
     MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- end ");
+    MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- nbThrift= {}", formatControlProfilsThrift.size());
+    MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromThriftToCql- nbCql= {}", formatControlProfilsCql.size());
     return diff;
   }
 
@@ -67,9 +69,11 @@ public class MigrationFormatControlProfil implements IMigrationR {
       formatControlProfilsCql.add(formatControlProfil);
       formatControlProfilSupport.create(formatControlProfil, new Date().getTime());
     }
-    final List<FormatControlProfil> formatControlProfilThrift = formatControlProfilSupport.findAll();
-    final Diff diff = compareFormatControlProfil(formatControlProfilThrift, formatControlProfilsCql, javers);
+    final List<FormatControlProfil> formatControlProfilsThrift = formatControlProfilSupport.findAll();
+    final Diff diff = compareFormatControlProfil(formatControlProfilsThrift, formatControlProfilsCql, javers);
     MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- end ");
+    MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- nbThrift= {}", formatControlProfilsThrift.size());
+    MigrationFormatControlProfil.LOGGER.info(" MIGRATION_FORMAT_CONTROL_PROFIL - migrationFromCqlTothrift- nbCql= {}", formatControlProfilsCql.size());
     return diff;
   }
 

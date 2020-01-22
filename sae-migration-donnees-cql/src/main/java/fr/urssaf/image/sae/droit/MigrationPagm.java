@@ -53,6 +53,7 @@ public class MigrationPagm {
    * Migration pagm thrift->cql
    */
   public Diff migrationFromThriftToCql() {
+    LOGGER.info(" MIGRATION_PAGM - migrationFromThriftToCql- start ");
     final List<String> keys = new ArrayList<>();
     final Iterator<GenericDroitType> it = genericdao.findAllByCFName("DroitPagm", ccf.getKeyspace().getKeyspaceName());
 
@@ -92,8 +93,9 @@ public class MigrationPagm {
     final Iterator<PagmCql> pagmsIterator = pagmDaoCql.findAllWithMapper();
     pagmsIterator.forEachRemaining(pagmsCql::add);
     final Diff diff = comparePagms(getListPagmCqlFromThrift(keys), pagmsCql);
-
-    LOGGER.debug(" Totale : " + nb);
+    LOGGER.info(" MIGRATION_PAGM - migrationFromThriftToCql- end ");
+    LOGGER.info(" MIGRATION_PAGM - migrationFromThriftToCql- nbThrift={}", nb);
+    LOGGER.info(" MIGRATION_PAGM - migrationFromThriftToCql- nbCql={}", pagmsCql.size());
     return diff;
   }
 
@@ -122,6 +124,8 @@ public class MigrationPagm {
     }
     final Diff diff = comparePagms(getListPagmCqlFromThrift(getKeys()), pagmsCql);
     LOGGER.info(" MIGRATION_PAGM - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MIGRATION_PAGM - migrationFromCqlTothrift- nbThrift={}", getKeys().size());
+    LOGGER.info(" MIGRATION_PAGM - migrationFromCqlTothrift- nbCql={}", pagmsCql.size());
     return diff;
 
   }
