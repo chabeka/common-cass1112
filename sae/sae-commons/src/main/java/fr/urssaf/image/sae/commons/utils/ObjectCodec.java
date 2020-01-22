@@ -7,9 +7,11 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.CodecRegistry;
 import com.datastax.driver.core.DataType;
 import com.datastax.driver.core.ProtocolVersion;
 import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.exceptions.InvalidTypeException;
 import com.datastax.driver.core.utils.Bytes;
 import com.datastax.driver.mapping.Mapper;
@@ -91,4 +93,12 @@ public class ObjectCodec extends TypeCodec<Object> {
     return Bytes.toHexString(bytes);
   }
 
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

@@ -5,10 +5,14 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.stereotype.Repository;
 
+import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.extras.codecs.enums.EnumNameCodec;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOCompositeImpl;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
+import fr.urssaf.image.sae.commons.utils.ObjectCodec;
 import fr.urssaf.image.sae.rnd.dao.cql.ICorrespondancesDaoCql;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
 import fr.urssaf.image.sae.rnd.modele.EtatCorrespondance;
@@ -28,8 +32,18 @@ public class CorrespondancesCqlDaoImpl extends GenericDAOCompositeImpl<Correspon
   @PostConstruct
   public void setRegister() {
     if(ccf != null) {
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<>(EtatCorrespondance.class));
+     
+      final CodecRegistry registry = ccf.getCluster().getConfiguration().getCodecRegistry();
+      registerCodecIfNotFound(registry, new EnumNameCodec<>(EtatCorrespondance.class));
+      //ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<>(EtatCorrespondance.class));
     }
   }
-
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

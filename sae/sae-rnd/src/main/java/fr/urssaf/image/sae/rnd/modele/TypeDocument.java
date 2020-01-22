@@ -21,7 +21,7 @@ public class TypeDocument implements Comparable<TypeDocument> {
    */
   @PartitionKey
   @Column(name = "code")
-  @Id
+  @Id // Comparaison Javers
   private String code;
 
   /**
