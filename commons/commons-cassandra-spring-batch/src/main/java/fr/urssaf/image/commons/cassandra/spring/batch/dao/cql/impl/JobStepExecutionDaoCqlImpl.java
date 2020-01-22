@@ -19,6 +19,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
+
 import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
 import fr.urssaf.image.commons.cassandra.cql.codec.JsonCodec;
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
@@ -66,9 +70,14 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
   @PostConstruct
   public void setRegister() {
     if(ccf != null) {
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(BatchStatus.class));
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
+      final CodecRegistry registry = ccf.getCluster().getConfiguration().getCodecRegistry();
+      registerCodecIfNotFound(registry, new JsonCodec<>(BatchStatus.class));
+      registerCodecIfNotFound(registry, BytesBlobCodec.instance);
+      registerCodecIfNotFound(registry, ExecutionContextCodec.instance);
+
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(BatchStatus.class));
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
     }
 
   }
@@ -297,4 +306,12 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
     return stepNames;
   }
 
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

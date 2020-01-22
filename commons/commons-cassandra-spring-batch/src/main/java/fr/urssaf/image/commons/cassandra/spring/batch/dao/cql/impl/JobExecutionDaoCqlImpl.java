@@ -20,6 +20,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.collect.Iterators;
@@ -95,9 +98,17 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
   @PostConstruct
   public void setRegister() {
     if(ccf != null) {
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(BatchStatus.class));
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
+
+      final CodecRegistry registry = ccf.getCluster().getConfiguration().getCodecRegistry();
+      registerCodecIfNotFound(registry, new JsonCodec<>(BatchStatus.class));
+      registerCodecIfNotFound(registry, BytesBlobCodec.instance);
+      registerCodecIfNotFound(registry, ExecutionContextCodec.instance);
+
+      /*
+       * ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(BatchStatus.class));
+       * ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+       * ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
+       */
     }
 
   }
@@ -474,4 +485,12 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
 
   }
 
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

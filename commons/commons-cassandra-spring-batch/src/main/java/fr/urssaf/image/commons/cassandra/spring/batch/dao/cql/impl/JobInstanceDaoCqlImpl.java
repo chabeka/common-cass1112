@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
@@ -87,8 +90,12 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
   @PostConstruct
   public void setRegister() {
     if(ccf != null) {
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
+      final CodecRegistry registry = ccf.getCluster().getConfiguration().getCodecRegistry();
+      registerCodecIfNotFound(registry, BytesBlobCodec.instance);
+      registerCodecIfNotFound(registry, JobParametersCodec.instance);
+
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
     }
 
   }
@@ -342,4 +349,12 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
     return listJobIThrift;
   }
 
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

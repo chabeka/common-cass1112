@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.apache.curator.test.TestingServer;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +31,7 @@ import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
-import junit.framework.Assert;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-cassandra-local.xml" })
@@ -42,7 +43,7 @@ public class CassandraJobExecutionDAOCqlTest {
    IJobExecutionDaoCql jobExecutionDaoCQl;
 
    @Autowired
-   IJobExecutionsDaoCql jobExsDao;
+   IJobExecutionsDaoCql jobExsDaoCql;
 
    @Autowired
    IJobInstanceDaoCql jobInstDaoCql;
@@ -199,7 +200,7 @@ public class CassandraJobExecutionDAOCqlTest {
       Assert.assertEquals(2, list.size());
 
       // on verfie les index
-      final Optional<JobExecutionsCql> optIni = jobExsDao.findByJobExecutionId(job1.getId());
+      final Optional<JobExecutionsCql> optIni = jobExsDaoCql.findByJobExecutionId(job1.getId());
       Assert.assertTrue("Un index doit etre associé", optIni.isPresent());
 
       // On les supprime
@@ -209,7 +210,7 @@ public class CassandraJobExecutionDAOCqlTest {
       Assert.assertEquals(0, list.size());
       // on verifie que tous les index associés ont été supprimés
       // index jobexecutions
-      final Optional<JobExecutionsCql> optEnd = jobExsDao.findByJobExecutionId(job1.getId());
+      final Optional<JobExecutionsCql> optEnd = jobExsDaoCql.findByJobExecutionId(job1.getId());
       Assert.assertFalse("Aucun index ne doit etre associé", optEnd.isPresent());
    }
 
@@ -221,9 +222,12 @@ public class CassandraJobExecutionDAOCqlTest {
          createJobExecution(jobInstance1, i);
          createJobExecution(jobInstance2, i);
       }
-      Assert.assertEquals(6, jobExecutionDaoCQl.countJobExecutions());
-      Assert.assertEquals(3, jobExecutionDaoCQl.countJobExecutions("jobName1"));
-      Assert.assertEquals(3, jobExecutionDaoCQl.countJobExecutions("jobName2"));
+      long nb=jobExecutionDaoCQl.countJobExecutions();
+      long nbJobName1=jobExecutionDaoCQl.countJobExecutions("jobName1");
+      long nbJobName2=jobExecutionDaoCQl.countJobExecutions("jobName2");
+      Assert.assertEquals(6, nb);
+      Assert.assertEquals(3, nbJobName1);
+      Assert.assertEquals(3, nbJobName2);
    }
 
    @Test
