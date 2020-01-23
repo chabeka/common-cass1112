@@ -22,7 +22,7 @@ public class CassandraIdGeneratorCql implements IdGenerator {
 
   private ISequencesDaoCql sequencesdao;
 
-  private static final String SEQUENCE_CF = "sequences";
+  private static final String SEQUENCE_CF = "sequencescql";
 
   private String sequenceName = null;
 
@@ -133,6 +133,7 @@ public class CassandraIdGeneratorCql implements IdGenerator {
     final long newValue = currentValue + 1;
     currentSequence.setValue(newValue);
     sequencesdao.saveWithMapper(currentSequence, colunmTimeStamp);
+    sequencesdao.findAllWithMapper();
     return newValue;
   }
 
