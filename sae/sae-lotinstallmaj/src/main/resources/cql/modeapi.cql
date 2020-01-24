@@ -11,6 +11,7 @@ CREATE TABLE modeapi (
 INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutions' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobexecution' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutionsrunning' , 'HECTOR');
+INSERT INTO modeapi (cfname,mode) VALUES ('jobexecutiontojobstep','HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobhistory' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobinstance' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobinstancetojobexecution' , 'HECTOR');
@@ -25,6 +26,7 @@ INSERT INTO modeapi(cfname, mode) VALUES ('jobsqueue' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitactionunitaire' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitformatcontrolprofil' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitpagma' , 'HECTOR');
+INSERT INTO modeapi(cfname, mode) VALUES ('droitpagmf' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitpagm' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitpagmp' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitprmd' , 'HECTOR');
