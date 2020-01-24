@@ -14,7 +14,7 @@ public class MajLotServiceCQLImpl implements MajLotService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MajLotServiceCQLImpl.class);
 
-	/*
+  /*
   // SAE
   public static final String SAE_MODE_API = "SAE_CREATE_MODE_API";
   public static final String SAE_MIG_TRACES = "SAE_CREATE_TRACE";
@@ -30,7 +30,7 @@ public class MajLotServiceCQLImpl implements MajLotService {
   public static final String DFCE_200_TO_210_SCHEMA = "DFCE_200_TO_210_SCHEMA";
   public static final String DFCE_210_TO_230_SCHEMA = "DFCE_210_TO_230_SCHEMA";
   public static final String DFCE_230_TO_192_SCHEMA = "DFCE_230_TO_192_SCHEMA";
-	*/
+   */
 
   @Autowired
   private SAECassandraUpdaterCQL saeUpdater;
@@ -43,55 +43,59 @@ public class MajLotServiceCQLImpl implements MajLotService {
 
     // DFCE
 
-		if (OperationCQL.DFCE_192_TO_200_SCHEMA.getNomOp().equalsIgnoreCase(nomOperation)) {
+    if (OperationCQL.DFCE_192_TO_200_SCHEMA.getNomOp().equalsIgnoreCase(nomOperation)) {
 
       updateDFCE192TO200();
 
-		} else if (OperationCQL.DFCE_200_TO_210_SCHEMA.getNomOp().equalsIgnoreCase(nomOperation)){
+    } else if (OperationCQL.DFCE_200_TO_210_SCHEMA.getNomOp().equalsIgnoreCase(nomOperation)){
 
       updateDFCE200TO210();
 
-		} else if (OperationCQL.DFCE_210_TO_230_SCHEMA.getNomOp().equalsIgnoreCase(nomOperation)){
+    } else if (OperationCQL.DFCE_210_TO_230_SCHEMA.getNomOp().equalsIgnoreCase(nomOperation)){
       //
       updateDFCE210TO230();
 
-		} else if (OperationCQL.DFCE_230_TO_192_SCHEMA.getNomOp().equalsIgnoreCase(nomOperation)){
+    } else if (OperationCQL.DFCE_230_TO_192_SCHEMA.getNomOp().equalsIgnoreCase(nomOperation)){
 
       updateDFCE230TO192();
 
     }
 
     // SAE
+    else if (OperationCQL.SAE_MIG_ALL.getNomOp().equalsIgnoreCase(nomOperation)) {
 
-		else if (OperationCQL.SAE_MIG_TRACES.getNomOp().equalsIgnoreCase(nomOperation)){
+      createGedBase();
+
+    }
+    else if (OperationCQL.SAE_MIG_TRACES.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.createTablesTraces();
 
-		}else if (OperationCQL.SAE_MIG_PILE_TRAVAUX.getNomOp().equalsIgnoreCase(nomOperation)){
+    }else if (OperationCQL.SAE_MIG_PILE_TRAVAUX.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.createTablesPileTravaux();
 
-		}else if (OperationCQL.SAE_MIG_JOB_SPRING.getNomOp().equalsIgnoreCase(nomOperation)){
+    }else if (OperationCQL.SAE_MIG_JOB_SPRING.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.createTablesJobSpring();
 
-		}else if (OperationCQL.SAE_MODE_API.getNomOp().equalsIgnoreCase(nomOperation)){
+    }else if (OperationCQL.SAE_MODE_API.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.createTablesModeapi();
 
-		}else if (OperationCQL.SAE_DELETE_MODE_API.getNomOp().equalsIgnoreCase(nomOperation)){
+    }else if (OperationCQL.SAE_DELETE_MODE_API.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.deleteTablesModeapi();
 
-		}else if (OperationCQL.SAE_DELETE_MIG_TRACES.getNomOp().equalsIgnoreCase(nomOperation)){
+    }else if (OperationCQL.SAE_DELETE_MIG_TRACES.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.deleteTablesTraces();
 
-		}else if (OperationCQL.SAE_DELETE_MIG_JOB_SPRING.getNomOp().equalsIgnoreCase(nomOperation)){
+    }else if (OperationCQL.SAE_DELETE_MIG_JOB_SPRING.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.deleteTablesJobSpring();;
 
-		}else if (OperationCQL.SAE_DELETE_MIG_PILE_TRAVAUX.getNomOp().equalsIgnoreCase(nomOperation)){
+    }else if (OperationCQL.SAE_DELETE_MIG_PILE_TRAVAUX.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.deleteTablesPilesTravaux();
 
