@@ -171,9 +171,9 @@ public class TraceDestinataireCqlSupport {
           }
         }
         traceFromBD.setDestinataires(destinatairesFromDB);
-        destinatairecqldao.saveWithMapper(traceFromBD, clock);
+        destinatairecqldao.saveWithMapper(traceFromBD);
       } else {
-        destinatairecqldao.saveWithMapper(trace, clock);
+        destinatairecqldao.saveWithMapper(trace);
       }
     } else {
       throw new TraceRuntimeException(
