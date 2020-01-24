@@ -46,7 +46,7 @@ public class MigrationTraceRegSecuriteTest {
 
   private static final Date DATE = new Date();
 
-  int NB_ROWS = 100;
+  int NB_ROWS = 1005;
 
   @Autowired
   TraceRegSecuriteIndexDao indexDao;
@@ -190,7 +190,7 @@ public class MigrationTraceRegSecuriteTest {
       populateTableThrift();
 
       mtracej.migrationFromThriftToCql();
-      mtracej.migrationIndexFromThriftToCql();
+      // mtracej.migrationIndexFromThriftToCql();
 
       final boolean isEqBaseTrace = mtracej.traceComparator();
       Assert.assertTrue("les elements des tables TraceRegSecurite cql et thrift doivent être egaux", isEqBaseTrace);

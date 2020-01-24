@@ -49,9 +49,9 @@ public class MigrationPagma implements IMigrationR {
     final Iterator<Pagma> pagmasIterator = pagmaDaoCql.findAllWithMapper();
     pagmasIterator.forEachRemaining(pagmasCql::add);
     final Diff diff = comparePagmas(pagmasThrift, pagmasCql, javers);
-    MigrationPagma.LOGGER.info(" MIGRATION_PAGMA - migrationFromThriftToCql- end ");
-    MigrationPagma.LOGGER.info(" MIGRATION_PAGMA - migrationFromThriftToCql- nbThrift={} ", pagmasThrift.size());
-    MigrationPagma.LOGGER.info(" MIGRATION_PAGMA - migrationFromThriftToCql- nbCql={} ", pagmasCql.size());
+    LOGGER.info(" MIGRATION_PAGMA - migrationFromThriftToCql- end ");
+    LOGGER.info(" MIGRATION_PAGMA - migrationFromThriftToCql- nbThrift={} ", pagmasThrift.size());
+    LOGGER.info(" MIGRATION_PAGMA - migrationFromThriftToCql- nbCql={} ", pagmasCql.size());
 
     return diff;
   }
@@ -73,9 +73,9 @@ public class MigrationPagma implements IMigrationR {
     }
     final List<Pagma> pagmasThrift = pagmaSupport.findAll();
     final Diff diff = comparePagmas(pagmasThrift, pagmasCql, javers);
-    MigrationPagma.LOGGER.info(" MIGRATION_PAGMA - migrationFromCqlTothrift- end ");
-    MigrationPagma.LOGGER.info(" MIGRATION_PAGMA - migrationFromCqlTothrift- nbThrift={} ", pagmasThrift.size());
-    MigrationPagma.LOGGER.info(" MIGRATION_PAGMA - migrationFromCqlTothrift- nbCql={} ", pagmasCql.size());
+    LOGGER.info(" MIGRATION_PAGMA - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MIGRATION_PAGMA - migrationFromCqlTothrift- nbThrift={} ", pagmasThrift.size());
+    LOGGER.info(" MIGRATION_PAGMA - migrationFromCqlTothrift- nbCql={} ", pagmasCql.size());
     return diff;
   }
 

@@ -162,7 +162,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
           currentlistUUID.add(key);
           // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
           if (lastlistUUID == null || !lastlistUUID.contains(key)) {
-            supportcql.save(trThToCql, new Date().getTime());
+            supportcql.save(trThToCql);
             totalCount++;
           }
 
@@ -175,6 +175,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
         lastIteartionMap.put(iterationNB, currentlistUUID);
         lastIteartionMap.remove(iterationNB - 1);
         iterationNB++;
+
 
       } while (count == blockSize);
 
@@ -228,7 +229,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
   public void migrationIndexFromThriftToCql() {
 
     LOGGER.info(" migrationIndexFromThriftToCql ---------- DEBUT");
-    final int nbRow = 0;
+    int nbRow = 0;
 
     Date starDate = DateUtils.addYears(DATE, -5);
 
@@ -254,6 +255,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
           for (final TraceRegTechniqueIndex nextReg : list) {
             final TraceRegTechniqueIndexCql trace = createTraceIndexFromThriftToCql(nextReg);
             supportcql.getIndexDao().saveWithMapper(trace);
+            nbRow++;
           }
           // ecriture dans le fichier
           bWriter.append(DateRegUtils.getJournee(d));

@@ -192,9 +192,7 @@ public class MigrationJobHistory {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
-
-
-    LOGGER.debug("MigrationJobHistory --  migrationFromThriftToCql end");
+    LOGGER.info("MigrationJobHistory --  migrationFromThriftToCql end");
     LOGGER.info(" MigrationJobHistory --  migrationFromThriftToCql Total : " + totalRow);
 
     return totalRow;

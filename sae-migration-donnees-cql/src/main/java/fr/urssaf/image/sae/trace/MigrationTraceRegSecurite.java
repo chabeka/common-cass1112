@@ -116,7 +116,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
                                   stringSerializer,
                                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily(compRegSecu.getTraceClasseName());
-      final int blockSize = 10;
+      final int blockSize = 1000;
       int count;
 
       // Map contenant key = (numero d'iteration) value=(liste des cles (UUID) des objets de l'iteration)
@@ -162,7 +162,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
           currentlistUUID.add(key);
           // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
           if (lastlistUUID == null || !lastlistUUID.contains(key)) {
-            supportcql.save(trThToCql, new Date().getTime());
+            supportcql.save(trThToCql);
             totalCount++;
           }
 
@@ -191,9 +191,9 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
-    
-    LOGGER.debug(" MigrationTraceRegSecurite-migrationFromThriftToCql end");
-    LOGGER.debug(" MigrationTraceRegSecurite-migrationFromThriftToCql-Total : " + totalCount);
+
+    LOGGER.info(" MigrationTraceRegSecurite-migrationFromThriftToCql end");
+    LOGGER.info(" MigrationTraceRegSecurite-migrationFromThriftToCql-Total : " + totalCount);
 
     return totalCount;
   }

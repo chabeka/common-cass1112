@@ -41,7 +41,7 @@ public class MigrationPagmf implements IMigrationR {
   @Override
   public Diff migrationFromThriftToCql(final Javers javers) {
 
-    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- start ");
+    LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- start ");
 
     final List<Pagmf> pagmfsThrift = pagmfSupport.findAll();
 
@@ -52,9 +52,9 @@ public class MigrationPagmf implements IMigrationR {
     final Iterator<Pagmf> pagmfsIterator = pagmfDaoCql.findAllWithMapper();
     pagmfsIterator.forEachRemaining(pagmfsCql::add);
     final Diff diff = comparePagmfs(pagmfsThrift, pagmfsCql);
-    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- end ");
-    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- nbThrift= {} ", pagmfsThrift.size());
-    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- nbCql= {} ", pagmfsCql.size());
+    LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- end ");
+    LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- nbThrift= {} ", pagmfsThrift.size());
+    LOGGER.info(" MIGRATION_PAGMF - migrationFromThriftToCql- nbCql= {} ", pagmfsCql.size());
     return diff;
   }
 
@@ -64,7 +64,7 @@ public class MigrationPagmf implements IMigrationR {
   @Override
   public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- start ");
+    LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- start ");
 
     final Iterator<Pagmf> pagmfs = pagmfDaoCql.findAllWithMapper();
     final List<Pagmf> pagmfsCql = new ArrayList<>();
@@ -75,9 +75,9 @@ public class MigrationPagmf implements IMigrationR {
     }
     final List<Pagmf> pagmfsThrift = pagmfSupport.findAll();
     final Diff diff = comparePagmfs(pagmfsThrift, pagmfsCql);
-    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- end ");
-    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- nbThrift= {} ", pagmfsThrift.size());
-    MigrationPagmf.LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- nbCql= {} ", pagmfsCql.size());
+    LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- nbThrift= {} ", pagmfsThrift.size());
+    LOGGER.info(" MIGRATION_PAGMF - migrationFromCqlTothrift- nbCql= {} ", pagmfsCql.size());
     return diff;
   }
 

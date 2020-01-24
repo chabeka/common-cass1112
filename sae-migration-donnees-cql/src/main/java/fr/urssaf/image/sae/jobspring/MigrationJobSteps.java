@@ -114,15 +114,17 @@ public class MigrationJobSteps extends MigrationJob implements IMigration {
     // liste venant de la base cql
     final List<JobStepsCql> listJobCql = new ArrayList<>();
     final Iterator<JobStepsCql> it = jobStepsExeDao.findAllWithMapper();
+    int nb = 0;
     while (it.hasNext()) {
       final JobStepsCql jobExToJR = it.next();        
-      listJobCql.add(jobExToJR);	    	
+      listJobCql.add(jobExToJR);
+      nb++;
     }
 
     // comparaison de deux listes
     final boolean isBasEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
     if (isBasEq) {
-      LOG.info("MIGRATION_JobStepsCql -- Les listes JobSteps sont identiques");
+      LOG.info("MIGRATION_JobStepsCql -- Les listes JobSteps sont identiques, nb={}", nb);
     } else {
       LOG.warn("MIGRATION_JobStepsCql -- ATTENTION: Les listes JobSteps sont différentes ");
     }

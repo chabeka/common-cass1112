@@ -53,9 +53,9 @@ public class MigrationMetadata implements IMigrationR {
     final Iterator<MetadataReference> metadatasIterator = metadataDaoCql.findAllWithMapper();
     metadatasIterator.forEachRemaining(metadatasCql::add);
     final Diff diff = compareMetadatas(metadatasThrift, metadatasCql, javers);
-    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- end ");
-    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- nbThrift={} ",metadatasThrift.size());
-    MigrationMetadata.LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- nbCql={} ", metadatasCql.size());
+    LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- end ");
+    LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- nbThrift={} ", metadatasThrift.size());
+    LOGGER.info(" MigrationMetadata - migrationFromThriftToCql- nbCql={} ", metadatasCql.size());
     return diff;
   }
   /**

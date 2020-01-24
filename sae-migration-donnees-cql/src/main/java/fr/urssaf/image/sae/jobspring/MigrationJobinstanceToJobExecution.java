@@ -46,7 +46,7 @@ public class MigrationJobinstanceToJobExecution extends MigrationJob implements 
 
 
     final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBINSTANCE_TO_JOBEXECUTION_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
-    final int nb = 0;
+    int nb = 0;
     while (it.hasNext()) {
       final Row row = (Row) it.next();
       final Long idInst = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
@@ -56,6 +56,7 @@ public class MigrationJobinstanceToJobExecution extends MigrationJob implements 
       jobInstToJ.setJobExecutionId(idJobEx);
       jobInstToJ.setValue("");
       jobInstToJobEx.saveWithMapper(jobInstToJ);
+      nb++;
     }
 
     LOG.info(" MigrationJobinstanceToJobExecution - migrationFromThriftToCql - FIN   ");

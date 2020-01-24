@@ -10,29 +10,21 @@ import org.javers.core.diff.Diff;
  *
  */
 public class DiffM {
-  private boolean resultMigration;
 
-  public boolean isResultMigration() {
-    return resultMigration;
-  }
 
-  public void setResultMigration(final boolean resultMigration) {
-    this.resultMigration = resultMigration;
-  }
 
-  private boolean resultCompare;
-
-  public boolean isResultCompare() {
-    return resultCompare;
-  }
-
-  public void setResultCompare(final boolean resultCompare) {
-    this.resultCompare = resultCompare;
-  }
 
   private Diff diff;
 
   private String message;
+
+  private boolean resultCompare;
+
+  private boolean resultMigration;
+
+
+
+
 
   public String getMessage() {
     return message;
@@ -41,8 +33,6 @@ public class DiffM {
   public void setMessage(final String message) {
     this.message = message;
   }
-
-
 
   /**
    * @return the diff
@@ -57,5 +47,21 @@ public class DiffM {
    */
   public void setDiff(final Diff diff) {
     this.diff = diff;
+  }
+
+  public boolean isResultMigration() {
+    return resultMigration;
+  }
+
+  public void setResultMigration(final boolean resultMigration) {
+    this.resultMigration = resultMigration;
+  }
+
+  public boolean isResultCompare() {
+    return resultCompare;
+  }
+
+  public void setResultCompare(final boolean resultCompare) {
+    this.resultCompare = resultCompare;
   }
 }

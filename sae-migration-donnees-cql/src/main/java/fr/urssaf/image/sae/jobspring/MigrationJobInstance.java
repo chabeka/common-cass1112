@@ -139,7 +139,7 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
   }
 
   public JobInstance getTraceFromResult(final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row) {
-    LOGGER.info(" MigrationJobInstance-migrationFromThriftToCql start");
+
     String name = null;
     Integer version = null;
     Long instanceId = null;
@@ -177,7 +177,7 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
    */
   @Override
   public void migrationFromCqlTothrift() {
-
+    LOGGER.info(" MigrationJobInstance-migrationFromCqlTothrift start");
     jobInstanceTemplate = new ThriftColumnFamilyTemplate<>(
         ccfthrift.getKeyspace(),
         JOB_INSTANCE_CF_NAME,

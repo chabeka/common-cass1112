@@ -77,9 +77,9 @@ public class MigrationCorrespondancesRnd implements IMigrationR {
 
     final List<Correspondance> correspondanceRndsThrift = correspondancesSupport.getAllCorrespondances();
 
-    MigrationCorrespondancesRnd.LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- end ");
-    MigrationCorrespondancesRnd.LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- nbThrift={}", correspondanceRndsThrift.size());
-    MigrationCorrespondancesRnd.LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- nbCql={}", correspondanceRndsCql.size());
+    LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- nbThrift={}", correspondanceRndsThrift.size());
+    LOGGER.info(" MigrationCorrespondancesRnd - migrationFromCqlTothrift- nbCql={}", correspondanceRndsCql.size());
     return comparecorrespondancesRnds(correspondanceRndsThrift, correspondanceRndsCql, javers);
   }
 

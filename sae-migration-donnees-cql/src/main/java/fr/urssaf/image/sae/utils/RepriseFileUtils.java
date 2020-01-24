@@ -5,9 +5,7 @@ package fr.urssaf.image.sae.utils;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.RandomAccessFile;
-import java.util.Properties;
 import java.util.UUID;
 
 /**
@@ -110,27 +108,33 @@ public class RepriseFileUtils {
 
   public static String getKeyFileDir() {
 
-    String path = null;
 
-    try (InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("config/commons-config.properties")) {
+    final File dirRepriseMigration = new File(System.getProperty("java.io.tmpdir") + File.separator + "RepriseMigrationCql");
 
-      final Properties prop = new Properties();
-
-      if (input == null) {
-        System.out.println("Problème de chargement du fichier properties");
-        return "";
-      }
-
-      // load a properties file from class path, inside static method
-      prop.load(input);
-      System.out.println(prop.getProperty("sae.migration.cheminFichiersReprise"));
-      // get the property value and print it out
-      path = prop.getProperty("sae.migration.cheminFichiersReprise");
+    if (dirRepriseMigration.exists() || dirRepriseMigration.mkdirs()) {
+      return dirRepriseMigration.getPath();
+    } else {
+      return "";
 
     }
-    catch (final IOException ex) {
-      ex.printStackTrace();
-    }
-    return path;
+    /*
+     * final String path = null;
+     * try (InputStream input = ClassLoader.getSystemClassLoader().getResourceAsStream("config/commons-config.properties")) {
+     * final Properties prop = new Properties();
+     * if (input == null) {
+     * System.out.println("Problème de chargement du fichier properties");
+     * return "";
+     * }
+     * // load a properties file from class path, inside static method
+     * prop.load(input);
+     * System.out.println(prop.getProperty("sae.migration.cheminFichiersReprise"));
+     * // get the property value and print it out
+     * path = prop.getProperty("sae.migration.cheminFichiersReprise");
+     * }
+     * catch (final IOException ex) {
+     * ex.printStackTrace();
+     * }
+     */
+
   }
 }

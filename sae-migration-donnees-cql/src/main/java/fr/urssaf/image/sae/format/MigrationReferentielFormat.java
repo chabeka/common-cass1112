@@ -41,7 +41,7 @@ public class MigrationReferentielFormat implements IMigrationR {
   @Override
   public Diff migrationFromThriftToCql(final Javers javers) {
 
-    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- start ");
+    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- start ");
 
     final List<FormatFichier> formatFichiersThrift = formatSupport.findAll();
 
@@ -52,9 +52,9 @@ public class MigrationReferentielFormat implements IMigrationR {
     final Iterator<FormatFichier> formatFichiersIterator = referentielFormatDaoCql.findAllWithMapper();
     formatFichiersIterator.forEachRemaining(formatFichiersCql::add);
     final Diff diff = compareformatFichiers(formatFichiersThrift, formatFichiersCql, javers);
-    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- end ");
-    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- nbThrift={} ", formatFichiersThrift.size());
-    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- nbCql={} ", formatFichiersCql.size());
+    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- end ");
+    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- nbThrift={} ", formatFichiersThrift.size());
+    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromThriftToCql- nbCql={} ", formatFichiersCql.size());
     return diff;
   }
 
@@ -78,9 +78,9 @@ public class MigrationReferentielFormat implements IMigrationR {
     final List<FormatFichier> formatFichiersThrift = formatSupport.findAll();
     final Diff diff = compareformatFichiers(formatFichiersThrift, formatFichiersCql, javers);
 
-    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- end ");
-    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- nbThrift={} ", formatFichiersThrift.size());
-    MigrationReferentielFormat.LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- nbCql={} ", formatFichiersCql.size());
+    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- nbThrift={} ", formatFichiersThrift.size());
+    LOGGER.info(" MIGRATION_REFERENTIEL_FORMAT - migrationFromCqlTothrift- nbCql={} ", formatFichiersCql.size());
     return diff;
   }
 

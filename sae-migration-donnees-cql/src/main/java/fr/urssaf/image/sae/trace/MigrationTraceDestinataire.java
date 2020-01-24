@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.DiffM;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
@@ -47,7 +48,7 @@ public class MigrationTraceDestinataire {
   /**
    * Migration de la CF Thrift vers la CF cql
    */
-  public void migrationFromThriftToCql() {
+  public DiffM migrationFromThriftToCql() {
 
     LOGGER.info(" MigrationTraceDestinataire - migrationFromThriftToCql- start ");
 
@@ -56,16 +57,19 @@ public class MigrationTraceDestinataire {
     if (!traces.isEmpty()) {
       tracesCql = destinatairedao.saveAll(traces);
     }
+    final DiffM diffM = new DiffM();
 
+    diffM.setResultCompare(traces.size() == tracesCql.size());
     LOGGER.info(" MigrationTraceDestinataire - migrationFromThriftToCql- end ");
     LOGGER.info(" MigrationTraceDestinataire - migrationFromThriftToCql- nbThrift={} ", traces.size());
     LOGGER.info(" MigrationTraceDestinataire - migrationFromThriftToCql- nbCql={} ", tracesCql.size());
+    return diffM;
   }
 
   /**
    * Migration de la CF cql vers la CF Thrift
    */
-  public void migrationFromCqlTothrift() {
+  public DiffM migrationFromCqlTothrift() {
 
     LOGGER.info(" MigrationTraceDestinataire - migrationFromCqlTothrift- start ");
 
@@ -80,9 +84,12 @@ public class MigrationTraceDestinataire {
 
     }
     final List<TraceDestinataire> traces = supportTDesti.findAll();
+    final DiffM diffM = new DiffM();
+    diffM.setResultCompare(traces.size() == tracesCql.size());
     LOGGER.info(" MigrationTraceDestinataire - migrationFromCqlTothrift- end ");
     LOGGER.info(" MigrationTraceDestinataire - migrationFromCqlTothrift- nbThrift={} ", traces.size());
     LOGGER.info(" MigrationTraceDestinataire - migrationFromCqlTothrift- nbCql={} ", tracesCql.size());
+    return diffM;
   }
 
   /**
@@ -106,7 +113,7 @@ public class MigrationTraceDestinataire {
       // checker si l'objet courant est equivalent à celui de la base thrift
       final boolean isObj = checkTraceDestinataire(tr);
       if(!isObj) {
-        LOGGER.info(" Objet cql non identique à celui de la base thrift");
+        LOGGER.info(" Objet cql non identique a celui de la base thrift");
       } else {
         isEqBase = isEqBase && isObj;
       }   

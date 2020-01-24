@@ -52,9 +52,9 @@ public class MigrationRnd implements IMigrationR {
     final Iterator<TypeDocument> rndsIterator = rndDaoCql.findAllWithMapper();
     rndsIterator.forEachRemaining(typeDocumentsCql::add);
     final Diff diff = compareRnds(typeDocumentsThrift, typeDocumentsCql, javers);
-    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- end ");
-    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", typeDocumentsThrift.size());
-    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbCql={} ", typeDocumentsCql.size());
+    LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- end ");
+    LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", typeDocumentsThrift.size());
+    LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbCql={} ", typeDocumentsCql.size());
     return diff;
   }
 
@@ -77,9 +77,9 @@ public class MigrationRnd implements IMigrationR {
     final List<TypeDocument> rndsThrift = rndSupport.findAll();
 
     final Diff diff = compareRnds(rndsThrift, rndsCql, javers);
-    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromCqlTothrift- end ");
-    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", rndsThrift.size());
-    MigrationRnd.LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", rndsCql.size());
+    LOGGER.info(" MIGRATION_RND - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", rndsThrift.size());
+    LOGGER.info(" MIGRATION_RND - migrationFromThriftToCql- nbThrift={} ", rndsCql.size());
     return diff;
   }
 

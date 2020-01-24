@@ -61,7 +61,7 @@ public class MigrationParameters implements IMigrationR {
   @Override
   public Diff migrationFromThriftToCql(final Javers javers) {
 
-    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromThriftToCql- start ");
+    LOGGER.info(" MigrationParameters - migrationFromThriftToCql- start ");
 
     final Iterator<GenericParametersType> it = genericdao.findAllByCFName("Parameters", ccf.getKeyspace().getKeyspaceName());
 
@@ -112,8 +112,8 @@ public class MigrationParameters implements IMigrationR {
     final Iterator<ParameterCql> parametersIterator = parameterDaoCql.findAllWithMapper();
     parametersIterator.forEachRemaining(parametersCql::add);
     final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql, javers);
-    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromThriftToCql- end");
-    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromThriftToCql- Total={} ", nb);
+    LOGGER.info(" MigrationParameters - migrationFromThriftToCql- end");
+    LOGGER.info(" MigrationParameters - migrationFromThriftToCql- Total={} ", nb);
     return diff;
   }
 
@@ -136,8 +136,8 @@ public class MigrationParameters implements IMigrationR {
     }
 
     final Diff diff = compareParameters(getListParametersCqlFromThrift(), parametersCql, javers);
-    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromCqlTothrift- end");
-    MigrationParameters.LOGGER.info(" MigrationParameters - migrationFromCqlTothrift- end: Total={} ", parametersCql.size());
+    LOGGER.info(" MigrationParameters - migrationFromCqlTothrift- end");
+    LOGGER.info(" MigrationParameters - migrationFromCqlTothrift- end: Total={} ", parametersCql.size());
     return diff;
   }
 

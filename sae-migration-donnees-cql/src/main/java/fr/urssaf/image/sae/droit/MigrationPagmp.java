@@ -38,7 +38,7 @@ public class MigrationPagmp implements IMigrationR {
   @Override
   public Diff migrationFromThriftToCql(final Javers javers) {
 
-    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- start ");
+    LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- start ");
 
     final List<Pagmp> pagmpsThrift = pagmpSupport.findAll();
 
@@ -49,9 +49,9 @@ public class MigrationPagmp implements IMigrationR {
     final Iterator<Pagmp> pagmpsIterator = pagmpDaoCql.findAllWithMapper();
     pagmpsIterator.forEachRemaining(pagmpsCql::add);
     final Diff diff = comparePagmps(pagmpsThrift, pagmpsCql, javers);
-    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- end ");
-    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- nbThrift= {} ", pagmpsThrift.size());
-    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- nbCql= {} ", pagmpsCql.size());
+    LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- end ");
+    LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- nbThrift= {} ", pagmpsThrift.size());
+    LOGGER.info(" MIGRATION_PAGMP - migrationFromThriftToCql- nbCql= {} ", pagmpsCql.size());
     return diff;
   }
 
@@ -72,9 +72,9 @@ public class MigrationPagmp implements IMigrationR {
     }
     final List<Pagmp> pagmpsThrift = pagmpSupport.findAll();
     final Diff diff = comparePagmps(pagmpsThrift, pagmpsCql, javers);
-    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- end ");
-    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- nbThrift= {} ", pagmpsThrift.size());
-    MigrationPagmp.LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- nbCql= {} ", pagmpsCql.size());
+    LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- nbThrift= {} ", pagmpsThrift.size());
+    LOGGER.info(" MIGRATION_PAGMP - migrationFromCqlTothrift- nbCql= {} ", pagmpsCql.size());
     return diff;
   }
 

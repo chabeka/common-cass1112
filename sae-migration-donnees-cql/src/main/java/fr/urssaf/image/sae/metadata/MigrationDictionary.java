@@ -51,9 +51,9 @@ public class MigrationDictionary implements IMigrationR {
     final List<Dictionary> dictionarysCql = new ArrayList<>();
     final Iterator<Dictionary> dictionarysIterator = dictionaryDaoCql.findAllWithMapper();
     dictionarysIterator.forEachRemaining(dictionarysCql::add);
-    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- end ");
-    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- nbThrift= {}", dictionarysThrift.size());
-    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- nbCql= {} ", dictionarysCql.size());
+    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- end ");
+    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- nbThrift= {}", dictionarysThrift.size());
+    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromThriftToCql- nbCql= {} ", dictionarysCql.size());
     final Diff diff = compareDictionarys(dictionarysThrift, dictionarysCql, javers);
     return diff;
   }
@@ -64,7 +64,7 @@ public class MigrationDictionary implements IMigrationR {
   @Override
   public Diff migrationFromCqlTothrift(final Javers javers) {
 
-    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- start ");
+    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- start ");
 
 
     final Iterator<Dictionary> dictionarysIterator = dictionaryDaoCql.findAllWithMapper();
@@ -77,9 +77,9 @@ public class MigrationDictionary implements IMigrationR {
       }
     }
     final List<Dictionary> dictionarysThrift = dictionarySupport.findAll();
-    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- end ");
-    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- nbThrift= {}", dictionarysThrift.size());
-    MigrationDictionary.LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- nbCql= {} ", dictionarysCql.size());
+    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- end ");
+    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- nbThrift= {}", dictionarysThrift.size());
+    LOGGER.info(" MIGRATION_DICTIONARY - migrationFromCqlTothrift- nbCql= {} ", dictionarysCql.size());
     final Diff diff = compareDictionarys(dictionarysThrift, dictionarysCql, javers);
     return diff;
   }

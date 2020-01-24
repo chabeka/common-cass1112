@@ -689,13 +689,14 @@ public class App {
         final MigrationTraceDestinataire migrationTraceDestinataire = context
         .getBean(MigrationTraceDestinataire.class);
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
-          migrationTraceDestinataire.migrationFromThriftToCql();
+          // On compare seulement la taille
+          diffM.setResultCompare(migrationTraceDestinataire.migrationFromThriftToCql().isResultCompare());
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationTraceDestinataire.compareTraceDestinataireFromCQlandThrift());
+          // diffM.setResultCompare(migrationTraceDestinataire.compareTraceDestinataireFromCQlandThrift());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
-          migrationTraceDestinataire.migrationFromCqlTothrift();
+          diffM.setResultCompare(migrationTraceDestinataire.migrationFromCqlTothrift().isResultCompare());
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationTraceDestinataire.compareTraceDestinataireFromCQlandThrift());
+
         }
         break;
 

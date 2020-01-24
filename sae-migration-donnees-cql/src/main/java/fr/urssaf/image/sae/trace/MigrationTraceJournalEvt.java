@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.DiffM;
 import fr.urssaf.image.sae.commons.CompareIndexDoc;
 import fr.urssaf.image.sae.commons.CompareTraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDao;
@@ -92,6 +93,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    */
   public int migrationFromThriftToCql() {
     LOGGER.info("  MigrationTraceJournalEvt -migrationFromThriftToCql debut");
+
+    final DiffM diffM = new DiffM();
     // Clé de depart de l'itération
     UUID startKey = null;
 
@@ -186,6 +189,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         lastIteartionMap.remove(iterationNB - 1);
         iterationNB++;
 
+
       } while (count == blockSize);
 
     }
@@ -200,6 +204,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         throw new RuntimeException(e.getMessage(), e);
       }
     }
+
     LOGGER.info("  MigrationTraceJournalEvt - migrationFromThriftToCql end");
     LOGGER.info("  MigrationTraceJournalEvt - migrationFromThriftToCql-Total: " + totalRow);
 
@@ -211,7 +216,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    */
   public int migrationFromCqlToThrift() {
 
-    LOGGER.debug(" MigrationTraceJournalEvt - migrationFromCqlToThrift start");
+    LOGGER.info(" MigrationTraceJournalEvt - migrationFromCqlToThrift start");
 
     final Iterator<TraceJournalEvtCql> tracej = supportcql.findAll();
     // final List<TraceJournalEvtCql> nb_Rows = Lists.newArrayList(tracej);
@@ -224,6 +229,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       supportJThrift.create(traceTrhift, times);
       nb++;
     }
+
     LOGGER.info("  MigrationTraceJournalEvt - migrationFromCqlToThrift end");
     LOGGER.info(" MigrationTraceJournalEvt -migrationFromCqlToThrift- Total : " + nb);
 
@@ -298,11 +304,12 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
           for (final TraceJournalEvtIndex next : list) {
             final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next, DateRegUtils.getJournee(d));
             supportcql.getIndexDao().saveWithMapper(trace);
+            nbTotalIndex++;
           }
           // ecriture dans le fichier
           bWriter.append(DateRegUtils.getJournee(d));
           bWriter.newLine();
-          nbTotalIndex++;
+
         }
       }
     }
@@ -437,8 +444,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       }
     }
 
-    LOGGER.debug(" MigrationTraceJournalEvt- migrationIndexDocFromThriftToCql-Nb total de cle dans la CF: " + totalKey);
-    LOGGER.debug(" MigrationTraceJournalEvt- migrationIndexDocFromThriftToCql end");
+    LOGGER.info(" MigrationTraceJournalEvt- migrationIndexDocFromThriftToCql-Nb total de cle dans la CF: " + totalKey);
+    LOGGER.info(" MigrationTraceJournalEvt- migrationIndexDocFromThriftToCql end");
 
     return totalKey;
 

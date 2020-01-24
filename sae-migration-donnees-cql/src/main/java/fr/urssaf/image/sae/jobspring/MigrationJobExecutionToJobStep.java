@@ -108,15 +108,17 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
     // liste venant de la base cql
     final List<JobExecutionToJobStepCql> listJobCql = new ArrayList<>();
     final Iterator<JobExecutionToJobStepCql> it = jobExeToJobStepDao.findAllWithMapper();
+    int nb = 0;
     while (it.hasNext()) {
       final JobExecutionToJobStepCql jobExToJR = it.next();        
       listJobCql.add(jobExToJR);	    	
+      nb++;
     }
 
     // comparaison de deux listes
     final boolean isBaseEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
     if (isBaseEq) {
-      LOG.info("MIGRATION_JobExecutionToJobStep -- Les listes JobExecutionToJobStep sont identiques");
+      LOG.info("MIGRATION_JobExecutionToJobStep -- Les listes JobExecutionToJobStep sont identiques, nb={}", nb);
     } else {
       LOG.warn("MIGRATION_JobExecutionToJobStep -- ATTENTION: Les listes JobExecutionToJobStep sont différentes ");
     }

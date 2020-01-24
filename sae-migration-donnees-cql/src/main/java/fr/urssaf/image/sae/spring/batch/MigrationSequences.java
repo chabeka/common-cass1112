@@ -92,8 +92,6 @@ public class MigrationSequences {
     }
     final List<SequencesCql> listThrift = findAllThrift(MigrationSequences.SEQUENCE_KEY);
     MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- end ");
-    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- nbThrift={} ", listThrift.size());
-    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromCqlTothrift- nbCql= {} ", listCql.size());
   }
 
   public void addSequence(final String jobIdName, final long value) {
@@ -143,8 +141,6 @@ public class MigrationSequences {
       final SequencesCql sequenceCql = it.next();
       sequencesCql.add(sequenceCql);
     }
-    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- nbThrift={} ", sequencesThrift.size());
-    MigrationSequences.LOGGER.info(" MigrationSequences - migrationFromThriftToCql- nbCql={} ", sequencesCql.size());
     Collections.sort(sequencesThrift);
     Collections.sort(sequencesCql);
     final Javers javers = JaversBuilder
