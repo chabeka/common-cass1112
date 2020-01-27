@@ -103,6 +103,20 @@ public class TraceDestinataireCqlSupport {
   }
 
   /**
+   * Méthode de suppression d'une trace destinataire
+   *
+   * @param code
+   *          identifiant de la trace
+   * @param clock
+   *          horloge de suppression
+   */
+  public void delete(final String code) {
+    Assert.notNull(code, "le code ne peut etre null");
+    destinatairecqldao.deleteById(code);
+
+  }
+
+  /**
    * Recherche et retourne l'enregistrement de la trace destinataire en
    * fonction du code fourni
    *
@@ -171,7 +185,7 @@ public class TraceDestinataireCqlSupport {
           }
         }
         traceFromBD.setDestinataires(destinatairesFromDB);
-        destinatairecqldao.saveWithMapper(traceFromBD);
+        destinatairecqldao.saveWithMapper(traceFromBD, clock);
       } else {
         destinatairecqldao.saveWithMapper(trace);
       }
