@@ -14,24 +14,6 @@ public class MajLotServiceCQLImpl implements MajLotService {
 
   private static final Logger LOG = LoggerFactory.getLogger(MajLotServiceCQLImpl.class);
 
-  /*
-  // SAE
-  public static final String SAE_MODE_API = "SAE_CREATE_MODE_API";
-  public static final String SAE_MIG_TRACES = "SAE_CREATE_TRACE";
-  public static final String SAE_MIG_JOB_SPRING = "SAE_CREATE_JOB_SPRING";
-  public static final String SAE_MIG_PILE_TRAVAUX = "SAE_CREATE_PILE_TRAVAUX";
-  // SAE DELETE TABLE MIG
-  public static final String SAE_DELETE_MODE_API = "SAE_DELETE_MODE_API";
-  public static final String SAE_DELETE_MIG_TRACES = "SAE_DELETE_TRACES";
-  public static final String SAE_DELETE_MIG_JOB_SPRING = "SAE_DELETE_JOB_SPRING";
-  public static final String SAE_DELETE_MIG_PILE_TRAVAUX = "SAE_DELETE_PILE_TRAVAUX";
-  // DFCE
-  public static final String DFCE_192_TO_200_SCHEMA = "DFCE_192_TO_200_SCHEMA";
-  public static final String DFCE_200_TO_210_SCHEMA = "DFCE_200_TO_210_SCHEMA";
-  public static final String DFCE_210_TO_230_SCHEMA = "DFCE_210_TO_230_SCHEMA";
-  public static final String DFCE_230_TO_192_SCHEMA = "DFCE_230_TO_192_SCHEMA";
-   */
-
   @Autowired
   private SAECassandraUpdaterCQL saeUpdater;
 
@@ -83,7 +65,31 @@ public class MajLotServiceCQLImpl implements MajLotService {
 
       saeUpdater.createTablesModeapi();
 
-    }else if (OperationCQL.SAE_DELETE_MODE_API.getNomOp().equalsIgnoreCase(nomOperation)){
+    }
+    else if (OperationCQL.SAE_COMMONS.getNomOp().equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesCommons();;
+
+    }else if (OperationCQL.SAE_RND.getNomOp().equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesRND();
+
+    }else if (OperationCQL.SAE_FORMAT.getNomOp().equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesFormats();
+
+    }else if (OperationCQL.SAE_METADATA.getNomOp().equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesMetadata();
+
+    }else if (OperationCQL.SAE_DROITS.getNomOp().equalsIgnoreCase(nomOperation)){
+
+      saeUpdater.createTablesDroits();
+
+    }
+    
+    // SUPPRESSION
+    else if (OperationCQL.SAE_DELETE_MODE_API.getNomOp().equalsIgnoreCase(nomOperation)){
 
       saeUpdater.deleteTablesModeapi();
 
@@ -93,7 +99,7 @@ public class MajLotServiceCQLImpl implements MajLotService {
 
     }else if (OperationCQL.SAE_DELETE_MIG_JOB_SPRING.getNomOp().equalsIgnoreCase(nomOperation)){
 
-      saeUpdater.deleteTablesJobSpring();;
+      saeUpdater.deleteTablesJobSpring();
 
     }else if (OperationCQL.SAE_DELETE_MIG_PILE_TRAVAUX.getNomOp().equalsIgnoreCase(nomOperation)){
 
@@ -165,7 +171,6 @@ public class MajLotServiceCQLImpl implements MajLotService {
     saeUpdater.createTablesFormats();
     saeUpdater.createTablesMetadata();
     saeUpdater.createTablesRND();
-
 
     LOG.info("Fin de l'opération : creation des tables cql SAE");
   }
