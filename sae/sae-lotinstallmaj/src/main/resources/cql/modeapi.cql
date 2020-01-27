@@ -15,7 +15,7 @@ INSERT INTO modeapi (cfname,mode) VALUES ('jobexecutiontojobstep','HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobhistory' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobinstance' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobinstancetojobexecution' , 'HECTOR');
-INSERT INTO modeapi(cfname, mode) VALUES ('jobinstancebyname' , 'HECTOR');
+INSERT INTO modeapi(cfname, mode) VALUES ('jobinstancesbyname' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobrequest' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobsteps' , 'HECTOR');
