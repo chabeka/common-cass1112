@@ -62,270 +62,270 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-executable-test.xml" })
 public class TraitementServiceDatasJournalisationTest {
 
-   private static final String CODE_EVT = "TEST_TRAITEMENT_SERVICE";
-   private static final Date DATE = new Date();
+  private static final String CODE_EVT = "TEST_TRAITEMENT_SERVICE";
+  private static final Date DATE = new Date();
 
-   @Autowired
-   private ParametersService paramService;
+  @Autowired
+  private ParametersService paramService;
 
-   @Autowired
-   private StatusService statusService;
+  @Autowired
+  private StatusService statusService;
 
-   @Autowired
-   private TraitementService traitementService;
+  @Autowired
+  private TraitementService traitementService;
 
-   @Autowired
-   private TraceDestinataireSupport traceSupport;
+  @Autowired
+  private TraceDestinataireSupport traceSupport;
 
-   @Autowired
-   private CassandraServerBean serverBean;
+  @Autowired
+  private CassandraServerBean serverBean;
 
-   @Autowired
-   private TraceRegExploitationSupport exploitationSupport;
+  @Autowired
+  private TraceRegExploitationSupport exploitationSupport;
 
-   @Autowired
-   private TraceRegSecuriteSupport securiteSupport;
+  @Autowired
+  private TraceRegSecuriteSupport securiteSupport;
 
-   @Autowired
-   private TraceRegTechniqueSupport techniqueSupport;
+  @Autowired
+  private TraceRegTechniqueSupport techniqueSupport;
 
-   @Autowired
-   private TraceJournalEvtSupport evtSupport;
+  @Autowired
+  private TraceJournalEvtSupport evtSupport;
 
-   @Autowired
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
-   
-   @Autowired
-   private ParametersService parametersService;
-   @Autowired 
-   private RndSupport rndSupport;
-   @Autowired
-   private JobClockSupport jobClockSupport;
+  @Autowired
+  private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-   @After
-   public void after() throws Exception {
-      serverBean.resetData(true, MODE_API.HECTOR);
-   }
+  @Autowired
+  private ParametersService parametersService;
+  @Autowired 
+  private RndSupport rndSupport;
+  @Autowired
+  private JobClockSupport jobClockSupport;
 
-   @Test
-   public void testJournalisationDejaEnCours() {
+  @After
+  public void after() throws Exception {
+    serverBean.resetData(true, MODE_API.HECTOR);
+  }
 
-      paramService.setJournalisationEvtIsRunning(Boolean.TRUE);
+  @Test
+  public void testJournalisationDejaEnCours() {
 
-      try {
-         traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
-         Assert
-               .fail("une exception TraceExecutableRuntimeException est attendue");
+    paramService.setJournalisationEvtIsRunning(Boolean.TRUE);
 
-      } catch (TraceExecutableRuntimeException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct", exception
-               .getMessage(),
-               "la journalisation JOURNALISATION_EVT est déjà en cours");
+    try {
+      traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
+      Assert
+      .fail("une exception TraceExecutableRuntimeException est attendue");
 
-      } catch (Exception exception) {
-         Assert
-               .fail("une exception TraceExecutableRuntimeException est attendue");
-      }
+    } catch (final TraceExecutableRuntimeException exception) {
+      Assert.assertEquals("le message d'erreur doit etre correct", exception
+                          .getMessage(),
+          "la journalisation JOURNALISATION_EVT est déjà en cours");
 
-   }
+    } catch (final Exception exception) {
+      Assert
+      .fail("une exception TraceExecutableRuntimeException est attendue");
+    }
 
-   @Test
-   public void testJournalisationDateNonRenseignee() {
+  }
 
-      try {
+  @Test
+  public void testJournalisationDateNonRenseignee() {
 
-         traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
-         Assert.fail("une exception TraceRuntimeException est attendue");
-
-      } catch (TraceRuntimeException exception) {
-         checkExceptionParametreInexistant(exception, "JOURNALISATION_EVT_DATE");
-
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceRuntimeException est attendue");
-      }
-
-   }
-
-   private void checkExceptionParametreInexistant(
-         TraceRuntimeException exception, String parametre) {
-
-      Assert.assertEquals(
-            "le message d'erreur d'origine doit etre un parametre non trouvé",
-            ParameterNotFoundException.class, exception.getCause().getClass());
-
-      String messageAttendu = "le paramètre " + parametre + " n'existe pas";
-      String messageObtenu = exception.getCause().getMessage();
-      Assert.assertEquals("le message d'erreur doit etre correct",
-            messageAttendu, messageObtenu);
-
-   }
-
-   @Test
-   public void testJournalisationIdJournalPrecedentNonRenseignee() {
-
-      createTraces();
-
-      paramService.setJournalisationEvtDate(DateUtils.addDays(new Date(), -2));
-
-      try {
-
-         traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
-         Assert.fail("une exception TraceRuntimeException est attendue");
-
-      } catch (TraceRuntimeException exception) {
-         checkExceptionParametreInexistant(exception,
-               "JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT");
-
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceRuntimeException est attendue");
-      }
-
-   }
-
-   @Test
-   public void testJournalisationHashJournalPrecedentNonRenseignee() {
-
-      createTraces();
-
-      paramService.setJournalisationEvtDate(DateUtils.addDays(new Date(), -2));
-      paramService
-            .setJournalisationEvtIdJournPrec(UUID.randomUUID().toString());
-
-      try {
-         traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
-         Assert.fail("une exception TraceRuntimeException est attendue");
-
-      } catch (TraceRuntimeException exception) {
-         checkExceptionParametreInexistant(exception,
-               "JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT");
-
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceRuntimeException est attendue");
-      }
-   }
-
-   @Test
-   public void testSucces() throws IOException, TraceExecutableException,
-         SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx, SAECaptureServiceEx,
-         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         NotArchivableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         ParameterNotFoundException {
-
-      // Paramétrage du RND
-      parametersService.setVersionRndDateMaj(new Date());
-      parametersService.setVersionRndNumero("11.2");
-      
-      TypeDocument typeDocCree = new TypeDocument();
-      typeDocCree.setCloture(false);
-      typeDocCree.setCode("7.7.8.8.1");
-      typeDocCree.setCodeActivite("7");
-      typeDocCree.setCodeFonction("7");
-      typeDocCree.setDureeConservation(1825);
-      typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
-      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
-      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-      
-      create4Traces();
-
-      paramService.setJournalisationEvtDate(DateUtils.addDays(DATE, -3));
-      paramService
-            .setJournalisationEvtIdJournPrec(UUID.randomUUID().toString());
-      paramService
-            .setJournalisationEvtHashJournPrec("bca50fcd3aa69f927df1a0775fe63e6882dc8913");
-      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
-      paramService.setJournalisationEvtMetaApplProd("SAE");
-      paramService.setJournalisationEvtMetaApplTrait("SAET");
-      paramService.setJournalisationEvtMetaCodeOrga("UR750");
-      paramService.setJournalisationEvtMetaCodeRnd("7.7.8.8.1");
+    try {
 
       traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
+      Assert.fail("une exception TraceRuntimeException est attendue");
 
-      Date date = paramService.getJournalisationEvtDate();
-      Assert.assertTrue("le dernier jour stocké doit etre à -1", DateUtils
-            .isSameDay(DateUtils.addDays(new Date(), -1), date));
+    } catch (final TraceRuntimeException exception) {
+      checkExceptionParametreInexistant(exception, "JOURNALISATION_EVT_DATE");
 
-      Boolean isRunning = statusService
-            .isJournalisationRunning(JournalisationType.JOURNALISATION_EVT);
-      Assert.assertEquals("le traitement doit etre arrete", Boolean.FALSE,
-            isRunning);
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceRuntimeException est attendue");
+    }
 
-   }
+  }
 
-   private void createTraces() {
-      TraceDestinataire destinataire = new TraceDestinataire();
-      destinataire.setCodeEvt(CODE_EVT);
-      Map<String, List<String>> map = new HashMap<String, List<String>>();
-      map.put(TraceDestinataireDao.COL_JOURN_EVT, null);
-      destinataire.setDestinataires(map);
+  private void checkExceptionParametreInexistant(
+                                                 final TraceRuntimeException exception, final String parametre) {
 
-      traceSupport.create(destinataire, new Date().getTime());
+    Assert.assertEquals(
+                        "le message d'erreur d'origine doit etre un parametre non trouvé",
+                        ParameterNotFoundException.class, exception.getCause().getClass());
 
-      createTrace("[JOUR J]", 0, destinataire);
-      createTrace("[JOUR J-1]", -1, destinataire);
-      createTrace("[JOUR J-2]", -2, destinataire);
-      createTrace("[JOUR J-3]", -3, destinataire);
-      createTrace("[JOUR J-4]", -4, destinataire);
-      createTrace("[JOUR J-5]", -5, destinataire);
-   }
+    final String messageAttendu = "le paramètre " + parametre + " n'existe pas";
+    final String messageObtenu = exception.getCause().getMessage();
+    Assert.assertEquals("le message d'erreur doit etre correct",
+                        messageAttendu, messageObtenu);
 
-   private void create4Traces() {
-      TraceDestinataire destinataire = new TraceDestinataire();
-      destinataire.setCodeEvt(CODE_EVT);
-      Map<String, List<String>> map = new HashMap<String, List<String>>();
-      map.put(TraceDestinataireDao.COL_JOURN_EVT, null);
-      destinataire.setDestinataires(map);
+  }
 
-      traceSupport.create(destinataire, new Date().getTime());
+  @Test
+  public void testJournalisationIdJournalPrecedentNonRenseignee() {
 
-      createTrace("[JOUR J]", 0, destinataire);
-      createTrace("[JOUR J-1]", -1, destinataire);
-      createTrace("[JOUR J-2]", -2, destinataire);
-      createTrace("[JOUR J-3]", -3, destinataire);
-   }
+    createTraces();
 
-   private void createTrace(String suffix, int decalage,
-         TraceDestinataire destinataire) {
-      TraceToCreate trace = new TraceToCreate();
-      trace.setAction("action " + suffix);
-      trace.setCodeEvt(CODE_EVT);
-      trace.setContexte("contexte " + suffix);
-      trace.setContrat("contrat " + suffix);
-      trace.setInfos(null);
-      trace.setLogin("login " + suffix);
-      trace.setStracktrace("stackTrace " + suffix);
-      for (String dest : destinataire.getDestinataires().keySet()) {
-         createTraces(trace, dest, DateUtils.addDays(DATE, decalage));
-      }
-   }
+    paramService.setJournalisationEvtDate(DateUtils.addDays(new Date(), -2));
 
-   private void createTraces(TraceToCreate traceToCreate, String nomDestinaire,
-         Date date) {
+    try {
 
-      long timestamp = timeUUIDSupport.getTimestampFromDate(date);
-      UUID idTrace = timeUUIDSupport.buildUUIDFromTimestamp(timestamp);
-      Date timestampTrace = timeUUIDSupport.getDateFromTimestamp(timestamp);
+      traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
+      Assert.fail("une exception TraceRuntimeException est attendue");
 
-      if (TraceDestinataireDao.COL_REG_EXPLOIT.equalsIgnoreCase(nomDestinaire)) {
-         exploitationSupport.create(new TraceRegExploitation(traceToCreate,
-               null, idTrace, timestampTrace), timestampTrace.getTime());
-      } else if (TraceDestinataireDao.COL_REG_SECURITE
-            .equalsIgnoreCase(nomDestinaire)) {
-         securiteSupport.create(new TraceRegSecurite(traceToCreate, null,
-               idTrace, timestampTrace), timestampTrace.getTime());
-      } else if (TraceDestinataireDao.COL_REG_TECHNIQUE
-            .equalsIgnoreCase(nomDestinaire)) {
-         techniqueSupport.create(new TraceRegTechnique(traceToCreate, null,
-               idTrace, timestampTrace), timestampTrace.getTime());
-      } else if (TraceDestinataireDao.COL_JOURN_EVT
-            .equalsIgnoreCase(nomDestinaire)) {
-         evtSupport.create(new TraceJournalEvt(traceToCreate, null, idTrace,
-               timestampTrace), timestampTrace.getTime());
-      }
-   }
+    } catch (final TraceRuntimeException exception) {
+      checkExceptionParametreInexistant(exception,
+          "JOURNALISATION_EVT_ID_JOURNAL_PRECEDENT");
+
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceRuntimeException est attendue");
+    }
+
+  }
+
+  @Test
+  public void testJournalisationHashJournalPrecedentNonRenseignee() {
+
+    createTraces();
+
+    paramService.setJournalisationEvtDate(DateUtils.addDays(new Date(), -2));
+    paramService
+    .setJournalisationEvtIdJournPrec(UUID.randomUUID().toString());
+
+    try {
+      traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
+      Assert.fail("une exception TraceRuntimeException est attendue");
+
+    } catch (final TraceRuntimeException exception) {
+      checkExceptionParametreInexistant(exception,
+          "JOURNALISATION_EVT_HASH_JOURNAL_PRECEDENT");
+
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceRuntimeException est attendue");
+    }
+  }
+
+  @Test
+  public void testSucces() throws IOException, TraceExecutableException,
+  SAEConsultationServiceException, UnknownDesiredMetadataEx,
+  MetaDataUnauthorizedToConsultEx, SAECaptureServiceEx,
+  ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+  InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+  DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+  NotArchivableMetadataEx, EmptyDocumentEx,
+  RequiredArchivableMetadataEx, UnknownHashCodeEx,
+  ParameterNotFoundException {
+
+    // Paramétrage du RND
+    parametersService.setVersionRndDateMaj(new Date());
+    parametersService.setVersionRndNumero("11.2");
+
+    final TypeDocument typeDocCree = new TypeDocument();
+    typeDocCree.setCloture(false);
+    typeDocCree.setCode("7.7.8.8.1");
+    typeDocCree.setCodeActivite("7");
+    typeDocCree.setCodeFonction("7");
+    typeDocCree.setDureeConservation(1825);
+    typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
+    typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+
+    rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+
+    create4Traces();
+
+    paramService.setJournalisationEvtDate(DateUtils.addDays(DATE, -3));
+    paramService
+    .setJournalisationEvtIdJournPrec(UUID.randomUUID().toString());
+    paramService
+    .setJournalisationEvtHashJournPrec("bca50fcd3aa69f927df1a0775fe63e6882dc8913");
+    paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+    paramService.setJournalisationEvtMetaApplProd("SAE");
+    paramService.setJournalisationEvtMetaApplTrait("SAET");
+    paramService.setJournalisationEvtMetaCodeOrga("UR750");
+    paramService.setJournalisationEvtMetaCodeRnd("7.7.8.8.1");
+
+    traitementService.journaliser(JournalisationType.JOURNALISATION_EVT);
+
+    final Date date = paramService.getJournalisationEvtDate();
+    Assert.assertTrue("le dernier jour stocké doit etre à -1", DateUtils
+                      .isSameDay(DateUtils.addDays(new Date(), -1), date));
+
+    final Boolean isRunning = statusService
+        .isJournalisationRunning(JournalisationType.JOURNALISATION_EVT);
+    Assert.assertEquals("le traitement doit etre arrete", Boolean.FALSE,
+                        isRunning);
+
+  }
+
+  private void createTraces() {
+    final TraceDestinataire destinataire = new TraceDestinataire();
+    destinataire.setCodeEvt(CODE_EVT);
+    final Map<String, List<String>> map = new HashMap<>();
+    map.put(TraceDestinataireDao.COL_JOURN_EVT, null);
+    destinataire.setDestinataires(map);
+
+    traceSupport.create(destinataire, new Date().getTime());
+
+    createTrace("[JOUR J]", 0, destinataire);
+    createTrace("[JOUR J-1]", -1, destinataire);
+    createTrace("[JOUR J-2]", -2, destinataire);
+    createTrace("[JOUR J-3]", -3, destinataire);
+    createTrace("[JOUR J-4]", -4, destinataire);
+    createTrace("[JOUR J-5]", -5, destinataire);
+  }
+
+  private void create4Traces() {
+    final TraceDestinataire destinataire = new TraceDestinataire();
+    destinataire.setCodeEvt(CODE_EVT);
+    final Map<String, List<String>> map = new HashMap<>();
+    map.put(TraceDestinataireDao.COL_JOURN_EVT, null);
+    destinataire.setDestinataires(map);
+
+    traceSupport.create(destinataire, new Date().getTime());
+
+    createTrace("[JOUR J]", 0, destinataire);
+    createTrace("[JOUR J-1]", -1, destinataire);
+    createTrace("[JOUR J-2]", -2, destinataire);
+    createTrace("[JOUR J-3]", -3, destinataire);
+  }
+
+  private void createTrace(final String suffix, final int decalage,
+                           final TraceDestinataire destinataire) {
+    final TraceToCreate trace = new TraceToCreate();
+    trace.setAction("action " + suffix);
+    trace.setCodeEvt(CODE_EVT);
+    trace.setContexte("contexte " + suffix);
+    trace.setContrat("contrat " + suffix);
+    trace.setInfos(null);
+    trace.setLogin("login " + suffix);
+    trace.setStracktrace("stackTrace " + suffix);
+    for (final String dest : destinataire.getDestinataires().keySet()) {
+      createTraces(trace, dest, DateUtils.addDays(DATE, decalage));
+    }
+  }
+
+  private void createTraces(final TraceToCreate traceToCreate, final String nomDestinaire,
+                            final Date date) {
+
+    final long timestamp = timeUUIDSupport.getTimestampFromDate(date);
+    final UUID idTrace = timeUUIDSupport.buildUUIDFromTimestamp(timestamp);
+    final Date timestampTrace = timeUUIDSupport.getDateFromTimestamp(timestamp);
+
+    if (TraceDestinataireDao.COL_REG_EXPLOIT.equalsIgnoreCase(nomDestinaire)) {
+      exploitationSupport.create(new TraceRegExploitation(traceToCreate,
+                                                          null, idTrace, timestampTrace), timestampTrace.getTime());
+    } else if (TraceDestinataireDao.COL_REG_SECURITE
+        .equalsIgnoreCase(nomDestinaire)) {
+      securiteSupport.create(new TraceRegSecurite(traceToCreate, null,
+                                                  idTrace, timestampTrace), timestampTrace.getTime());
+    } else if (TraceDestinataireDao.COL_REG_TECHNIQUE
+        .equalsIgnoreCase(nomDestinaire)) {
+      techniqueSupport.create(new TraceRegTechnique(traceToCreate, null,
+                                                    idTrace, timestampTrace), timestampTrace.getTime());
+    } else if (TraceDestinataireDao.COL_JOURN_EVT
+        .equalsIgnoreCase(nomDestinaire)) {
+      evtSupport.create(new TraceJournalEvt(traceToCreate, null, idTrace,
+                                            timestampTrace), timestampTrace.getTime());
+    }
+  }
 
 }

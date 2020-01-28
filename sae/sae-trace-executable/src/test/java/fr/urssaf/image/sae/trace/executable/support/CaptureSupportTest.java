@@ -48,259 +48,259 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-executable-test.xml" })
 public class CaptureSupportTest {
 
-   @Autowired
-   private CaptureSupport support;
+  @Autowired
+  private CaptureSupport support;
 
-   @Autowired
-   private ParametersService paramService;
+  @Autowired
+  private ParametersService paramService;
 
-   @Autowired
-   @Qualifier("saeConsultationService")
-   private SAEConsultationService consultationService;
+  @Autowired
+  @Qualifier("saeConsultationService")
+  private SAEConsultationService consultationService;
 
-   @Autowired
-   private CassandraServerBean serverBean;
-   
-   @Autowired
-   private ParametersService parametersService;
-   @Autowired 
-   private RndSupport rndSupport;
-   @Autowired
-   private JobClockSupport jobClockSupport;
+  @Autowired
+  private CassandraServerBean serverBean;
 
-   @After
-   public void after() throws Exception {
-      serverBean.resetData(true, MODE_API.HECTOR);
-   }
+  @Autowired
+  private ParametersService parametersService;
+  @Autowired 
+  private RndSupport rndSupport;
+  @Autowired
+  private JobClockSupport jobClockSupport;
 
-   @Test
-   public void testTitreObligatoire() {
-      try {
-         support.capture("", new Date());
-         Assert.fail("une exception TraceExecutableException est attendue");
+  @After
+  public void after() throws Exception {
+    serverBean.resetData(true, MODE_API.HECTOR);
+  }
 
-      } catch (TraceExecutableException exception) {
-         checkExceptionParametreInexistant(exception,
-               "JOURNALISATION_EVT_META_TITRE");
+  @Test
+  public void testTitreObligatoire() {
+    try {
+      support.capture("", new Date());
+      Assert.fail("une exception TraceExecutableException est attendue");
 
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceExecutableException est attendue");
-      }
-   }
+    } catch (final TraceExecutableException exception) {
+      checkExceptionParametreInexistant(exception,
+          "JOURNALISATION_EVT_META_TITRE");
 
-   private void checkExceptionParametreInexistant(
-         TraceExecutableException exception, String parametre) {
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceExecutableException est attendue");
+    }
+  }
 
+  private void checkExceptionParametreInexistant(
+                                                 final TraceExecutableException exception, final String parametre) {
+
+    Assert.assertEquals(
+                        "le message d'erreur d'origine doit etre un parametre non trouvé",
+                        ParameterNotFoundException.class, exception.getCause().getCause()
+                        .getClass());
+
+    final String messageAttendu = "le paramètre " + parametre + " n'existe pas";
+    final String messageObtenu = exception.getCause().getCause().getMessage();
+    Assert.assertEquals("le message d'erreur doit etre correct",
+                        messageAttendu, messageObtenu);
+
+  }
+
+  @Test
+  public void testAppliProdObligatoire() {
+
+    paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+
+    try {
+      support.capture("", new Date());
+      Assert.fail("une exception TraceExecutableException est attendue");
+
+    } catch (final TraceExecutableException exception) {
+      checkExceptionParametreInexistant(exception,
+          "JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE");
+
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceExecutableException est attendue");
+    }
+  }
+
+  @Test
+  public void testAppliObligatoire() {
+
+    paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+    paramService.setJournalisationEvtMetaApplProd("Appli prod");
+
+    try {
+      support.capture("", new Date());
+      Assert.fail("une exception TraceExecutableException est attendue");
+
+    } catch (final TraceExecutableException exception) {
+      checkExceptionParametreInexistant(exception,
+          "JOURNALISATION_EVT_META_CODE_ORGA");
+
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceExecutableException est attendue");
+    }
+  }
+
+  @Test
+  public void testRndObligatoire() {
+
+    paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+    paramService.setJournalisationEvtMetaApplProd("Appli prod");
+    paramService.setJournalisationEvtMetaCodeOrga("Code orga");
+
+    try {
+      support.capture("", new Date());
+      Assert.fail("une exception TraceExecutableException est attendue");
+
+    } catch (final TraceExecutableException exception) {
+      checkExceptionParametreInexistant(exception,
+          "JOURNALISATION_EVT_META_CODE_RND");
+
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceExecutableException est attendue");
+    }
+  }
+
+  @Test
+  public void testAppliTraitementObligatoire() {
+
+    paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+    paramService.setJournalisationEvtMetaApplProd("Appli prod");
+    paramService.setJournalisationEvtMetaCodeOrga("Code orga");
+    paramService.setJournalisationEvtMetaCodeRnd("Code rnd");
+
+    try {
+      support.capture("", new Date());
+      Assert.fail("une exception TraceExecutableException est attendue");
+
+    } catch (final TraceExecutableException exception) {
+      checkExceptionParametreInexistant(exception,
+          "JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT");
+
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceExecutableException est attendue");
+    }
+  }
+
+  @Test
+  public void testAppliFichierNonTrouveObligatoire() {
+
+    paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+    paramService.setJournalisationEvtMetaApplProd("Appli prod");
+    paramService.setJournalisationEvtMetaCodeOrga("Code orga");
+    paramService.setJournalisationEvtMetaCodeRnd("Code rnd");
+    paramService.setJournalisationEvtMetaApplTrait("Appli traitement");
+
+    try {
+      support.capture("", new Date());
+      Assert.fail("une exception TraceExecutableException est attendue");
+
+    } catch (final TraceExecutableException exception) {
       Assert.assertEquals(
-            "le message d'erreur d'origine doit etre un parametre non trouvé",
-            ParameterNotFoundException.class, exception.getCause().getCause()
-                  .getClass());
+                          "le message d'erreur d'origine doit etre un fichier non trouvé",
+                          FileNotFoundException.class, exception.getCause().getCause()
+                          .getClass());
 
-      String messageAttendu = "le paramètre " + parametre + " n'existe pas";
-      String messageObtenu = exception.getCause().getCause().getMessage();
-      Assert.assertEquals("le message d'erreur doit etre correct",
-            messageAttendu, messageObtenu);
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceExecutableException est attendue");
+    }
+  }
 
-   }
+  @Test
+  public void testSucces() throws IOException, TraceExecutableException,
+  SAEConsultationServiceException, UnknownDesiredMetadataEx,
+  MetaDataUnauthorizedToConsultEx {
 
-   @Test
-   public void testAppliProdObligatoire() {
+    // Paramétrage du RND
+    parametersService.setVersionRndDateMaj(new Date());
+    parametersService.setVersionRndNumero("11.2");
 
-      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+    final TypeDocument typeDocCree = new TypeDocument();
+    typeDocCree.setCloture(false);
+    typeDocCree.setCode("7.7.8.8.1");
+    typeDocCree.setCodeActivite("7");
+    typeDocCree.setCodeFonction("7");
+    typeDocCree.setDureeConservation(1825);
+    typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
+    typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
-      try {
-         support.capture("", new Date());
-         Assert.fail("une exception TraceExecutableException est attendue");
+    rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
 
-      } catch (TraceExecutableException exception) {
-         checkExceptionParametreInexistant(exception,
-               "JOURNALISATION_EVT_META_APPLICATION_PRODUCTRICE");
+    paramService.setJournalisationEvtMetaTitre("JournalisationTest");
+    paramService.setJournalisationEvtMetaApplProd("SAE");
+    paramService.setJournalisationEvtMetaCodeOrga("UR750");
+    paramService.setJournalisationEvtMetaCodeRnd("7.7.8.8.1");
+    paramService.setJournalisationEvtMetaApplTrait("SAET");
 
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceExecutableException est attendue");
-      }
-   }
+    final ClassPathResource resource = new ClassPathResource(
+        "capture/resultat_attendu.xml.gz");
+    final File file = new File(resource.getURI());
 
-   @Test
-   public void testAppliObligatoire() {
+    authentification();
 
-      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
-      paramService.setJournalisationEvtMetaApplProd("Appli prod");
+    final UUID uuid = support.capture(file.getAbsolutePath(), new Date());
+    Assert.assertNotNull("l'uuid doit etre non null", uuid);
 
-      try {
-         support.capture("", new Date());
-         Assert.fail("une exception TraceExecutableException est attendue");
+    //-- Paramètres de consultation
+    final String[] metadatas = {"Hash", "DomaineTechnique"};
+    final ConsultParams consulparams = new ConsultParams(uuid, Arrays.asList(metadatas));
 
-      } catch (TraceExecutableException exception) {
-         checkExceptionParametreInexistant(exception,
-               "JOURNALISATION_EVT_META_CODE_ORGA");
+    final UntypedDocument archive = consultationService.consultation(consulparams);
+    Assert.assertNotNull("le document doit etre non null", archive);
 
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceExecutableException est attendue");
-      }
-   }
+    final List<UntypedMetadata> uMetadatas = archive.getUMetadatas();
 
-   @Test
-   public void testRndObligatoire() {
-
-      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
-      paramService.setJournalisationEvtMetaApplProd("Appli prod");
-      paramService.setJournalisationEvtMetaCodeOrga("Code orga");
-
-      try {
-         support.capture("", new Date());
-         Assert.fail("une exception TraceExecutableException est attendue");
-
-      } catch (TraceExecutableException exception) {
-         checkExceptionParametreInexistant(exception,
-               "JOURNALISATION_EVT_META_CODE_RND");
-
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceExecutableException est attendue");
-      }
-   }
-
-   @Test
-   public void testAppliTraitementObligatoire() {
-
-      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
-      paramService.setJournalisationEvtMetaApplProd("Appli prod");
-      paramService.setJournalisationEvtMetaCodeOrga("Code orga");
-      paramService.setJournalisationEvtMetaCodeRnd("Code rnd");
-
-      try {
-         support.capture("", new Date());
-         Assert.fail("une exception TraceExecutableException est attendue");
-
-      } catch (TraceExecutableException exception) {
-         checkExceptionParametreInexistant(exception,
-               "JOURNALISATION_EVT_META_APPLICATION_TRAITEMENT");
-
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceExecutableException est attendue");
-      }
-   }
-
-   @Test
-   public void testAppliFichierNonTrouveObligatoire() {
-
-      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
-      paramService.setJournalisationEvtMetaApplProd("Appli prod");
-      paramService.setJournalisationEvtMetaCodeOrga("Code orga");
-      paramService.setJournalisationEvtMetaCodeRnd("Code rnd");
-      paramService.setJournalisationEvtMetaApplTrait("Appli traitement");
-
-      try {
-         support.capture("", new Date());
-         Assert.fail("une exception TraceExecutableException est attendue");
-
-      } catch (TraceExecutableException exception) {
-         Assert.assertEquals(
-               "le message d'erreur d'origine doit etre un fichier non trouvé",
-               FileNotFoundException.class, exception.getCause().getCause()
-                     .getClass());
-
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceExecutableException est attendue");
-      }
-   }
-
-   @Test
-   public void testSucces() throws IOException, TraceExecutableException,
-         SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx {
-      
-      // Paramétrage du RND
-      parametersService.setVersionRndDateMaj(new Date());
-      parametersService.setVersionRndNumero("11.2");
-      
-      TypeDocument typeDocCree = new TypeDocument();
-      typeDocCree.setCloture(false);
-      typeDocCree.setCode("7.7.8.8.1");
-      typeDocCree.setCodeActivite("7");
-      typeDocCree.setCodeFonction("7");
-      typeDocCree.setDureeConservation(1825);
-      typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
-      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
-      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-
-      paramService.setJournalisationEvtMetaTitre("JournalisationTest");
-      paramService.setJournalisationEvtMetaApplProd("SAE");
-      paramService.setJournalisationEvtMetaCodeOrga("UR750");
-      paramService.setJournalisationEvtMetaCodeRnd("7.7.8.8.1");
-      paramService.setJournalisationEvtMetaApplTrait("SAET");
-
-      ClassPathResource resource = new ClassPathResource(
-            "capture/resultat_attendu.xml.gz");
-      File file = new File(resource.getURI());
-
-      authentification();
-      
-      UUID uuid = support.capture(file.getAbsolutePath(), new Date());
-      Assert.assertNotNull("l'uuid doit etre non null", uuid);
-      
-      //-- Paramètres de consultation
-      String[] metadatas = {"Hash", "DomaineTechnique"};
-      ConsultParams consulparams = new ConsultParams(uuid, Arrays.asList(metadatas));
-      
-      UntypedDocument archive = consultationService.consultation(consulparams);
-      Assert.assertNotNull("le document doit etre non null", archive);
-      
-      List<UntypedMetadata> uMetadatas = archive.getUMetadatas();
-      
-      //-- On recherche dans les métas du documents
-      String hashValue = null;
-      String dteValue = null;
-      for (int i = 0; i < uMetadatas.size(); i++) {
-         if(hashValue == null && uMetadatas.get(i).getLongCode().equals("Hash")){
-            hashValue = uMetadatas.get(i).getValue();
-         }
-         
-         if(dteValue == null && uMetadatas.get(i).getLongCode().equals("DomaineTechnique")){
-            dteValue = uMetadatas.get(i).getValue();
-         }
-      }
-      
-      if (hashValue == null) {
-         Assert.fail("la propriété hash n'est pas trouvée");
-      } else {
-         Assert.assertEquals("le hash contenu doit etre correct",
-               "bca50fcd3aa69f927df1a0775fe63e6882dc8913", hashValue);
+    //-- On recherche dans les métas du documents
+    String hashValue = null;
+    String dteValue = null;
+    for (int i = 0; i < uMetadatas.size(); i++) {
+      if(hashValue == null && uMetadatas.get(i).getLongCode().equals("Hash")){
+        hashValue = uMetadatas.get(i).getValue();
       }
 
-      if (dteValue == null) {
-         Assert.fail("la propriété DomaineTechnique n'est pas trouvée");
-      } else {
-         Assert.assertEquals("le flag DomaineTechnique n'est pas correct",
-               "true", dteValue);
+      if(dteValue == null && uMetadatas.get(i).getLongCode().equals("DomaineTechnique")){
+        dteValue = uMetadatas.get(i).getValue();
       }
-   }
+    }
 
-   private void authentification() {
-      // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("SAE");
-      viExtrait.setIdUtilisateur("TRACE EXECUTABLE");
+    if (hashValue == null) {
+      Assert.fail("la propriété hash n'est pas trouvée");
+    } else {
+      Assert.assertEquals("le hash contenu doit etre correct",
+                          "bca50fcd3aa69f927df1a0775fe63e6882dc8913", hashValue);
+    }
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitDomaineTechnique");
-      prmd.setCode("default");
-      saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "ROLE_archivage_unitaire", "ROLE_consultation" };
-      saePrmds.add(saePrmd);
+    if (dteValue == null) {
+      Assert.fail("la propriété DomaineTechnique n'est pas trouvée");
+    } else {
+      Assert.assertEquals("le flag DomaineTechnique n'est pas correct",
+                          "true", dteValue);
+    }
+  }
 
-      saeDroits.put("archivage_unitaire", saePrmds);
-      saeDroits.put("consultation", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
+  private void authentification() {
+    // initialisation du contexte de sécurité
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("SAE");
+    viExtrait.setIdUtilisateur("TRACE EXECUTABLE");
 
-   }
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitDomaineTechnique");
+    prmd.setCode("default");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] { "ROLE_archivage_unitaire", "ROLE_consultation" };
+    saePrmds.add(saePrmd);
+
+    saeDroits.put("archivage_unitaire", saePrmds);
+    saeDroits.put("consultation", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
+    AuthenticationContext.setAuthenticationToken(token);
+
+  }
 
 }
