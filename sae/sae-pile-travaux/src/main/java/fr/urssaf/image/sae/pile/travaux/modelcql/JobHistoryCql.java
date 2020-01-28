@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.pile.travaux.modelcql;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ import com.datastax.driver.mapping.annotations.Table;
  * </ul>
  */
 @Table(name = "jobhistorycql")
-public class JobHistoryCql {
+public class JobHistoryCql implements Serializable, Comparable<JobHistoryCql> {
 
   /** identifiant du job */
   @PartitionKey
@@ -61,6 +62,57 @@ public class JobHistoryCql {
    */
   public void setTrace(final Map<UUID, String> trace) {
     this.trace = trace;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(final JobHistoryCql job) {
+    return ("" + idjob).compareTo(job.getIdjob() + "");
+  }
+
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (idjob == null ? 0 : idjob.hashCode());
+    result = prime * result + (trace == null ? 0 : trace.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final JobHistoryCql other = (JobHistoryCql) obj;
+    if (idjob == null) {
+      if (other.idjob != null) {
+        return false;
+      }
+    } else if (!idjob.equals(other.idjob)) {
+      return false;
+    }
+    if (trace == null) {
+      if (other.trace != null) {
+        return false;
+      }
+    } else if (!trace.equals(other.trace)) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public String toString() {
+    return "JobHistoryCql [idjob=" + idjob + ", trace=" + trace + "]";
   }
 
 }

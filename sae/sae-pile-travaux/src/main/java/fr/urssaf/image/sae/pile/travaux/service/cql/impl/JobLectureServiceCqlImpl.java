@@ -53,8 +53,8 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
    }
 
    @Autowired
-   public JobLectureServiceCqlImpl(final JobHistorySupportCql jobHistorySupportCql, final JobRequestSupportCql jobRequestSupportCql,
-                                   final JobsQueueSupportCql jobsQueueSupportCql) {
+  public JobLectureServiceCqlImpl(final JobRequestSupportCql jobRequestSupportCql, final JobsQueueSupportCql jobsQueueSupportCql,
+                                  final JobHistorySupportCql jobHistorySupportCql) {
 
       this.jobHistorySupportCql = jobHistorySupportCql;
       this.jobRequestSupportCql = jobRequestSupportCql;
@@ -64,21 +64,21 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
    /**
     * 
     */
-   public JobLectureServiceCqlImpl(CassandraCQLClientFactory ccf) {
+  public JobLectureServiceCqlImpl(final CassandraCQLClientFactory ccf) {
 	   
-	   IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
+    final IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl(ccf);
 	   jobHistoryDaoCql.setCcf(ccf);
-	   JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
+    final JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
 	   jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
 	   
-	   IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl();
+    final IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl(ccf);
 	   jobRequestDaoCql.setCcf(ccf);
-	   JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
+    final JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
 	   jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
 	   
-	   IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl();
+    final IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl(ccf);
 	   jobsQueueDaoCql.setCcf(ccf);
-	   JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
+    final JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
 	   jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
 	   
 	   this.jobHistorySupportCql = jobHistorySupportCql;
@@ -107,14 +107,14 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
       final List<JobQueueCql> listJQ = getNonTerminatedSimpleJobs(key);
 
-      final List<JobRequestCql> jobRequests = new ArrayList<JobRequestCql>();
+    final List<JobRequestCql> jobRequests = new ArrayList<>();
 
       for (final JobQueueCql jobQueue : listJQ) {
-         final JobRequestCql jobRequest = this.getJobRequest(jobQueue.getIdJob());
-         if (jobRequest != null) {
-        	 jobRequests.add(jobRequest);
-         }
-         jobRequests.add(jobRequest);
+      	final JobRequestCql jobRequest = getJobRequest(jobQueue.getIdJob());
+      	if (jobRequest != null) {
+        	jobRequests.add(jobRequest);
+        }
+        jobRequests.add(jobRequest);
       }
 
       return jobRequests;
@@ -201,7 +201,7 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
    @Override
    public JobRequestCql getJobRequestNotNull(final UUID uuidJob) throws JobInexistantException {
-      final JobRequestCql jobRequest = this.getJobRequest(uuidJob);
+    final JobRequestCql jobRequest = getJobRequest(uuidJob);
       if (jobRequest == null) {
          throw new JobInexistantException(uuidJob);
       }

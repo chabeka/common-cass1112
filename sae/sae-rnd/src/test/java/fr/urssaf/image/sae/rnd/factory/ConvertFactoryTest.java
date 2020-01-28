@@ -14,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
@@ -24,96 +23,96 @@ import fr.urssaf.image.sae.rnd.ws.adrn.modele.RNDTypeDocument;
 @ContextConfiguration(locations = { "/applicationContext-sae-rnd-test.xml" })
 public class ConvertFactoryTest {
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @After
-   public void after() throws Exception {
-	   server.resetData(true, MODE_API.HECTOR);
-   }
+  @After
+  public void after() throws Exception {
+    server.resetData();
+  }
 
-   // @Ignore
-   @Test
-   public void testWsToDocumentsType() throws RndRecuperationException {
+  @Test
+  public void testWsToDocumentsType() throws RndRecuperationException {
 
-      RNDTypeDocument rndTypDoc1 = new RNDTypeDocument();
+    final RNDTypeDocument rndTypDoc1 = new RNDTypeDocument();
 
-      rndTypDoc1.set_dureeArchivage(4);
-      rndTypDoc1.set_etat(true);
-      rndTypDoc1.set_label("label 1");
-      rndTypDoc1.set_reference("1.2.1.1.1");
+    rndTypDoc1.set_dureeArchivage(4);
+    rndTypDoc1.set_etat(true);
+    rndTypDoc1.set_label("label 1");
+    rndTypDoc1.set_reference("1.2.1.1.1");
 
-      RNDTypeDocument rndTypDoc2 = new RNDTypeDocument();
+    final RNDTypeDocument rndTypDoc2 = new RNDTypeDocument();
 
-      rndTypDoc2.set_dureeArchivage(5);
-      rndTypDoc2.set_etat(false);
-      rndTypDoc2.set_label("label 2");
-      rndTypDoc2.set_reference("3.4.1.1.1");
+    rndTypDoc2.set_dureeArchivage(5);
+    rndTypDoc2.set_etat(false);
+    rndTypDoc2.set_label("label 2");
+    rndTypDoc2.set_reference("3.4.1.1.1");
 
-      RNDTypeDocument rndTypDoc3 = new RNDTypeDocument();
+    final RNDTypeDocument rndTypDoc3 = new RNDTypeDocument();
 
-      rndTypDoc3.set_etat(false);
-      rndTypDoc3.set_label("label 2");
-      rndTypDoc3.set_reference("5.A.2.2.2");
+    rndTypDoc3.set_etat(false);
+    rndTypDoc3.set_label("label 2");
+    rndTypDoc3.set_reference("5.A.2.2.2");
 
-      RNDTypeDocument[] listeRndTypeDocs = { rndTypDoc1, rndTypDoc2, rndTypDoc3 };
+    final RNDTypeDocument[] listeRndTypeDocs = { rndTypDoc1, rndTypDoc2, rndTypDoc3 };
 
-      ConvertFactory convertFact = new ConvertFactory();
+    final ConvertFactory convertFact = new ConvertFactory();
 
-      List<TypeDocument> listeTypeDocs = convertFact
-            .wsToDocumentsType(listeRndTypeDocs);
+    final List<TypeDocument> listeTypeDocs = convertFact
+        .wsToDocumentsType(listeRndTypeDocs);
 
-      assertNotNull("La liste ne doit pas être nulle", listeTypeDocs);
+    assertNotNull("La liste ne doit pas être nulle", listeTypeDocs);
 
-      for (TypeDocument typeDocument : listeTypeDocs) {
-         String codeRnd = typeDocument.getCode();
-         String fonction = typeDocument.getCodeFonction();
-         String activite = typeDocument.getCodeActivite();
-         int duree = typeDocument.getDureeConservation();
-         TypeCode type = typeDocument.getType();
-         if ("1.2.1.1.1".equals(codeRnd)) {
-            if (!fonction.equals("1")) {
-               Assert.fail("La fonction doit être égale à 1");
-            }
-            if (!activite.equals("2")) {
-               Assert.fail("La fonction doit être égale à 2");
-            }
-            if (duree != 1460) {
-               Assert.fail("La durée doit être égale à 1460");
-            }
-            if (!type.equals(TypeCode.ARCHIVABLE_AED)) {
-               Assert.fail("Le type doit être égal à NON_ARCHIVABLE_AED");
-            }
-         } else if ("3.4.1.1.1".equals(codeRnd)) {
-            if (!fonction.equals("3")) {
-               Assert.fail("La fonction doit être égale à 3");
-            }
-            if (!activite.equals("4")) {
-               Assert.fail("La fonction doit être égale à 3");
-            }
-            if (duree != 1825) {
-               Assert.fail("La durée doit être égale à 1825");
-            }
-            if (!type.equals(TypeCode.ARCHIVABLE_AED)) {
-               Assert.fail("Le type doit être égal à NON_ARCHIVABLE_AED");
-            }
+    for (final TypeDocument typeDocument : listeTypeDocs) {
+      final String codeRnd = typeDocument.getCode();
+      final String fonction = typeDocument.getCodeFonction();
+      final String activite = typeDocument.getCodeActivite();
+      final int duree = typeDocument.getDureeConservation();
+      // A CORRIGER
+      final String type = typeDocument.getType().getValue();
+      if ("1.2.1.1.1".equals(codeRnd)) {
+        if (!fonction.equals("1")) {
+          Assert.fail("La fonction doit être égale à 1");
+        }
+        if (!activite.equals("2")) {
+          Assert.fail("La fonction doit être égale à 2");
+        }
+        if (duree != 1460) {
+          Assert.fail("La durée doit être égale à 1460");
+        }
+        if (!type.equals(TypeCode.ARCHIVABLE_AED.getValue())) {
+          Assert.fail("Le type doit être égal à NON_ARCHIVABLE_AED");
+        }
+      } else if ("3.4.1.1.1".equals(codeRnd)) {
+        if (!fonction.equals("3")) {
+          Assert.fail("La fonction doit être égale à 3");
+        }
+        if (!activite.equals("4")) {
+          Assert.fail("La fonction doit être égale à 3");
+        }
+        if (duree != 1825) {
+          Assert.fail("La durée doit être égale à 1825");
+        }
+        if (!type.equals(TypeCode.ARCHIVABLE_AED.getValue())) {
+          Assert.fail("Le type doit être égal à NON_ARCHIVABLE_AED");
+        }
 
-         } else if ("5.A.2.2.2".equals(codeRnd)) {
-            if (!fonction.equals("5")) {
-               Assert.fail("La fonction doit être égale à 1");
-            }
-            if (!StringUtils.isBlank(activite)) {
-               Assert.fail("L'activité ne doit pas être renseignée");
-            }
-            if (duree != 1095) {
-               Assert.fail("La durée doit être égale à 1095");
-            }
-            if (!type.equals(TypeCode.NON_ARCHIVABLE_AED)) {
-               Assert.fail("Le type doit être égal à NON_ARCHIVABLE_AED");
-            }
-         } else {
-            Assert.fail("Code RND incorrect");
-         }
+      } else if ("5.A.2.2.2".equals(codeRnd)) {
+        if (!fonction.equals("5")) {
+          Assert.fail("La fonction doit être égale à 1");
+        }
+        if (!StringUtils.isBlank(activite)) {
+          Assert.fail("L'activité ne doit pas être renseignée");
+        }
+        if (duree != 1095) {
+          Assert.fail("La durée doit être égale à 1095");
+        }
+        if (!type.equals(TypeCode.NON_ARCHIVABLE_AED.getValue())) {
+          Assert.fail("Le type doit être égal à NON_ARCHIVABLE_AED");
+        }
+      } else {
+        Assert.fail("Code RND incorrect");
       }
-   }
+    }
+  }
 }

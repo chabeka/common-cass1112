@@ -16,6 +16,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
@@ -27,6 +28,16 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> implements IJobsQueueDaoCql {
 
 
+   /**
+   * @param ccf
+   */
+  public JobsQueueDaoCqlImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
+
+  /**
+   * TODO (AC75095028) Description du champ
+   */
    private static final String JOB_ID = "idjob";
 
    private static final String JOBS_WAITING_KEY = "jobsWaiting";

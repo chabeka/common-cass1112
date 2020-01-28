@@ -50,553 +50,553 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 @Service
 public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
-   private final CuratorFramework curatorClient;
+  private final CuratorFramework curatorClient;
 
   // private final JobClockSupport jobClockSupport;
 
-   private  JobsQueueSupportCql jobsQueueSupportCql;
+  private final  JobsQueueSupportCql jobsQueueSupportCql;
 
-   private JobHistorySupportCql jobHistorySupportCql;
+  private final JobHistorySupportCql jobHistorySupportCql;
 
-   private  JobLectureCqlService jobLectureCqlService;
+  private final  JobLectureCqlService jobLectureCqlService;
 
-   private  JobRequestSupportCql jobRequestSupportCql;
+  private final  JobRequestSupportCql jobRequestSupportCql;
 
-   /**
-    * Time-out du lock, en secondes
-    */
-   private static final int LOCK_TIME_OUT = 20;
+  /**
+   * Time-out du lock, en secondes
+   */
+  private static final int LOCK_TIME_OUT = 20;
 
-   private static final Logger LOG = LoggerFactory
-                                                  .getLogger(JobQueueServiceImpl.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(JobQueueServiceImpl.class);
 
-   /**
-    * @param jobRequestSupportCql
-    * @param jobsQueueSupportCql
-    * @param jobClockSupport
-    * @param jobHistorySupportCql
-    * @param jobLectureCqlService
-    * @param curatorClient
-    */
-   @Autowired
-   public JobQueueServiceCqlImpl(final JobRequestSupportCql jobRequestSupportCql,
-                                 final JobsQueueSupportCql jobsQueueSupportCql, final JobClockSupport jobClockSupport,
-                                 final JobHistorySupportCql jobHistorySupportCql, final JobLectureCqlService jobLectureCqlService,
-                                 final CuratorFramework curatorClient) {
-      super();
-      this.curatorClient = curatorClient;
-      this.jobLectureCqlService = jobLectureCqlService;
-      this.jobRequestSupportCql = jobRequestSupportCql;
-      this.jobsQueueSupportCql = jobsQueueSupportCql;
-      this.jobHistorySupportCql = jobHistorySupportCql;
+  /**
+   * @param jobRequestSupportCql
+   * @param jobsQueueSupportCql
+   * @param jobClockSupport
+   * @param jobHistorySupportCql
+   * @param jobLectureCqlService
+   * @param curatorClient
+   */
+  @Autowired
+  public JobQueueServiceCqlImpl(final JobRequestSupportCql jobRequestSupportCql,
+                                final JobsQueueSupportCql jobsQueueSupportCql, final JobClockSupport jobClockSupport,
+                                final JobHistorySupportCql jobHistorySupportCql, final JobLectureCqlService jobLectureCqlService,
+                                final CuratorFramework curatorClient) {
+    super();
+    this.curatorClient = curatorClient;
+    this.jobLectureCqlService = jobLectureCqlService;
+    this.jobRequestSupportCql = jobRequestSupportCql;
+    this.jobsQueueSupportCql = jobsQueueSupportCql;
+    this.jobHistorySupportCql = jobHistorySupportCql;
 
-   }
+  }
 
-	public JobQueueServiceCqlImpl(CassandraCQLClientFactory ccf, CuratorFramework curatorClient) {
-		
-	   IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
-	   jobHistoryDaoCql.setCcf(ccf);
-	   JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
-	   jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
-	   
-	   IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl();
-	   jobRequestDaoCql.setCcf(ccf);
-	   JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
-	   jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
-	   
-	   IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl();
-	   jobsQueueDaoCql.setCcf(ccf);
-	   JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
-	   jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
-	   
-	   this.curatorClient = curatorClient ;
-	   this.jobHistorySupportCql = jobHistorySupportCql;
-	   this.jobRequestSupportCql = jobRequestSupportCql;
-	   this.jobsQueueSupportCql = jobsQueueSupportCql;
-	   this.jobLectureCqlService = new JobLectureServiceCqlImpl(ccf);
-	   		
-	}
-	
-   @Override
-   public void addJob(final JobToCreate jobToCreate) {
+  public JobQueueServiceCqlImpl(final CassandraCQLClientFactory ccf, final CuratorFramework curatorClient) {
 
-      // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.ajouterJobDansJobRequest(jobToCreate);
+    final IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl(ccf);
+    jobHistoryDaoCql.setCcf(ccf);
+    final JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
+    jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
 
-      // Ecriture dans la CF "JobQueues"
-      this.addJobsQueue(jobToCreate);
+    final IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl(ccf);
+    jobRequestDaoCql.setCcf(ccf);
+    final JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
+    jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
 
-      // Ecriture dans la CF "JobHistory"
-      final String messageTrace = "CREATION DU JOB";
-      final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupportCql.ajouterTrace(jobToCreate.getIdJob(),
-                                             timestampTrace,
-                                             messageTrace);
-   }
+    final IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl(ccf);
+    jobsQueueDaoCql.setCcf(ccf);
+    final JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
+    jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
 
-   @Override
-   public void reserveJob(final UUID idJob, final String hostname, final Date dateReservation)
-         throws JobDejaReserveException, JobInexistantException, LockTimeoutException {
-      Assert.notNull(idJob, "L'id du job ne doit pas être null");
+    this.curatorClient = curatorClient ;
+    this.jobHistorySupportCql = jobHistorySupportCql;
+    this.jobRequestSupportCql = jobRequestSupportCql;
+    this.jobsQueueSupportCql = jobsQueueSupportCql;
+    jobLectureCqlService = new JobLectureServiceCqlImpl(ccf);
 
-      final ZookeeperMutex mutex = new ZookeeperMutex(curatorClient, "/JobRequest/"
-            + idJob);
-      try {
-         if (!mutex.acquire(LOCK_TIME_OUT, TimeUnit.SECONDS)) {
-            throw new LockTimeoutException(
-                                           "Erreur lors de la tentative d'acquisition du lock pour le jobRequest "
-                                                 + idJob + " : on n'a pas obtenu le lock au bout de "
-                                                 + LOCK_TIME_OUT + " secondes.");
-         }
-         // On a le lock.
-         // Récupération du jobRequest
-         final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-         // Vérifier que le job existe
-         if (jobRequest == null) {
-            throw new JobInexistantException(idJob);
-         }
+  }
 
-         // Vérifier que le job n'est pas déjà réservé
-         // on s'appuie sur la date de réservation qui dans ce cas est renseigné
-         if (jobRequest.getReservationDate() != null) {
-            throw new JobDejaReserveException(idJob, jobRequest.getReservedBy());
-         }
+  @Override
+  public void addJob(final JobToCreate jobToCreate) {
 
-         // Lecture des propriétés du job dont on a besoin
-         final String type = jobRequest.getType();
-         final String parameters = jobRequest.getParameters();
+    // Ecriture dans la CF "JobRequest"
+    jobRequestSupportCql.ajouterJobDansJobRequest(jobToCreate);
 
-         // Ecriture dans la CF "JobRequest"
-         this.jobRequestSupportCql.reserverJobDansJobRequest(idJob,
-                                                             hostname,
-                                                             dateReservation);
+    // Ecriture dans la CF "JobQueues"
+    addJobsQueue(jobToCreate);
 
-         this.jobsQueueSupportCql.reserverJobDansJobQueues(idJob,
-                                                           hostname,
-                                                           type,
-                                                           jobRequest.getJobParameters());
+    // Ecriture dans la CF "JobHistory"
+    final String messageTrace = "CREATION DU JOB";
+    final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    jobHistorySupportCql.ajouterTrace(jobToCreate.getIdJob(),
+                                      timestampTrace,
+                                      messageTrace);
+  }
 
-         // Ecriture dans la CF "JobHistory"
-         final String messageTrace = "RESERVATION DU JOB";
-         final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-         this.jobHistorySupportCql.ajouterTrace(idJob,
-                                                timestampTrace,
-                                                messageTrace);
+  @Override
+  public void reserveJob(final UUID idJob, final String hostname, final Date dateReservation)
+      throws JobDejaReserveException, JobInexistantException, LockTimeoutException {
+    Assert.notNull(idJob, "L'id du job ne doit pas être null");
 
-         // On vérifie qu'on a toujours le lock. Si oui, la réservation a
-         // réellement fonctionné
-         checkLock(mutex, idJob, hostname);
+    final ZookeeperMutex mutex = new ZookeeperMutex(curatorClient, "/JobRequest/"
+        + idJob);
+    try {
+      if (!mutex.acquire(LOCK_TIME_OUT, TimeUnit.SECONDS)) {
+        throw new LockTimeoutException(
+                                       "Erreur lors de la tentative d'acquisition du lock pour le jobRequest "
+                                           + idJob + " : on n'a pas obtenu le lock au bout de "
+                                           + LOCK_TIME_OUT + " secondes.");
       }
-      finally {
-         mutex.release();
-      }
-   }
-
-   /**
-    * Après la réservation d'un job, on vérifie que le lock est encore valide
-    *
-    * @param mutex
-    *           Le mutex utilisé pour le lock
-    * @param idJob
-    *           Id du job réservé
-    * @param hostname
-    *           Nom du serveur qui tente la réservation
-    * @throws JobDejaReserveException
-    *            Si le lock n'est plus valide et qu'on s'est fait subtilisé le
-    *            job
-    */
-   private void checkLock(final ZookeeperMutex mutex, final UUID idJob, final String hostname)
-         throws JobDejaReserveException {
-      // On vérifie qu'on a toujours le lock. Si oui, la réservation a
-      // réellement fonctionné
-      if (mutex.isObjectStillLocked(LOCK_TIME_OUT, TimeUnit.SECONDS)) {
-         // C'est bon, le job est réellement réservé
-         return;
-      } else {
-         // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
-         // devrait jamais arriver.
-         final String message = "Erreur lors de la tentative d'acquisition du lock pour le jobRequest "
-               + idJob + ". Problème de connexion zookeeper ?";
-         LOG.error(message);
-
-         // On regarde si le job a été réservé par un autre serveur
-         final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-         // Vérifier que le job existe
-         if (jobRequest == null) {
-            return;
-         }
-         final String currentHostname = jobRequest.getReservedBy();
-         if (currentHostname != null && currentHostname.equals(hostname)) {
-            // On a été déconnecté de zookeeper, mais pour autant, le job nous a
-            // été attribué.
-            return;
-         } else {
-            throw new JobDejaReserveException(idJob, currentHostname);
-         }
-      }
-   }
-
-   @Override
-   public void startingJob(final UUID idJob, final Date dateDebutTraitement) throws JobInexistantException {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
+      // On a le lock.
+      // Récupération du jobRequest
+      final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
       // Vérifier que le job existe
       if (jobRequest == null) {
-         throw new JobInexistantException(idJob);
-      }
-      // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.passerEtatEnCoursJobRequest(idJob,
-                                                            dateDebutTraitement);
-
-      // Ecriture dans la CF "JobQueues"
-      // rien à écrire
-
-      // Ecriture dans la CF "JobHistory"
-      final String messageTrace = "DEMARRAGE DU JOB";
-      final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupportCql.ajouterTrace(idJob,
-                                             timestampTrace,
-                                             messageTrace);
-   }
-
-   @Override
-   public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement) throws JobInexistantException {
-      endingJob(idJob, succes, dateFinTraitement, null, null);
-   }
-
-   @Override
-   public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement, final String message, final String codeTraitement)
-         throws JobInexistantException {
-      this.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, -1);
-   }
-
-   @Override
-   public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement, final String message, final String codeTraitement,
-                         final int nbDocumentTraite)
-         throws JobInexistantException {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-      // Vérifier que le job existe
-      if (jobRequest == null) {
-         throw new JobInexistantException(idJob);
+        throw new JobInexistantException(idJob);
       }
 
-      // TODO: Vérifier que le job est à l'état STARTING
-
-      // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.passerEtatTermineJobRequest(idJob,
-                                                            dateFinTraitement,
-                                                            succes,
-                                                            message,
-                                                            nbDocumentTraite);
-
-      // Gestion du succès de la reprise de masse
-      if (jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN)) {
-         final String idTraitementAReprendre = jobRequest.getJobParameters().get(
-                                                                                 Constantes.ID_TRAITEMENT_A_REPRENDRE);
-         final UUID idJobAReprendre = UUID.fromString(idTraitementAReprendre);
-         if (succes) {
-            final JobRequestCql jobAReprendre = this.jobLectureCqlService
-                                                                         .getJobRequest(idJobAReprendre);
-            final String cdTraitement = jobAReprendre.getJobParameters().get(
-                                                                             Constantes.CODE_TRAITEMENT);
-
-            // Passer le job à l'état REPLAY_SUCCESS
-            final Date dateReprise = new Date();
-            this.changerEtatJobRequest(idJobAReprendre,
-                                       JobState.REPLAY_SUCCESS.name(),
-                                       dateReprise,
-                                       "Repris avec succes");
-            // Supprimer le sémaphore du traitement repris
-            this.jobsQueueSupportCql.supprimerCodeTraitementDeJobsQueues(
-                                                                         idJobAReprendre, succes, cdTraitement);
-         }
-
-         // Renseigne le nombre de documents traités par le traitement de masse
-         if (nbDocumentTraite > 0) {
-            this.renseignerDocCountTraiteJob(idJobAReprendre, nbDocumentTraite);
-         }
+      // Vérifier que le job n'est pas déjà réservé
+      // on s'appuie sur la date de réservation qui dans ce cas est renseigné
+      if (jobRequest.getReservationDate() != null) {
+        throw new JobDejaReserveException(idJob, jobRequest.getReservedBy());
       }
 
       // Lecture des propriétés du job dont on a besoin
-      final String reservedBy = jobRequest.getReservedBy();
-      // Ecriture dans la CF "JobQueues" pour hostname
-      this.jobsQueueSupportCql.supprimerJobDeJobsQueues(idJob, reservedBy);
-
-      // Ecriture dans la CF "JobQueues" pour semaphore code traitement
-      this.jobsQueueSupportCql.supprimerCodeTraitementDeJobsQueues(idJob,
-                                                                   succes,
-                                                                   codeTraitement);
-
-      // Ecriture dans la CF "JobHistory"
-      final String messageTrace = "FIN DU JOB";
-      final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupportCql.ajouterTrace(idJob,
-                                             timestampTrace,
-                                             messageTrace);
-   }
-
-   /**
-    * Renseigne le nombre de docs traités par le traitement de masse dans la
-    * pile des travaux.
-    *
-    * @param idJob
-    *           identifiant du job
-    * @param nbDocs
-    *           Nombre de docs traités
-    * @throws JobInexistantException
-    *            le traitement n'existe pas
-    */
-   private final void renseignerDocCountTraiteJob(final UUID idJob, final Integer nbDocs)
-         throws JobInexistantException {
-
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-      // Vérifier que le job existe
-      if (jobRequest == null) {
-         throw new JobInexistantException(idJob);
-      }
+      final String type = jobRequest.getType();
+      final String parameters = jobRequest.getParameters();
 
       // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.renseignerDocCountTraiteDansJobRequest(idJob,
-                                                                       nbDocs);
+      jobRequestSupportCql.reserverJobDansJobRequest(idJob,
+                                                     hostname,
+                                                     dateReservation);
 
-      // Ecriture dans la CF "JobQueues"
-      // rien à écrire
+      jobsQueueSupportCql.reserverJobDansJobQueues(idJob,
+                                                   hostname,
+                                                   type,
+                                                   jobRequest.getJobParameters());
 
       // Ecriture dans la CF "JobHistory"
-      final String messageTrace = "DOC_COUNT_TRAITE RENSEIGNE";
+      final String messageTrace = "RESERVATION DU JOB";
       final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupportCql.ajouterTrace(idJob,
-                                             timestampTrace,
-                                             messageTrace);
+      jobHistorySupportCql.ajouterTrace(idJob,
+                                        timestampTrace,
+                                        messageTrace);
 
-   }
+      // On vérifie qu'on a toujours le lock. Si oui, la réservation a
+      // réellement fonctionné
+      checkLock(mutex, idJob, hostname);
+    }
+    finally {
+      mutex.release();
+    }
+  }
 
-   @Override
-   public void addHistory(final UUID jobUuid, final UUID timeUuid, final String description) {
-      // Ecriture dans la CF "JobHistory"
-      this.jobHistorySupportCql
-                               .ajouterTrace(jobUuid, timeUuid, description);
-   }
+  /**
+   * Après la réservation d'un job, on vérifie que le lock est encore valide
+   *
+   * @param mutex
+   *           Le mutex utilisé pour le lock
+   * @param idJob
+   *           Id du job réservé
+   * @param hostname
+   *           Nom du serveur qui tente la réservation
+   * @throws JobDejaReserveException
+   *            Si le lock n'est plus valide et qu'on s'est fait subtilisé le
+   *            job
+   */
+  private void checkLock(final ZookeeperMutex mutex, final UUID idJob, final String hostname)
+      throws JobDejaReserveException {
+    // On vérifie qu'on a toujours le lock. Si oui, la réservation a
+    // réellement fonctionné
+    if (mutex.isObjectStillLocked(LOCK_TIME_OUT, TimeUnit.SECONDS)) {
+      // C'est bon, le job est réellement réservé
+      return;
+    } else {
+      // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
+      // devrait jamais arriver.
+      final String message = "Erreur lors de la tentative d'acquisition du lock pour le jobRequest "
+          + idJob + ". Problème de connexion zookeeper ?";
+      LOG.error(message);
 
-   @Override
-   public void renseignerPidJob(final UUID idJob, final Integer pid) throws JobInexistantException {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
+      // On regarde si le job a été réservé par un autre serveur
+      final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
       // Vérifier que le job existe
       if (jobRequest == null) {
-         throw new JobInexistantException(idJob);
+        return;
       }
-
-      // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.renseignerPidDansJobRequest(idJob, pid);
-
-      // Ecriture dans la CF "JobQueues"
-      // rien à écrire
-
-      // Ecriture dans la CF "JobHistory"
-      final String messageTrace = "PID RENSEIGNE";
-      final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupportCql.ajouterTrace(idJob,
-                                             timestampTrace,
-                                             messageTrace);
-   }
-
-   @Override
-   public void renseignerDocCountJob(final UUID idJob, final Integer nbDocs) throws JobInexistantException {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-      // Vérifier que le job existe
-      if (jobRequest == null) {
-         throw new JobInexistantException(idJob);
-      }
-
-      // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.renseignerDocCountDansJobRequest(idJob, nbDocs);
-
-      // Ecriture dans la CF "JobQueues"
-      // rien à écrire
-
-      // Ecriture dans la CF "JobHistory"
-      final String messageTrace = "DOC_COUNT RENSEIGNE";
-      final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupportCql.ajouterTrace(idJob,
-                                             timestampTrace,
-                                             messageTrace);
-   }
-
-   @Override
-   public void updateToCheckFlag(final UUID idJob, final Boolean toCheckFlag, final String raison) throws JobInexistantException {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-      // Vérifier que le job existe
-      if (jobRequest == null) {
-         throw new JobInexistantException(idJob);
-      }
-
-      // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.renseignerCheckFlagDansJobRequest(idJob,
-                                                                  toCheckFlag,
-                                                                  raison);
-
-      // Ecriture dans la CF "JobQueues"
-      // rien à écrire
-
-      // Ecriture dans la CF "JobHistory"
-      final String message = "TOCHECKFLAG POSITIONNE A {0} AVEC LA RAISON {1}";
-      final String messageTrace = MessageFormat.format(message, toCheckFlag, raison);
-      final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      this.jobHistorySupportCql.ajouterTrace(idJob,
-                                             timestampTrace,
-                                             messageTrace);
-   }
-
-   @Override
-   public void deleteJob(final UUID idJob) {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-      // Vérifier que le job existe
-      if (jobRequest == null) {
-         return;
-      }
-
-      // Suppression de la CF "JobRequest"
-      this.jobRequestSupportCql.deleteJobRequest(idJob);
-
-      // Suppression de la CF "JobQueues"
-      final String reservedBy = jobRequest.getReservedBy();
-
-      // if the job is reserved
-
-      this.jobsQueueSupportCql.supprimerJobDeJobsAllQueues(idJob);
-
-      // Suppression de la CF "JobHistory"
-      this.jobHistorySupportCql.supprimerHistorique(idJob);
-   }
-
-   @Override
-   public void resetJob(final UUID idJob) throws JobNonReinitialisableException {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-      // Vérifier que le job existe
-      if (jobRequest == null) {
-         return;
-      }
-
-      final String etat = jobRequest.getState().toString();
-      if ("RESERVED".equals(etat) || "STARTING".equals(etat)) {
-
-         // Lecture des propriétés du job dont on a besoin
-         final String type = jobRequest.getType();
-         final String reservedBy = jobRequest.getReservedBy();
-
-         // Ecriture dans la CF "JobRequest"
-         this.jobRequestSupportCql.resetJob(idJob, etat);
-
-         this.jobsQueueSupportCql.unreservedJob(idJob,
-                                                type,
-                                                jobRequest
-                                                          .getJobParameters(),
-                                                reservedBy);
-
-         // Ecriture dans la CF "JobHistory"
-         final String messageTrace = "RESET DU JOB";
-         final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-         this.jobHistorySupportCql.ajouterTrace(idJob,
-                                                timestampTrace,
-                                                messageTrace);
-
+      final String currentHostname = jobRequest.getReservedBy();
+      if (currentHostname != null && currentHostname.equals(hostname)) {
+        // On a été déconnecté de zookeeper, mais pour autant, le job nous a
+        // été attribué.
+        return;
       } else {
-         throw new JobNonReinitialisableException(idJob);
+        throw new JobDejaReserveException(idJob, currentHostname);
       }
-   }
+    }
+  }
 
-   @Override
-   public List<String> getHosts() {
-      return this.jobsQueueSupportCql.getHosts();
-   }
+  @Override
+  public void startingJob(final UUID idJob, final Date dateDebutTraitement) throws JobInexistantException {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      throw new JobInexistantException(idJob);
+    }
+    // Ecriture dans la CF "JobRequest"
+    jobRequestSupportCql.passerEtatEnCoursJobRequest(idJob,
+                                                     dateDebutTraitement);
 
-   @Override
-   public void addJobsQueue(final JobToCreate jobToCreate) {
-      this.addJobQueue(jobToCreate, null);
-   }
+    // Ecriture dans la CF "JobQueues"
+    // rien à écrire
 
-   /**
-    * Ajouter un job de type JobsQueue dans la pile des travaux.
-    *
-    * @param jobToCreate
-    *           Job à créer.
-    * @param clock
-    *           horloge.
-    */
-   private void addJobQueue(final JobToCreate jobToCreate, Long clock) {
+    // Ecriture dans la CF "JobHistory"
+    final String messageTrace = "DEMARRAGE DU JOB";
+    final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    jobHistorySupportCql.ajouterTrace(idJob,
+                                      timestampTrace,
+                                      messageTrace);
+  }
 
-      this.jobsQueueSupportCql.ajouterJobDansJobQueuesEnWaiting(jobToCreate.getIdJob(),
-                                                                jobToCreate.getType(),
-                                                                jobToCreate.getJobParameters());
-   }
+  @Override
+  public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement) throws JobInexistantException {
+    endingJob(idJob, succes, dateFinTraitement, null, null);
+  }
 
-   @Override
-   public void reserverJobDansJobsQueues(final UUID idJob, final String hostname, final String type, final Map<String, String> jobParameters) {
-      this.reserverJobDansJobQueues(idJob, hostname, type, jobParameters, null);
-   }
+  @Override
+  public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement, final String message, final String codeTraitement)
+      throws JobInexistantException {
+    this.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, -1);
+  }
 
-   /**
-    * Réserver un traitement de type JobsQueue dans la pile des travaux.
-    *
-    * @param idJob
-    *           identifiant du traitement
-    * @param hostname
-    *           nom du serveur
-    * @param type
-    *           type du job
-    * @param jobParameters
-    *           Parametres du job
-    * @param clock
-    *           horloge
-    */
-   private void reserverJobDansJobQueues(final UUID idJob, final String hostname,
-                                         final String type, final Map<String, String> jobParameters, final Long clock) {
-      this.jobsQueueSupportCql.reserverJobDansJobQueues(idJob,
-                                                        hostname,
-                                                        type,
-                                                        jobParameters);
-   }
+  @Override
+  public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement, final String message, final String codeTraitement,
+                        final int nbDocumentTraite)
+                            throws JobInexistantException {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      throw new JobInexistantException(idJob);
+    }
 
-   @Override
-   public void deleteJobFromJobsQueues(final UUID idJob) {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
-      // Vérifier que le job existe
-      if (jobRequest == null) {
-         return;
+    // TODO: Vérifier que le job est à l'état STARTING
+
+    // Ecriture dans la CF "JobRequest"
+    jobRequestSupportCql.passerEtatTermineJobRequest(idJob,
+                                                     dateFinTraitement,
+                                                     succes,
+                                                     message,
+                                                     nbDocumentTraite);
+
+    // Gestion du succès de la reprise de masse
+    if (jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN)) {
+      final String idTraitementAReprendre = jobRequest.getJobParameters().get(
+                                                                              Constantes.ID_TRAITEMENT_A_REPRENDRE);
+      final UUID idJobAReprendre = UUID.fromString(idTraitementAReprendre);
+      if (succes) {
+        final JobRequestCql jobAReprendre = jobLectureCqlService
+            .getJobRequest(idJobAReprendre);
+        final String cdTraitement = jobAReprendre.getJobParameters().get(
+                                                                         Constantes.CODE_TRAITEMENT);
+
+        // Passer le job à l'état REPLAY_SUCCESS
+        final Date dateReprise = new Date();
+        changerEtatJobRequest(idJobAReprendre,
+                              JobState.REPLAY_SUCCESS.name(),
+                              dateReprise,
+            "Repris avec succes");
+        // Supprimer le sémaphore du traitement repris
+        jobsQueueSupportCql.supprimerCodeTraitementDeJobsQueues(
+                                                                idJobAReprendre, succes, cdTraitement);
       }
 
-      // Suppression de la CF "JobQueues"
+      // Renseigne le nombre de documents traités par le traitement de masse
+      if (nbDocumentTraite > 0) {
+        renseignerDocCountTraiteJob(idJobAReprendre, nbDocumentTraite);
+      }
+    }
+
+    // Lecture des propriétés du job dont on a besoin
+    final String reservedBy = jobRequest.getReservedBy();
+    // Ecriture dans la CF "JobQueues" pour hostname
+    jobsQueueSupportCql.supprimerJobDeJobsQueues(idJob, reservedBy);
+
+    // Ecriture dans la CF "JobQueues" pour semaphore code traitement
+    jobsQueueSupportCql.supprimerCodeTraitementDeJobsQueues(idJob,
+                                                            succes,
+                                                            codeTraitement);
+
+    // Ecriture dans la CF "JobHistory"
+    final String messageTrace = "FIN DU JOB";
+    final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    jobHistorySupportCql.ajouterTrace(idJob,
+                                      timestampTrace,
+                                      messageTrace);
+  }
+
+  /**
+   * Renseigne le nombre de docs traités par le traitement de masse dans la
+   * pile des travaux.
+   *
+   * @param idJob
+   *           identifiant du job
+   * @param nbDocs
+   *           Nombre de docs traités
+   * @throws JobInexistantException
+   *            le traitement n'existe pas
+   */
+  private final void renseignerDocCountTraiteJob(final UUID idJob, final Integer nbDocs)
+      throws JobInexistantException {
+
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      throw new JobInexistantException(idJob);
+    }
+
+    // Ecriture dans la CF "JobRequest"
+    jobRequestSupportCql.renseignerDocCountTraiteDansJobRequest(idJob,
+                                                                nbDocs);
+
+    // Ecriture dans la CF "JobQueues"
+    // rien à écrire
+
+    // Ecriture dans la CF "JobHistory"
+    final String messageTrace = "DOC_COUNT_TRAITE RENSEIGNE";
+    final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    jobHistorySupportCql.ajouterTrace(idJob,
+                                      timestampTrace,
+                                      messageTrace);
+
+  }
+
+  @Override
+  public void addHistory(final UUID jobUuid, final UUID timeUuid, final String description) {
+    // Ecriture dans la CF "JobHistory"
+    jobHistorySupportCql
+    .ajouterTrace(jobUuid, timeUuid, description);
+  }
+
+  @Override
+  public void renseignerPidJob(final UUID idJob, final Integer pid) throws JobInexistantException {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      throw new JobInexistantException(idJob);
+    }
+
+    // Ecriture dans la CF "JobRequest"
+    jobRequestSupportCql.renseignerPidDansJobRequest(idJob, pid);
+
+    // Ecriture dans la CF "JobQueues"
+    // rien à écrire
+
+    // Ecriture dans la CF "JobHistory"
+    final String messageTrace = "PID RENSEIGNE";
+    final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    jobHistorySupportCql.ajouterTrace(idJob,
+                                      timestampTrace,
+                                      messageTrace);
+  }
+
+  @Override
+  public void renseignerDocCountJob(final UUID idJob, final Integer nbDocs) throws JobInexistantException {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      throw new JobInexistantException(idJob);
+    }
+
+    // Ecriture dans la CF "JobRequest"
+    jobRequestSupportCql.renseignerDocCountDansJobRequest(idJob, nbDocs);
+
+    // Ecriture dans la CF "JobQueues"
+    // rien à écrire
+
+    // Ecriture dans la CF "JobHistory"
+    final String messageTrace = "DOC_COUNT RENSEIGNE";
+    final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    jobHistorySupportCql.ajouterTrace(idJob,
+                                      timestampTrace,
+                                      messageTrace);
+  }
+
+  @Override
+  public void updateToCheckFlag(final UUID idJob, final Boolean toCheckFlag, final String raison) throws JobInexistantException {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      throw new JobInexistantException(idJob);
+    }
+
+    // Ecriture dans la CF "JobRequest"
+    jobRequestSupportCql.renseignerCheckFlagDansJobRequest(idJob,
+                                                           toCheckFlag,
+                                                           raison);
+
+    // Ecriture dans la CF "JobQueues"
+    // rien à écrire
+
+    // Ecriture dans la CF "JobHistory"
+    final String message = "TOCHECKFLAG POSITIONNE A {0} AVEC LA RAISON {1}";
+    final String messageTrace = MessageFormat.format(message, toCheckFlag, raison);
+    final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    jobHistorySupportCql.ajouterTrace(idJob,
+                                      timestampTrace,
+                                      messageTrace);
+  }
+
+  @Override
+  public void deleteJob(final UUID idJob) {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      return;
+    }
+
+    // Suppression de la CF "JobRequest"
+    jobRequestSupportCql.deleteJobRequest(idJob);
+
+    // Suppression de la CF "JobQueues"
+    final String reservedBy = jobRequest.getReservedBy();
+
+    // if the job is reserved
+
+    jobsQueueSupportCql.supprimerJobDeJobsAllQueues(idJob);
+
+    // Suppression de la CF "JobHistory"
+    jobHistorySupportCql.supprimerHistorique(idJob);
+  }
+
+  @Override
+  public void resetJob(final UUID idJob) throws JobNonReinitialisableException {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      return;
+    }
+
+    final String etat = jobRequest.getState().toString();
+    if ("RESERVED".equals(etat) || "STARTING".equals(etat)) {
+
+      // Lecture des propriétés du job dont on a besoin
+      final String type = jobRequest.getType();
       final String reservedBy = jobRequest.getReservedBy();
-      this.jobsQueueSupportCql.supprimerJobDeJobsAllQueues(idJob);
-   }
 
-   @Override
-   public void changerEtatJobRequest(final UUID idJob, final String stateJob, final Date endingDate, final String message) {
-      this.jobRequestSupportCql.changerEtatJobRequest(idJob, stateJob, endingDate, message);
-   }
+      // Ecriture dans la CF "JobRequest"
+      jobRequestSupportCql.resetJob(idJob, etat);
 
-   @Override
-   public void deleteJobAndSemaphoreFromJobsQueues(final UUID uuidJob, final String codeTraitement) {
-      final JobRequestCql jobRequest = this.jobLectureCqlService.getJobRequest(uuidJob);
-      // Vérifier que le job existe
-      if (jobRequest == null) {
-         return;
-      }
+      jobsQueueSupportCql.unreservedJob(idJob,
+                                        type,
+                                        jobRequest
+                                        .getJobParameters(),
+                                        reservedBy);
 
-      // Suppression de la CF "JobQueues"
-      final String reservedBy = jobRequest.getReservedBy();
-      this.jobsQueueSupportCql.supprimerJobDeJobsAllQueues(uuidJob);
+      // Ecriture dans la CF "JobHistory"
+      final String messageTrace = "RESET DU JOB";
+      final UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      jobHistorySupportCql.ajouterTrace(idJob,
+                                        timestampTrace,
+                                        messageTrace);
 
-      final String SemaphoreReserved = Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement;
-      this.jobsQueueSupportCql.supprimerJobDeJobsAllQueues(uuidJob);
-   }
+    } else {
+      throw new JobNonReinitialisableException(idJob);
+    }
+  }
 
-   @Override
-   public JobQueueCql getJobQueueByIndexedColumn(final UUID idjob) {
-      final Optional<JobQueueCql> job = jobsQueueSupportCql.getJobQueueByIndexedColumn(idjob);
-      if (job.isPresent()) {
-         return job.get();
-      }
-      return null;
-   }
+  @Override
+  public List<String> getHosts() {
+    return jobsQueueSupportCql.getHosts();
+  }
+
+  @Override
+  public void addJobsQueue(final JobToCreate jobToCreate) {
+    addJobQueue(jobToCreate, null);
+  }
+
+  /**
+   * Ajouter un job de type JobsQueue dans la pile des travaux.
+   *
+   * @param jobToCreate
+   *           Job à créer.
+   * @param clock
+   *           horloge.
+   */
+  private void addJobQueue(final JobToCreate jobToCreate, final Long clock) {
+
+    jobsQueueSupportCql.ajouterJobDansJobQueuesEnWaiting(jobToCreate.getIdJob(),
+                                                         jobToCreate.getType(),
+                                                         jobToCreate.getJobParameters());
+  }
+
+  @Override
+  public void reserverJobDansJobsQueues(final UUID idJob, final String hostname, final String type, final Map<String, String> jobParameters) {
+    reserverJobDansJobQueues(idJob, hostname, type, jobParameters, null);
+  }
+
+  /**
+   * Réserver un traitement de type JobsQueue dans la pile des travaux.
+   *
+   * @param idJob
+   *           identifiant du traitement
+   * @param hostname
+   *           nom du serveur
+   * @param type
+   *           type du job
+   * @param jobParameters
+   *           Parametres du job
+   * @param clock
+   *           horloge
+   */
+  private void reserverJobDansJobQueues(final UUID idJob, final String hostname,
+                                        final String type, final Map<String, String> jobParameters, final Long clock) {
+    jobsQueueSupportCql.reserverJobDansJobQueues(idJob,
+                                                 hostname,
+                                                 type,
+                                                 jobParameters);
+  }
+
+  @Override
+  public void deleteJobFromJobsQueues(final UUID idJob) {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(idJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      return;
+    }
+
+    // Suppression de la CF "JobQueues"
+    final String reservedBy = jobRequest.getReservedBy();
+    jobsQueueSupportCql.supprimerJobDeJobsAllQueues(idJob);
+  }
+
+  @Override
+  public void changerEtatJobRequest(final UUID idJob, final String stateJob, final Date endingDate, final String message) {
+    jobRequestSupportCql.changerEtatJobRequest(idJob, stateJob, endingDate, message);
+  }
+
+  @Override
+  public void deleteJobAndSemaphoreFromJobsQueues(final UUID uuidJob, final String codeTraitement) {
+    final JobRequestCql jobRequest = jobLectureCqlService.getJobRequest(uuidJob);
+    // Vérifier que le job existe
+    if (jobRequest == null) {
+      return;
+    }
+
+    // Suppression de la CF "JobQueues"
+    final String reservedBy = jobRequest.getReservedBy();
+    jobsQueueSupportCql.supprimerJobDeJobsAllQueues(uuidJob);
+
+    final String SemaphoreReserved = Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement;
+    jobsQueueSupportCql.supprimerJobDeJobsAllQueues(uuidJob);
+  }
+
+  @Override
+  public JobQueueCql getJobQueueByIndexedColumn(final UUID idjob) {
+    final Optional<JobQueueCql> job = jobsQueueSupportCql.getJobQueueByIndexedColumn(idjob);
+    if (job.isPresent()) {
+      return job.get();
+    }
+    return null;
+  }
 
 }

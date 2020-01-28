@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -15,18 +16,30 @@ import com.datastax.driver.core.querybuilder.Select;
 import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
 import fr.urssaf.image.commons.cassandra.cql.codec.JsonCodec;
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
- * DAO de la colonne famille {@link JobRequest}
+ * DAO de la colonne famille <code>JobRequest</code>
  */
 @Repository
 public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> implements IJobRequestDaoCql {
 
  
+   /**
+   * @param ccf
+   */
+  @Autowired
+  public JobRequestDaoCqlImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
+
+  /**
+   * TODO (AC75095028) Description du champ
+   */
    private static final String JOBKEY2 = "jobkey";
 
    /**
@@ -38,7 +51,7 @@ public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> im
    @PostConstruct
    public void setRegister() {
 	  if(ccf != null) {
-	      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<VIContenuExtrait>(VIContenuExtrait.class));
+      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(VIContenuExtrait.class));
 	      // ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<JobState>(JobState.class));
 	      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
 	  }

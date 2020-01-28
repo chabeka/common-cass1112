@@ -28,166 +28,166 @@ import me.prettyprint.hector.api.query.SliceQuery;
 @Repository
 public class JobsQueueDao {
 
-   private static final String JOBSQUEUE_CFNAME = "JobsQueue";
+  public static final String JOBSQUEUE_CFNAME = "JobsQueue";
 
-   private static final int MAX_NON_TERMINATED_JOBS = 500;
+  private static final int MAX_NON_TERMINATED_JOBS = 500;
 
-   private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
+  private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
 
-   private final ColumnFamilyTemplate<String, UUID> jobsQueueTmpl;
-   
-   private static final int MAX_ROWS = 5000;
+  private final ColumnFamilyTemplate<String, UUID> jobsQueueTmpl;
 
-   private final Keyspace keyspace;
+  private static final int MAX_ROWS = 5000;
 
-   /**
-    * 
-    * @param keyspace
-    *           Keyspace utilisé par la pile des travaux
-    */
-   @Autowired
-   public JobsQueueDao(Keyspace keyspace) {
+  private final Keyspace keyspace;
 
-      this.keyspace = keyspace;
+  /**
+   * 
+   * @param keyspace
+   *           Keyspace utilisé par la pile des travaux
+   */
+  @Autowired
+  public JobsQueueDao(final Keyspace keyspace) {
 
-      // Propriété de clé:
-      // - Type de la valeur : String
-      // - Serializer de la valeur : StringSerializer
+    this.keyspace = keyspace;
 
-      jobsQueueTmpl = new ThriftColumnFamilyTemplate<String, UUID>(keyspace,
-            JOBSQUEUE_CFNAME, StringSerializer.get(), UUIDSerializer.get());
+    // Propriété de clé:
+    // - Type de la valeur : String
+    // - Serializer de la valeur : StringSerializer
 
-      jobsQueueTmpl.setCount(MAX_NON_TERMINATED_JOBS);
+    jobsQueueTmpl = new ThriftColumnFamilyTemplate<>(keyspace,
+        JOBSQUEUE_CFNAME, StringSerializer.get(), UUIDSerializer.get());
 
-   }
+    jobsQueueTmpl.setCount(MAX_NON_TERMINATED_JOBS);
 
-   /**
-    * 
-    * @return CassandraTemplate de <code>JobsQueue</code>
-    */
-   public final ColumnFamilyTemplate<String, UUID> getJobsQueueTmpl() {
+  }
 
-      return this.jobsQueueTmpl;
-   }
+  /**
+   * 
+   * @return CassandraTemplate de <code>JobsQueue</code>
+   */
+  public final ColumnFamilyTemplate<String, UUID> getJobsQueueTmpl() {
 
-   /**
-    * 
-    * @return SliceQuery de <code>JobsQueue</code>
-    */
-   public final SliceQuery<String, UUID, String> createSliceQuery() {
+    return jobsQueueTmpl;
+  }
 
-      SliceQuery<String, UUID, String> sliceQuery = HFactory.createSliceQuery(
-            keyspace, StringSerializer.get(), UUIDSerializer.get(),
-            StringSerializer.get());
-      sliceQuery.setColumnFamily(JOBSQUEUE_CFNAME);
+  /**
+   * 
+   * @return SliceQuery de <code>JobsQueue</code>
+   */
+  public final SliceQuery<String, UUID, String> createSliceQuery() {
 
-      return sliceQuery;
-   }
+    final SliceQuery<String, UUID, String> sliceQuery = HFactory.createSliceQuery(
+                                                                                  keyspace, StringSerializer.get(), UUIDSerializer.get(),
+                                                                                  StringSerializer.get());
+    sliceQuery.setColumnFamily(JOBSQUEUE_CFNAME);
 
-   /**
-    * 
-    * @return Mutator de <code>JobsQueue</code>
-    */
-   public final Mutator<String> createMutator() {
+    return sliceQuery;
+  }
 
-      Mutator<String> mutator = HFactory.createMutator(keyspace,
-            StringSerializer.get());
+  /**
+   * 
+   * @return Mutator de <code>JobsQueue</code>
+   */
+  public final Mutator<String> createMutator() {
 
-      return mutator;
+    final Mutator<String> mutator = HFactory.createMutator(keyspace,
+                                                           StringSerializer.get());
 
-   }
+    return mutator;
 
-   @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<String, UUID> updater,
-         Object colName, Object value, Serializer nameSerializer,
-         Serializer valueSerializer, long clock) {
+  }
 
-      HColumn<UUID, Object> column = HFactory.createColumn(colName, value,
-            nameSerializer, valueSerializer);
+  @SuppressWarnings("unchecked")
+  private void addColumn(final ColumnFamilyUpdater<String, UUID> updater,
+                         final Object colName, final Object value, final Serializer nameSerializer,
+                         final Serializer valueSerializer, final long clock) {
 
-      column.setClock(clock);
-      updater.setColumn(column);
+    final HColumn<UUID, Object> column = HFactory.createColumn(colName, value,
+                                                               nameSerializer, valueSerializer);
 
-   }
+    column.setClock(clock);
+    updater.setColumn(column);
 
-   /**
-    * Ajout d'une colonne.
-    * 
-    * @param updater
-    *           Updater de <code>JobsQueue</code>
-    * @param idJob
-    *           clé de la colonne
-    * @param jobQueue
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneJobQueue(
-         ColumnFamilyUpdater<String, UUID> updater, UUID idJob,
-         JobQueue jobQueue, long clock) {
+  }
 
-      addColumn(updater, idJob, jobQueue, UUIDSerializer.get(),
-            JobQueueSerializer.get(), clock);
+  /**
+   * Ajout d'une colonne.
+   * 
+   * @param updater
+   *           Updater de <code>JobsQueue</code>
+   * @param idJob
+   *           clé de la colonne
+   * @param jobQueue
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneJobQueue(
+                                         final ColumnFamilyUpdater<String, UUID> updater, final UUID idJob,
+                                         final JobQueue jobQueue, final long clock) {
 
-   }
+    addColumn(updater, idJob, jobQueue, UUIDSerializer.get(),
+              JobQueueSerializer.get(), clock);
 
-   /**
-    * Ajoute une nouvelle ligne
-    * 
-    * @param mutator
-    *           Mutator de <code>JobsQueue</code>
-    * @param hostnameOuJobsWaiting
-    *           clé de la ligne
-    * @param jobQueue
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void mutatorAjouterInsertionJobQueue(Mutator<String> mutator,
-         String hostnameOuJobsWaiting, JobQueue jobQueue, long clock) {
+  }
 
-      HColumn<UUID, JobQueue> col = HFactory.createColumn(jobQueue.getIdJob(),
-            jobQueue, UUIDSerializer.get(), JobQueueSerializer.get());
+  /**
+   * Ajoute une nouvelle ligne
+   * 
+   * @param mutator
+   *           Mutator de <code>JobsQueue</code>
+   * @param hostnameOuJobsWaiting
+   *           clé de la ligne
+   * @param jobQueue
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void mutatorAjouterInsertionJobQueue(final Mutator<String> mutator,
+                                                    final String hostnameOuJobsWaiting, final JobQueue jobQueue, final long clock) {
 
-      col.setTtl(TTL);
-      col.setClock(clock);
+    final HColumn<UUID, JobQueue> col = HFactory.createColumn(jobQueue.getIdJob(),
+                                                              jobQueue, UUIDSerializer.get(), JobQueueSerializer.get());
 
-      mutator.addInsertion(hostnameOuJobsWaiting, JOBSQUEUE_CFNAME, col);
+    col.setTtl(TTL);
+    col.setClock(clock);
 
-   }
+    mutator.addInsertion(hostnameOuJobsWaiting, JOBSQUEUE_CFNAME, col);
 
-   /**
-    * Suppression d'une colonne dans une file
-    * 
-    * @param mutator
-    *           Mutator de <code>JobsQueue</code>
-    * @param hostnameOuJobsWaiting
-    *           clé de la ligne
-    * @param idJob
-    *           nom de la colonne
-    * @param clock
-    *           horloge de la suppression
-    */
-   public final void mutatorAjouterSuppressionJobQueue(Mutator<String> mutator,
-         String hostnameOuJobsWaiting, UUID idJob, long clock) {
+  }
 
-      mutator.addDeletion(hostnameOuJobsWaiting, JOBSQUEUE_CFNAME, idJob,
-            UUIDSerializer.get(), clock);
+  /**
+   * Suppression d'une colonne dans une file
+   * 
+   * @param mutator
+   *           Mutator de <code>JobsQueue</code>
+   * @param hostnameOuJobsWaiting
+   *           clé de la ligne
+   * @param idJob
+   *           nom de la colonne
+   * @param clock
+   *           horloge de la suppression
+   */
+  public final void mutatorAjouterSuppressionJobQueue(final Mutator<String> mutator,
+                                                      final String hostnameOuJobsWaiting, final UUID idJob, final long clock) {
 
-   }
-   
-   /**
-    * 
-    * @return RangeSlicesQuery de <code>JobsQueue</code>
-    */
-   public RangeSlicesQuery<String, UUID, String> createRangeSlicesQuery() {
-      RangeSlicesQuery<String, UUID, String> query = HFactory
-            .createRangeSlicesQuery(keyspace, StringSerializer.get(),
-                  UUIDSerializer.get(), StringSerializer.get());
-      
-      query.setColumnFamily(JOBSQUEUE_CFNAME);
-      query.setRowCount(MAX_ROWS);
-      
-      return query;
-   }
+    mutator.addDeletion(hostnameOuJobsWaiting, JOBSQUEUE_CFNAME, idJob,
+                        UUIDSerializer.get(), clock);
+
+  }
+
+  /**
+   * 
+   * @return RangeSlicesQuery de <code>JobsQueue</code>
+   */
+  public RangeSlicesQuery<String, UUID, String> createRangeSlicesQuery() {
+    final RangeSlicesQuery<String, UUID, String> query = HFactory
+        .createRangeSlicesQuery(keyspace, StringSerializer.get(),
+                                UUIDSerializer.get(), StringSerializer.get());
+
+    query.setColumnFamily(JOBSQUEUE_CFNAME);
+    query.setRowCount(MAX_ROWS);
+
+    return query;
+  }
 }

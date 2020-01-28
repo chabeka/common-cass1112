@@ -32,120 +32,121 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-Cassandra-local-test.xml" })
 public class JobQueueServiceProcessExistingJobsTest {
 
-   @Autowired
-   private CassandraServerBean cassandraServer;
-   
-   @Autowired
-   private JobQueueService jobQueueService;
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-   @Autowired
-   private JobLectureService jobLectureService;
-   
-   private UUID idJobWithJobParam;
-   
-   @Before
-   public void init()throws Exception, IOException,
-   InterruptedException, ConfigurationException{
-      // on s'assure que le job initialisé dans le fichier dataSet-avec-job-ase-pile-travaux.xml est bien chargé
-      // On démarre un serveur cassandra local
-//      EmbeddedCassandraServerHelper.startEmbeddedCassandra();
-   }
-   
-   @After
-   public void end() throws Exception{
-      cassandraServer.resetData(true, MODE_API.HECTOR);
-   }
+  @Autowired
+  private JobQueueService jobQueueService;
 
-   /**
-    * Test permettant de charger par le biais du fichier
-    * dataSet-avec-job-sae-pile-travaux.xml un job avec un parametre à la place
-    * du jobParameter. Après le chargement on ajout un nouveau job avec un job
-    * parameter et on traite les deux jobs. les deux jobs doivent être traités
-    * 
-    * @throws JobDejaReserveException
-    * @throws JobInexistantException
-    * @throws LockTimeoutException
-    */
-   @Test
-   public void processExistingJobWithOldParam() throws JobDejaReserveException, JobInexistantException, LockTimeoutException{
+  @Autowired
+  private JobLectureService jobLectureService;
+
+  private UUID idJobWithJobParam;
+
+  @Before
+  public void init()throws Exception, IOException,
+  InterruptedException, ConfigurationException{
+    // on s'assure que le job initialisé dans le fichier dataSet-avec-job-ase-pile-travaux.xml est bien chargé
+    // On démarre un serveur cassandra local
+    // EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+
+  }
+
+  @After
+  public void end() throws Exception{
+    cassandraServer.resetData(true, MODE_API.HECTOR);
+  }
+
+  /**
+   * Test permettant de charger par le biais du fichier
+   * dataSet-avec-job-sae-pile-travaux.xml un job avec un parametre à la place
+   * du jobParameter. Après le chargement on ajout un nouveau job avec un job
+   * parameter et on traite les deux jobs. les deux jobs doivent être traités
+   * 
+   * @throws JobDejaReserveException
+   * @throws JobInexistantException
+   * @throws LockTimeoutException
+   */
+  @Test
+  public void processExistingJobWithOldParam() throws JobDejaReserveException, JobInexistantException, LockTimeoutException{
 
     final UUID idJobExistant = UUID.fromString("3897da00-3893-11e2-9ff4-005056c00008");
-      JobRequest jobRequest = jobLectureService.getJobRequest(idJobExistant);
-      Assert.assertNotNull(jobRequest);
-      // creation d'un nouveau job avec des job parameters
-      idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    JobRequest jobRequest = jobLectureService.getJobRequest(idJobExistant);
+    Assert.assertNotNull(jobRequest);
+    // creation d'un nouveau job avec des job parameters
+    idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
     final Date dateCreation = new Date();
 
-    final Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put("parameters", "param");
-      
-    final JobToCreate job = new JobToCreate();
-      job.setIdJob(idJobWithJobParam);
-      job.setType("ArchivageMasse");
-      job.setJobParameters(jobParam);
-      job.setClientHost("clientHost");
-      job.setDocCount(100);
-      job.setSaeHost("saeHost");
-      job.setCreationDate(dateCreation);
-    final String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
+    final Map<String, String> jobParam = new HashMap<>();
+    jobParam.put("parameters", "param");
 
-      jobQueueService.addJob(job);
-      
-      //traitement des deux jobs
-      
-      jobQueueService.reserveJob(idJobExistant, "hostname", new Date());
-      
-      jobQueueService.reserveJob(idJobWithJobParam, "hostname", new Date());
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJobWithJobParam);
+    job.setType("ArchivageMasse");
+    job.setJobParameters(jobParam);
+    job.setClientHost("clientHost");
+    job.setDocCount(100);
+    job.setSaeHost("saeHost");
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
+
+    jobQueueService.addJob(job);
+
+    //traitement des deux jobs
+
+    jobQueueService.reserveJob(idJobExistant, "hostname", new Date());
+
+    jobQueueService.reserveJob(idJobWithJobParam, "hostname", new Date());
 
     final Date dateDebutTraitement = new Date();
-      jobQueueService.startingJob(idJobExistant, dateDebutTraitement);
-      
-      jobQueueService.startingJob(idJobWithJobParam, dateDebutTraitement);
+    jobQueueService.startingJob(idJobExistant, dateDebutTraitement);
 
-      //   réactualisation du job après la reservation et le démarrage 
-      jobRequest = jobLectureService.getJobRequest(idJobExistant);
-      
-      // vérification de JobRequest avec le parameters
-      Assert.assertEquals("l'état est inattendu", JobState.STARTING, jobRequest
-            .getState());
-      Assert.assertEquals("la date de démarrage est inattendue",
-            dateDebutTraitement, jobRequest.getStartingDate());
-      
-      
-      //vérification de JobRequest avec les jobParam
-      JobRequest jobRequestJobParam = jobLectureService.getJobRequest(idJobWithJobParam);
-      Assert.assertEquals("l'état est inattendu", JobState.STARTING, jobRequestJobParam
-            .getState());
-      Assert.assertEquals("la date de démarrage est inattendue",
-            dateDebutTraitement, jobRequestJobParam.getStartingDate());
+    jobQueueService.startingJob(idJobWithJobParam, dateDebutTraitement);
 
-      // vérification de JobsQueues
+    //   réactualisation du job après la reservation et le démarrage 
+    jobRequest = jobLectureService.getJobRequest(idJobExistant);
 
-      // rien à vérifier
-
-      // vérification de JobHistory
-      List<JobHistory> histories = jobLectureService.getJobHistory(idJobExistant);
-
-      Assert.assertEquals("le nombre de message est inattendu", 2, histories
-            .size());
-
-      Assert.assertEquals(
-            "le message de l'ajout d'un traitement est inattendu",
-            "DEMARRAGE DU JOB", histories.get(1).getTrace());
-      
-      // vérification de JobHistory
-      List<JobHistory> historiesJobParam = jobLectureService.getJobHistory(idJobWithJobParam);
-
-      Assert.assertEquals("le nombre de message est inattendu", 3, historiesJobParam
-            .size());
-
-      Assert.assertEquals(
-            "le message de l'ajout d'un traitement est inattendu",
-            "DEMARRAGE DU JOB", historiesJobParam.get(2).getTrace());
-      
+    // vérification de JobRequest avec le parameters
+    Assert.assertEquals("l'état est inattendu", JobState.STARTING, jobRequest
+                        .getState());
+    Assert.assertEquals("la date de démarrage est inattendue",
+                        dateDebutTraitement, jobRequest.getStartingDate());
 
 
-   }
+    //vérification de JobRequest avec les jobParam
+    final JobRequest jobRequestJobParam = jobLectureService.getJobRequest(idJobWithJobParam);
+    Assert.assertEquals("l'état est inattendu", JobState.STARTING, jobRequestJobParam
+                        .getState());
+    Assert.assertEquals("la date de démarrage est inattendue",
+                        dateDebutTraitement, jobRequestJobParam.getStartingDate());
+
+    // vérification de JobsQueues
+
+    // rien à vérifier
+
+    // vérification de JobHistory
+    final List<JobHistory> histories = jobLectureService.getJobHistory(idJobExistant);
+
+    Assert.assertEquals("le nombre de message est inattendu", 2, histories
+                        .size());
+
+    Assert.assertEquals(
+                        "le message de l'ajout d'un traitement est inattendu",
+                        "DEMARRAGE DU JOB", histories.get(1).getTrace());
+
+    // vérification de JobHistory
+    final List<JobHistory> historiesJobParam = jobLectureService.getJobHistory(idJobWithJobParam);
+
+    Assert.assertEquals("le nombre de message est inattendu", 3, historiesJobParam
+                        .size());
+
+    Assert.assertEquals(
+                        "le message de l'ajout d'un traitement est inattendu",
+                        "DEMARRAGE DU JOB", historiesJobParam.get(2).getTrace());
+
+
+
+  }
 
 }

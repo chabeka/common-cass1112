@@ -48,15 +48,15 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public JobRequest getJobRequest(final UUID jobRequestUUID) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final JobRequestCql jobRequestCql = jobLectureCqlService.getJobRequest(jobRequestUUID);
       // Vérifier que le job existe
       if (jobRequestCql != null) {
         return JobRequestMapper.mapJobRequestCqlToJobRequestThrift(jobRequestCql);
       }
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getJobRequest(jobRequestUUID);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getJobRequest(jobRequestUUID);
     }
     return null;
@@ -65,11 +65,11 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public Iterator<JobQueue> getUnreservedJobRequestIterator() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return JobsQueueMapper.mapIteratorJobQueueToIteratorJobQueueCql(jobLectureCqlService.getUnreservedJobRequestIterator());
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getUnreservedJobRequestIterator();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getUnreservedJobRequestIterator();
     }
     return null;
@@ -78,11 +78,11 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public List<JobQueue> getNonTerminatedSimpleJobs(final String hostname) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return JobsQueueMapper.mapListJobQueueToListJobQueueCql(jobLectureCqlService.getNonTerminatedSimpleJobs(hostname));
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getNonTerminatedSimpleJobs(hostname);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getNonTerminatedSimpleJobs(hostname);
     }
     return null;
@@ -91,16 +91,16 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public List<JobRequest> getNonTerminatedJobs(final String key) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<JobRequest> listJobT = new ArrayList<>();
       final List<JobRequestCql> listRequestCql = jobLectureCqlService.getNonTerminatedJobs(key);
       for (final JobRequestCql job : listRequestCql) {
         listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
       return listJobT;
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getNonTerminatedJobs(key);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getNonTerminatedJobs(key);
     }
     return null;
@@ -109,11 +109,11 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public List<JobHistory> getJobHistory(final UUID idJob) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return JobHistoryMapper.mapListJobHistoryCqlToListJobHistory(jobLectureCqlService.getJobHistory(idJob).get(0));
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getJobHistory(idJob);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getJobHistory(idJob);
     }
     return null;
@@ -122,16 +122,16 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public List<JobRequest> getAllJobs(final Keyspace keyspace) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<JobRequest> listJobT = new ArrayList<>();
       final List<JobRequestCql> listRequestCql = jobLectureCqlService.getAllJobs();
       for (final JobRequestCql job : listRequestCql) {
         listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
       return listJobT;
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getAllJobs(keyspace);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getAllJobs(keyspace);
     }
     return null;
@@ -140,16 +140,16 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public List<JobRequest> getAllJobs(final Keyspace keyspace, final int maxKeysToRead) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<JobRequest> listJobT = new ArrayList<>();
       final List<JobRequestCql> listRequestCql = jobLectureCqlService.getAllJobs(maxKeysToRead);
       for (final JobRequestCql job : listRequestCql) {
         listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
       return listJobT;
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getAllJobs(keyspace, maxKeysToRead);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getAllJobs(keyspace, maxKeysToRead);
     }
     return null;
@@ -158,16 +158,16 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public List<JobRequest> getJobsToDelete(final Keyspace keyspace, final Date dateMax) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<JobRequest> listJobT = new ArrayList<>();
       final List<JobRequestCql> listRequestCql = jobLectureCqlService.getJobsToDelete(dateMax);
       for (final JobRequestCql job : listRequestCql) {
         listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
       return listJobT;
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getJobsToDelete(keyspace, dateMax);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getJobsToDelete(keyspace, dateMax);
     }
     return null;
@@ -176,11 +176,11 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public boolean isJobResettable(final JobRequest job) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return jobLectureCqlService.isJobResettable(JobRequestMapper.mapJobRequestThriftToJobRequestCql(job));
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.isJobResettable(job);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.isJobResettable(job);
     }
     return false;
@@ -189,11 +189,11 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public boolean isJobRemovable(final JobRequest job) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return jobLectureCqlService.isJobRemovable(JobRequestMapper.mapJobRequestThriftToJobRequestCql(job));
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.isJobRemovable(job);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.isJobRemovable(job);
     }
     return false;
@@ -202,12 +202,12 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public JobRequest getJobRequestNotNull(final UUID uuidJob) throws JobInexistantException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final JobRequestCql cql = jobLectureCqlService.getJobRequestNotNull(uuidJob);
       return JobRequestMapper.mapJobRequestCqlToJobRequestThrift(cql);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getJobRequestNotNull(uuidJob);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getJobRequestNotNull(uuidJob);
     }
     return null;
@@ -216,11 +216,11 @@ public class JobLectureServiceImpl implements JobLectureService {
   @Override
   public UUID getJobRequestIdByJobKey(final byte[] jobKey) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return jobLectureCqlService.getJobRequestIdByJobKey(jobKey);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobLectureThriftService.getJobRequestIdByJobKey(jobKey);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobLectureThriftService.getJobRequestIdByJobKey(jobKey);
     }
     return null;
