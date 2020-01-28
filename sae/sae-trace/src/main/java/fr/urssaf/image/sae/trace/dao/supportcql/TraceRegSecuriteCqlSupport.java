@@ -3,8 +3,6 @@
  */
 package fr.urssaf.image.sae.trace.dao.supportcql;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.UUID;
@@ -54,7 +52,6 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    */
   @Override
   public Iterator<TraceRegSecuriteIndexCql> getIterator(final Date date) {
-    final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
     final String journee = DateRegUtils.getJournee(date);
     return indexDao.IterableFindById(journee);
   }

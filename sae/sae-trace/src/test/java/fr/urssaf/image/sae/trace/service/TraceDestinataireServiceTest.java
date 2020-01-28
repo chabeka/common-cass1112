@@ -11,27 +11,28 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class TraceDestinataireServiceTest {
 
-   @Autowired
-   private TraceDestinaireService service;
+  @Autowired
+  private TraceDestinaireService service;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @After
-   public void after() throws Exception {
-      server.resetData(true, MODE_API.HECTOR);
-   }
+  @After
+  public void after() throws Exception {
+    server.resetDataOnly();
+    //server.resetDataOnly();
+  }
 
-   @Test
-   public void testGetCodeEvenementByTypeTrace() {
+  @Test
+  public void testGetCodeEvenementByTypeTrace() {
 
-      service.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
-   }
+    service.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
+    // ?????
+  }
 
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
@@ -55,7 +57,7 @@ public class DispatcheurServiceHistEvenementsDatasTest {
 
   private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_EVT";
 
-  private final String cfNameDestinataire = "tracedestinatairecql";
+  private final String cfNameDestinataire = "tracedestinataire";
 
   @Autowired
   private DispatcheurService service;
@@ -68,6 +70,11 @@ public class DispatcheurServiceHistEvenementsDatasTest {
 
   @Autowired
   private TraceDestinataireCqlSupport destCqlSupport;
+
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
   @Test
   public void testCreationHistoriqueEvtSucces() {
@@ -104,7 +111,8 @@ public class DispatcheurServiceHistEvenementsDatasTest {
       destCqlSupport.create(trace, new Date().getTime());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       destSupport.create(trace, new Date().getTime());
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       destSupport.create(trace, new Date().getTime());
     }
   }

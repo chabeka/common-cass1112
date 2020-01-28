@@ -31,8 +31,8 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  */
 public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends TraceIndex> {
 
-  private final SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                                                   "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
+  // private final SimpleDateFormat dateFormat = new SimpleDateFormat(
+  // "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
 
   private static final String DATE_FORMAT = "yyyyMMdd";
 
@@ -125,6 +125,10 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
 
       // Suppression des traces de la CF TraceJournalEvt
       nbTracesPurgees = deleteRecords(iterator);
+
+      // Suppression des traces de la CF TraceJournalEvt
+      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator); // EC 20190918
+
 
       // suppression de l'index
       final Iterator<I> indexToDelete = getIterator(date);
@@ -244,6 +248,26 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     return list;
   }
 
+
+  /**
+   * Suppression des traces dans les registres ou journaux
+   *
+   * @param iterator
+   *           Iterateur contenant les traces
+   * @param clock
+   *           l'horloge de la suppression
+   * @return le nombre d'enregistrements supprimés
+   */
+  @SuppressWarnings("unchecked")
+  long deleteRecords(final Iterator<I> iterator, final long clock) {
+    long result = 0;
+    while (iterator.hasNext()) {
+      getDao().deleteById(getTraceId(iterator.next()));
+      result++;
+    }
+    return result;
+  }
+
   /**
    * Suppression des traces dans les registres ou journaux
    *
@@ -332,4 +356,12 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    */
   abstract Logger getLogger();
 
+  /**
+   * Ajout save
+   * EC
+   */
+  public T save(final T entity) {
+    getDao().saveWithMapper(entity);
+    return entity;
+  }
 }

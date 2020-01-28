@@ -56,24 +56,26 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
   @Override
   public String export(final Date date, final String repertoire, final String idJournalPrecedent, final String hashJournalPrecedent) {
+
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return journalEvtCqlService.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return journalEvtServiceThrift.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      return journalEvtServiceThrift.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
+
     }
     return null;
   }
 
   public LoggerSupport getLoggerSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return journalEvtCqlService.getLoggerSupport();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return journalEvtServiceThrift.getLoggerSupport();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return journalEvtServiceThrift.getLoggerSupport();
     }
     return null;
@@ -81,12 +83,12 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
   public JobClockSupport getClockSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+    ) {
       // nothing => le clock est gerer automatiquement par datastax
-    	
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return journalEvtServiceThrift.getClockSupport();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return journalEvtServiceThrift.getClockSupport();
     }
     return null;
@@ -94,11 +96,11 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
   public Logger getLogger() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return journalEvtCqlService.getLogger();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return journalEvtServiceThrift.getLogger();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return journalEvtServiceThrift.getLogger();
     }
     return null;
@@ -110,12 +112,12 @@ public class JournalEvtServiceImpl implements JournalEvtService {
   @Override
   public TraceJournalEvt lecture(final UUID identifiant) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX) 
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final TraceJournalEvtCql tracecql = journalEvtCqlService.lecture(identifiant);
       return UtilsTraceMapper.createTraceJournalEvtFromCqlToThrift(tracecql);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return journalEvtServiceThrift.lecture(identifiant);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return journalEvtServiceThrift.lecture(identifiant);
     }
     return null;
@@ -164,19 +166,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
                                             PurgeType.PURGE_EVT,
                                             DateRegUtils.getJournee(date));
 
-    long nbTracesPurgees = 0;
-
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = journalEvtCqlService.getSupport().delete(dateIndex);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      nbTracesPurgees = journalEvtServiceThrift.getSupport().delete(dateIndex,
-                                                                    getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      nbTracesPurgees = journalEvtServiceThrift.getSupport()
-          .delete(dateIndex,
-                  getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
-    }
+    final long nbTracesPurgees = deleteEvt(nbMaxLigneEvtToDelete, dateIndex);
 
     getLoggerSupport()
     .logPurgeJourneeFin(getLogger(),
@@ -186,6 +176,34 @@ public class JournalEvtServiceImpl implements JournalEvtService {
                         nbTracesPurgees);
 
     getLogger().debug(FIN_LOG, prefix);
+  }
+
+  /**
+   * Suppression des évènements suivant le mode API
+   * 
+   * @param nbMaxLigneEvtToDelete
+   * @param dateIndex
+   * @param nbTracesPurgees
+   * @return
+   */
+  private long deleteEvt(final int nbMaxLigneEvtToDelete, final Date dateIndex) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    long nbTracesPurgees = 0;
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      nbTracesPurgees = journalEvtCqlService.getSupport().delete(dateIndex);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      nbTracesPurgees = journalEvtServiceThrift.getSupport().delete(dateIndex,
+                                                                    getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
+      nbTracesPurgees = journalEvtServiceThrift.getSupport()
+          .delete(dateIndex,
+                  getClockSupport().currentCLock(),
+                  nbMaxLigneEvtToDelete);
+      nbTracesPurgees = nbTracesPurgees + journalEvtCqlService.getSupport().delete(dateIndex);
+    }
+
+    return nbTracesPurgees;
   }
 
   /**
@@ -230,27 +248,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDate(currentDate, limite);
-        if (resultCql != null) {
-          for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
-            final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
-            result.add(indexThrift);
-          }
-        }
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        result = journalEvtServiceThrift.getSupport().findByDates(startDate,
-                                                                  endDate,
-                                                                  countLeft,
-                                                                  true);
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        result = journalEvtServiceThrift.getSupport()
-            .findByDates(startDate,
-                         endDate,
-                         countLeft,
-                         true);
-      }
+      result = findEvtByDate(limite, countLeft, result, currentDate, startDate, endDate);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
@@ -262,6 +260,40 @@ public class JournalEvtServiceImpl implements JournalEvtService {
         && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
     return values;
+  }
+
+  /**
+   * Recherche évènements par date suivant mode API
+   * 
+   * @param limite
+   * @param countLeft
+   * @param result
+   * @param currentDate
+   * @param startDate
+   * @param endDate
+   * @return
+   */
+  private List<TraceJournalEvtIndex> findEvtByDate(final int limite, final int countLeft, List<TraceJournalEvtIndex> result, final Date currentDate, final Date startDate,
+                                                   final Date endDate) {
+
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
+      final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDate(currentDate, limite);
+      if (resultCql != null) {
+        for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
+          final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
+          result.add(indexThrift);
+        }
+      }
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
+      result = journalEvtServiceThrift.getSupport().findByDates(startDate,
+                                                                endDate,
+                                                                countLeft,
+                                                                true);
+    }
+    return result;
   }
 
   private List<TraceJournalEvtIndex> findReversedOrder(final List<Date> dates, final int limite) {
@@ -278,27 +310,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDate(currentDate, limite);
-        if (resultCql != null) {
-          for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
-            final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
-            result.add(indexThrift);
-          }
-        }
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        result = journalEvtServiceThrift.getSupport().findByDates(startDate,
-                                                                  endDate,
-                                                                  countLeft,
-                                                                  true);
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        result = journalEvtServiceThrift.getSupport()
-                                        .findByDates(startDate,
-                                                     endDate,
-                                                     countLeft,
-                                                     true);
-      }
+      result = findEvtByDate(limite, countLeft, result, currentDate, startDate, endDate);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);

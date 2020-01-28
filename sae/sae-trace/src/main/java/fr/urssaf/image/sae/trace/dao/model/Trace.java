@@ -2,15 +2,11 @@ package fr.urssaf.image.sae.trace.dao.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 
-import fr.urssaf.image.sae.trace.commons.Constantes;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 
@@ -40,7 +36,7 @@ public class Trace {
    private String contratService;
 
    /** Le ou les PAGM */
-   private List<String> pagms = new ArrayList<String>();
+   private List<String> pagms = new ArrayList<>();
 
    
   /**
@@ -59,7 +55,7 @@ public class Trace {
     *           le timestamp à affecter à la trace
     */
   public Trace(final UUID idTrace, final Date timestamp) {
-      this.identifiant = idTrace;
+      identifiant = idTrace;
       this.timestamp = getDateCopy(timestamp);
    }
 
@@ -77,14 +73,14 @@ public class Trace {
     */
   public Trace(final TraceToCreate trace, final List<String> listInfos,
                final UUID idTrace, final Date timestamp) {
-      this.codeEvt = trace.getCodeEvt();
-      this.contratService = trace.getContrat();
+      codeEvt = trace.getCodeEvt();
+      contratService = trace.getContrat();
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
-         this.pagms.addAll(trace.getPagms());
+         pagms.addAll(trace.getPagms());
       }
-      this.login = trace.getLogin();
+      login = trace.getLogin();
       this.timestamp =getDateCopy(timestamp);
-      this.identifiant = idTrace;
+      identifiant = idTrace;
 
    }
 
@@ -144,7 +140,7 @@ public class Trace {
     *           code du contrat de service
     */
   public final void setContratService(final String contrat) {
-      this.contratService = contrat;
+      contratService = contrat;
    }
 
    /**
@@ -174,5 +170,55 @@ public class Trace {
       }
       return tDate;
    }
-   
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codeEvt == null) ? 0 : codeEvt.hashCode());
+		result = prime * result + ((contratService == null) ? 0 : contratService.hashCode());
+		result = prime * result + ((identifiant == null) ? 0 : identifiant.hashCode());
+		result = prime * result + ((login == null) ? 0 : login.hashCode());
+		result = prime * result + ((pagms == null) ? 0 : pagms.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Trace other = (Trace) obj;
+		if (codeEvt == null) {
+			if (other.codeEvt != null)
+				return false;
+		} else if (!codeEvt.equals(other.codeEvt))
+			return false;
+		if (contratService == null) {
+			if (other.contratService != null)
+				return false;
+		} else if (!contratService.equals(other.contratService))
+			return false;
+		if (identifiant == null) {
+			if (other.identifiant != null)
+				return false;
+		} else if (!identifiant.equals(other.identifiant))
+			return false;
+		if (login == null) {
+			if (other.login != null)
+				return false;
+		} else if (!login.equals(other.login))
+			return false;
+		if (pagms == null) {
+			if (other.pagms != null)
+				return false;
+		} else if (!pagms.equals(other.pagms))
+			return false;
+		return true;
+	}
+	   
+	  
 }

@@ -3,11 +3,13 @@
  */
 package fr.urssaf.image.sae.trace.dao.model;
 
+import com.datastax.driver.mapping.annotations.Table;
 
 /**
  * Classe de modèle de la CF "TraceRegSecuriteIndex"
  * 
  */
+@Table(name = "TraceRegSecuriteIndex")
 public class TraceRegSecuriteIndex extends TraceIndex {
 
    /** Contexte de la trace */

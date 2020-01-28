@@ -10,8 +10,13 @@ import java.util.UUID;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -20,6 +25,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
@@ -39,272 +45,294 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class PurgeServiceTest {
 
-   private static final Date DATE = new Date();
+  private static final Date DATE = new Date();
 
-   private static final String CODE_EVT = "TEST_PURGE_SERVICE";
+  private static final String CODE_EVT = "TEST_PURGE_SERVICE";
 
-   @Autowired
-   private ParametersService paramService;
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(PurgeServiceTest.class);
 
-   @Autowired
-   private PurgeService purgeService;
+  @Autowired
+  private ParametersService paramService;
 
-   @Autowired
-   private TraceDestinataireSupport traceSupport;
+  @Autowired
+  private PurgeService purgeService;
 
-   @Autowired
-   private RegExploitationService exploitService;
+  @Autowired
+  private TraceDestinataireSupport traceSupport;
 
-   @Autowired
-   private RegSecuriteService secuService;
+  @Autowired
+  private RegExploitationService exploitService;
 
-   @Autowired
-   private RegTechniqueService techService;
+  @Autowired
+  private RegSecuriteService secuService;
 
-   @Autowired
-   private CassandraServerBean serverBean;
+  @Autowired
+  private RegTechniqueService techService;
 
-   @Autowired
-   private TraceRegExploitationSupport exploitationSupport;
+  @Autowired
+  private CassandraServerBean serverBean;
 
-   @Autowired
-   private TraceRegSecuriteSupport securiteSupport;
+  @Autowired
+  private TraceRegExploitationSupport exploitationSupport;
 
-   @Autowired
-   private TraceRegTechniqueSupport techniqueSupport;
+  @Autowired
+  private TraceRegSecuriteSupport securiteSupport;
 
-   @Autowired
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+  @Autowired
+  private TraceRegTechniqueSupport techniqueSupport;
 
-   @After
-   public void after() throws Exception {
-      serverBean.resetData(true, MODE_API.HECTOR);
-   }
+  @Autowired
+  private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-   @Test
-   public void testPurgeDureeRetentionObligatoire() {
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
-      try {
-         purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
-      } catch (TraceRuntimeException exception) {
-         Assert.assertEquals("l'exception mère doit avoir le bon type",
-               ParameterNotFoundException.class, exception.getCause()
-                     .getClass());
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceRuntimeException est attendue");
+  @After
+  public void after() throws Exception {
+    serverBean.resetData(true, MODE_API.HECTOR);
+  }
+
+  @Test
+  public void init() {
+    try {
+      if (serverBean.isCassandraStarted()) {
+        serverBean.resetData();
       }
-   }
+      Assert.assertTrue(true);
 
-   @Test
-   public void testPurgeDejaEnCours() {
+    }
+    catch (final Exception e) {
+      LOGGER.error("Une erreur s'est produite lors du clearAnLoad de cassandra: {}", e.getMessage());
+    }
+  }
+  @Test
+  public void testPurgeDureeRetentionObligatoire() {
 
-      paramService.setPurgeExploitIsRunning(Boolean.TRUE);
-
-      try {
-         purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
-
-      } catch (TraceRuntimeException exception) {
-         Assert.assertEquals("le message d'erreur doit etre correct",
-               "La purge des registres d'exploitation est déjà en cours",
-               exception.getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail("une exception TraceRuntimeException est attendue");
-      }
-
-   }
-
-   @Test
-   public void testPurge() throws ParameterNotFoundException {
-      createParameters();
-      createTraces();
-
+    try {
       purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
-      checkPurgeExploit();
+    } catch (final TraceRuntimeException exception) {
+      Assert.assertEquals("l'exception mère doit avoir le bon type",
+                          ParameterNotFoundException.class, exception.getCause()
+                          .getClass());
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceRuntimeException est attendue");
+    }
+  }
 
-      purgeService.purgerRegistre(PurgeType.PURGE_SECURITE);
-      checkPurgeSecurite();
+  @Test
+  public void testPurgeDejaEnCours() {
 
-      purgeService.purgerRegistre(PurgeType.PURGE_TECHNIQUE);
-      checkPurgetechnique();
+    paramService.setPurgeExploitIsRunning(Boolean.TRUE);
 
-      checkParameters();
-   }
-
-   @Test
-   public void testPurgeNonLancee() {
-      createParametersEquals();
-      createTraces();
-
+    try {
       purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
-      List<TraceRegExploitationIndex> traces = exploitService.lecture(DateUtils
-            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertEquals("les 6 traces doivent etre présentes", 6, traces
-            .size());
 
-      purgeService.purgerRegistre(PurgeType.PURGE_SECURITE);
-      List<TraceRegSecuriteIndex> tracesSecu = secuService.lecture(DateUtils
-            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesSecu
-            .size());
+    } catch (final TraceRuntimeException exception) {
+      Assert.assertEquals("le message d'erreur doit etre correct",
+                          "La purge des registres d'exploitation est déjà en cours",
+                          exception.getMessage());
 
-      purgeService.purgerRegistre(PurgeType.PURGE_TECHNIQUE);
-      List<TraceRegTechniqueIndex> tracesTech = techService.lecture(DateUtils
-            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesTech
-            .size());
-   }
+    } catch (final Exception exception) {
+      Assert.fail("une exception TraceRuntimeException est attendue");
+    }
 
-   private void createParametersEquals() {
+  }
 
-      Date lastDate = DateUtils.addDays(DATE, -1);
+  @Test
+  public void testPurge() throws ParameterNotFoundException {
+    createParameters();
+    createTraces();
 
-      paramService.setPurgeExploitDate(lastDate);
-      paramService.setPurgeSecuDate(lastDate);
-      paramService.setPurgeTechDate(lastDate);
+    purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
+    checkPurgeExploit();
 
-      paramService.setPurgeExploitDuree(5);
-      paramService.setPurgeSecuDuree(5);
-      paramService.setPurgeTechDuree(5);
+    purgeService.purgerRegistre(PurgeType.PURGE_SECURITE);
+    checkPurgeSecurite();
 
-   }
+    purgeService.purgerRegistre(PurgeType.PURGE_TECHNIQUE);
+    checkPurgetechnique();
 
-   private void createParameters() {
+    checkParameters();
+  }
 
-      Date lastDate = DateUtils.addMonths(DATE, -1);
+  @Test
+  public void testPurgeNonLancee() {
+    createParametersEquals();
+    createTraces();
 
-      paramService.setPurgeExploitDate(lastDate);
-      paramService.setPurgeSecuDate(lastDate);
-      paramService.setPurgeTechDate(lastDate);
+    purgeService.purgerRegistre(PurgeType.PURGE_EXPLOITATION);
+    final List<TraceRegExploitationIndex> traces = exploitService.lecture(DateUtils
+                                                                          .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+    Assert.assertEquals("les 6 traces doivent etre présentes", 6, traces
+                        .size());
 
-      paramService.setPurgeExploitDuree(3);
-      paramService.setPurgeSecuDuree(4);
-      paramService.setPurgeTechDuree(1);
+    purgeService.purgerRegistre(PurgeType.PURGE_SECURITE);
+    final List<TraceRegSecuriteIndex> tracesSecu = secuService.lecture(DateUtils
+                                                                       .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+    Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesSecu
+                        .size());
 
-   }
+    purgeService.purgerRegistre(PurgeType.PURGE_TECHNIQUE);
+    final List<TraceRegTechniqueIndex> tracesTech = techService.lecture(DateUtils
+                                                                        .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+    Assert.assertEquals("les 6 traces doivent etre présentes", 6, tracesTech
+                        .size());
+  }
 
-   private void createTraces() {
-      TraceDestinataire destinataire = new TraceDestinataire();
-      destinataire.setCodeEvt(CODE_EVT);
-      Map<String, List<String>> map = new HashMap<String, List<String>>();
-      map.put(TraceDestinataireDao.COL_REG_EXPLOIT, null);
-      map.put(TraceDestinataireDao.COL_REG_SECURITE, null);
-      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, null);
-      destinataire.setDestinataires(map);
+  private void createParametersEquals() {
 
-      traceSupport.create(destinataire, new Date().getTime());
+    final Date lastDate = DateUtils.addDays(DATE, -1);
 
-      createTrace("[JOUR J]", 0, destinataire);
-      createTrace("[JOUR J-1]", -1, destinataire);
-      createTrace("[JOUR J-2]", -2, destinataire);
-      createTrace("[JOUR J-3]", -3, destinataire);
-      createTrace("[JOUR J-4]", -4, destinataire);
-      createTrace("[JOUR J-5]", -5, destinataire);
-   }
+    paramService.setPurgeExploitDate(lastDate);
+    paramService.setPurgeSecuDate(lastDate);
+    paramService.setPurgeTechDate(lastDate);
 
-   private void createTrace(String suffix, int decalage,
-         TraceDestinataire destinataire) {
-      TraceToCreate trace = new TraceToCreate();
-      trace.setAction("action " + suffix);
-      trace.setCodeEvt(CODE_EVT);
-      trace.setContexte("contexte " + suffix);
-      trace.setContrat("contrat " + suffix);
-      trace.setInfos(null);
-      trace.setLogin("login " + suffix);
-      trace.setStracktrace("stackTrace " + suffix);
-      // trace.setTimestamp(DateUtils.addDays(DATE, decalage));
-      for (String dest : destinataire.getDestinataires().keySet()) {
-         createTraces(trace, dest, DateUtils.addDays(DATE, decalage));
-      }
-   }
+    paramService.setPurgeExploitDuree(5);
+    paramService.setPurgeSecuDuree(5);
+    paramService.setPurgeTechDuree(5);
 
-   private void checkPurgeExploit() {
-      List<TraceRegExploitationIndex> traces = exploitService.lecture(DateUtils
-            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertNotNull("il doit y avoir des traces restantes", traces);
+  }
 
-      Assert.assertEquals("le nombre de traces doit etre correct", 3, traces
-            .size());
-      Assert.assertTrue("le plus ancien doit avoir le bon nom : "
-            + "[JOUR J-2]", traces.get(0).getAction().contains("[JOUR J-2]"));
-   }
+  private void createParameters() {
 
-   private void checkPurgeSecurite() {
-      List<TraceRegSecuriteIndex> traces = secuService.lecture(DateUtils
-            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertNotNull("il doit y avoir des traces restantes", traces);
+    final Date lastDate = DateUtils.addMonths(DATE, -1);
 
-      Assert.assertEquals("le nombre de traces doit etre correct", 4, traces
-            .size());
-      Assert.assertTrue("le plus ancien doit avoir le bon nom : "
-            + "[JOUR J-2]", traces.get(0).getContexte().contains("[JOUR J-3]"));
-   }
+    paramService.setPurgeExploitDate(lastDate);
+    paramService.setPurgeSecuDate(lastDate);
+    paramService.setPurgeTechDate(lastDate);
 
-   private void checkPurgetechnique() {
-      List<TraceRegTechniqueIndex> traces = techService.lecture(DateUtils
-            .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
-      Assert.assertNotNull("il doit y avoir des traces restantes", traces);
+    paramService.setPurgeExploitDuree(3);
+    paramService.setPurgeSecuDuree(4);
+    paramService.setPurgeTechDuree(1);
 
-      Assert.assertEquals("le nombre de traces doit etre correct", 1, traces
-            .size());
-      Assert.assertTrue("le plus ancien doit avoir le bon nom : "
-            + "[JOUR J-2]", traces.get(0).getContexte().contains("[JOUR J]"));
-   }
+  }
 
-   private void checkParameters() throws ParameterNotFoundException {
-      checkDates();
-      checkExecutions();
-   }
+  private void createTraces() {
+    final TraceDestinataire destinataire = new TraceDestinataire();
+    destinataire.setCodeEvt(CODE_EVT);
+    final Map<String, List<String>> map = new HashMap<>();
+    map.put(TraceDestinataireDao.COL_REG_EXPLOIT, null);
+    map.put(TraceDestinataireDao.COL_REG_SECURITE, null);
+    map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, null);
+    destinataire.setDestinataires(map);
 
-   private void checkDates() throws ParameterNotFoundException {
+    traceSupport.create(destinataire, new Date().getTime());
 
-      Date maxDate = DateUtils.addDays(DATE, -3);
-      maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
-            .getPurgeExploitDate());
+    createTrace("[JOUR J]", 0, destinataire);
+    createTrace("[JOUR J-1]", -1, destinataire);
+    createTrace("[JOUR J-2]", -2, destinataire);
+    createTrace("[JOUR J-3]", -3, destinataire);
+    createTrace("[JOUR J-4]", -4, destinataire);
+    createTrace("[JOUR J-5]", -5, destinataire);
+  }
 
-      maxDate = DateUtils.addDays(DATE, -4);
-      maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
-            .getPurgeSecuDate());
+  private void createTrace(final String suffix, final int decalage,
+                           final TraceDestinataire destinataire) {
+    final TraceToCreate trace = new TraceToCreate();
+    trace.setAction("action " + suffix);
+    trace.setCodeEvt(CODE_EVT);
+    trace.setContexte("contexte " + suffix);
+    trace.setContrat("contrat " + suffix);
+    trace.setInfos(null);
+    trace.setLogin("login " + suffix);
+    trace.setStracktrace("stackTrace " + suffix);
+    // trace.setTimestamp(DateUtils.addDays(DATE, decalage));
+    for (final String dest : destinataire.getDestinataires().keySet()) {
+      createTraces(trace, dest, DateUtils.addDays(DATE, decalage));
+    }
+  }
 
-      maxDate = DateUtils.addDays(DATE, -1);
-      maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
-      Assert.assertEquals("la date doit etre correcte", maxDate, paramService
-            .getPurgeTechDate());
-   }
+  private void checkPurgeExploit() {
+    final List<TraceRegExploitationIndex> traces = exploitService.lecture(DateUtils
+                                                                          .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+    Assert.assertNotNull("il doit y avoir des traces restantes", traces);
 
-   private void checkExecutions() throws ParameterNotFoundException {
+    Assert.assertEquals("le nombre de traces doit etre correct", 3, traces
+                        .size());
+    Assert.assertTrue("le plus ancien doit avoir le bon nom : "
+        + "[JOUR J-2]", traces.get(0).getAction().contains("[JOUR J-2]"));
+  }
 
-      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
-            paramService.isPurgeExploitIsRunning());
-      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
-            paramService.isPurgeSecuIsRunning());
-      Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
-            paramService.isPurgeTechIsRunning());
+  private void checkPurgeSecurite() {
+    final List<TraceRegSecuriteIndex> traces = secuService.lecture(DateUtils
+                                                                   .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+    Assert.assertNotNull("il doit y avoir des traces restantes", traces);
 
-   }
+    Assert.assertEquals("le nombre de traces doit etre correct", 4, traces
+                        .size());
+    Assert.assertTrue("le plus ancien doit avoir le bon nom : "
+        + "[JOUR J-2]", traces.get(0).getContexte().contains("[JOUR J-3]"));
+  }
 
-   private void createTraces(TraceToCreate traceToCreate, String nomDestinaire,
-         Date date) {
+  private void checkPurgetechnique() {
+    final List<TraceRegTechniqueIndex> traces = techService.lecture(DateUtils
+                                                                    .addMonths(DATE, -1), DateUtils.addMinutes(DATE, 1), 10, false);
+    Assert.assertNotNull("il doit y avoir des traces restantes", traces);
 
-      long timestamp = timeUUIDSupport.getTimestampFromDate(date);
-      UUID idTrace = timeUUIDSupport.buildUUIDFromTimestamp(timestamp);
-      Date timestampTrace = timeUUIDSupport.getDateFromTimestamp(timestamp);
+    Assert.assertEquals("le nombre de traces doit etre correct", 1, traces
+                        .size());
+    Assert.assertTrue("le plus ancien doit avoir le bon nom : "
+        + "[JOUR J-2]", traces.get(0).getContexte().contains("[JOUR J]"));
+  }
 
-      if (TraceDestinataireDao.COL_REG_EXPLOIT.equalsIgnoreCase(nomDestinaire)) {
-         exploitationSupport.create(new TraceRegExploitation(traceToCreate,
-               null, idTrace, timestampTrace), timestampTrace.getTime());
-      } else if (TraceDestinataireDao.COL_REG_SECURITE
-            .equalsIgnoreCase(nomDestinaire)) {
-         securiteSupport.create(new TraceRegSecurite(traceToCreate, null,
-               idTrace, timestampTrace), timestampTrace.getTime());
-      } else if (TraceDestinataireDao.COL_REG_TECHNIQUE
-            .equalsIgnoreCase(nomDestinaire)) {
-         techniqueSupport.create(new TraceRegTechnique(traceToCreate, null,
-               idTrace, timestampTrace), timestampTrace.getTime());
-      }
-   }
+  private void checkParameters() throws ParameterNotFoundException {
+    checkDates();
+    checkExecutions();
+  }
+
+  private void checkDates() throws ParameterNotFoundException {
+
+    Date maxDate = DateUtils.addDays(DATE, -3);
+    maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
+    Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+                        .getPurgeExploitDate());
+
+    maxDate = DateUtils.addDays(DATE, -4);
+    maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
+    Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+                        .getPurgeSecuDate());
+
+    maxDate = DateUtils.addDays(DATE, -1);
+    maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
+    Assert.assertEquals("la date doit etre correcte", maxDate, paramService
+                        .getPurgeTechDate());
+  }
+
+  private void checkExecutions() throws ParameterNotFoundException {
+
+    Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+                        paramService.isPurgeExploitIsRunning());
+    Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+                        paramService.isPurgeSecuIsRunning());
+    Assert.assertEquals("le boolean doit etre correcte", Boolean.FALSE,
+                        paramService.isPurgeTechIsRunning());
+
+  }
+
+  private void createTraces(final TraceToCreate traceToCreate, final String nomDestinaire,
+                            final Date date) {
+
+    final long timestamp = timeUUIDSupport.getTimestampFromDate(date);
+    final UUID idTrace = timeUUIDSupport.buildUUIDFromTimestamp(timestamp);
+    final Date timestampTrace = timeUUIDSupport.getDateFromTimestamp(timestamp);
+
+    if (TraceDestinataireDao.COL_REG_EXPLOIT.equalsIgnoreCase(nomDestinaire)) {
+      exploitationSupport.create(new TraceRegExploitation(traceToCreate,
+                                                          null, idTrace, timestampTrace), timestampTrace.getTime());
+    } else if (TraceDestinataireDao.COL_REG_SECURITE
+        .equalsIgnoreCase(nomDestinaire)) {
+      securiteSupport.create(new TraceRegSecurite(traceToCreate, null,
+                                                  idTrace, timestampTrace), timestampTrace.getTime());
+    } else if (TraceDestinataireDao.COL_REG_TECHNIQUE
+        .equalsIgnoreCase(nomDestinaire)) {
+      techniqueSupport.create(new TraceRegTechnique(traceToCreate, null,
+                                                    idTrace, timestampTrace), timestampTrace.getTime());
+    }
+  }
 }

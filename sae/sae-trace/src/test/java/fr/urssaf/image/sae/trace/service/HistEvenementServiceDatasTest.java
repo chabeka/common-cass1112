@@ -13,14 +13,14 @@ import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.dao.support.HistEvenementSupport;
 import fr.urssaf.image.sae.trace.model.DfceTraceSyst;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
@@ -31,13 +31,13 @@ public class HistEvenementServiceDatasTest {
 
    private static final Date DATE = new Date();
 
-   private static final Date DATE_INF = DateUtils.addHours(DATE, -1);
+  // private static final Date DATE_INF = DateUtils.addHours(DATE, -1);
 
-   private static final Date DATE_SUP = DateUtils.addHours(DATE, 1);
+  // private static final Date DATE_SUP = DateUtils.addHours(DATE, 1);
 
-   private static final Date DATE_JOUR_SUIVANT = DateUtils.addDays(DATE, 1);
+  // private static final Date DATE_JOUR_SUIVANT = DateUtils.addDays(DATE, 1);
 
-   private static final Date DATE_JOUR_PRECEDENT = DateUtils.addDays(DATE, -1);
+  // private static final Date DATE_JOUR_PRECEDENT = DateUtils.addDays(DATE, -1);
 
    private static final String VALUE = "valeur";
 
@@ -45,9 +45,9 @@ public class HistEvenementServiceDatasTest {
 
    private static final String KEY_UUID = "UUID";
 
-   private static final String USERNAME = "_ADMIN";
+  // private static final String USERNAME = "_ADMIN";
 
-   private static final String LOGIN = "LE LOGIN";
+  // private static final String LOGIN = "LE LOGIN";
 
    private static final String CONTRAT = "contrat de service";
 
@@ -66,6 +66,11 @@ public class HistEvenementServiceDatasTest {
 
    @Autowired
    private HistEvenementSupport support;
+
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
    @Test
    public void testAucunRetourBorneInferieure() {

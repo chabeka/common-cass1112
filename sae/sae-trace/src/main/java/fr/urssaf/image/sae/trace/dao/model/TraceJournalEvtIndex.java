@@ -8,7 +8,7 @@ import com.datastax.driver.mapping.annotations.Table;
 /**
  * Classe de modèle de la CF TraceJournalEvtindex
  */
-@Table(name = "tracejournalevtindex")
+@Table(name = "TraceJournalEvtIndex")
 public class TraceJournalEvtIndex extends TraceIndex {
 
    /**

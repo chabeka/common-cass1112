@@ -56,11 +56,11 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
   public LoggerSupport getLoggerSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return regSecuriteCqlService.getLoggerSupport();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return regSecuriteThriftService.getLoggerSupport();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return regSecuriteThriftService.getLoggerSupport();
     }
     return null;
@@ -68,11 +68,12 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
   public JobClockSupport getClockSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-    	// nothing => le clock est gerer automatiquement par datastax
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return regSecuriteThriftService.getClockSupport();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+    ) {
+      // nothing => le clock est gerer automatiquement par datastax
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return regSecuriteThriftService.getClockSupport();
     }
     return null;
@@ -80,11 +81,11 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
   public Logger getLogger() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return regSecuriteCqlService.getLogger();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return regSecuriteThriftService.getLogger();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return regSecuriteThriftService.getLogger();
     }
     return null;
@@ -97,13 +98,13 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   @Override
   public TraceRegSecurite lecture(final UUID identifiant) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       // ON MAP
       final TraceRegSecuriteCql tracecql = regSecuriteCqlService.lecture(identifiant);
       return UtilsTraceMapper.createTraceRegSecuriteFromCqlToThrift(tracecql);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return regSecuriteThriftService.lecture(identifiant);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return regSecuriteThriftService.lecture(identifiant);
     }
     return null;
@@ -154,19 +155,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
                                             PurgeType.PURGE_EVT,
                                             DateRegUtils.getJournee(date));
 
-    long nbTracesPurgees = 0;
-
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = regSecuriteCqlService.getSupport().delete(dateIndex);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      nbTracesPurgees = regSecuriteThriftService.getSupport().delete(dateIndex,
-                                                                     getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      nbTracesPurgees = regSecuriteThriftService.getSupport()
-          .delete(dateIndex,
-                  getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
-    }
+    final long nbTracesPurgees = deleteRegSecuriteIndexByDate(nbMaxLigneEvtToDelete, dateIndex);
 
     getLoggerSupport()
     .logPurgeJourneeFin(getLogger(),
@@ -176,6 +165,33 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
                         nbTracesPurgees);
 
     getLogger().debug(FIN_LOG, prefix);
+  }
+
+  /**
+   * Suppression des RegSecurite par date
+   * 
+   * @param nbMaxLigneEvtToDelete
+   * @param dateIndex
+   * @return
+   */
+  private long deleteRegSecuriteIndexByDate(final int nbMaxLigneEvtToDelete, final Date dateIndex) {
+    long nbTracesPurgees = 0;
+
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      nbTracesPurgees = regSecuriteCqlService.getSupport().delete(dateIndex);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      nbTracesPurgees = regSecuriteThriftService.getSupport()
+          .delete(dateIndex,
+                  getClockSupport().currentCLock(),
+                  nbMaxLigneEvtToDelete);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
+      nbTracesPurgees = regSecuriteThriftService.getSupport().delete(dateIndex,
+                                                                     getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
+      nbTracesPurgees = nbTracesPurgees + regSecuriteCqlService.getSupport().delete(dateIndex);
+    }
+    return nbTracesPurgees;
   }
 
   @Override
@@ -217,27 +233,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        final List<TraceRegSecuriteIndexCql> resultCql = regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
-        if (resultCql != null) {
-          for (final TraceRegSecuriteIndexCql traceRegSecuIndexCql : resultCql) {
-            final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceRegSecuIndexCql);
-            result.add(indexThrift);
-          }
-        }
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        result = regSecuriteThriftService.getSupport().findByDates(startDate,
-                                                                   endDate,
-                                                                   countLeft,
-                                                                   true);
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        result = regSecuriteThriftService.getSupport()
-            .findByDates(startDate,
-                         endDate,
-                         countLeft,
-                         true);
-      }
+      result = findTraceRegSecuriteIndexByDate(limite, countLeft, result, currentDate, startDate, endDate);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
@@ -249,6 +245,43 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
         && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
     return values;
+  }
+
+  /**
+   * Recherche des Traces des Index RegSecurite par date
+   * 
+   * @param limite
+   * @param countLeft
+   * @param result
+   * @param currentDate
+   * @param startDate
+   * @param endDate
+   * @return
+   */
+  private List<TraceRegSecuriteIndex> findTraceRegSecuriteIndexByDate(final int limite, final int countLeft, List<TraceRegSecuriteIndex> result, final Date currentDate,
+                                                                      final Date startDate, final Date endDate) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      final List<TraceRegSecuriteIndexCql> resultCql = regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
+      if (resultCql != null) {
+        for (final TraceRegSecuriteIndexCql traceRegSecuIndexCql : resultCql) {
+          final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceRegSecuIndexCql);
+          result.add(indexThrift);
+        }
+      }
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      result = regSecuriteThriftService.getSupport().findByDates(startDate,
+                                                                 endDate,
+                                                                 countLeft,
+                                                                 true);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
+      result = regSecuriteThriftService.getSupport()
+          .findByDates(startDate,
+                       endDate,
+                       countLeft,
+                       true);
+    }
+    return result;
   }
 
   private List<TraceRegSecuriteIndex> findReversedOrder(final List<Date> dates, final int limite) {
@@ -265,27 +298,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        final List<TraceRegSecuriteIndexCql> resultCql = regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
-        if (resultCql != null) {
-          for (final TraceRegSecuriteIndexCql traceJournalEvtIndexCql : resultCql) {
-            final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceJournalEvtIndexCql);
-            result.add(indexThrift);
-          }
-        }
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        result = regSecuriteThriftService.getSupport().findByDates(startDate,
-                                                                   endDate,
-                                                                   countLeft,
-                                                                   true);
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        result = regSecuriteThriftService.getSupport()
-                                         .findByDates(startDate,
-                                                      endDate,
-                                                      countLeft,
-                                                      true);
-      }
+      result = findTraceRegSecuriteIndexByDate(limite, countLeft, result, currentDate, startDate, endDate);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);

@@ -4,8 +4,8 @@
 package fr.urssaf.image.sae.trace.service.validation;
 
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.trace.model.PurgeType;
@@ -34,13 +34,13 @@ public class PurgeServiceValidation {
    * @param typePurge
    *          le type de purge
    */
-  @Before(PURGE_METHOD)
+  @After(PURGE_METHOD)
   public final void testPurge(final PurgeType typePurge) {
 
     if (typePurge == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              "{0}",
-                                                             "type de purge"));
+          "type de purge"));
     }
   }
 
@@ -50,13 +50,13 @@ public class PurgeServiceValidation {
    * @param typePurge
    *          le type de purge
    */
-  @Before(PURGE_JOURN_METHOD)
+  @After(PURGE_JOURN_METHOD)
   public final void testPurgeJournal(final PurgeType typePurge) {
 
     if (typePurge == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              "{0}",
-                                                             "type de purge"));
+          "type de purge"));
     }
   }
 

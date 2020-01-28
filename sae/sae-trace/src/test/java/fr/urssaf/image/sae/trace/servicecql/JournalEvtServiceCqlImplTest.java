@@ -43,6 +43,7 @@ public class JournalEvtServiceCqlImplTest {
 
   public String cfName = "tracejournalevt";
 
+
   @Test
   public void testLectureIdentifiantObligatoire() {
 
@@ -57,7 +58,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "identifiant"),
+                              "identifiant"),
                           exception.getMessage());
 
     }
@@ -79,7 +80,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date de début"),
+                              "date de début"),
                           exception.getMessage());
 
     }
@@ -101,7 +102,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date de fin"),
+                              "date de fin"),
                           exception.getMessage());
 
     }
@@ -116,7 +117,7 @@ public class JournalEvtServiceCqlImplTest {
     GestionModeApiTest.setModeApiCql(cfName);
     try {
       service
-             .lecture(DateUtils.addYears(new Date(), -2), new Date(), 0, true);
+      .lecture(DateUtils.addYears(new Date(), -2), new Date(), 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
 
     }
@@ -124,9 +125,9 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "limite"),
+                              "limite"),
                           exception
-                                   .getMessage());
+                          .getMessage());
 
     }
     catch (final Exception exception) {
@@ -146,7 +147,7 @@ public class JournalEvtServiceCqlImplTest {
     }
     catch (final IllegalArgumentException exception) {
       Assert.assertEquals(MESSAGE_OK, DATE_DEB_INF_DATE_FIN, exception
-                                                                      .getMessage());
+                          .getMessage());
 
     }
     catch (final Exception exception) {
@@ -160,7 +161,7 @@ public class JournalEvtServiceCqlImplTest {
     GestionModeApiTest.setModeApiCql(cfName);
     try {
       service
-             .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
+      .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
 
     }
@@ -168,7 +169,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "limite"),
+                              "limite"),
                           exception.getMessage());
 
     }
@@ -190,7 +191,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date de purge"),
+                              "date de purge"),
                           exception.getMessage());
 
     }
@@ -212,7 +213,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date"),
+                              "date"),
                           exception.getMessage());
 
     }
@@ -234,7 +235,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date d'export"),
+                              "date d'export"),
                           exception.getMessage());
 
     }
@@ -255,7 +256,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "répertoire"),
+                              "répertoire"),
                           exception.getMessage());
 
     }
@@ -276,7 +277,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "identifiant du journal précédent"),
+                              "identifiant du journal précédent"),
                           exception.getMessage());
 
     }
@@ -297,7 +298,7 @@ public class JournalEvtServiceCqlImplTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "hash du journal précédent"),
+                              "hash du journal précédent"),
                           exception.getMessage());
 
     }
@@ -316,7 +317,7 @@ public class JournalEvtServiceCqlImplTest {
     }
     catch (final IllegalArgumentException exception) {
       Assert.assertEquals(MESSAGE_OK, REPERTOIRE_EXISTS, exception
-                                                                  .getMessage());
+                          .getMessage());
 
     }
     catch (final Exception exception) {
@@ -331,14 +332,14 @@ public class JournalEvtServiceCqlImplTest {
 
     try {
       FileUtils.writeStringToFile(file,
-                                  "ceci est un fichier et non un répertoire");
+          "ceci est un fichier et non un répertoire");
       service.export(new Date(), file.getAbsolutePath(), "c", "d");
       Assert.fail(ILLEGAL_EXPECTED);
 
     }
     catch (final IllegalArgumentException exception) {
       Assert.assertEquals(MESSAGE_OK, REPERTOIRE_FICHIER, exception
-                                                                   .getMessage());
+                          .getMessage());
 
     }
     catch (final Exception exception) {

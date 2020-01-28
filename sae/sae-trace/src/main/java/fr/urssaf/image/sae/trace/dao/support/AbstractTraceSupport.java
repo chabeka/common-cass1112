@@ -20,7 +20,6 @@ import fr.urssaf.image.sae.trace.dao.AbstractTraceIndexDao;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
-import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
@@ -315,7 +314,7 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
                                     .getString(AbstractTraceDao.COL_CONTRAT_SERVICE));
       trace.setLogin(result.getString(AbstractTraceDao.COL_LOGIN));
 
-      byte[] bValue = result.getByteArray(AbstractTraceDao.COL_PAGMS);
+      final byte[] bValue = result.getByteArray(AbstractTraceDao.COL_PAGMS);
       if (bValue != null) {
         trace.setPagms(ListSerializer.get().fromBytes(bValue));
       }

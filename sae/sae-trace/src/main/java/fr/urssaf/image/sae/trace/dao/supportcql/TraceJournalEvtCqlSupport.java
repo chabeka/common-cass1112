@@ -172,6 +172,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
 
     List<TraceJournalEvtIndexDocCql> traces = null;
     final Iterator<TraceJournalEvtIndexDocCql> iterator = indexjDocDao.IterableFindById(idDoc);
+
     if (iterator.hasNext()) {
       traces = new ArrayList<>();
       while (iterator.hasNext()) {
@@ -180,8 +181,8 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
       }
     }
     return traces;
-
   }
+
 
   /**
    * Suppression d'index du document

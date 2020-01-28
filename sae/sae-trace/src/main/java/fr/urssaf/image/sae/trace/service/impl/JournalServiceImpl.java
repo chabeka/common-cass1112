@@ -48,16 +48,16 @@ public class JournalServiceImpl implements JournalService {
     *           SAE
     */
    @Autowired
-   public JournalServiceImpl(JournalDfceSupport journalDfceSupport,
-         JournalSaeSupport journalSaeSupport) {
+  public JournalServiceImpl(final JournalDfceSupport journalDfceSupport,
+                            final JournalSaeSupport journalSaeSupport) {
       super();
       this.journalDfceSupport = journalDfceSupport;
       this.journalSaeSupport = journalSaeSupport;
    }
 
    @Override
-   public final List<Journal> rechercherJournauxDocument(UUID docUuid) {
-      String trcPrefix = "rechercherJournauxDocument";
+  public final List<Journal> rechercherJournauxDocument(final UUID docUuid) {
+    final String trcPrefix = "rechercherJournauxDocument";
       LOGGER.debug(LOG_DEBUT, trcPrefix);
       LOGGER.debug("{} - UUID Doc : {}", new String[] { trcPrefix,
             docUuid.toString() });
@@ -68,9 +68,9 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public final List<Journal> rechercherJournauxEvenementDfce(Date dateDebut,
-         Date dateFin) {
-      String trcPrefix = "rechercherJournauxEvenement";
+  public final List<Journal> rechercherJournauxEvenementDfce(final Date dateDebut,
+                                                             final Date dateFin) {
+    final String trcPrefix = "rechercherJournauxEvenement";
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - Date début : {}", new String[] { trcPrefix,
             dateDebut.toString() });
@@ -78,11 +78,11 @@ public class JournalServiceImpl implements JournalService {
             dateFin.toString() });
 
     final SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.FRENCH);
-    String date1 = sdf.format(dateDebut);
-    date1 = date1.concat("000000000");
+    final String date1 = sdf.format(dateDebut);
+    // date1 = date1.concat("0000");//
 
-    String date2 = sdf.format(dateFin);
-    date2 = date2.concat("235959999");
+    final String date2 = sdf.format(dateFin);
+    // date2 = date2.concat("2359");// Correction EC
 
       LOGGER.debug(LOG_FIN, trcPrefix);
       return journalDfceSupport.findByDates(date1, date2,
@@ -90,8 +90,8 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public final List<Journal> rechercherJournauxCycleVie(Date dateDebut,
-         Date dateFin) {
+  public final List<Journal> rechercherJournauxCycleVie(final Date dateDebut,
+                                                        final Date dateFin) {
 
     final String trcPrefix = "rechercherJournauxCycleVie";
     LOGGER.debug("{} - début", trcPrefix);
@@ -103,7 +103,7 @@ public class JournalServiceImpl implements JournalService {
     String date1 = sdf.format(dateDebut);
     date1 = date1.concat("000000000");
     String date2 = sdf.format(dateFin);
-    date2 = date2.concat("235959999");
+    date2 = date2.concat("999999999");
 
       LOGGER.debug("{} - fin", trcPrefix);
       return journalDfceSupport.findByDates(date1, date2,
@@ -111,8 +111,8 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public final byte[] recupererContenuJournalDfce(UUID uuidJournal) {
-      String trcPrefix = "recupererContenuJournal";
+  public final byte[] recupererContenuJournalDfce(final UUID uuidJournal) {
+    final String trcPrefix = "recupererContenuJournal";
       LOGGER.debug(LOG_DEBUT, trcPrefix);
       LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
             uuidJournal.toString() });
@@ -124,9 +124,9 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public final List<Chainage> verifierChainage(Date dateDebut, Date dateFin,
-         JournalType journalType) {
-      String trcPrefix = "verifierChainage";
+  public final List<Chainage> verifierChainage(final Date dateDebut, final Date dateFin,
+                                               final JournalType journalType) {
+    final String trcPrefix = "verifierChainage";
       LOGGER.debug(LOG_DEBUT, trcPrefix);
       LOGGER.debug("{} - Date début : {}", new String[] { trcPrefix,
             dateDebut.toString() });
@@ -142,10 +142,10 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public final List<Journal> rechercherJournauxEvenementSae(Date dateDebut,
-         Date dateFin, String nomBase) {
+  public final List<Journal> rechercherJournauxEvenementSae(final Date dateDebut,
+                                                            final Date dateFin, final String nomBase) {
 
-      String trcPrefix = "rechercherJournauxEvenementSae";
+    final String trcPrefix = "rechercherJournauxEvenementSae";
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - Date début : {}", new String[] { trcPrefix,
             dateDebut.toString() });
@@ -154,10 +154,10 @@ public class JournalServiceImpl implements JournalService {
       LOGGER.debug("{} - Nom de la base : {}", new String[] { trcPrefix,
             nomBase });
 
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH);
-      String date1 = sdf.format(dateDebut);
+    final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH);
+    final String date1 = sdf.format(dateDebut);
 
-      String date2 = sdf.format(dateFin);
+    final String date2 = sdf.format(dateFin);
 
       LOGGER.debug(LOG_FIN, trcPrefix);
       return journalSaeSupport.findByDates(date1, date2, nomBase);
@@ -165,9 +165,9 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public final byte[] recupererContenuJournalSae(UUID uuidJournal,
-         String nomBase) {
-      String trcPrefix = "recupererContenuJournalSae";
+  public final byte[] recupererContenuJournalSae(final UUID uuidJournal,
+                                                 final String nomBase) {
+    final String trcPrefix = "recupererContenuJournalSae";
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
             uuidJournal.toString() });
@@ -179,8 +179,8 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public final String getNomJournalDfce(UUID uuidJournal) {
-      String trcPrefix = "getNomJournalDfce";
+  public final String getNomJournalDfce(final UUID uuidJournal) {
+    final String trcPrefix = "getNomJournalDfce";
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
             uuidJournal.toString() });
@@ -190,8 +190,8 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public Journal rechercherJournauxDfce(UUID uuidJournal) {
-      String trcPrefix = "rechercherJournauxEvenementDfce";
+  public Journal rechercherJournauxDfce(final UUID uuidJournal) {
+    final String trcPrefix = "rechercherJournauxEvenementDfce";
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
             uuidJournal.toString() });
@@ -201,9 +201,9 @@ public class JournalServiceImpl implements JournalService {
    }
 
    @Override
-   public Journal rechercherJournauxEvenementSae(UUID uuidJournal,
-         String nomBase) {
-      String trcPrefix = "rechercherJournauxEvenementSae";
+  public Journal rechercherJournauxEvenementSae(final UUID uuidJournal,
+                                                final String nomBase) {
+    final String trcPrefix = "rechercherJournauxEvenementSae";
       LOGGER.debug("{} - début", trcPrefix);
       LOGGER.debug("{} - UUID journal : {}", new String[] { trcPrefix,
             uuidJournal.toString() });

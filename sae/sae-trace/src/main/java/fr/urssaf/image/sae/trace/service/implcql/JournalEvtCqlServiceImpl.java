@@ -79,12 +79,9 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
 
   public JournalEvtCqlServiceImpl(final CassandraCQLClientFactory ccf) {
 
-    final ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl();
-    dao.setCcf(ccf);
-    final ITraceJournalEvtIndexCqlDao indexdao = new TraceJournalEvtIndexCqlDaoImpl();
-    indexdao.setCcf(ccf);
-    final ITraceJournalEvtIndexDocCqlDao indexdocdao = new TraceJournalEvtIndexDocDaoCqlImpl();
-    indexdocdao.setCcf(ccf);
+    final ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl(ccf);
+    final ITraceJournalEvtIndexCqlDao indexdao = new TraceJournalEvtIndexCqlDaoImpl(ccf);
+    final ITraceJournalEvtIndexDocCqlDao indexdocdao = new TraceJournalEvtIndexDocDaoCqlImpl(ccf);
 
     final TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
     final TraceJournalEvtCqlSupport support = new TraceJournalEvtCqlSupport(dao, indexdao, indexdocdao, timeUUIDSupport);

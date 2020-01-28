@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.dao.support;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -16,81 +17,80 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test2.xml" })
 public class TraceDeleteSerializationException {
 
 
-   @Autowired
-   private TraceRegTechniqueSupport supportTraceRegTechnique;
-   
-   @Autowired
-   private TraceJournalEvtSupport supportTraceJournalEvt;
-   
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private TraceRegTechniqueSupport supportTraceRegTechnique;
+
+  @Autowired
+  private TraceJournalEvtSupport supportTraceJournalEvt;
+
+  @Autowired
+  private CassandraServerBean server;
 
 
 
-   @After
-   public void after() throws Exception {
-      server.resetData(true, MODE_API.HECTOR);
-   }
+  @After
+  public void after() throws Exception {
+    server.resetDataOnly();
+  }
 
-   @Test
-   public void testDeleteExceptionSerialization() {
+  @Test
+  public void testDeleteExceptionSerialization() {
 
-      GregorianCalendar gc = (GregorianCalendar) GregorianCalendar
-            .getInstance();
+    final GregorianCalendar gc = (GregorianCalendar) Calendar
+        .getInstance();
 
-      gc.set(GregorianCalendar.DATE, 5);
-      gc.set(GregorianCalendar.MONTH, 6 - 1);
-      gc.set(GregorianCalendar.YEAR, 2013);
-      Date date = gc.getTime();
-      long nbTracesPurgees = 0;
-      try {
-         nbTracesPurgees = supportTraceRegTechnique.delete(date, date.getTime(), 500);
+    gc.set(Calendar.DATE, 5);
+    gc.set(Calendar.MONTH, 6 - 1);
+    gc.set(Calendar.YEAR, 2013);
+    final Date date = gc.getTime();
+    long nbTracesPurgees = 0;
+    try {
+      nbTracesPurgees = supportTraceRegTechnique.delete(date, date.getTime(), 500);
 
-         Assert.assertEquals("Le nombre de traces purgées doit être 1", 1,
-               nbTracesPurgees);
+      Assert.assertEquals("Le nombre de traces purgées doit être 1", 1,
+                          nbTracesPurgees);
 
-      } catch (Exception exception) {
-         Assert.fail("aucune erreur attendue");
-      }
-      
-      try {
-         nbTracesPurgees = supportTraceJournalEvt.delete(date, date.getTime(), 500);
-         Assert.fail("SerializationException attendue");
-      } catch (Exception exception) {
-         Assert.assertEquals("Exception de type SerializationException",
-               SerializationException.class, exception.getClass());
-      }
+    } catch (final Exception exception) {
+      Assert.fail("aucune erreur attendue");
+    }
 
-      gc.set(GregorianCalendar.DATE, 17);
-      gc.set(GregorianCalendar.MONTH, 6 - 1);
-      gc.set(GregorianCalendar.YEAR, 2013);
-      Date date2 = gc.getTime();
+    try {
+      nbTracesPurgees = supportTraceJournalEvt.delete(date, date.getTime(), 500);
+      Assert.fail("SerializationException attendue");
+    } catch (final Exception exception) {
+      Assert.assertEquals("Exception de type SerializationException",
+                          SerializationException.class, exception.getClass());
+    }
 
-      try {
-         nbTracesPurgees = supportTraceRegTechnique.delete(date2, date2.getTime(), 500);
-         Assert.fail("SerializationException attendue");
-      } catch (Exception exception) {
-         Assert.assertEquals("Exception de type SerializationException",
-               SerializationException.class, exception.getClass());
-      }
-      
-      try {
-         nbTracesPurgees = supportTraceJournalEvt.delete(date2, date2.getTime(), 500);
+    gc.set(Calendar.DATE, 17);
+    gc.set(Calendar.MONTH, 6 - 1);
+    gc.set(Calendar.YEAR, 2013);
+    final Date date2 = gc.getTime();
 
-         Assert.assertEquals("Le nombre de traces purgées doit être 1", 1,
-               nbTracesPurgees);
+    try {
+      nbTracesPurgees = supportTraceRegTechnique.delete(date2, date2.getTime(), 500);
+      Assert.fail("SerializationException attendue");
+    } catch (final Exception exception) {
+      Assert.assertEquals("Exception de type SerializationException",
+                          SerializationException.class, exception.getClass());
+    }
 
-      } catch (Exception exception) {
-         Assert.fail("aucune erreur attendue");
-      }
+    try {
+      nbTracesPurgees = supportTraceJournalEvt.delete(date2, date2.getTime(), 500);
 
-   }
+      Assert.assertEquals("Le nombre de traces purgées doit être 1", 1,
+                          nbTracesPurgees);
+
+    } catch (final Exception exception) {
+      Assert.fail("aucune erreur attendue");
+    }
+
+  }
 
 }

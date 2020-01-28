@@ -72,17 +72,17 @@ public class JournalDfceSupport {
 
       final List<DfceTraceDoc> listeTraces = cycleVieSupport.findByDocUuid(docUuid);
 
-      final List<UUID> listeUuidJournal = new ArrayList<UUID>();
+      final List<UUID> listeUuidJournal = new ArrayList<>();
       for (final DfceTraceDoc dfceTraceDoc : listeTraces) {
          final UUID idJournal = dfceTraceDoc.getIdJournal();
          listeUuidJournal.add(idJournal);
       }
 
-      final Set<UUID> set = new HashSet<UUID>();
+      final Set<UUID> set = new HashSet<>();
       set.addAll(listeUuidJournal);
-      final ArrayList<UUID> listeUuidJournalUnique = new ArrayList<UUID>(set);
+      final ArrayList<UUID> listeUuidJournalUnique = new ArrayList<>(set);
 
-      final List<Journal> listeJournal = new ArrayList<Journal>();
+      final List<Journal> listeJournal = new ArrayList<>();
 
       for (final UUID uuid : listeUuidJournalUnique) {
          if (uuid != null) {
@@ -153,7 +153,7 @@ public class JournalDfceSupport {
 
          final SearchResult resultat = dfceServices.search(paramSearchQuery);
 
-         final List<Journal> listeJournal = new ArrayList<Journal>();
+         final List<Journal> listeJournal = new ArrayList<>();
 
          final List<Document> listeDoc = resultat.getDocuments();
          for (final Document document : listeDoc) {
@@ -202,7 +202,7 @@ public class JournalDfceSupport {
          liste = dfceServices.createSystemLogArchiveChainingReport(dateDebut, dateFin);
       }
 
-      final List<Chainage> listeChainage = new ArrayList<Chainage>();
+      final List<Chainage> listeChainage = new ArrayList<>();
       for (final RMLogArchiveReport rmLogArchiveReport : liste) {
          final Chainage chainage = new Chainage();
          chainage.setAlgoHash(rmLogArchiveReport.getDigestAlgorithm());

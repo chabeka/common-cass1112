@@ -14,14 +14,20 @@ import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -32,6 +38,7 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DispatcheurServiceEvtDatasTest {
 
   private static final String CONTEXTE = "contexte";
@@ -61,7 +68,10 @@ public class DispatcheurServiceEvtDatasTest {
 
   private static final String MESSAGE_ERREUR = "l'argument ${0} est obligatoire dans le journal ${1}";
 
-  private final String cfNameDestinataire = "tracedestinatairecql";
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(DispatcheurServiceEvtDatasTest.class);
+
+  private final String cfNameDestinataire = "tracedestinataire";
 
   @Autowired
   private DispatcheurService service;
@@ -78,11 +88,29 @@ public class DispatcheurServiceEvtDatasTest {
   @Autowired
   private JournalEvtService evtService;
 
-  @After
-  public void after() throws Exception {
-    server.resetData();
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
   }
 
+  @After
+  public void after() throws Exception {
+    server.resetDataOnly();
+  }
+
+  @Test
+  public void init() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
+
+    }
+    catch (final Exception e) {
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
+    }
+  }
   @Test
   public void testCreationTraceSecuriteErreurContexteNonRenseigné() {
     createDestinataireEvt();
@@ -173,7 +201,8 @@ public class DispatcheurServiceEvtDatasTest {
       destCqlSupport.create(trace, new Date().getTime());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       destSupport.create(trace, new Date().getTime());
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       destSupport.create(trace, new Date().getTime());
       destCqlSupport.create(trace, new Date().getTime());
     }

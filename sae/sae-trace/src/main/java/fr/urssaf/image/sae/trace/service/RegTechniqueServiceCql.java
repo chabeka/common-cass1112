@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.trace.service;
 import java.util.UUID;
 
 import org.slf4j.Logger;
-import org.springframework.context.ApplicationContext;
 
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;

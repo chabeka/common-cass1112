@@ -66,4 +66,35 @@ public class TraceDestinataire {
       this.destinataires = destinataires;
    }
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((codeEvt == null) ? 0 : codeEvt.hashCode());
+		result = prime * result + ((destinataires == null) ? 0 : destinataires.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		TraceDestinataire other = (TraceDestinataire) obj;
+		if (codeEvt == null) {
+			if (other.codeEvt != null)
+				return false;
+		} else if (!codeEvt.equals(other.codeEvt))
+			return false;
+		if (destinataires == null) {
+			if (other.destinataires != null)
+				return false;
+		} else if (!destinataires.equals(other.destinataires))
+			return false;
+		return true;
+	}
+
 }
