@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
@@ -78,8 +79,10 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
 import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 import fr.urssaf.image.sae.trace.service.CycleVieService;
+import fr.urssaf.image.sae.trace.service.implcql.JournalEvtCqlServiceImpl;
 import fr.urssaf.image.sae.trace.service.implthrift.JournalEvtServiceThriftImpl;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
@@ -127,7 +130,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     * Liste des events du SAE par id du doc
     */
    @Autowired
-  private JournalEvtServiceThriftImpl journalEvtService;
+  private final JournalEvtServiceThriftImpl journalEvtThriftService;
+
+  @Autowired
+  private final JournalEvtCqlServiceImpl journalEvtCqlService;
 
    /**
     * Service pour le mapping de document
@@ -154,6 +160,14 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    private PrmdService prmdService;
 
    private static final String GENERIC_ERROR_STRING = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
+
+  // EC
+  @Autowired
+  public SAETransfertServiceImpl(final JournalEvtServiceThriftImpl journalEvtThriftService, final JournalEvtCqlServiceImpl journalEvtCqlService) {
+    super();
+    this.journalEvtCqlService = journalEvtCqlService;
+    this.journalEvtThriftService = journalEvtThriftService;
+  }
 
    /**
     * Permet de vérifier les droits avant le transfert de masse
@@ -741,11 +755,24 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     * @throws TransfertException
     */
    private String getJournalSaeEventsAsJson(final UUID idArchive) throws TransfertException {
-      final List<TraceJournalEvtIndexDoc> evtSae = journalEvtService.getTraceJournalEvtByIdDoc(idArchive);
+    // EC A TESTER
+    List<TraceJournalEvtIndexDoc> evtSae = null;
+    List<TraceJournalEvtIndexDocCql> evtSaeCql = null;
+    try {
       final ObjectMapper mapper = new ObjectMapper();
-      try {
+      final String modeApi = ModeGestionAPI.getModeApiCf(Constantes.CF_TRACE_JOURNAL_EVT);
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+          || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
+        evtSaeCql = journalEvtCqlService.getTraceJournalEvtByIdDoc(idArchive);
+
+        return mapper.writeValueAsString(evtSaeCql);
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+          || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
+        evtSae = journalEvtThriftService.getTraceJournalEvtByIdDoc(idArchive);
          return mapper.writeValueAsString(evtSae);
       }
+      return null;
+    }
       catch (final IOException e) {
          throw new TransfertException(e);
       }

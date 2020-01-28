@@ -761,11 +761,20 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          pagUntypedDoc.setPageId(psd.getPageId());
 
          // Log la requete lucene et l'index utilisé si la requete dure plus de sae.duree.max.requete.soap secondes.
+      	 // Pour diminuer le temps de la requête on peut augmenter le nombre max de documents par page
          final long endTime = System.currentTimeMillis();
          final long diff = endTime - startTime;
          if (diff / 1000 >= dureeMaxRequete) {
+        	List<String> list;
+        	if (indexOrderPreferenceList!=null) {
+          		list=indexOrderPreferenceList;
+        	}else {
+          		list=new ArrayList<>();
+        	}
+        	final List<String> listIndexOrderPreferenceList = Arrays.asList(prefixeTrc, String.join(",", list), requeteFinal);
             LOG.warn("{} - Requête de recherche dure plus de " + dureeMaxRequete + "  secondes - Index utilisé : {} - Requête Lucene utilisée : {}",
-                     Arrays.asList(prefixeTrc, String.join(",", indexOrderPreferenceList), requeteFinal).toArray());
+                 listIndexOrderPreferenceList.toArray());
+        	throw new SAESearchServiceEx("Timeout requête soap, durée=" + diff / 1000 + "s");
          }
 
       }

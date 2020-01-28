@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -73,225 +75,265 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class SAECopieServiceTest {
 
-   @Autowired
-   @Qualifier("saeCopieService")
-   private SAECopieService service;
+  @Autowired
+  @Qualifier("saeCopieService")
+  private SAECopieService service;
 
-   @Autowired
-   @Qualifier("SAEServiceTestProvider")
-   private SAEServiceTestProvider testProvider;
+  @Autowired
+  @Qualifier("SAEServiceTestProvider")
+  private SAEServiceTestProvider testProvider;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private ParametersService parametersService;
+  @Autowired
+  private ParametersService parametersService;
 
-   @Autowired
-   private RndSupport rndSupport;
+  @Autowired
+  private RndSupport rndSupport;
 
-   @Autowired
-   private JobClockSupport jobClockSupport;
+  @Autowired
+  private JobClockSupport jobClockSupport;
 
-   private UUID uuid;
+  private UUID uuid;
 
-   @Before
-   public void before() throws Exception {
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
-      // initialisation de l'uuid de l'archive
+  @Before
+  public void before() throws Exception {
+
+    // initialisation de l'uuid de l'archive
+    uuid = null;
+
+    // initialisation du contexte de sécurité
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitAll");
+    prmd.setCode("default");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] {"ROLE_copie", "ROLE_consultation", "ROLE_archivage_unitaire"};
+    saePrmds.add(saePrmd);
+
+    saeDroits.put("copie", saePrmds);
+    saeDroits.put("consultation", saePrmds);
+    saeDroits.put("archivage_unitaire", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
+    AuthenticationContext.setAuthenticationToken(token);
+
+    // Paramétrage du RND
+
+    server.resetData(true, MODE_API.HECTOR);
+    parametersService.setVersionRndDateMaj(new Date());
+    parametersService.setVersionRndNumero("11.2");
+
+    final TypeDocument typeDocCree = new TypeDocument();
+    typeDocCree.setCloture(false);
+    typeDocCree.setCode("2.3.1.1.12");
+    typeDocCree.setCodeActivite("3");
+    typeDocCree.setCodeFonction("2");
+    typeDocCree.setDureeConservation(1825);
+    typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
+    typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+
+    rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+  }
+
+  @After
+  public void after() throws Exception {
+
+    // suppression de l'insertion
+    if (uuid != null) {
+
+      testProvider.deleteDocument(uuid);
+    }
+
+    // on vide le contexte de sécurité
+    AuthenticationContext.setAuthenticationToken(null);
+
+    server.resetData(true, MODE_API.HECTOR);
+  }
+
+  private UUID capture() throws IOException, ConnectionServiceEx,
+  ParseException {
+    final File srcFile = new File(
+        "src/test/resources/doc/attestation_consultation.pdf");
+
+    final byte[] content = FileUtils.readFileToByteArray(srcFile);
+
+    final String[] parsePatterns = new String[] { "yyyy-MM-dd" };
+    final Map<String, Object> metadatas = new HashMap<>();
+
+    metadatas.put("apr", "ADELAIDE");
+    metadatas.put("cop", "CER69");
+    metadatas.put("cog", "UR750");
+    metadatas.put("vrn", "11.1");
+    metadatas.put("dom", "2");
+    metadatas.put("act", "3");
+    metadatas.put("nbp", "2");
+    metadatas.put("ffi", "fmt/354");
+    metadatas.put("cse", "ATT_PROD_001");
+    metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
+    metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
+    metadatas.put("cot", Boolean.TRUE);
+
+    final Date creationDate = DateUtils.parseDate("2012-01-01", parsePatterns);
+    final Date dateDebutConservation = DateUtils.parseDate("2013-01-01",
+                                                           parsePatterns);
+    final String documentTitle = "attestation_consultation";
+    final String documentType = "pdf";
+    final String codeRND = "7.7.8.8.1";
+    final String title = "Attestation de vigilance";
+    final String note = "note du document";
+    return testProvider.captureDocument(content, metadatas, documentTitle,
+                                        documentType, creationDate, dateDebutConservation, codeRND, title,
+                                        note);
+  }
+
+  @Test
+  public void copie_success() throws IOException,
+  SAEConsultationServiceException, ConnectionServiceEx, ParseException,
+  UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+  SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+  ReferentialException, SAECopieServiceException,
+  RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+  UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+  EmptyDocumentEx, RequiredArchivableMetadataEx,
+  NotArchivableMetadataEx, UnknownHashCodeEx, EmptyFileNameEx,
+  MetadataValueNotInDictionaryEx, UnknownFormatException,
+  ValidationExceptionInvalidFile, UnexpectedDomainException,
+  InvalidPagmsCombinaisonException, CaptureExistingUuuidException,
+  ArchiveInexistanteEx {
+
+    uuid = capture();
+
+    //
+    final String[] parsePatterns = new String[] { "yyyy-MM-dd" };
+    final Map<String, Object> metadatas = new HashMap<>();
+
+    metadatas.put("apr", "ADELAIDE");
+    metadatas.put("cop", "CER69");
+    metadatas.put("cog", "UR750");
+    metadatas.put("vrn", "11.1");
+    metadatas.put("dom", "2");
+    metadatas.put("act", "3");
+    metadatas.put("nbp", "8");
+    metadatas.put("ffi", "fmt/354");
+    metadatas.put("cse", "ATT_PROD_002");
+    metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
+    metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
+    metadatas.put("cot", Boolean.TRUE);
+    metadatas.put("CodeRND", "2.3.1.1.12");
+
+    final List<UntypedMetadata> fin = new ArrayList<>();
+
+    fin.add(new UntypedMetadata("NbPages", "4"));
+    fin.add(new UntypedMetadata("ApplicationProductrice", "Ada"));
+    fin.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+
+    final UUID res = service.copie(uuid, fin);
+    checkValues(res);
+  }
+
+  private void checkValues(final UUID untypedDocument) throws IOException {
+    assertNotNull("idCopie '" + uuid + "' doit être existant",
+                  untypedDocument);
+  }
+
+  @Test
+  public void copieFailureDocnotExist() throws IOException,
+  SAEConsultationServiceException, ConnectionServiceEx, ParseException,
+  UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx {
+
+    uuid = UUID.fromString("C675CED1-6ACE-463E-BA58-725A103A320A");
+
+    final String[] parsePatterns = new String[] { "yyyy-MM-dd" };
+    final Map<String, Object> metadatas = new HashMap<>();
+
+    metadatas.put("apr", "ADELAIDE");
+    metadatas.put("cop", "CER69");
+    metadatas.put("cog", "UR750");
+    metadatas.put("vrn", "11.1");
+    metadatas.put("dom", "2");
+    metadatas.put("act", "3");
+    metadatas.put("nbp", "8");
+    metadatas.put("ffi", "fmt/354");
+    metadatas.put("cse", "ATT_PROD_002");
+    metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
+    metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
+    metadatas.put("cot", Boolean.TRUE);
+    metadatas.put("CodeRND", "2.3.1.1.12");
+
+    final List<UntypedMetadata> fin = new ArrayList<>();
+
+    fin.add(new UntypedMetadata("NbPages", "4"));
+    fin.add(new UntypedMetadata("ApplicationProductrice", "Ada"));
+    fin.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+
+    try {
+      final UUID res = service.copie(uuid, fin);
+      assertNull(res);
       uuid = null;
+    } catch (final SAECaptureServiceEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final ReferentialRndException e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final UnknownCodeRndEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final ReferentialException e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final SAECopieServiceException e) {
+      final String message = "Il n'existe aucun document pour l'identifiant d'archivage 'c675ced1-6ace-463e-ba58-725a103a320a'";
+      assertEquals(
+                   "le message d'erreur signifiant que le document n'existe pas",
+                   message, e.getMessage());
+      uuid = null;
+    } catch (final RequiredStorageMetadataEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final InvalidValueTypeAndFormatMetadataEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final UnknownMetadataEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final DuplicatedMetadataEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final NotSpecifiableMetadataEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final EmptyDocumentEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final RequiredArchivableMetadataEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final NotArchivableMetadataEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final UnknownHashCodeEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final EmptyFileNameEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final MetadataValueNotInDictionaryEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final UnknownFormatException e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final ValidationExceptionInvalidFile e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final UnexpectedDomainException e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final InvalidPagmsCombinaisonException e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final CaptureExistingUuuidException e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    } catch (final ArchiveInexistanteEx e) {
+      fail("C'est l'exception SAECopieServiceException qui est attendue");
+    }
 
-      // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
-
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("default");
-      saePrmd.setPrmd(prmd);
-			final String[] roles = new String[] {"ROLE_copie", "ROLE_consultation", "ROLE_archivage_unitaire"};
-      saePrmds.add(saePrmd);
-
-      saeDroits.put("copie", saePrmds);
-    	saeDroits.put("consultation", saePrmds);
-    	saeDroits.put("archivage_unitaire", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
-
-      // Paramétrage du RND
-
-      server.resetData(true, MODE_API.HECTOR);
-      parametersService.setVersionRndDateMaj(new Date());
-      parametersService.setVersionRndNumero("11.2");
-
-      TypeDocument typeDocCree = new TypeDocument();
-      typeDocCree.setCloture(false);
-      typeDocCree.setCode("2.3.1.1.12");
-      typeDocCree.setCodeActivite("3");
-      typeDocCree.setCodeFonction("2");
-      typeDocCree.setDureeConservation(1825);
-      typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
-      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-
-      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-   }
-
-   @After
-   public void after() throws Exception {
-
-      // suppression de l'insertion
-      if (uuid != null) {
-
-         testProvider.deleteDocument(uuid);
-      }
-
-      // on vide le contexte de sécurité
-      AuthenticationContext.setAuthenticationToken(null);
-
-      server.resetData(true, MODE_API.HECTOR);
-   }
-
-   private UUID capture() throws IOException, ConnectionServiceEx,
-         ParseException {
-      File srcFile = new File(
-            "src/test/resources/doc/attestation_consultation.pdf");
-
-      byte[] content = FileUtils.readFileToByteArray(srcFile);
-
-      String[] parsePatterns = new String[] { "yyyy-MM-dd" };
-      Map<String, Object> metadatas = new HashMap<String, Object>();
-
-      metadatas.put("apr", "ADELAIDE");
-      metadatas.put("cop", "CER69");
-      metadatas.put("cog", "UR750");
-      metadatas.put("vrn", "11.1");
-      metadatas.put("dom", "2");
-      metadatas.put("act", "3");
-      metadatas.put("nbp", "2");
-      metadatas.put("ffi", "fmt/354");
-      metadatas.put("cse", "ATT_PROD_001");
-      metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
-      metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
-      metadatas.put("cot", Boolean.TRUE);
-
-      Date creationDate = DateUtils.parseDate("2012-01-01", parsePatterns);
-      Date dateDebutConservation = DateUtils.parseDate("2013-01-01",
-            parsePatterns);
-      String documentTitle = "attestation_consultation";
-      String documentType = "pdf";
-      String codeRND = "7.7.8.8.1";
-      String title = "Attestation de vigilance";
-      String note = "note du document";
-      return testProvider.captureDocument(content, metadatas, documentTitle,
-            documentType, creationDate, dateDebutConservation, codeRND, title,
-            note);
-   }
-
-   @Test
-   public void copie_success() throws IOException,
-         SAEConsultationServiceException, ConnectionServiceEx, ParseException,
-         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
-         SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-         ReferentialException, SAECopieServiceException,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, UnknownHashCodeEx, EmptyFileNameEx,
-         MetadataValueNotInDictionaryEx, UnknownFormatException,
-         ValidationExceptionInvalidFile, UnexpectedDomainException,
-         InvalidPagmsCombinaisonException, CaptureExistingUuuidException,
-         ArchiveInexistanteEx {
-
-      uuid = capture();
-
-      List<UntypedMetadata> fin = new ArrayList<UntypedMetadata>();
-
-      fin.add(new UntypedMetadata("NbPages", "4"));
-      fin.add(new UntypedMetadata("ApplicationProductrice", "Ada"));
-      fin.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
-
-      UUID res = service.copie(uuid, fin);
-      checkValues(res);
-   }
-
-   private void checkValues(UUID untypedDocument) throws IOException {
-      assertNotNull("idCopie '" + uuid + "' doit être existant",
-            untypedDocument);
-   }
-
-   @Test
-   public void copieFailureDocnotExist() throws IOException,
-         SAEConsultationServiceException, ConnectionServiceEx, ParseException,
-         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx {
-
-      uuid = UUID.fromString("C675CED1-6ACE-463E-BA58-725A103A320A");
-
-      List<UntypedMetadata> fin = new ArrayList<UntypedMetadata>();
-
-      fin.add(new UntypedMetadata("NbPages", "4"));
-      fin.add(new UntypedMetadata("ApplicationProductrice", "Ada"));
-      fin.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
-
-      try {
-         UUID res = service.copie(uuid, fin);
-         assertNull(res);
-        uuid = null;
-      } catch (SAECaptureServiceEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (ReferentialRndException e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (UnknownCodeRndEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (ReferentialException e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (SAECopieServiceException e) {
-         String message = "Il n'existe aucun document pour l'identifiant d'archivage 'c675ced1-6ace-463e-ba58-725a103a320a'";
-         assertEquals(
-               "le message d'erreur signifiant que le document n'existe pas",
-               message, e.getMessage());
-         uuid = null;
-      } catch (RequiredStorageMetadataEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (InvalidValueTypeAndFormatMetadataEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (UnknownMetadataEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (DuplicatedMetadataEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (NotSpecifiableMetadataEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (EmptyDocumentEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (RequiredArchivableMetadataEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (NotArchivableMetadataEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (UnknownHashCodeEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (EmptyFileNameEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (MetadataValueNotInDictionaryEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (UnknownFormatException e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (ValidationExceptionInvalidFile e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (UnexpectedDomainException e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (InvalidPagmsCombinaisonException e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (CaptureExistingUuuidException e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      } catch (ArchiveInexistanteEx e) {
-         fail("C'est l'exception SAECopieServiceException qui est attendue");
-      }
-
-   }
+  }
 }

@@ -21,6 +21,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -104,6 +106,10 @@ public class SAETransfertServiceTest {
   private static File srcFile = new File(
                                          "src/test/resources/doc/attestation_consultation.pdf");
 
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
   @After
   public void end() throws Exception {
       server.resetData(true, MODE_API.HECTOR);

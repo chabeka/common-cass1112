@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.services.search;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -33,100 +36,105 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class SAESearchServiceImplTest {
 
-   @Autowired
-   @Qualifier("saeSearchService")
-   private SAESearchService saeSearchService;
+  @Autowired
+  @Qualifier("saeSearchService")
+  private SAESearchService saeSearchService;
 
-   @After
-   public void end() {
-      AuthenticationContext.setAuthenticationToken(null);
-   }
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
-   private void initDroits() {
+  @After
+  public void end() {
+    AuthenticationContext.setAuthenticationToken(null);
+  }
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+  private void initDroits() {
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("default");
-      saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "ROLE_recherche" };
-      saePrmds.add(saePrmd);
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      saeDroits.put("recherche", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitAll");
+    prmd.setCode("default");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] { "ROLE_recherche" };
+    saePrmds.add(saePrmd);
 
-   }
+    saeDroits.put("recherche", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
+    AuthenticationContext.setAuthenticationToken(token);
 
-   /**
-    * Cas de test: Appel du service de recherche avec une requête Lucene vide<br>
-    * <br>
-    * Résultat attendu: Levée d'une exception IllegalArgumentException
-    */
-   @Test(expected = IllegalArgumentException.class)
-   public final void searchFailureReqEmpty() throws SAESearchServiceEx,
-         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+  }
 
-      initDroits();
+  /**
+   * Cas de test: Appel du service de recherche avec une requête Lucene vide<br>
+   * <br>
+   * Résultat attendu: Levée d'une exception IllegalArgumentException
+   */
+  @Test(expected = IllegalArgumentException.class)
+  public final void searchFailureReqEmpty() throws SAESearchServiceEx,
+  MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
+  UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
 
-      String requete = StringUtils.EMPTY;
+    initDroits();
 
-      List<String> listMetaDesiree = Arrays.asList("Titre");
+    final String requete = StringUtils.EMPTY;
 
-      saeSearchService.search(requete, listMetaDesiree);
+    final List<String> listMetaDesiree = Arrays.asList("Titre");
 
-   }
+    saeSearchService.search(requete, listMetaDesiree);
 
-   /**
-    * Cas de test: Appel du service de recherche avec une requête Lucene
-    * incorrecte<br>
-    * <br>
-    * Résultat attendu: Levée d'une exception SyntaxLuceneEx
-    */
-   @Test(expected = SyntaxLuceneEx.class)
-   public final void searchFailureSeparateur() throws SAESearchServiceEx,
-         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+  }
 
-      initDroits();
+  /**
+   * Cas de test: Appel du service de recherche avec une requête Lucene
+   * incorrecte<br>
+   * <br>
+   * Résultat attendu: Levée d'une exception SyntaxLuceneEx
+   */
+  @Test(expected = SyntaxLuceneEx.class)
+  public final void searchFailureSeparateur() throws SAESearchServiceEx,
+  MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
+  UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
 
-      String requete = "Siret:123456 AND IdTraitementMasse:41882:050200023";
+    initDroits();
 
-      List<String> listMetaDesiree = Arrays.asList("Titre");
+    final String requete = "Siret:123456 AND IdTraitementMasse:41882:050200023";
 
-      saeSearchService.search(requete, listMetaDesiree);
+    final List<String> listMetaDesiree = Arrays.asList("Titre");
 
-   }
+    saeSearchService.search(requete, listMetaDesiree);
 
-   /**
-    * Cas de test: Appel du service de recherche en demandant dans les résultats
-    * une métadonnée qui n'existe pas dans le référentiel des métadonnées<br>
-    * <br>
-    * Résultat attendu: levée d'une exception UnknownDesiredMetadataEx
-    */
-   @Test(expected = UnknownDesiredMetadataEx.class)
-   public final void searchFailureItem() throws SAESearchServiceEx,
-         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
+  }
 
-      initDroits();
+  /**
+   * Cas de test: Appel du service de recherche en demandant dans les résultats
+   * une métadonnée qui n'existe pas dans le référentiel des métadonnées<br>
+   * <br>
+   * Résultat attendu: levée d'une exception UnknownDesiredMetadataEx
+   */
+  @Test(expected = UnknownDesiredMetadataEx.class)
+  public final void searchFailureItem() throws SAESearchServiceEx,
+  MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
+  UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
 
-      String requete = "Siret:123456";
+    initDroits();
 
-      List<String> listMetaDesiree = Arrays.asList("MetaInexistante");
+    final String requete = "Siret:123456";
 
-      saeSearchService.search(requete, listMetaDesiree);
+    final List<String> listMetaDesiree = Arrays.asList("MetaInexistante");
 
-   }
+    saeSearchService.search(requete, listMetaDesiree);
+
+  }
 
 }

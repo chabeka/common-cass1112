@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
@@ -39,6 +40,7 @@ import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -125,6 +127,13 @@ public class SAESearchServiceImplDatasTest {
    private CassandraServerBean bean;
 
    private EcdeTestDocument ecde;
+
+  private final int NB_DOCUMENTS_PAR_PAGE = 2000;
+
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
    @Before
    public void createCaptureContexte() throws Exception {
@@ -381,7 +390,9 @@ public class SAESearchServiceImplDatasTest {
          SuppressionException, ArchiveInexistanteEx, UnexpectedDomainException,
          InvalidPagmsCombinaisonException, CaptureExistingUuuidException,
          UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
-
+    // On utilise la date du jour plusieurs fois
+    final Calendar aujourdhui = Calendar.getInstance();
+    final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
       // insertion d'un document
       ecde = ecdeTestTools
                           .buildEcdeTestDocument("attestation_consultation.pdf");
@@ -412,7 +423,7 @@ public class SAESearchServiceImplDatasTest {
       metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
       metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
       metadatas.add(new UntypedMetadata("NbPages", "2"));
-      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+    metadatas.add(new UntypedMetadata("DateCreation", format.format(aujourdhui.getTime())));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
       final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
@@ -453,7 +464,7 @@ public class SAESearchServiceImplDatasTest {
       final UntypedMetadata uMeta = new UntypedMetadata("Titre", titreUnique);
       fixedMetadatas.add(uMeta);
 
-      final Calendar aujourdhui = Calendar.getInstance();
+
       aujourdhui.add(Calendar.DATE, -1);
       final String dateMin = Integer.toString(aujourdhui.get(Calendar.YEAR))
             + String.format("%02d", aujourdhui.get(Calendar.MONTH) + 1)
@@ -467,7 +478,7 @@ public class SAESearchServiceImplDatasTest {
                                                                             dateMin,
                                                                             dateMax);
 
-      final int nbDocumentsParPage = 10;
+    final int nbDocumentsParPage = NB_DOCUMENTS_PAR_PAGE;
       final String pageId = null;
 
       final PaginatedUntypedDocuments documents2 = saeSearchService.searchPaginated(
@@ -593,7 +604,7 @@ public class SAESearchServiceImplDatasTest {
       final UntypedMetadata metaFiltre = new UntypedMetadata("Titre", titreUnique);
       filters.add(metaFiltre);
 
-      final int nbDocumentsParPage = 10;
+    final int nbDocumentsParPage = NB_DOCUMENTS_PAR_PAGE;
       final String pageId = null;
       final List<String> listeDesiredMetadata = new ArrayList<>();
 
@@ -707,7 +718,7 @@ public class SAESearchServiceImplDatasTest {
       final UntypedMetadata metaFiltre = new UntypedMetadata("Titre", titreUnique);
       filters.add(metaFiltre);
 
-      final int nbDocumentsParPage = 10;
+    final int nbDocumentsParPage = NB_DOCUMENTS_PAR_PAGE;
       final String pageId = null;
       final List<String> listeDesiredMetadata = new ArrayList<>();
       listeDesiredMetadata.add("Note");
@@ -784,7 +795,7 @@ public class SAESearchServiceImplDatasTest {
       filters.add(metaFiltre);
       filters.add(metaFiltre);
 
-      final int nbDocumentsParPage = 10;
+    final int nbDocumentsParPage = NB_DOCUMENTS_PAR_PAGE;
       final String pageId = null;
       final List<String> listeDesiredMetadata = new ArrayList<>();
 

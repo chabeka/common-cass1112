@@ -30,12 +30,12 @@
       <constructor-arg ref="transfertService" />
    </bean>
    
-   <bean id="transfertCassandraClientFactory" class="fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory">
+   <!-- <bean id="transfertCassandraClientFactory" class="fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory">
       <constructor-arg ref="saeConfigResource" />
-   </bean>
+   </bean> -->
 
    <!-- Keyspace Transfert -->
-   <bean id="transfertKeyspace" factory-method="getKeyspace" factory-bean="transfertCassandraClientFactory" />
+   <bean id="transfertKeyspace" factory-method="getKeyspace" factory-bean="cassandraClientFactory" />
      
    <!-- Deb: Beans dao support traces transfert -->
    

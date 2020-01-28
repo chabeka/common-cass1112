@@ -49,147 +49,147 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class SAEEnrichmentMetadataServiceImplTest {
 
-   @Autowired
-   @Qualifier("saeEnrichmentMetadataService")
-   private SAEEnrichmentMetadataService saeEnrichmentMetadataService;
+  @Autowired
+  @Qualifier("saeEnrichmentMetadataService")
+  private SAEEnrichmentMetadataService saeEnrichmentMetadataService;
 
-   @Autowired
-   @Qualifier("saeControlesCaptureService")
-   private SAEControlesCaptureService controlesCaptureService;
+  @Autowired
+  @Qualifier("saeControlesCaptureService")
+  private SAEControlesCaptureService controlesCaptureService;
 
-   @Autowired
-   private MappingDocumentService mappingService;
+  @Autowired
+  private MappingDocumentService mappingService;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private RndSupport rndSupport;
+  @Autowired
+  private RndSupport rndSupport;
 
-   @Autowired
-   private JobClockSupport jobClockSupport;
+  @Autowired
+  private JobClockSupport jobClockSupport;
 
-   @Autowired
-   private ParametersService parametersService;
+  @Autowired
+  private ParametersService parametersService;
 
-   /**
-    * @return Le service de mappingService
-    */
-   public final MappingDocumentService getMappingService() {
-      return mappingService;
-   }
+  /**
+   * @return Le service de mappingService
+   */
+  public final MappingDocumentService getMappingService() {
+    return mappingService;
+  }
 
-   /**
-    * @param mappingService
-    *           : Le service de mappingService.
-    */
-   public final void setMappingService(MappingDocumentService mappingService) {
-      this.mappingService = mappingService;
-   }
+  /**
+   * @param mappingService
+   *           : Le service de mappingService.
+   */
+  public final void setMappingService(final MappingDocumentService mappingService) {
+    this.mappingService = mappingService;
+  }
 
-   /**
-    * @return Le service d'enrichment des metadonnées.
-    */
-   public final SAEEnrichmentMetadataService getSaeEnrichmentMetadataService() {
-      return saeEnrichmentMetadataService;
-   }
+  /**
+   * @return Le service d'enrichment des metadonnées.
+   */
+  public final SAEEnrichmentMetadataService getSaeEnrichmentMetadataService() {
+    return saeEnrichmentMetadataService;
+  }
 
-   /**
-    * @param saeEnrichmentMetadataService
-    *           the saeEnrichmentMetadataService to set
-    */
-   public final void setSaeEnrichmentMetadataService(
-         SAEEnrichmentMetadataService saeEnrichmentMetadataService) {
-      this.saeEnrichmentMetadataService = saeEnrichmentMetadataService;
-   }
+  /**
+   * @param saeEnrichmentMetadataService
+   *           the saeEnrichmentMetadataService to set
+   */
+  public final void setSaeEnrichmentMetadataService(
+                                                    final SAEEnrichmentMetadataService saeEnrichmentMetadataService) {
+    this.saeEnrichmentMetadataService = saeEnrichmentMetadataService;
+  }
 
-   /**
-    * Préparation données pour le RND
-    */
-   @Before
-   public final void preparationDonnees() {
-      TypeDocument typeDocCree = new TypeDocument();
-      typeDocCree.setCloture(false);
-      typeDocCree.setCode("2.3.1.1.12");
-      typeDocCree.setCodeActivite("3");
-      typeDocCree.setCodeFonction("2");
-      typeDocCree.setDureeConservation(1825);
-      typeDocCree.setLibelle("Libellé 2.3.1.1.12");
-      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+  /**
+   * Préparation données pour le RND
+   */
+  @Before
+  public final void preparationDonnees() {
+    final TypeDocument typeDocCree = new TypeDocument();
+    typeDocCree.setCloture(false);
+    typeDocCree.setCode("2.3.1.1.12");
+    typeDocCree.setCodeActivite("3");
+    typeDocCree.setCodeFonction("2");
+    typeDocCree.setDureeConservation(1825);
+    typeDocCree.setLibelle("Libellé 2.3.1.1.12");
+    typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
-      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+    rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
 
-      parametersService.setVersionRndDateMaj(new Date());
-      parametersService.setVersionRndNumero("11.4");
-   }
+    parametersService.setVersionRndDateMaj(new Date());
+    parametersService.setVersionRndNumero("11.4");
+  }
 
-   /**
-    * Test de la méthode
-    * {@link fr.urssaf.image.sae.services.enrichment.impl.SAEEnrichmentMetadataServiceImpl#enrichmentMetadata(SAEDocument)}
-    * .
-    */
-   @Test
-   public final void enrichmentMetadata() throws SAECaptureServiceEx,
-         IOException, ParseException, SAEEnrichmentEx, InvalidSAETypeException,
-         MappingFromReferentialException, ReferentialRndException,
-         UnknownCodeRndEx, RequiredStorageMetadataEx {
+  /**
+   * Test de la méthode
+   * {@link fr.urssaf.image.sae.services.enrichment.impl.SAEEnrichmentMetadataServiceImpl#enrichmentMetadata(SAEDocument)}
+   * .
+   */
+  @Test
+  public final void enrichmentMetadata() throws SAECaptureServiceEx,
+  IOException, ParseException, SAEEnrichmentEx, InvalidSAETypeException,
+  MappingFromReferentialException, ReferentialRndException,
+  UnknownCodeRndEx, RequiredStorageMetadataEx {
 
-      initDroits();
+    initDroits();
 
-      SAEDocument saeDocument = mappingService
-            .untypedDocumentToSaeDocument(MockFactoryBean
-                  .getUntypedDocumentMockData());
-      saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
-      Assert.assertNotNull(saeDocument);
-      controlesCaptureService.checkSaeMetadataForStorage(saeDocument);
-   }
+    final SAEDocument saeDocument = mappingService
+        .untypedDocumentToSaeDocument(MockFactoryBean
+                                      .getUntypedDocumentMockData());
+    saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
+    Assert.assertNotNull(saeDocument);
+    controlesCaptureService.checkSaeMetadataForStorage(saeDocument);
+  }
 
-   /**
-    * Test de la méthode
-    * {@link fr.urssaf.image.sae.services.enrichment.impl.SAEEnrichmentMetadataServiceImpl#enrichmentMetadata(SAEDocument)}
-    * .
-    */
-   @Test(expected = UnknownCodeRndEx.class)
-   public final void enrichmentMetadataFailed() throws SAECaptureServiceEx,
-         IOException, ParseException, SAEEnrichmentEx, ReferentialRndException,
-         UnknownCodeRndEx {
-      SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
-      for (SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
-         if (saeMetadata.getLongCode().equals(
-               SAEArchivalMetadatas.CODE_RND.getLongCode())) {
-            saeMetadata.setValue("121212");
-            break;
-         }
+  /**
+   * Test de la méthode
+   * {@link fr.urssaf.image.sae.services.enrichment.impl.SAEEnrichmentMetadataServiceImpl#enrichmentMetadata(SAEDocument)}
+   * .
+   */
+  @Test(expected = UnknownCodeRndEx.class)
+  public final void enrichmentMetadataFailed() throws SAECaptureServiceEx,
+  IOException, ParseException, SAEEnrichmentEx, ReferentialRndException,
+  UnknownCodeRndEx {
+    final SAEDocument saeDocument = MockFactoryBean.getSAEDocumentMockData();
+    for (final SAEMetadata saeMetadata : saeDocument.getMetadatas()) {
+      if (saeMetadata.getLongCode().equals(
+                                           SAEArchivalMetadatas.CODE_RND.getLongCode())) {
+        saeMetadata.setValue("121212");
+        break;
       }
-      saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
-   }
+    }
+    saeEnrichmentMetadataService.enrichmentMetadata(saeDocument);
+  }
 
-   @After
-   public void end() throws Exception {
-      AuthenticationContext.setAuthenticationToken(null);
-      server.resetData(true, MODE_API.HECTOR);
-   }
+  @After
+  public void end() throws Exception {
+    AuthenticationContext.setAuthenticationToken(null);
+    server.resetData(true, MODE_API.HECTOR);
+  }
 
-   private void initDroits() {
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+  private void initDroits() {
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("default");
-      saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "ROLE_capture_masse" };
-      saePrmds.add(saePrmd);
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitAll");
+    prmd.setCode("default");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] { "ROLE_capture_masse" };
+    saePrmds.add(saePrmd);
 
-      saeDroits.put("capture_masse", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
-   }
+    saeDroits.put("capture_masse", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
+    AuthenticationContext.setAuthenticationToken(token);
+  }
 }
