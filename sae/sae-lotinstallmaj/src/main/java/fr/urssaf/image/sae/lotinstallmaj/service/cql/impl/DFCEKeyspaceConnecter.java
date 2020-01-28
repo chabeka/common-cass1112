@@ -12,7 +12,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 @Component
 public class DFCEKeyspaceConnecter{
 
-   private static final Logger LOG = LoggerFactory.getLogger(DFCECassandraUpdaterCQL.class);
+   private static final Logger LOG = LoggerFactory.getLogger(DFCEKeyspaceConnecter.class);
    private static final String DFCE_KEYSPACE_NAME = "dfce";
    
    CassandraCQLClientFactory ccf;

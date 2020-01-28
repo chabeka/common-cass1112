@@ -4,27 +4,29 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
-import junit.framework.Assert;
 
 /**
  * classe de test du service {@link SaeMetadataSupport}
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-metadata-test.xml"})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SaeMetadataSupportTest {
 
    @Autowired
@@ -41,7 +43,16 @@ public class SaeMetadataSupportTest {
 
    @After
    public void after() throws Exception {
-	   server.resetData(true, MODE_API.HECTOR);
+    server.clearAndLoad();
+  }
+
+  @Test
+  public void init() throws Exception {
+
+    if (server.isCassandraStarted()) {
+      server.resetData();
+    }
+    Assert.assertTrue(true);
    }
 
    /**

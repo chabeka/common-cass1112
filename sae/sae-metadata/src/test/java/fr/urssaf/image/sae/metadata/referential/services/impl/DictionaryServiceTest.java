@@ -28,33 +28,33 @@ import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 public class DictionaryServiceTest {
 
-   @Autowired
-   private DictionarySupport dictSupport;
+  @Autowired
+  private DictionarySupport dictSupport;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private DictionaryService service;
+  @Autowired
+  private DictionaryService service;
 
-   @After
-   public void after() throws Exception {
-	   server.resetData(true, MODE_API.HECTOR);
-   }
+  @After
+  public void after() throws Exception {
+    server.resetData(true, MODE_API.HECTOR);
+  }
 
 
 
-   /**
-    * Test de création d'un dictionnaire
-    */
-   @Test
-   public void testService() throws DictionaryNotFoundException {
-      final String id = "dictionnaireTest";
-      final List<String> values = Arrays.asList("ValeurTest", "ValeurTest2");
-      service.addElements(id, values);
-      final Dictionary dict = dictSupport.find(id);
-      Assert.assertNotNull(dict);
-      Assert.assertTrue(id.equals(dict.getId()));
-   }
+  /**
+   * Test de création d'un dictionnaire
+   */
+  @Test
+  public void testService() throws DictionaryNotFoundException {
+    final String id = "dictionnaireTest";
+    final List<String> values = Arrays.asList("ValeurTest", "ValeurTest2");
+    service.addElements(id, values);
+    final Dictionary dict = dictSupport.find(id);
+    Assert.assertNotNull(dict);
+    Assert.assertTrue(id.equals(dict.getIdentifiant()));
+  }
 
 }

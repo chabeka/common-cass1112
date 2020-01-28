@@ -5,6 +5,10 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
+
 /**
  * Cette classe représente une métadonnée du référentiel des métadonnées. <BR />
  * Elle contient les attributs :
@@ -41,402 +45,663 @@ import org.apache.commons.lang.builder.ToStringStyle;
  * </ul>
  */
 @SuppressWarnings( { "PMD.LongVariable", "PMD.TooManyFields" })
-public class MetadataReference implements Serializable {
+@Table(name = "metadatacql")
+public class MetadataReference implements Serializable, Comparable<MetadataReference> {
 
-   /**
-    * Version de la serialisation
-    */
-   private static final long serialVersionUID = 1L;
-   private String shortCode;
-   private String longCode;
-   private String type;
-   private Boolean requiredForArchival;
-   private Boolean requiredForStorage;
-   private Integer length;
-   private String pattern;
-   private Boolean consultable;
-   private Boolean defaultConsultable;
-   private Boolean searchable;
-   private Boolean internal;
-   private Boolean archivable;
-   private String label;
-   private String description;
-   private Boolean hasDictionary;
-   private String dictionaryName;
-   private Boolean isIndexed;
-   private Boolean modifiable;
-   private Boolean clientAvailable;
-   private Boolean leftTrimable;
-   private Boolean rightTrimable;
-   private Boolean transferable;
 
-   /**
-    * @return Le code court
-    */
-   public final String getShortCode() {
-      return shortCode;
-   }
 
-   /**
-    * @param shortCode
-    *           : Le code court
-    */
-   public final void setShortCode(final String shortCode) {
-      this.shortCode = shortCode;
-   }
+  /**
+   * Version de la serialisation
+   */
+  private static final long serialVersionUID = 1L;
 
-   /**
-    * @return Le code long
-    */
-   public final String getLongCode() {
-      return longCode;
-   }
+  @PartitionKey
+  @Column(name = "longCode")
+  private String longCode;
 
-   /**
-    * @param longCode
-    *           : Le code long
-    */
-   public final void setLongCode(String longCode) {
-      this.longCode = longCode;
-   }
+  @Column(name = "sCode")
+  private String shortCode;
 
-   /**
-    * @return Le type de la métadonnée
-    */
-   public final String getType() {
-      return type;
-   }
+  @Column(name = "type")
+  private String type;
 
-   /**
-    * @param type
-    *           Le type de la métadonnée
-    */
-   public final void setType(final String type) {
-      this.type = type;
-   }
+  @Column(name = "reqArch")
+  private Boolean requiredForArchival;
 
-   /**
-    * @return La longueur maximal de la valeur de la métadonnée.
-    */
-   public final int getLength() {
-      return length;
-   }
+  @Column(name = "reqStor")
+  private Boolean requiredForStorage;
 
-   /**
-    * @param length
-    *           : La longueur maximal de la valeur de la métadonnée.
-    * 
-    */
-   public final void setLength(final int length) {
-      this.length = length;
-   }
+  @Column(name = "length")
+  private Integer length;
 
-   /**
-    * @return Le motif que la valeur de la métadonnée doit respecter.
-    */
-   public final String getPattern() {
-      return pattern;
-   }
+  @Column(name = "pattern")
+  private String pattern;
 
-   /**
-    * @param pattern
-    *           : Le motif que la valeur de la métadonnée doit respecter.
-    */
-   public final void setPattern(final String pattern) {
-      this.pattern = pattern;
-   }
+  @Column(name = "cons")
+  private Boolean consultable;
 
-   /**
-    * @return True si la métadonnée doit être visible par l'utilisateur sinon
-    *         False.
-    */
-   public final boolean isConsultable() {
-      return consultable;
-   }
+  @Column(name = "defCons")
+  private Boolean defaultConsultable;
 
-   /**
-    * @param consultable
-    *           : True si la métadonnée est consultable par l'utilisateur sinon
-    *           False.
-    */
-   public final void setConsultable(final boolean consultable) {
-      this.consultable = consultable;
-   }
+  @Column(name = "search")
+  private Boolean searchable;
 
-   /**
-    * @return True si la métadonnée est interrogeable par l'utilisateur sinon
-    *         False.
-    */
-   public final Boolean isSearchable() {
-      return searchable;
-   }
+  @Column(name = "int")
+  private Boolean internal;
 
-   /**
-    * @param isSearchable
-    *           : True si la métadonnée est interrogeable par l'utilisateur
-    *           sinon False.
-    * 
-    */
-   public final void setSearchable(final Boolean isSearchable) {
-      this.searchable = isSearchable;
-   }
+  @Column(name = "arch")
+  private Boolean archivable;
 
-   /**
-    * @return True si la métadonnée est une métadonnée métier sinon False.
-    */
-   public final Boolean isInternal() {
-      return internal;
-   }
+  @Column(name = "label")
+  private String label;
 
-   /**
-    * @param isInternal
-    *           : True si la métadonnée est une métadonnée métier sinon False.
-    */
-   public final void setInternal(final Boolean isInternal) {
-      this.internal = isInternal;
-   }
+  @Column(name = "descr")
+  private String description;
 
-   /**
-    * @param isArchivable
-    *           : True si la métadonnée est interrogeable par l'utilisateur
-    *           sinon False.
-    */
-   public final void setArchivable(final Boolean isArchivable) {
-      this.archivable = isArchivable;
-   }
+  @Column(name = "hasDict")
+  private Boolean hasDictionary;
 
-   /**
-    * @return True si la métadonnée est interrogeable par l'utilisateur sinon
-    *         False.
-    */
-   public final Boolean isArchivable() {
-      return archivable;
-   }
+  @Column(name = "dictName")
+  private String dictionaryName;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final String toString() {
-      return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append(
-            "shortCode", shortCode).append("longCode", longCode).append(
-            "label", label).append("pattern", pattern).append("type", type)
-            .append("required", "").append("length", length).append("pattern",
-                  pattern).append("consultable", consultable).append(
-                  "archivable", archivable).append("requiredForStorage",
-                  requiredForStorage).append("requiredForArchival",
-                  requiredForArchival).append("defaultConsultable",
-                  defaultConsultable).append("searchable", searchable).append(
-                  "internal", internal).append("clientAvailable",
-                  clientAvailable).append("leftTrim", leftTrimable).append(
-                  "rightTrim", rightTrimable).toString();
-   }
+  @Column(name = "indexed")
+  private Boolean isIndexed;
 
-   /**
-    * 
-    * @return True si la métadonnée est requise pour l'archivage.
-    */
-   public final boolean isRequiredForArchival() {
-      return requiredForArchival;
-   }
+  @Column(name = "modif")
+  private Boolean modifiable;
 
-   /**
-    * 
-    * @param requiredForArchival
-    *           : le booleen qui indique si la métadonnée est requise pour
-    *           l'archivage.
-    */
-   public final void setRequiredForArchival(final boolean requiredForArchival) {
-      this.requiredForArchival = requiredForArchival;
-   }
+  @Column(name = "dispo")
+  private Boolean clientAvailable;
 
-   /**
-    * 
-    * @return True si la métadonnée est requise pour le stockage.
-    */
-   public final boolean isRequiredForStorage() {
-      return requiredForStorage;
-   }
+  @Column(name = "leftTrim")
+  private Boolean leftTrimable;
 
-   /**
-    * 
-    * @param requiredForStorage
-    *           : le booleen qui indique si la métadonnée est requise pour le
-    *           stockage.
-    */
-   public final void setRequiredForStorage(final boolean requiredForStorage) {
-      this.requiredForStorage = requiredForStorage;
-   }
+  @Column(name = "rightTrim")
+  private Boolean rightTrimable;
 
-   /**
-    * 
-    * @return True si la métadonnée est consultable par défaut.
-    */
-   public final boolean isDefaultConsultable() {
-      return defaultConsultable;
-   }
+  @Column(name = "transf")
+  private Boolean transferable;
 
-   /**
-    * 
-    * @param defaultConsultable
-    *           : le booleen qui indique si la métadonnée consultable par
-    *           défaut.
-    */
-   public final void setDefaultConsultable(final boolean defaultConsultable) {
-      this.defaultConsultable = defaultConsultable;
-   }
+  /**
+   * @return Le code court
+   */
+  public final String getShortCode() {
+    return shortCode;
+  }
 
-   /**
-    * @param label
-    *           : Le libellé.
-    */
-   public final void setLabel(final String label) {
-      this.label = label;
-   }
+  /**
+   * @param shortCode
+   *           : Le code court
+   */
+  public final void setShortCode(final String shortCode) {
+    this.shortCode = shortCode;
+  }
 
-   /**
-    * @return Le libellé
-    */
-   public final String getLabel() {
-      return label;
-   }
+  /**
+   * @return Le code long
+   */
+  public final String getLongCode() {
+    return longCode;
+  }
 
-   /**
-    * @param description
-    *           : Le descriptif
-    */
-   public final void setDescription(final String description) {
-      this.description = description;
-   }
+  /**
+   * @param longCode
+   *           : Le code long
+   */
+  public final void setLongCode(final String longCode) {
+    this.longCode = longCode;
+  }
 
-   /**
-    * @return Le descriptif
-    */
-   public final String getDescription() {
-      return description;
-   }
+  /**
+   * @return Le type de la métadonnée
+   */
+  public final String getType() {
+    return type;
+  }
 
-   /**
-    * @return renvoie vrai/faux suivant si la métadonnée est soumise à un
-    *         dictionnaire
-    */
-   public final Boolean getHasDictionary() {
-      return hasDictionary;
-   }
+  /**
+   * @param type
+   *           Le type de la métadonnée
+   */
+  public final void setType(final String type) {
+    this.type = type;
+  }
 
-   /**
-    * @param hasDictionary
-    *           indique si la métadonnée est soumise à un dictionnaire
-    */
-   public final void setHasDictionary(Boolean hasDictionary) {
-      this.hasDictionary = hasDictionary;
-   }
+  /**
+   * @return La longueur maximal de la valeur de la métadonnée.
+   */
+  public final int getLength() {
+    return length;
+  }
 
-   /**
-    * @return nom du dictionnaire associé
-    */
-   public final String getDictionaryName() {
-      return dictionaryName;
-   }
+  /**
+   * @param length
+   *           : La longueur maximal de la valeur de la métadonnée.
+   * 
+   */
+  public final void setLength(final int length) {
+    this.length = length;
+  }
 
-   /**
-    * @param dictionaryName
-    *           nom du dictionnaire
-    */
-   public final void setDictionaryName(String dictionaryName) {
-      this.dictionaryName = dictionaryName;
-   }
+  /**
+   * @return Le motif que la valeur de la métadonnée doit respecter.
+   */
+  public final String getPattern() {
+    return pattern;
+  }
 
-   /**
-    * @return renvoie si la métadonnée est indexée
-    */
-   public final Boolean getIsIndexed() {
-      return isIndexed;
-   }
+  /**
+   * @param pattern
+   *           : Le motif que la valeur de la métadonnée doit respecter.
+   */
+  public final void setPattern(final String pattern) {
+    this.pattern = pattern;
+  }
 
-   /**
-    * @param isIndexed
-    *           indique que la métadonnée est indexée
-    */
-   public final void setIsIndexed(Boolean isIndexed) {
-      this.isIndexed = isIndexed;
-   }
+  /**
+   * @return True si la métadonnée doit être visible par l'utilisateur sinon
+   *         False.
+   */
+  public final boolean isConsultable() {
+    return consultable;
+  }
 
-   /**
-    * @return indicateur désignant la métadonnée comme modifiable
-    */
-   public final Boolean isModifiable() {
-      return modifiable;
-   }
+  /**
+   * @param consultable
+   *           : True si la métadonnée est consultable par l'utilisateur sinon
+   *           False.
+   */
+  public final void setConsultable(final boolean consultable) {
+    this.consultable = consultable;
+  }
 
-   /**
-    * @param modifiable
-    *           indicateur désignant la métadonnée comme modifiable
-    */
-   public final void setModifiable(Boolean modifiable) {
-      this.modifiable = modifiable;
-   }
+  /**
+   * @return True si la métadonnée est interrogeable par l'utilisateur sinon
+   *         False.
+   */
+  public final Boolean isSearchable() {
+    return searchable;
+  }
 
-   /**
-    * Permet de récuperer l'indicateur de mise à disposition client.
-    * 
-    * @return indicateur de mise à disposition client
-    */
-   public final Boolean isClientAvailable() {
-      return clientAvailable;
-   }
+  /**
+   * @param isSearchable
+   *           : True si la métadonnée est interrogeable par l'utilisateur
+   *           sinon False.
+   * 
+   */
+  public final void setSearchable(final Boolean isSearchable) {
+    searchable = isSearchable;
+  }
 
-   /**
-    * Permet de modifier l'indicateur de mise à disposition client.
-    * 
-    * @param clientAvailable
-    *           indicateur de mise à disposition client
-    */
-   public final void setClientAvailable(final Boolean clientAvailable) {
-      this.clientAvailable = clientAvailable;
-   }
+  /**
+   * @return True si la métadonnée est une métadonnée métier sinon False.
+   */
+  public final Boolean isInternal() {
+    return internal;
+  }
 
-   /**
-    * @return the leftTrimable
-    */
-   public final Boolean isLeftTrimable() {
-      return leftTrimable;
-   }
+  /**
+   * @param isInternal
+   *           : True si la métadonnée est une métadonnée métier sinon False.
+   */
+  public final void setInternal(final Boolean isInternal) {
+    internal = isInternal;
+  }
 
-   /**
-    * @param leftTrimable
-    *           the leftTrimable to set
-    */
-   public final void setLeftTrimable(Boolean leftTrimable) {
-      this.leftTrimable = leftTrimable;
-   }
+  /**
+   * @param isArchivable
+   *           : True si la métadonnée est interrogeable par l'utilisateur
+   *           sinon False.
+   */
+  public final void setArchivable(final Boolean isArchivable) {
+    archivable = isArchivable;
+  }
 
-   /**
-    * @return the rightTrimable
-    */
-   public final Boolean isRightTrimable() {
-      return rightTrimable;
-   }
+  /**
+   * @return True si la métadonnée est interrogeable par l'utilisateur sinon
+   *         False.
+   */
+  public final Boolean isArchivable() {
+    return archivable;
+  }
 
-   /**
-    * @param rightTrimable
-    *           the rightTrimable to set
-    */
-   public final void setRightTrimable(Boolean rightTrimable) {
-      this.rightTrimable = rightTrimable;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final String toString() {
+    return new ToStringBuilder(this, ToStringStyle.MULTI_LINE_STYLE).append(
+                                                                            "shortCode", shortCode).append("longCode", longCode).append(
+                                                                                                                                        "label", label).append("pattern", pattern).append("type", type)
+        .append("required", "").append("length", length).append("pattern",
+                                                                pattern).append("consultable", consultable).append(
+                                                                                                                   "archivable", archivable).append("requiredForStorage",
+                                                                                                                                                    requiredForStorage).append("requiredForArchival",
+                                                                                                                                                                               requiredForArchival).append("defaultConsultable",
+                                                                                                                                                                                                           defaultConsultable).append("searchable", searchable).append(
+                                                                                                                                                                                                                                                                       "internal", internal).append("clientAvailable",
+                                                                                                                                                                                                                                                                                                    clientAvailable).append("leftTrim", leftTrimable).append(
+                                                                                                                                                                                                                                                                                                                                                             "rightTrim", rightTrimable).toString();
+  }
 
-   /**
-    * @param transferable the transferable to set
-    */
-   public final void setTransferable(Boolean transferable) {
-      this.transferable = transferable;
-   }
+  /**
+   * 
+   * @return True si la métadonnée est requise pour l'archivage.
+   */
+  public final boolean isRequiredForArchival() {
+    return requiredForArchival;
+  }
 
-   /**
-    * @return the transferable
-    */
-   public final Boolean getTransferable() {
-      return transferable;
-   }
+  /**
+   * 
+   * @param requiredForArchival
+   *           : le booleen qui indique si la métadonnée est requise pour
+   *           l'archivage.
+   */
+  public final void setRequiredForArchival(final boolean requiredForArchival) {
+    this.requiredForArchival = requiredForArchival;
+  }
+
+  /**
+   * 
+   * @return True si la métadonnée est requise pour le stockage.
+   */
+  public final boolean isRequiredForStorage() {
+    return requiredForStorage;
+  }
+
+  /**
+   * 
+   * @param requiredForStorage
+   *           : le booleen qui indique si la métadonnée est requise pour le
+   *           stockage.
+   */
+  public final void setRequiredForStorage(final boolean requiredForStorage) {
+    this.requiredForStorage = requiredForStorage;
+  }
+
+  /**
+   * 
+   * @return True si la métadonnée est consultable par défaut.
+   */
+  public final boolean isDefaultConsultable() {
+    return defaultConsultable;
+  }
+
+  /**
+   * 
+   * @param defaultConsultable
+   *           : le booleen qui indique si la métadonnée consultable par
+   *           défaut.
+   */
+  public final void setDefaultConsultable(final boolean defaultConsultable) {
+    this.defaultConsultable = defaultConsultable;
+  }
+
+  /**
+   * @param label
+   *           : Le libellé.
+   */
+  public final void setLabel(final String label) {
+    this.label = label;
+  }
+
+  /**
+   * @return Le libellé
+   */
+  public final String getLabel() {
+    return label;
+  }
+
+  /**
+   * @param description
+   *           : Le descriptif
+   */
+  public final void setDescription(final String description) {
+    this.description = description;
+  }
+
+  /**
+   * @return Le descriptif
+   */
+  public final String getDescription() {
+    return description;
+  }
+
+  /**
+   * @return renvoie vrai/faux suivant si la métadonnée est soumise à un
+   *         dictionnaire
+   */
+  public final Boolean getHasDictionary() {
+    return hasDictionary;
+  }
+
+  /**
+   * @param hasDictionary
+   *           indique si la métadonnée est soumise à un dictionnaire
+   */
+  public final void setHasDictionary(final Boolean hasDictionary) {
+    this.hasDictionary = hasDictionary;
+  }
+
+  /**
+   * @return nom du dictionnaire associé
+   */
+  public final String getDictionaryName() {
+    return dictionaryName;
+  }
+
+  /**
+   * @param dictionaryName
+   *           nom du dictionnaire
+   */
+  public final void setDictionaryName(final String dictionaryName) {
+    this.dictionaryName = dictionaryName;
+  }
+
+  /**
+   * @return renvoie si la métadonnée est indexée
+   */
+  public final Boolean getIsIndexed() {
+    return isIndexed;
+  }
+
+  /**
+   * @param isIndexed
+   *           indique que la métadonnée est indexée
+   */
+  public final void setIsIndexed(final Boolean isIndexed) {
+    this.isIndexed = isIndexed;
+  }
+
+  /**
+   * @return indicateur désignant la métadonnée comme modifiable
+   */
+  public final Boolean isModifiable() {
+    return modifiable;
+  }
+
+  /**
+   * @param modifiable
+   *           indicateur désignant la métadonnée comme modifiable
+   */
+  public final void setModifiable(final Boolean modifiable) {
+    this.modifiable = modifiable;
+  }
+
+  /**
+   * Permet de récuperer l'indicateur de mise à disposition client.
+   * 
+   * @return indicateur de mise à disposition client
+   */
+  public final Boolean isClientAvailable() {
+    return clientAvailable;
+  }
+
+  /**
+   * Permet de modifier l'indicateur de mise à disposition client.
+   * 
+   * @param clientAvailable
+   *           indicateur de mise à disposition client
+   */
+  public final void setClientAvailable(final Boolean clientAvailable) {
+    this.clientAvailable = clientAvailable;
+  }
+
+  /**
+   * @return the leftTrimable
+   */
+  public final Boolean isLeftTrimable() {
+    return leftTrimable;
+  }
+
+  /**
+   * @param leftTrimable
+   *           the leftTrimable to set
+   */
+  public final void setLeftTrimable(final Boolean leftTrimable) {
+    this.leftTrimable = leftTrimable;
+  }
+
+  /**
+   * @return the rightTrimable
+   */
+  public final Boolean isRightTrimable() {
+    return rightTrimable;
+  }
+
+  /**
+   * @param rightTrimable
+   *           the rightTrimable to set
+   */
+  public final void setRightTrimable(final Boolean rightTrimable) {
+    this.rightTrimable = rightTrimable;
+  }
+
+  /**
+   * @param transferable the transferable to set
+   */
+  public final void setTransferable(final Boolean transferable) {
+    this.transferable = transferable;
+  }
+
+  /**
+   * @return the transferable
+   */
+  public final Boolean getTransferable() {
+    return transferable;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(final MetadataReference o) {
+
+    return getLongCode().compareTo(o.getLongCode());
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (archivable == null ? 0 : archivable.hashCode());
+    result = prime * result + (clientAvailable == null ? 0 : clientAvailable.hashCode());
+    result = prime * result + (consultable == null ? 0 : consultable.hashCode());
+    result = prime * result + (defaultConsultable == null ? 0 : defaultConsultable.hashCode());
+    result = prime * result + (description == null ? 0 : description.hashCode());
+    result = prime * result + (dictionaryName == null ? 0 : dictionaryName.hashCode());
+    result = prime * result + (hasDictionary == null ? 0 : hasDictionary.hashCode());
+    result = prime * result + (internal == null ? 0 : internal.hashCode());
+    result = prime * result + (isIndexed == null ? 0 : isIndexed.hashCode());
+    result = prime * result + (label == null ? 0 : label.hashCode());
+    result = prime * result + (leftTrimable == null ? 0 : leftTrimable.hashCode());
+    result = prime * result + (length == null ? 0 : length.hashCode());
+    result = prime * result + (longCode == null ? 0 : longCode.hashCode());
+    result = prime * result + (modifiable == null ? 0 : modifiable.hashCode());
+    result = prime * result + (pattern == null ? 0 : pattern.hashCode());
+    result = prime * result + (requiredForArchival == null ? 0 : requiredForArchival.hashCode());
+    result = prime * result + (requiredForStorage == null ? 0 : requiredForStorage.hashCode());
+    result = prime * result + (rightTrimable == null ? 0 : rightTrimable.hashCode());
+    result = prime * result + (searchable == null ? 0 : searchable.hashCode());
+    result = prime * result + (shortCode == null ? 0 : shortCode.hashCode());
+    result = prime * result + (transferable == null ? 0 : transferable.hashCode());
+    result = prime * result + (type == null ? 0 : type.hashCode());
+    return result;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final MetadataReference other = (MetadataReference) obj;
+    if (archivable == null) {
+      if (other.archivable != null) {
+        return false;
+      }
+    } else if (!archivable.equals(other.archivable)) {
+      return false;
+    }
+    if (clientAvailable == null) {
+      if (other.clientAvailable != null) {
+        return false;
+      }
+    } else if (!clientAvailable.equals(other.clientAvailable)) {
+      return false;
+    }
+    if (consultable == null) {
+      if (other.consultable != null) {
+        return false;
+      }
+    } else if (!consultable.equals(other.consultable)) {
+      return false;
+    }
+    if (defaultConsultable == null) {
+      if (other.defaultConsultable != null) {
+        return false;
+      }
+    } else if (!defaultConsultable.equals(other.defaultConsultable)) {
+      return false;
+    }
+    if (description == null) {
+      if (other.description != null) {
+        return false;
+      }
+    } else if (!description.equals(other.description)) {
+      return false;
+    }
+    if (dictionaryName == null) {
+      if (other.dictionaryName != null) {
+        return false;
+      }
+    } else if (!dictionaryName.equals(other.dictionaryName)) {
+      return false;
+    }
+    if (hasDictionary == null) {
+      if (other.hasDictionary != null) {
+        return false;
+      }
+    } else if (!hasDictionary.equals(other.hasDictionary)) {
+      return false;
+    }
+    if (internal == null) {
+      if (other.internal != null) {
+        return false;
+      }
+    } else if (!internal.equals(other.internal)) {
+      return false;
+    }
+    if (isIndexed == null) {
+      if (other.isIndexed != null) {
+        return false;
+      }
+    } else if (!isIndexed.equals(other.isIndexed)) {
+      return false;
+    }
+    if (label == null) {
+      if (other.label != null) {
+        return false;
+      }
+    } else if (!label.equals(other.label)) {
+      return false;
+    }
+    if (leftTrimable == null) {
+      if (other.leftTrimable != null) {
+        return false;
+      }
+    } else if (!leftTrimable.equals(other.leftTrimable)) {
+      return false;
+    }
+    if (length == null) {
+      if (other.length != null) {
+        return false;
+      }
+    } else if (!length.equals(other.length)) {
+      return false;
+    }
+    if (longCode == null) {
+      if (other.longCode != null) {
+        return false;
+      }
+    } else if (!longCode.equals(other.longCode)) {
+      return false;
+    }
+    if (modifiable == null) {
+      if (other.modifiable != null) {
+        return false;
+      }
+    } else if (!modifiable.equals(other.modifiable)) {
+      return false;
+    }
+    if (pattern == null) {
+      if (other.pattern != null) {
+        return false;
+      }
+    } else if (!pattern.equals(other.pattern)) {
+      return false;
+    }
+    if (requiredForArchival == null) {
+      if (other.requiredForArchival != null) {
+        return false;
+      }
+    } else if (!requiredForArchival.equals(other.requiredForArchival)) {
+      return false;
+    }
+    if (requiredForStorage == null) {
+      if (other.requiredForStorage != null) {
+        return false;
+      }
+    } else if (!requiredForStorage.equals(other.requiredForStorage)) {
+      return false;
+    }
+    if (rightTrimable == null) {
+      if (other.rightTrimable != null) {
+        return false;
+      }
+    } else if (!rightTrimable.equals(other.rightTrimable)) {
+      return false;
+    }
+    if (searchable == null) {
+      if (other.searchable != null) {
+        return false;
+      }
+    } else if (!searchable.equals(other.searchable)) {
+      return false;
+    }
+    if (shortCode == null) {
+      if (other.shortCode != null) {
+        return false;
+      }
+    } else if (!shortCode.equals(other.shortCode)) {
+      return false;
+    }
+    if (transferable == null) {
+      if (other.transferable != null) {
+        return false;
+      }
+    } else if (!transferable.equals(other.transferable)) {
+      return false;
+    }
+    if (type == null) {
+      if (other.type != null) {
+        return false;
+      }
+    } else if (!type.equals(other.type)) {
+      return false;
+    }
+    return true;
+  }
 }

@@ -103,3 +103,5 @@ CREATE TABLE jobinstancesBynamecql (
 	jobinstanceid bigint,
 	PRIMARY KEY (jobname, jobinstanceid)
 )WITH CLUSTERING ORDER BY (jobinstanceid DESC);
+
+

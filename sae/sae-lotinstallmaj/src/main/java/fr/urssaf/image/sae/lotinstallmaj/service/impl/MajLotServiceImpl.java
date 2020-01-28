@@ -107,9 +107,11 @@ public final class MajLotServiceImpl implements MajLotService {
   public static final String CASSANDRA_DFCE_180900 = "CASSANDRA_DFCE_180900";
 
   public static final String CASSANDRA_DFCE_180901 = "CASSANDRA_DFCE_180901";
-  
+
   public static final String CASSANDRA_DFCE_190700 = "CASSANDRA_DFCE_190700";
   
+  public static final String CASSANDRA_DFCE_200200 = "CASSANDRA_DFCE_200200";
+
   public static final String CASSANDRA_DFCE_200200 = "CASSANDRA_DFCE_200200";
 
   public static final String META_SEPA = "META_SEPA";
@@ -151,12 +153,12 @@ public final class MajLotServiceImpl implements MajLotService {
    * opérations demandées.
    */
   public static enum APPL_CONCERNEE {
-                                     GNS("GNS"), GNT("GNT"), DFCE("DFCE");
+    GNS("GNS"), GNT("GNT"), DFCE("DFCE");
 
     /**
      * Nom de la GED.
      */
-    private String applName;
+    private final String applName;
 
     /**
      * Constructeur.
@@ -165,7 +167,7 @@ public final class MajLotServiceImpl implements MajLotService {
      *          Nom de la GED.
      */
     private APPL_CONCERNEE(final String gedName) {
-      this.applName = gedName;
+      applName = gedName;
     }
 
     /**
@@ -206,7 +208,7 @@ public final class MajLotServiceImpl implements MajLotService {
    * {@inheritDoc}
    */
   @Override
-  public void demarre(String nomOperation, String[] argSpecifiques) {
+  public void demarre(final String nomOperation, final String[] argSpecifiques) {
 
     // Selon l'opération à lancer
     if (CODE_ACTIVITE.equalsIgnoreCase(nomOperation)) {
@@ -378,7 +380,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updateCassandra200200();
     }else {
       // Opération inconnue => log + exception runtime
-      String message = String.format("Erreur technique : L'opération %s est inconnue", nomOperation);
+      final String message = String.format("Erreur technique : L'opération %s est inconnue", nomOperation);
       LOG.error(message);
       throw new MajLotRuntimeException(message);
     }
@@ -393,9 +395,9 @@ public final class MajLotServiceImpl implements MajLotService {
         addIndexesCompositeToDfce("META_" + nomOperation, APPL_CONCERNEE.GNT);
       }
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       // Opération inconnue => log + exception runtime
-      String message = String.format("Erreur technique : %s ", e.getMessage());
+      final String message = String.format("Erreur technique : %s ", e.getMessage());
       LOG.error(message);
       throw new MajLotRuntimeException(e.getMessage());
     }
@@ -407,9 +409,9 @@ public final class MajLotServiceImpl implements MajLotService {
   @Override
   public void demarreCreateMetadatasIndexesDroitsSAE(final String applicationConcernee) {
     LOG.debug("Démarrage des opérations de création des métadatas sur la base SAE");
-    String gedConcerneeStr = StringUtils.isNotEmpty(applicationConcernee) ? applicationConcernee : null;
+    final String gedConcerneeStr = StringUtils.isNotEmpty(applicationConcernee) ? applicationConcernee : null;
 
-    APPL_CONCERNEE gedConcerneeEnum = retrieveGedConcerne(gedConcerneeStr);
+    final APPL_CONCERNEE gedConcerneeEnum = retrieveGedConcerne(gedConcerneeStr);
 
     if (APPL_CONCERNEE.GNT.equals(gedConcerneeEnum)) {
       // Update des droits GED
@@ -428,7 +430,7 @@ public final class MajLotServiceImpl implements MajLotService {
   @Override
   public void demarreCreateSAE() {
     LOG.debug("Démarrage des opérations de création de la base SAE");
-    this.createGedBase();
+    createGedBase();
     LOG.debug("Opérations de création terminées sur la base SAE");
 
   }
@@ -441,7 +443,7 @@ public final class MajLotServiceImpl implements MajLotService {
    *          {@link APPL_CONCERNEE}
    * @return la GED qui est concernée par le traitement.
    */
-  private APPL_CONCERNEE retrieveGedConcerne(String gedConcernee) {
+  private APPL_CONCERNEE retrieveGedConcerne(final String gedConcernee) {
     APPL_CONCERNEE gedConcerneeReturn;
     if (!StringUtils.isEmpty(gedConcernee)) {
       if (APPL_CONCERNEE.GNS.getApplName().equals(gedConcernee)) {
@@ -450,14 +452,14 @@ public final class MajLotServiceImpl implements MajLotService {
         gedConcerneeReturn = APPL_CONCERNEE.GNT;
       } else {
         // Serveur GED inconnue => log + exception runtime
-        String message = String.format("Erreur technique : Le serveur GED %s est inconnue", gedConcernee);
+        final String message = String.format("Erreur technique : Le serveur GED %s est inconnue", gedConcernee);
         LOG.error(message);
         throw new MajLotRuntimeException(message);
       }
 
     } else {
       // Opération inconnue => log + exception runtime
-      String message = "Erreur technique : Le serveur GED n'est pas renseigné. Veuillez indiquer le serveur sur lequel doit avoir lieu l'opération svp.";
+      final String message = "Erreur technique : Le serveur GED n'est pas renseigné. Veuillez indiquer le serveur sur lequel doit avoir lieu l'opération svp.";
       LOG.error(message);
       throw new MajLotRuntimeException(message);
     }
@@ -472,35 +474,40 @@ public final class MajLotServiceImpl implements MajLotService {
    * @param gedConcernee
    *          {@link APPL_CONCERNEE}
    */
-  private void commonUpdateSAE(APPL_CONCERNEE gedConcernee) {
+  private void commonUpdateSAE(final APPL_CONCERNEE gedConcernee) {
     // META_130400
-    updateMeta("meta130400.xml", "META_130400");
-    // META_150100
-    updateMeta("meta150100.xml", "META_150100");
-    // META_SEPA
-    updateMetaSepa();
-    // CASSANDRA_DFCE_150400
-    updateMetaDfce("META_150400");
-    // CASSANDRA_DFCE_150600
-    updateMetaDfce("META_150600");
-    // CASSANDRA_151000
-    updateMetaDfce("META_151000");
-    // CASSANDRA_DFCE_151001
-    updateMetaDfce("META_151001");
-    // CASSANDRA_DFCE_151200
-    updateMetaDfce("META_151200");
-    // CASSANDRA_DFCE_160400
-    updateMetaDfce("META_160400");
-    // CASSANDRA_DFCE_160900
-    updateMetaDfce("META_160900");
-    // CASSANDRA_DFCE_160901
-    updateMetaDfce("META_160901");
-    // CASSANDRA_DFCE_170901
-    updateMetaDfce("META_170901");
-    // CASSANDRA_DFCE_180300
-    updateMetaDfce("META_180300");
-    // CASSANDRA_DFCE_190700
-    updateMetaDfce("META_190700");
+    /*
+     * updateMeta("meta130400.xml", "META_130400");
+     * // META_150100
+     * updateMeta("meta150100.xml", "META_150100");
+     * // META_SEPA
+     * updateMetaSepa();
+     * // CASSANDRA_DFCE_150400
+     * updateMetaDfce("META_150400");
+     * // CASSANDRA_DFCE_150600
+     * updateMetaDfce("META_150600");
+     * // CASSANDRA_151000
+     * updateMetaDfce("META_151000");
+     * // CASSANDRA_DFCE_151001
+     * updateMetaDfce("META_151001");
+     * // CASSANDRA_DFCE_151200
+     * updateMetaDfce("META_151200");
+     * // CASSANDRA_DFCE_160400
+     * updateMetaDfce("META_160400");
+     * // CASSANDRA_DFCE_160900
+     * updateMetaDfce("META_160900");
+     * // CASSANDRA_DFCE_160901
+     * updateMetaDfce("META_160901");
+     * // CASSANDRA_DFCE_170901
+     * updateMetaDfce("META_170901");
+     * // CASSANDRA_DFCE_180300
+     * updateMetaDfce("META_180300");
+     * // CASSANDRA_DFCE_190700
+     * updateMetaDfce("META_190700");
+     */
+	// CASSANDRA_DFCE_200200
+	updateMetaDfce("META_200200");
+
 	// CASSANDRA_DFCE_200200
 	updateMetaDfce("META_200200");
 	
@@ -515,9 +522,9 @@ public final class MajLotServiceImpl implements MajLotService {
         addIndexesCompositeToDfce("META_" + CASSANDRA_DFCE_180901, APPL_CONCERNEE.GNS);
       }
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       // Opération inconnue => log + exception runtime
-      String message = String.format("Erreur technique : %s ", e.getMessage());
+      final String message = String.format("Erreur technique : ", e);
       LOG.error(message);
       throw new MajLotRuntimeException(e.getMessage());
     }
@@ -528,7 +535,7 @@ public final class MajLotServiceImpl implements MajLotService {
    * Connexion à DFCE
    */
   private void connectDfce() {
-	  serviceProvider = new ServiceProvider();
+    serviceProvider = new ServiceProvider();
     serviceProvider.connect(dfceConfig.getLogin(),
                             dfceConfig.getPassword(),
                             dfceConfig.getUrlToolkit(),
@@ -550,7 +557,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
     // Log
     LOG.info(
-             "Début de l'opération : Modification de la structure de la base DFCE pour rendre la métadonnée CodeActivite non obligatoire");
+        "Début de l'opération : Modification de la structure de la base DFCE pour rendre la métadonnée CodeActivite non obligatoire");
 
     // Connection à DFCE
     connectDfce();
@@ -559,10 +566,10 @@ public final class MajLotServiceImpl implements MajLotService {
     // est
     // bien dans l'état
     // attendu, à savoir qu'elle est obligatoire.
-    BaseAdministrationService baseService = serviceProvider.getBaseAdministrationService();
-    Base base = baseService.getBase(dfceConfig.getBaseName());
-    BaseCategory baseCategory = base.getBaseCategory("act");
-    int minValues = baseCategory.getMinimumValues();
+    final BaseAdministrationService baseService = serviceProvider.getBaseAdministrationService();
+    final Base base = baseService.getBase(dfceConfig.getBaseName());
+    final BaseCategory baseCategory = base.getBaseCategory("act");
+    final int minValues = baseCategory.getMinimumValues();
 
     // Vérifie que la mise à jour est à faire
     if (minValues == 1) {
@@ -591,17 +598,17 @@ public final class MajLotServiceImpl implements MajLotService {
 
     // Log
     LOG.info(
-             "Début de l'opération : Modification de la durée de conservation du type de document 3.1.3.1.1 (1643 -> 1825)");
+        "Début de l'opération : Modification de la durée de conservation du type de document 3.1.3.1.1 (1643 -> 1825)");
 
     // Connection à DFCE
     connectDfce();
 
     // Récupération de la durée de conservation existante
-    StorageAdministrationService storageAdmin = serviceProvider.getStorageAdministrationService();
-    LifeCycleRule lifeCycleRule = storageAdmin.getLifeCycleRule("3.1.3.1.1");
+    final StorageAdministrationService storageAdmin = serviceProvider.getStorageAdministrationService();
+    final LifeCycleRule lifeCycleRule = storageAdmin.getLifeCycleRule("3.1.3.1.1");
     // Depuis DFCe 1.7.0, le cycle de vie peut comporter des etapes
     // Coté Ged Nationale, nous n'en aurons qu'une seule
-    int dureeConservation = lifeCycleRule.getSteps().get(0).getLength();
+    final int dureeConservation = lifeCycleRule.getSteps().get(0).getLength();
 
     // Vérifie que la mise à jour est à faire
     if (dureeConservation == DUREE_1825) {
@@ -916,7 +923,7 @@ public final class MajLotServiceImpl implements MajLotService {
     updater.updateToVersion30();
     LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
   }
-  
+
   private void updateCassandra190700() {
     LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 190700");
     // Récupération de la chaîne de connexion au cluster cassandra
@@ -947,7 +954,7 @@ public final class MajLotServiceImpl implements MajLotService {
     LOG.info("Début de l'opération : ajout des métadonnées au document");
 
     LOG.info("- début de récupération des catégories à ajouter");
-    XStream xStream = new XStream();
+    final XStream xStream = new XStream();
     xStream.processAnnotations(DataBaseModel.class);
     Reader reader = null;
     InputStream stream = null;
@@ -955,20 +962,20 @@ public final class MajLotServiceImpl implements MajLotService {
     try {
       stream = context.getResource("metaSepa.xml").getInputStream();
       reader = new InputStreamReader(stream, Charset.forName("UTF-8"));
-      DataBaseModel model = DataBaseModel.class.cast(xStream.fromXML(reader));
+      final DataBaseModel model = DataBaseModel.class.cast(xStream.fromXML(reader));
 
       LOG.info("- fin de récupération des catégories à ajouter");
 
       // -- connexion a DFCE
       connectDfce();
 
-      Base base = serviceProvider.getBaseAdministrationService().getBase(dfceConfig.getBaseName());
+      final Base base = serviceProvider.getBaseAdministrationService().getBase(dfceConfig.getBaseName());
 
-      final List<BaseCategory> baseCategories = new ArrayList<BaseCategory>();
+      final List<BaseCategory> baseCategories = new ArrayList<>();
       final ToolkitFactory toolkit = ToolkitFactory.getInstance();
-      for (SaeCategory category : model.getDataBase().getSaeCategories().getCategories()) {
+      for (final SaeCategory category : model.getDataBase().getSaeCategories().getCategories()) {
         final Category categoryDfce = serviceProvider.getStorageAdministrationService()
-                                                     .findOrCreateCategory(category.getName(), category.categoryDataType());
+            .findOrCreateCategory(category.getName(), category.categoryDataType());
         final BaseCategory baseCategory = toolkit.createBaseCategory(categoryDfce, category.isIndex());
         baseCategory.setEnableDictionary(category.isEnableDictionary());
         baseCategory.setMaximumValues(category.getMaximumValues());
@@ -978,7 +985,7 @@ public final class MajLotServiceImpl implements MajLotService {
       }
 
       LOG.info("- début d'insertion des catégories");
-      for (BaseCategory baseCategory : baseCategories) {
+      for (final BaseCategory baseCategory : baseCategories) {
         base.addBaseCategory(baseCategory);
       }
 
@@ -987,7 +994,7 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("- fin d'insertion des catégories");
 
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       LOG.warn("impossible de récupérer le fichier contenant les données");
     }
     finally {
@@ -995,7 +1002,7 @@ public final class MajLotServiceImpl implements MajLotService {
         try {
           reader.close();
         }
-        catch (IOException e) {
+        catch (final IOException e) {
           LOG.debug("impossible de fermer le reader");
         }
       }
@@ -1004,7 +1011,7 @@ public final class MajLotServiceImpl implements MajLotService {
         try {
           stream.close();
         }
-        catch (IOException e) {
+        catch (final IOException e) {
           LOG.debug("impossible de fermer le flux de données");
         }
 
@@ -1020,12 +1027,12 @@ public final class MajLotServiceImpl implements MajLotService {
   // méthode ne gère que les méta DFCE et plus les indexes composite
   // Pour ajouter les indexes composites il faut utiliser
   // addIndexesCompositeToDfce
-  private void updateMetaDfce(String operation) {
+  private void updateMetaDfce(final String operation) {
 
     // -- Récupération de la liste des métadonnées
     LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
-    RefMetaInitialisationService service = updater.getRefMetaInitService();
-    List<MetadataReference> metadonnees = service.getListMetas();
+    final RefMetaInitialisationService service = updater.getRefMetaInitService();
+    final List<MetadataReference> metadonnees = service.getListMetas();
 
     LOG.info("Début de l'opération : Création des nouvelles métadonnées ({})", operation);
 
@@ -1035,11 +1042,11 @@ public final class MajLotServiceImpl implements MajLotService {
     LOG.info("Fin de l'opération : Création des nouvelles métadonnées ({})", operation);
   }
 
-  private void addIndexesCompositeToDfce(String operation, APPL_CONCERNEE gedConcernee) throws IOException {
+  private void addIndexesCompositeToDfce(final String operation, final APPL_CONCERNEE gedConcernee) throws IOException {
 
     // -- Récupération de la liste des métadonnées
     LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
-    RefMetaInitialisationService service = updater.getRefMetaInitService();
+    final RefMetaInitialisationService service = updater.getRefMetaInitService();
 
     LOG.info("Début de l'opération : Création des nouveaux index composite ({})", operation);
     // -- Crétion des indexes composites (Si ils n'existent pas déjà)
@@ -1063,7 +1070,7 @@ public final class MajLotServiceImpl implements MajLotService {
    * @deprecated : Utilier updateBaseDfce() à la place désormais
    */
   @Deprecated
-  private void updateMeta(String fichierlisteMeta, String nomOperation) {
+  private void updateMeta(final String fichierlisteMeta, final String nomOperation) {
 
     // -- connexion a DFCE
     connectDfce();
@@ -1072,7 +1079,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
     LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
 
-    XStream xStream = new XStream();
+    final XStream xStream = new XStream();
     xStream.processAnnotations(DataBaseModel.class);
     Reader reader = null;
     InputStream stream = null;
@@ -1080,7 +1087,7 @@ public final class MajLotServiceImpl implements MajLotService {
     try {
       stream = context.getResource(fichierlisteMeta).getInputStream();
       reader = new InputStreamReader(stream, Charset.forName("UTF-8"));
-      DataBaseModel model = DataBaseModel.class.cast(xStream.fromXML(reader));
+      final DataBaseModel model = DataBaseModel.class.cast(xStream.fromXML(reader));
 
       LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
 
@@ -1091,7 +1098,7 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.debug("MAJ des métadonnées dans DFCE - Fin");
 
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       LOG.warn("impossible de récupérer le fichier contenant les données");
     }
     finally {
@@ -1099,7 +1106,7 @@ public final class MajLotServiceImpl implements MajLotService {
         try {
           reader.close();
         }
-        catch (IOException e) {
+        catch (final IOException e) {
           LOG.debug("impossible de fermer le reader");
         }
       }
@@ -1108,7 +1115,7 @@ public final class MajLotServiceImpl implements MajLotService {
         try {
           stream.close();
         }
-        catch (IOException e) {
+        catch (final IOException e) {
           LOG.debug("impossible de fermer le flux de données");
         }
       }
@@ -1118,26 +1125,26 @@ public final class MajLotServiceImpl implements MajLotService {
     LOG.info("Fin de l'opération : Création des nouvelles métadonnées ({})", nomOperation);
   }
 
-  private void updateBaseDfce(List<SaeCategory> categories) {
+  private void updateBaseDfce(final List<SaeCategory> categories) {
 
     try {
       // -- Ouverture connexion DFCE
       connectDfce();
 
-      String baseName = dfceConfig.getBaseName();
-      Base base = serviceProvider.getBaseAdministrationService().getBase(baseName);
+      final String baseName = dfceConfig.getBaseName();
+      final Base base = serviceProvider.getBaseAdministrationService().getBase(baseName);
 
       final ToolkitFactory toolkit = ToolkitFactory.getInstance();
 
       LOG.debug("Création des métadonnées dans DFCE - Début");
 
-      for (SaeCategory category : categories) {
+      for (final SaeCategory category : categories) {
 
         StorageAdministrationService service;
         service = serviceProvider.getStorageAdministrationService();
 
         // -- Test de l'existence de la métadonnée dans DFCE
-        Category catFound = service.getCategory(category.getName());
+        final Category catFound = service.getCategory(category.getName());
 
         if (catFound == null) {
 
@@ -1190,29 +1197,29 @@ public final class MajLotServiceImpl implements MajLotService {
    *          créer.
    * @throws IOException
    */
-  private void createIndexesCompositeIfNotExist(Map<String[], String> indexes) throws IOException {
+  private void createIndexesCompositeIfNotExist(final Map<String[], String> indexes) throws IOException {
 
     // -- dcfe connect
     connectDfce();
 
     StorageAdministrationService storageAdminService;
     storageAdminService = serviceProvider.getStorageAdministrationService();
-    DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
+    final DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
 
-    for (Entry<String[], String> entry : indexes.entrySet()) {
-      String[] metas = entry.getKey();
-      String aIndexerVide = entry.getValue();
+    for (final Entry<String[], String> entry : indexes.entrySet()) {
+      final String[] metas = entry.getKey();
+      final String aIndexerVide = entry.getValue();
 
-      StringBuffer nomIndex = new StringBuffer();
-      Category[] categories = new Category[metas.length];
+      final StringBuffer nomIndex = new StringBuffer();
+      final Category[] categories = new Category[metas.length];
 
       // -- Cache de catégories pour ne pas réinterroger la base
       Map<String, Category> cacheCategories;
-      cacheCategories = new HashMap<String, Category>();
+      cacheCategories = new HashMap<>();
 
       for (int i = 0; i < metas.length; i++) {
 
-        String codeCourt = metas[i];
+        final String codeCourt = metas[i];
 
         // -- On récupère la catégorie qui n'est pas encore dans le
         // cache
@@ -1235,9 +1242,9 @@ public final class MajLotServiceImpl implements MajLotService {
 
       // -- creation de l'index composite
       LOG.info("Creation de l'index composite {}", nomIndex);
-      CompositeIndex indexComposite = storageAdminService.findOrCreateCompositeIndex(categories);
+      final CompositeIndex indexComposite = storageAdminService.findOrCreateCompositeIndex(categories);
       if (indexComposite == null) {
-        String mssgErreur = "Impossible de créer l'index composite: " + nomIndex;
+        final String mssgErreur = "Impossible de créer l'index composite: " + nomIndex;
         throw new MajLotRuntimeException(mssgErreur);
       }
 
@@ -1256,7 +1263,7 @@ public final class MajLotServiceImpl implements MajLotService {
   private void updateDFCE130700() {
 
     LOG.info("Début de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
-    DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(cassandraConfig);
+    final DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(cassandraConfig);
     dfceUpdater.updateToVersion110();
     dfceUpdater.updateToVersion120();
     LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
@@ -1270,7 +1277,7 @@ public final class MajLotServiceImpl implements MajLotService {
   private void updateDFCE150400() {
 
     LOG.info("Début de l'opération : Lot 150400 - Mise à jour du schéma DFCE");
-    DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(cassandraConfig);
+    final DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(cassandraConfig);
     dfceUpdater.updateToVersion129_P2();
     LOG.info("Fin de l'opération : Lot 150400 - Mise à jour du schéma DFCE");
   }
@@ -1283,7 +1290,7 @@ public final class MajLotServiceImpl implements MajLotService {
   private void updateDFCE150400_P5() {
 
     LOG.info("Début de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
-    DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(cassandraConfig);
+    final DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(cassandraConfig);
     dfceUpdater.updateToVersion129_P5();
     LOG.info("Fin de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
   }
@@ -1295,7 +1302,7 @@ public final class MajLotServiceImpl implements MajLotService {
   private void updateDFCE151000() {
 
     LOG.info("Début de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
-    DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(cassandraConfig);
+    final DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(cassandraConfig);
     dfceUpdater.updateToVersion170();
     LOG.info("Fin de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
   }

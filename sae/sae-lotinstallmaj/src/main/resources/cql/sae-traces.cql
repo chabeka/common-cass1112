@@ -33,6 +33,20 @@ CREATE TABLE tracejournalevtindexcql (
     PRIMARY KEY (identifiantindex, timestamp, identifiant)
 );
 
+CREATE TABLE tracejournalevtindexdoccql (
+	identifiant timeuuid,
+    timestamp timestamp,
+    login text,
+    codeevt text,
+    pagms list<text>,
+
+	identifiantindex uuid,
+    contexte text,
+    contratservice text,
+	infos map<text,text>,
+
+    PRIMARY KEY (identifiantindex,timestamp, identifiant)
+);
 
 CREATE TABLE traceregsecuritecql (
   identifiant timeuuid,
@@ -110,3 +124,4 @@ CREATE TABLE traceregsecuriteindexcql (
     contrat text,
     PRIMARY KEY (identifiantindex, timestamp, identifiant)
 );
+

@@ -110,6 +110,7 @@ public class CQLDataFileSet {
             }
             br.close();
         } catch (IOException e) {
+        	e.printStackTrace();
         	LOG.error("Problème de chargement ou de lecture dans le fichier cql : " + dataSetLocation );
         }
         return cqlQueries;

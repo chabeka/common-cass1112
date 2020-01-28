@@ -11,12 +11,18 @@ import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.CQLDataFileSet;
 @Component
 public class SAECassandraUpdaterCQL {
 
-	private static final Logger LOG = LoggerFactory.getLogger(DFCECassandraUpdaterCQL.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SAECassandraUpdaterCQL.class);
 	
 	private static final String SAE_CREATE_TRACES_SCRIPT = "/cql/sae-traces.cql";
 	private static final String SAE_CREATE_JOB_SPRING_SCRIPT = "/cql/sae-job-spring.cql";
 	private static final String SAE_CREATE_PILE_TRAVAUX_SCRIPT = "/cql/sae-pile-travaux.cql";
 	private static final String SAE_CREATE_MODE_API_SCRIPT = "/cql/modeapi.cql";
+	
+	private static final String SAE_CREATE_COMMONS_SCRIPT = "/cql/sae-commons.cql";
+	private static final String SAE_CREATE_TABLES_DROITS_SCRIPT = "/cql/sae-droits.cql";
+	private static final String SAE_CREATE_TABLES_FORMAT_SCRIPT = "/cql/sae-format.cql";
+	private static final String SAE_CREATE_TABLES_METADATA_SCRIPT = "/cql/sae-metadata.cql";
+	private static final String SAE_CREATE_TABLES_RND_SCRIPT = "/cql/sae-rnd.cql";
 	
 	// Script de delete
 	private static final String SAE_DELETE_MODE_API_SCRIPT = "DROP TABLE modeapi;";
@@ -88,6 +94,86 @@ public class SAECassandraUpdaterCQL {
 	   
 	   LOG.info("Fin de l'opération : creation de la table modeapi cql");
     }
+    
+    
+    /**
+	* Creation des tables Commons
+	*/
+    public final void createTablesCommons() {
+       LOG.info("Début de l'opération : creation de la  table Commons cql");
+    	
+	   
+	   CQLDataFileSet cqlData;
+	   //
+	   cqlData = new CQLDataFileSet(SAE_CREATE_COMMONS_SCRIPT);
+	   CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
+	   dataLoader.load(cqlData);
+	   
+	   LOG.info("Fin de l'opération : creation de la table Commons cql");
+    }  
+    
+    /**
+	* Creation des tables Droits
+	*/
+    public final void createTablesDroits() {
+       LOG.info("Début de l'opération : creation de la  table Droits cql");
+    	
+	   
+	   CQLDataFileSet cqlData;
+	   //
+	   cqlData = new CQLDataFileSet(SAE_CREATE_TABLES_DROITS_SCRIPT);
+	   CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
+	   dataLoader.load(cqlData);
+	   
+	   LOG.info("Fin de l'opération : creation de la table Droits cql");
+    }
+    
+    /**
+	* Creation des tables Formats
+	*/
+    public final void createTablesFormats() {
+        LOG.info("Début de l'opération : creation de la  table Format cql");
+     	
+ 	   
+ 	   CQLDataFileSet cqlData;
+ 	   //
+ 	   cqlData = new CQLDataFileSet(SAE_CREATE_TABLES_FORMAT_SCRIPT);
+ 	   CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
+ 	   dataLoader.load(cqlData);
+ 	   
+ 	   LOG.info("Fin de l'opération : creation de la table Format cql");
+     }
+    
+    /**
+	* Creation des tables Metadata
+	*/
+    public final void createTablesMetadata() {
+        LOG.info("Début de l'opération : creation de la  table Metadata cql");
+     	
+ 	   
+ 	   CQLDataFileSet cqlData;
+ 	   //
+ 	   cqlData = new CQLDataFileSet(SAE_CREATE_TABLES_METADATA_SCRIPT);
+ 	   CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
+ 	   dataLoader.load(cqlData);
+ 	   
+ 	   LOG.info("Fin de l'opération : creation de la table Metadata cql");
+     }
+    /**
+	* Creation des tables RND
+	*/
+    public final void createTablesRND() {
+        LOG.info("Début de l'opération : creation de la  table RND cql");
+     	
+ 	   
+ 	   CQLDataFileSet cqlData;
+ 	   //
+ 	   cqlData = new CQLDataFileSet(SAE_CREATE_TABLES_RND_SCRIPT);
+ 	   CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
+ 	   dataLoader.load(cqlData);
+ 	   
+ 	   LOG.info("Fin de l'opération : creation de la table RND cql");
+     }
     
     /**
 	* Suppression de la table modeapi 
