@@ -40,7 +40,7 @@ public class DFCEReconnectionAspect {
       // On se connecte si on n'est pas encore connecté
       dfceServices.connectTheFistTime();
 
-      LOG.debug("{} - Appel DFCE : {}", new Object[] {LOG_PREFIX, joinPoint.getSignature()});
+    LOG.warn("{} - Appel DFCE : {}", new Object[] {LOG_PREFIX, joinPoint.getSignature()});
       // Si jamais un des paramètres est un inputStream, on sauvegarde la position du stream
       // afin de pouvoir retenter la méthode en cas d'exception
       markInputStreams(joinPoint);
@@ -65,9 +65,21 @@ public class DFCEReconnectionAspect {
             resetInputStreams(joinPoint);
          }
          catch (final DFCERuntimeException ex) {
-            // Gestion des exceptions "AlreadyLockedObjectException" uniquement
-            if (ex.getMessage() != null && !ex.getMessage().contains("AlreadyLockedObjectException")) {
-               throw (ex);
+
+        	if (ex.getMessage() != null) { 
+          		if (ex.getMessage().contains("Erreur HAWAI")){
+            		LOG.warn("{} - On retente l'appel à {} suite au redemarrage d'un serveur sur la tentative n°{}",
+                     new Object[] {LOG_PREFIX, joinPoint.getSignature(), retryIndex});
+            		// On se reconnecte
+            		dfceServices.reconnect();
+            		// On remet les inputStream à leur position d'origine
+            		resetInputStreams(joinPoint);
+
+          		} 
+            	// Gestion des exceptions "AlreadyLockedObjectException" uniquement
+          		else if (!ex.getMessage().contains("AlreadyLockedObjectException")) {
+            		throw ex;
+          		}
             }
             LOG.warn("{} - On retente l'appel à {} suite à la réception de l'exception AlreadyLockedObjectException sur la tentative n°{}",
                      new Object[] {LOG_PREFIX, joinPoint.getSignature(), retryIndex});
