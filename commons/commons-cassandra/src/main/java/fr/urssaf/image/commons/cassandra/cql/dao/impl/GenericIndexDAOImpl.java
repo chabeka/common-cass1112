@@ -13,27 +13,23 @@ import org.springframework.util.Assert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.Mapper;
-import com.datastax.driver.mapping.MappingManager;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.IGenericIndexDAO;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
 /**
- * Classe d'implementation mère de toutes les classes DAO de type index
- * Elle implemente les opérations specifiques aux tables d'index
- * @param <T>
- *          Type de d'objet contenue dans le registre
- * @param <ID>
- *          Identifiant de l'objet
+ * Implementation de l'Interface {@link IGenericIndexDAO} spécifique aux types index
  *
+ * @param <T>
+ *          entité T de type indexe
+ * @param <T>
+ *          l'identifiant de l'entité
  */
 public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
 
    @Autowired
    protected CassandraCQLClientFactory ccf;
-
-   private MappingManager manager;
 
    protected Class<? extends T> daoType;
 
@@ -56,8 +52,10 @@ public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
    @SuppressWarnings("unchecked")
    public Mapper<T> getMapper() {
       if (mapper == null) {
-         manager = new MappingManager(ccf.getSession());
-         mapper = (Mapper<T>) manager.mapper(daoType);
+      // manager = new MappingManager(ccf.getSession());
+      // On récupère le mapper du mapping manager au niveau cassandraClientFactory AC75095351
+      mapper = (Mapper<T>) ccf.getManager().mapper(daoType);
+      // mapper = (Mapper<T>) manager.mapper(daoType);
       }
       return mapper;
    }
@@ -102,7 +100,7 @@ public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
    }
 
 	@Override
-	public void setCcf(CassandraCQLClientFactory ccf) {
+  public void setCcf(final CassandraCQLClientFactory ccf) {
 		this.ccf = ccf;
 	}
 

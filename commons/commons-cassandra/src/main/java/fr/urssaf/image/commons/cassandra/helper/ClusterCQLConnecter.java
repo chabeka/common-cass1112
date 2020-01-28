@@ -45,6 +45,8 @@ public class ClusterCQLConnecter {
 
   private Cluster testCluster = null;
   private Session testSession = null;
+
+  private Builder testBuilder = null;
   protected String[] dataSets;
 
   private final String hosts;
@@ -89,17 +91,20 @@ public class ClusterCQLConnecter {
       try {
         final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(hosts);
         hostConfigurator.setMaxActive(1);
-
-        final Builder testBuilder = Cluster.builder().addContactPoints("localhost").withClusterName(TEST_CLUSTER_NAME).withPort(9142);
+        if (testBuilder == null) {
+          testBuilder = Cluster.builder().addContactPoints("localhost").withClusterName(TEST_CLUSTER_NAME).withPort(9142).withoutJMXReporting();
+        }
         testCluster = Cluster.buildFrom(testBuilder);
+        testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
+        testCluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(20000000);
         final Session session = testCluster.connect();
         testSession = session;
       } catch (final Throwable e) {
-        LOG.error("Erreur technique : " + e.getMessage());
+        throw new RuntimeException(e);
       }
+
     }
-    testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
-    testCluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(20000000);
+
     return testCluster;
   }
 
@@ -146,9 +151,9 @@ public class ClusterCQLConnecter {
             }
           }
         } catch (final IOException exp) {
-          LOG.error("Erreur de merge des datasets : " + exp);
-          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+
           tmpFileDataSet = Paths.get(fileDataSet);
+          throw new RuntimeException(exp);
         }
       } else {
         LOG.warn("Le fichier de merge des datasets n'existe pas. Ajout de la premiere dataSet uniquement.");
@@ -165,9 +170,8 @@ public class ClusterCQLConnecter {
       }
 
     } catch (final IOException | URISyntaxException e) {
-      LOG.error("Erreur de merge des datasets : " + e);
-      LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
       tmpFileDataSet = Paths.get(fileDataSet);
+      throw new RuntimeException(e);
     } finally {
       LOG.debug(logFinMerge);
     }
@@ -209,7 +213,7 @@ public class ClusterCQLConnecter {
   * 	Les jeux de données à charger
   */
   public void loadDataSetToServer(final boolean dropAndCreateKeyspace, final String... newDataSets) {
-    // On inject les jeux de données
+    // On injecte les jeux de données
     if (newDataSets != null && newDataSets.length > 0) {
       final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
       cqlDataLoader.load(mergeCqlDataSets(dropAndCreateKeyspace, newDataSets));

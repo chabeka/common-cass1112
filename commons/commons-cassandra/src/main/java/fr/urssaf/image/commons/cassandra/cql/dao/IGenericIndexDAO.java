@@ -6,18 +6,18 @@ package fr.urssaf.image.commons.cassandra.cql.dao;
 import java.util.Iterator;
 
 /**
- * Interface commune de toutes les classes de DAO de type index.
- *  * @param <T>
- *          Type de d'objet index contenue dans le registre
- * @param <ID>
- *          Identifiant de l'objet index
+ * Interface pour effectuer certaine operation propre aux entités de types index
  *
+ * @param <I>
+ *          entité I de type indexe
+ * @param <ID>
+ *          l'identifiant de l'entité
  */
-public interface IGenericIndexDAO<T, ID> extends ICommonDAO<T, ID> {
+public interface IGenericIndexDAO<I, ID> extends ICommonDAO<I, ID> {
 
    /**
     * @param id
     * @return
     */
-   Iterator<T> findAllWithMapperById(ID id);
+  Iterator<I> findAllWithMapperById(ID id);
 }

@@ -6,6 +6,7 @@ import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +21,10 @@ import com.datastax.driver.core.HostDistance;
 import com.datastax.driver.core.PoolingOptions;
 import com.datastax.driver.core.QueryOptions;
 import com.datastax.driver.core.Session;
+import com.datastax.driver.core.schemabuilder.CreateKeyspace;
+import com.datastax.driver.core.schemabuilder.SchemaBuilder;
+import com.datastax.driver.core.schemabuilder.SchemaStatement;
+import com.datastax.driver.mapping.MappingManager;
 
 import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
 import fr.urssaf.image.commons.cassandra.utils.HostsUtils;
@@ -33,6 +38,8 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    private static final Logger LOG = LoggerFactory.getLogger(CassandraCQLClientFactory.class);
 
    public static final String KEYSPACE_TU = "keyspace_tu";
+
+  public static final String DFCE_KEYSPACE_NAME = "dfce";
 
    private final static String SAE_CONFIG_CASSANDRA_TRANSFERT_CONFIG = "sae.cassandra.transfert.cheminFichierConfig";
 
@@ -64,6 +71,8 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    private String keyspaceName;
 
    CassandraServerBean server;
+
+  private MappingManager manager;
 
    public HashMap<String, String> listeCfsModes;
 
@@ -120,7 +129,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
             try {
                cassandraServer.init();
             } catch (final Exception e) {
-            	LOG.error("Problème de demarrage ou de réinitialistaion de la base cassandra");
+          		throw new RuntimeException("Une erreur s'est produite lors de l'initialisation:", e);
             }
          }
 
@@ -133,6 +142,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
          session = null;
          keyspaceName = null;
          server = null;
+      	 manager = null;
       }
    }
 
@@ -193,11 +203,41 @@ public final class CassandraCQLClientFactory implements DisposableBean {
                .withPoolingOptions(poolingOptions)
                .withQueryOptions(qo)
                .build();
+
+      try{
+        // on se connect au keyspace si il existe
          session = cluster.connect('\"' + keyspaceName + '\"');
+
+      } catch (final Exception e){
+        // utilser seulement dans le cas de SAE
+        if (cluster.getMetadata().getKeyspace('\"' +keyspaceName+ '\"') == null){
+          // on un keyspace SAE vide dans le cas ou il n'a pas encore créée
+          // Le facteur de réplication utilisé est le même que celui utilisé pour
+          // le keyspace "Docubase", soit
+          // 3 pour l'environnement de production, et de 1 à 3 pour les autres.
+
+          final Map<String, String> dfcereplicator = cluster.getMetadata().getKeyspace(DFCE_KEYSPACE_NAME).getReplication();
+          final Map<String, Object> replicator = new HashMap<>();
+          for ( final Map.Entry<String,String> entry: dfcereplicator.entrySet()){
+            replicator.put(entry.getKey(), entry.getValue());
+          }
+          final CreateKeyspace createK = SchemaBuilder.createKeyspace('\"' + keyspaceName + '\"').ifNotExists();
+          final SchemaStatement stmnt = createK.with().replication(replicator);
+
+          // la connection au dfce permet d'avoir une session pour exécuter la requete de 
+          // création de la base SAE
+          session = cluster.connect(DFCE_KEYSPACE_NAME);
+          // création du keyspace SAE et connection
+          session.execute(stmnt);
+          session = cluster.connect('\"' + keyspaceName + '\"');
+        }
+
+      }
          this.keyspaceName = '\"' + keyspaceName + '\"';
       }
 
       server = cassandraServer;
+      manager = new MappingManager(session);
    }
 
    /**
@@ -247,11 +287,11 @@ public final class CassandraCQLClientFactory implements DisposableBean {
             try {
                addr = new InetSocketAddress(inetAddressParam[0], Integer.parseInt(inetAddressParam[1]));
             } catch (final Exception e) {
-               LOG.error("Le port n'est pas un entier. La connection vers le serveur suivante ne pourra etre realise : " + cassandraServer.getCqlHosts());
-            }
+				throw new RuntimeException("Le port n'est pas un entier. La connection vers le serveur suivante ne pourra etre realise : "
+             		 + cassandraServer.getCqlHosts(), e);            }
          } else {
-            LOG.error("Seul le hostname (ou IP) et le port sont autorises. La connection vers le serveur suivante ne pourra etre realise : "
-                  + cassandraServer.getCqlHosts());
+            throw new RuntimeException("Seul le hostname (ou IP) et le port sont autorises. La connection vers le serveur suivante ne pourra etre realise : "
+            + cassandraServer.getCqlHosts());
          }
       } else {
          addr = new InetSocketAddress(host, CASSANDRA_DEFAULT_PORT);
@@ -340,5 +380,14 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    public boolean getStartLocal() {
       return server != null && server.getStartLocal();
    }
+
+  /**
+   * Getter
+   *
+   * @return the MappingManager
+   */
+  public MappingManager getManager() {
+    return manager;
+  }
    //
 }

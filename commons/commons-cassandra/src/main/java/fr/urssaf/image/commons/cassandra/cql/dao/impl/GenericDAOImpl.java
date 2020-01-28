@@ -13,7 +13,6 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.ResultSet;
@@ -21,7 +20,7 @@ import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.Mapper;
-import com.datastax.driver.mapping.MappingManager;
+import com.datastax.driver.mapping.Mapper.Option;
 
 import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
@@ -29,35 +28,32 @@ import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
 
 /**
- * Implementation des methodes commune de toutes les classes de DAO.
- * La classe implemente toutes les methodes communes 
- * de base à savoir les methodes de CRUD. Pour les modeles de type index, se referer 
- * à la classe {@link GenericIndexDAOImpl}
- *
+ * Implementation de l'Interface {@link IGenericDAO }
+ * 
  * @param <T>
- *          Type de d'objet contenue dans le registre
+ *          l'entité T
  * @param <ID>
- *          Identifiant de l'objet
- *
+ *          l'identifiant de l'entité
  */
 
 public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
 
    private static final Logger LOGGER = LoggerFactory.getLogger(GenericDAOImpl.class);
 
-   @Autowired
+  // @Autowired
    protected CassandraCQLClientFactory ccf;
 
    protected Class<? extends T> daoType;
 
-   private MappingManager manager;
+  // private MappingManager manager;
 
    protected Mapper<T> mapper;
 
-   public GenericDAOImpl() {
+  public GenericDAOImpl(final CassandraCQLClientFactory ccf) {
       final Type t = getClass().getGenericSuperclass();
       final ParameterizedType pt = (ParameterizedType) t;
       daoType = (Class) pt.getActualTypeArguments()[0];
+    this.ccf = ccf;
    }
 
    /**
@@ -76,11 +72,6 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
       return ccf;
    }
    
-   @Override
-   public void setCcf(CassandraCQLClientFactory ccf) {
-	   this.ccf = ccf;
-   }
-
    /**
     * Mapper le type T à la table cassandra
     *
@@ -90,10 +81,10 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    @SuppressWarnings("unchecked")
    public Mapper<T> getMapper() {
       if (mapper == null) {
-         manager = new MappingManager(ccf.getSession());
-         mapper = (Mapper<T>) manager.mapper(daoType);
+      // manager = new MappingManager(ccf.getSession());
+      // On récupère le mapper du mapping manager au niveau cassandraClientFactory AC75095351
+      mapper = (Mapper<T>) ccf.getManager().mapper(daoType);
       }
-      // getMapper().setDefaultDeleteOptions(Option.timestamp(clock));
       return mapper;
    }
 
@@ -160,14 +151,24 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    @Override
    public void deleteById(final ID id) {
       Assert.notNull(id, " l'id est requis");
-      final Delete delete = QueryBuilder.delete().from(ccf.getKeyspace(), getTypeArgumentsName());
 
-      final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
-      Assert.notNull(keyField, "La clé de l'entité à supprimer ne peut être null");
+    final Optional<T> opt = findWithMapperById(id);
+    if (opt.isPresent()) {
+      getMapper().delete(opt.get());
+    }
+  }
 
-      final String keyName = keyField.getName();
-      delete.where(eq(keyName, id));
-      getMapper().map(getSession().execute(delete));
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void deleteById(final ID id, final long clock) {
+    Assert.notNull(id, " l'id est requis");
+
+    final Optional<T> opt = findWithMapperById(id);
+    if (opt.isPresent()) {
+      getMapper().delete(opt.get(), Option.timestamp(clock));
+    }
    }
 
    /**
@@ -210,5 +211,14 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    public Logger getLogger() {
       return LOGGER;
    }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void setCcf(final CassandraCQLClientFactory ccf) {
+    this.ccf = ccf;
+
+  }
 
 }

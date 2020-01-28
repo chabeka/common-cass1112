@@ -21,22 +21,22 @@ import me.prettyprint.hector.api.factory.HFactory;
  */
 public class ClusterThriftConnecter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ClusterThriftConnecter.class);
-	
-	private static final int WAIT_MAX_TRY = 12;
-	private static final long WAIT_MS = 1000;
-	private static final String TEST_CLUSTER_NAME = "TestCluster";
-	public static final String KEYSPACE_TU = "keyspace_tu";
-	
-	private Cluster testCluster = null;
-	private String hosts;
-	
-	public ClusterThriftConnecter(String hosts) throws InterruptedException {
-		this.hosts =hosts;
-		waitForServer();
-	}
+  private static final Logger LOG = LoggerFactory.getLogger(ClusterThriftConnecter.class);
 
-	/**
+  private static final int WAIT_MAX_TRY = 12;
+  private static final long WAIT_MS = 1000;
+  private static final String TEST_CLUSTER_NAME = "TestCluster";
+  public static final String KEYSPACE_TU = "keyspace_tu";
+
+  private Cluster testCluster = null;
+  private final String hosts;
+
+  public ClusterThriftConnecter(final String hosts) throws InterruptedException {
+    this.hosts =hosts;
+    waitForServer();
+  }
+
+  /**
    * Il arrive que le serveur cassandra local mette du temps avant d'être
    * opérationnel. Cette méthode fait en sorte d'attendre jusqu'à ce qu'il soit
    * opérationnel
@@ -44,27 +44,27 @@ public class ClusterThriftConnecter {
    * @throws InterruptedException
    *           : on a été interrompu
    */
-  
-	private void waitForServer() throws InterruptedException {
-	    createTestCluster();
-	    for (int i = 0; i < WAIT_MAX_TRY; i++) {
-	      try {
-	    	  testCluster.describeKeyspaces();
-	        break;
-	      } catch (final Exception e) {
-	        LOG.debug("CassandraServerBean : waiting for server (" + i + ")...");
-	        Thread.sleep(WAIT_MS);
-	        LOG.debug("CassandraServerBean : reseting cluster (" + i + ")...");
-	        try {
-	          HFactory.shutdownCluster(testCluster);
-	        } catch (final Exception ex) {
-	          LOG.debug("CassandraServerBean : error while shutdowning cluster", ex);
-	        }
-	        createTestCluster();
-	      }
-	    }
-	}
-  
+
+  private void waitForServer() throws InterruptedException {
+    createTestCluster();
+    for (int i = 0; i < WAIT_MAX_TRY; i++) {
+      try {
+        testCluster.describeKeyspaces();
+        break;
+      } catch (final Exception e) {
+        LOG.debug("CassandraServerBean : waiting for server (" + i + ")...");
+        Thread.sleep(WAIT_MS);
+        LOG.debug("CassandraServerBean : reseting cluster (" + i + ")...");
+        try {
+          HFactory.shutdownCluster(testCluster);
+        } catch (final Exception ex) {
+          LOG.debug("CassandraServerBean : error while shutdowning cluster", ex);
+        }
+        createTestCluster();
+      }
+    }
+  }
+
   private void createTestCluster() {
     if (testCluster == null) {
       final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(hosts);
@@ -72,11 +72,11 @@ public class ClusterThriftConnecter {
       testCluster = HFactory.getOrCreateCluster(TEST_CLUSTER_NAME, hostConfigurator);
     }
   }
-  
+
   public Cluster getTestCluster() {
-	  return testCluster;
+    return testCluster;
   }
-  
+
   private DataSet mergeDataThriftSets(final String... dataSets) {
     // Vérification des paramètres d'entrée
     Assert.notEmpty(dataSets, "La liste des Dataset est vide");
@@ -108,11 +108,22 @@ public class ClusterThriftConnecter {
     return dataSetResult;
 
   }
-  
-  public void loadDataSetToServer(boolean dropAndCreateKeyspace,  String... newDataSets) {
-	DataSet dataSet = mergeDataThriftSets(newDataSets);
-	// Charge les données
+
+  public void loadDataSetToServer(final boolean dropAndCreateKeyspace,  final String... newDataSets) {
+    final DataSet dataSet = mergeDataThriftSets(newDataSets);
+    // Charge les données
     final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME, "localhost:9171");
     dataLoader.load(dataSet, !(testCluster.describeKeyspace(KEYSPACE_TU) != null && !dropAndCreateKeyspace));
+
+
+  }
+
+  public void loadDataSetToServerOnlyData(final boolean dropAndCreateKeyspace, final String... newDataSets) {
+    final DataSet dataSet = mergeDataThriftSets(newDataSets);
+    // Charge les données
+    final DataLoaderOnlyData dataLoader = new DataLoaderOnlyData(TEST_CLUSTER_NAME, "localhost:9171");
+    dataLoader.loadOnlyData(dataSet, !(testCluster.describeKeyspace(KEYSPACE_TU) != null && !dropAndCreateKeyspace), true);
+
+
   }
 }

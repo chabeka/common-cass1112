@@ -5,45 +5,30 @@ package fr.urssaf.image.commons.cassandra.cql.codec;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.sql.Blob;
 
-import org.codehaus.jackson.JsonProcessingException;
+import org.apache.cassandra.cql3.Json;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.type.TypeFactory;
 import org.codehaus.jackson.type.JavaType;
 
-import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.DataType;
 import com.datastax.driver.core.ProtocolVersion;
 import com.datastax.driver.core.TypeCodec;
 import com.datastax.driver.core.exceptions.InvalidTypeException;
-import com.datastax.driver.mapping.Mapper;
 
 /**
- *	Cette classe permet de faire le mapping bidirectionnel
- *	entre un objet java et un objet CQL de type <b>VARCHAR</b>.
- *	La classe herite de {@link TypeCodec} qui prend en charge 4 types d'opération<br>
- *	<ul>
- *		<li>La serialisation</li>
- *		<li>La déserialisation</li>
- *		<li>La Formatage</li>
- *		<li>Le parsing</li>
- *	</ul><br>
- *	Exemple tiré de la documentation datastax:
- *  Prenons le scénario suivant: un utilisateur possède des documents JSON stockés dans une colonne varchar
- *  dans la base cassandra et souhaite que le pilote mappe automatiquement cette colonne sur un objet Java 
- *  à l'aide de la bibliothèque Jackson , au lieu de renvoyer la chaîne JSON brute. 
- *  Lorsque la classe est enregisté dans les configurations du {@link Cluster}, le pilote ({@link Mapper}) se chargera de faire 
- *  la conversion automatique de la colonne extraite sur l'objet java souhaité.<br><br>
-
- *  <b>Enregistrement du codec dans le config du cluster :</b><br>
- *   <code>ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<BatchStatus>(BatchStatus.class));</code> <br>
- *    
- *	<b>Voir la documentation des codec sur datastax personalisé.</b> <br>
- *	 <a>https://translate.google.fr/translate?hl=fr&sl=auto&tl=fr&u=https%3A%2F%2Fdocs.datastax.
-     	com%2Fen%2Fdeveloper%2Fjava-driver%2F3.1%2Fmanual%2Fcustom_codecs%2F</a>
+ * Classe venant de la documentation de datastax nous permettant de faire quelques operation de transformation sur les {@link Json}<br>
+ * Each TypeCodec supports a bidirectional mapping between a Java type and a CQL type. A TypeCodec is thus capable of 4 basic operations:<br>
+ * <ul>
+ * <li>Serialize a Java object into a CQL value</li>
+ * <li>Deserialize a CQL value into a Java object</li>
+ * <li>Format a Java object into a CQL literal</li>
+ * <li>Parse a CQL literal into a Java object</li>
+ * </ul>
+ * Pour plus d'explication voir sur le site de datastax
+ * 
+ * @see <a href="https://docs.datastax.com/en/developer/java-driver/3.1/manual/custom_codecs/"> Site datastax</a><br>
  */
-
 public class JsonCodec<T> extends TypeCodec<T> {
 
   private final ObjectMapper objectMapper = new ObjectMapper();

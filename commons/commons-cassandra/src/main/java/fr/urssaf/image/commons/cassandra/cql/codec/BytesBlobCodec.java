@@ -4,7 +4,6 @@
 package fr.urssaf.image.commons.cassandra.cql.codec;
 
 import java.nio.ByteBuffer;
-import java.sql.Blob;
 import java.util.Arrays;
 
 import com.datastax.driver.core.DataType;
@@ -14,19 +13,17 @@ import com.datastax.driver.core.exceptions.InvalidTypeException;
 import com.datastax.driver.core.utils.Bytes;
 
 /**
- *	Cette classe permet de faire le mapping bidirectionnel (sérialisation/désérialisation)
- *	entre un objet java de type {@link Blob} et un objet CQL de type Blob.
- *	La classe herite de {@link TypeCodec} qui prend en charge 4 types d'opération
- *	<ul>
- *		<li>La serialisation</li>
- *		<li>La déserialisation</li>
- *		<li>La Formatage</li>
- *		<li>Le parsing</li>
- *	</ul>
- *
- *	Voir la documentation des codes personalisé. <br>
- *	 <a>https://translate.google.fr/translate?hl=fr&sl=auto&tl=fr&u=https%3A%2F%2Fdocs.datastax.
-     	com%2Fen%2Fdeveloper%2Fjava-driver%2F3.1%2Fmanual%2Fcustom_codecs%2F</a>
+ * Classe venant de la documentation de datastax nous permettant de faire quelques operation de transformation sur les DataType.blob()<br>
+ * Each TypeCodec supports a bidirectional mapping between a Java type and a CQL type. A TypeCodec is thus capable of 4 basic operations:<br>
+ * <ul>
+ * <li>Serialize a Java object into a CQL value</li>
+ * <li>Deserialize a CQL value into a Java object</li>
+ * <li>Format a Java object into a CQL literal</li>
+ * <li>Parse a CQL literal into a Java object</li>
+ * </ul>
+ * Pour plus d'explication voir sur le site de datastax
+ * 
+ * @see <a href="https://docs.datastax.com/en/developer/java-driver/3.1/manual/custom_codecs/"> Site datastax</a><br>
  */
 public class BytesBlobCodec extends TypeCodec<byte[]> {
   public static final BytesBlobCodec instance = new BytesBlobCodec();

@@ -13,65 +13,65 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class ZookeeperServerBean implements InitializingBean, DisposableBean  {
 
-   private static final Logger LOG = LoggerFactory.getLogger(ZookeeperServerBean.class);
-   private static final long WAIT_BEFORE_CLOSE = 300;    // en ms
-   private boolean startLocal= false;
-   private TestingServer testingServer = null;
-   private String hosts = null;
+  private static final Logger LOG = LoggerFactory.getLogger(ZookeeperServerBean.class);
+  private static final long WAIT_BEFORE_CLOSE = 300;    // en ms
+  private boolean startLocal= false;
+  private TestingServer testingServer = null;
+  private String hosts = null;
 
-   /**
-    * Indique s'il faut lancer un serveur zookeeper local
-    * @param init vrai s'il faut lancer un serveur local
-    */
-   public final void setStartLocal(boolean init) {
-      startLocal = init;
-   }
-   
-   @Override
-   public final void destroy() throws Exception {
-      if (testingServer != null) {
-         try {
-            LOG.debug("ZookeeperServerBean : closing server...");
-            // Pour éviter les erreurs [SyncThread:0] FATAL zookeeper.server.SyncRequestProcessor - Severe unrecoverable error, exiting
-            // on attend un peu pour être sur que le serveur ait tout commité avant de détruire ses fichiers
-            Thread.sleep(WAIT_BEFORE_CLOSE);
-            testingServer.close();
-            testingServer = null;
-         }
-         catch (Exception e) {
-            LOG.error("ZookeeperServerBean : error while closing server", e);
-         }
-      }
-   }
+  /**
+   * Indique s'il faut lancer un serveur zookeeper local
+   * @param init vrai s'il faut lancer un serveur local
+   */
+  public final void setStartLocal(final boolean init) {
+    startLocal = init;
+  }
 
-   @Override
-   public final void afterPropertiesSet() throws Exception {
-      LOG.debug("ZookeeperServerBean : startLocal={}", startLocal);
-      if (startLocal) {
-         testingServer = new TestingServer();
-         LOG.debug("ZookeeperServerBean : connexionString={}", testingServer.getConnectString());
+  @Override
+  public final void destroy() throws Exception {
+    if (testingServer != null) {
+      try {
+        LOG.debug("ZookeeperServerBean : closing server...");
+        // Pour éviter les erreurs [SyncThread:0] FATAL zookeeper.server.SyncRequestProcessor - Severe unrecoverable error, exiting
+        // on attend un peu pour être sur que le serveur ait tout commité avant de détruire ses fichiers
+        Thread.sleep(WAIT_BEFORE_CLOSE);
+        testingServer.close();
+        testingServer = null;
       }
-   }
+      catch (final Exception e) {
+        throw new RuntimeException("ZookeeperServerBean : error while closing server", e);
+      }
+    }
+  }
 
-   /**
-    * Dans le cas d'un serveur zookeeper non local, il s'agit de la chaîne de connexion
-    * @param hosts    Chaîne de connexion (ex : "toto.toto.com:2181,titi.titi.com:2181")
-    */
-   public final void setHosts(String hosts) {
-      this.hosts = hosts;
-   }
+  @Override
+  public final void afterPropertiesSet() throws Exception {
+    LOG.debug("ZookeeperServerBean : startLocal={}", startLocal);
+    if (startLocal) {
+      testingServer = new TestingServer();
+      LOG.debug("ZookeeperServerBean : connexionString={}", testingServer.getConnectString());
+    }
+  }
 
-   /**
-    * Renvoie la chaîne de connexion au serveur zookeeper
-    * @return chaîne de connexion
-    */
-   public final String getHosts() {
-      if (testingServer != null) {
-         return testingServer.getConnectString();
-      }
-      else {
-         return hosts;
-      }
-   }
-   
+  /**
+   * Dans le cas d'un serveur zookeeper non local, il s'agit de la chaîne de connexion
+   * @param hosts    Chaîne de connexion (ex : "toto.toto.com:2181,titi.titi.com:2181")
+   */
+  public final void setHosts(final String hosts) {
+    this.hosts = hosts;
+  }
+
+  /**
+   * Renvoie la chaîne de connexion au serveur zookeeper
+   * @return chaîne de connexion
+   */
+  public final String getHosts() {
+    if (testingServer != null) {
+      return testingServer.getConnectString();
+    }
+    else {
+      return hosts;
+    }
+  }
+
 }

@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.commons.cassandra.cql.dao;
 
+import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +20,7 @@ import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.core.querybuilder.Truncate;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.Mapper.Option;
@@ -28,17 +31,13 @@ import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
 import fr.urssaf.image.commons.cassandra.utils.Utils;
 
 /**
- * Interface commune de toutes les classes de DAO.
- * La classe implemente toutes les methodes communes 
- * de base à savoir les methodes de CRUD
- *
+ * Interface mère de tous les DAO implementant toutes les opérations de CRUD sur une entité
+ * 
  * @param <T>
- *          Type de d'objet contenue dans le registre
+ *          entité T
  * @param <ID>
- *          Identifiant de l'objet
- *
+ *          l'identifiant de l'entité
  */
-
 public interface ICommonDAO<T, ID> {
    /**
     * Retourne le nom du pojo ou la valeur de l'attribut "name" de l'annotation
@@ -82,7 +81,7 @@ public interface ICommonDAO<T, ID> {
       QueryUtils.createInsert(fields, insert, entity);
       getCcf().getSession().execute(insert);
       if (getLogger().isDebugEnabled()) {
-         getLogger().debug(insert.toString());
+      	getLogger().info(insert.toString());
       }
       return entity;
    }
@@ -96,9 +95,6 @@ public interface ICommonDAO<T, ID> {
     */
    public default Iterator<T> findAllWithMapper() {
       final Statement st = QueryBuilder.select().from(getCcf().getKeyspace(), getTypeArgumentsName());
-      if (getLogger().isDebugEnabled()) {
-          getLogger().debug(st.toString());
-      }
       return getMapper().map(getSession().execute(st)).iterator();
    }
 
@@ -115,6 +111,30 @@ public interface ICommonDAO<T, ID> {
    }
 
    /**
+   * Sauvegarde l'entité T fournie en utilisant le {@link Mapper} de datastax avec un timestamp definit
+   * sur la colonnne
+   *
+   * @param entity
+   *          entité à sauvegarder
+   * @return L'entité sauvegardée
+   */
+  public default T saveWithMapper(final T entity, final long timestamp) {
+    getMapper().save(entity, Option.timestamp(timestamp));
+    return entity;
+  }
+  /**
+   * Sauvegarde l'entité T fournie en utilisant le {@link Mapper} de datastax avec un timestamp definit
+   * sur la colonnne
+   *
+   * @param entity
+   *          entité à sauvegarder
+   * @return L'entité sauvegardée
+   */
+  public default T saveWithMapper(final T entity, final int ttl, final long clock) {
+    getMapper().save(entity, Option.ttl(ttl), Option.timestamp(clock));
+    return entity;
+  }
+  /**
     * Sauvegarde l'entité T fournie en utilisant le {@link com.datastax.driver.mapping.Mapper} de datastax
     * avec une date d'expiration. A la fin de cette date d'expiration, la donnée est supprimer de la base
     *
@@ -126,9 +146,8 @@ public interface ICommonDAO<T, ID> {
     * @return l'entité sauvegardée
     */
    public default T saveWithMapper(final T entity, final int ttl) {
-      getMapper().setDefaultSaveOptions(Option.ttl(ttl));
-      getMapper().save(entity);
-      return entity;
+    	getMapper().save(entity, Option.ttl(ttl));
+      	return entity;
    }
 
    /**
@@ -143,15 +162,23 @@ public interface ICommonDAO<T, ID> {
    }
 
    /**
+   * Supprime l'entité T fournit en utilisant le {@ Mapper}.
+   *
+   * @param entité
+   *          à surpprimer
+   */
+  public default void deleteWithMapper(final T entity, final long clock) {
+    Assert.notNull(entity, " l'entity est requis");
+    getMapper().delete(entity, Option.timestamp(clock));
+  }
+
+  /**
     * Retourne un {@link ResultSet} contenant toutes les entitées T dans la table correspondante
     *
     * @return {@link ResultSet} contenant toutes les entitées
     */
    public default Iterator<T> findAll() {
       final Statement st = QueryBuilder.select().from(getCcf().getKeyspace(), getTypeArgumentsName());
-      if (getLogger().isDebugEnabled()) {
-          getLogger().debug(st.toString());
-      }
       return (Iterator<T>) getSession().execute(st).iterator();
    }
 
@@ -160,9 +187,6 @@ public interface ICommonDAO<T, ID> {
     */
    public default void deleteAll() {
       final Truncate truncate = QueryBuilder.truncate(getCcf().getKeyspace(), getTypeArgumentsName());
-      if (getLogger().isDebugEnabled()) {
-          getLogger().debug(truncate.toString());
-      }
       getSession().execute(truncate);
    }
 
@@ -180,9 +204,6 @@ public interface ICommonDAO<T, ID> {
       if (row != null) {
          count = row.getLong("count");
       }
-      if (getLogger().isDebugEnabled()) {
-          getLogger().debug(query);
-      }
       return count.intValue();
    }
 
@@ -193,10 +214,10 @@ public interface ICommonDAO<T, ID> {
     */
    @SuppressWarnings("unchecked")
    public default Iterator<T> findAllByCFName(final String cfName, final String keyspace) {
-      final String query = "SELECT * FROM " + keyspace + ".\"" + cfName + "\"";
-      if (getLogger().isDebugEnabled()) {
-         getLogger().debug(query);
-      }
+    	final String query = "SELECT * FROM " + "\"" + keyspace + "\".\"" + cfName + "\"";
+      	if (getLogger().isDebugEnabled()) {
+      		getLogger().info(query);
+      	}
 
       return (Iterator<T>) getSession().execute(query).iterator();
    }
@@ -205,9 +226,6 @@ public interface ICommonDAO<T, ID> {
     * {@inheritDoc}
     */
    public default void insertWithBatchStatement(final BatchStatement statement) {
-      if (getLogger().isDebugEnabled()) {
-          getLogger().debug(statement.toString());
-      }
       getSession().execute(statement);
    }
 
@@ -219,9 +237,6 @@ public interface ICommonDAO<T, ID> {
 
    public default void insertWithBatch(final Iterable<T> entities) {
       final String batch = QueryUtils.createInsertBatch(getDaoType(), entities, getTypeArgumentsName());
-      if (getLogger().isDebugEnabled()) {
-          getLogger().debug(batch);
-      }
       getSession().execute(batch);
    }
 
@@ -238,13 +253,39 @@ public interface ICommonDAO<T, ID> {
          QueryUtils.createInsert(fields, insert, entity);
          statement.add(insert);
       }
-      if (getLogger().isDebugEnabled()) {
-          getLogger().debug(statement.toString());
-      }
       getSession().execute(statement);
    }
 
    /**
+   * Recuperer le timestamp d'une colonne quelconque en fonction de l'identifiant
+   * et du nom de colonne. <br>
+   * <br>
+   * Cette methode s'applique à toutes les colonnes de la table sauf la colonne de la clé primaire.
+   * En cas d'appel sur la clé primaire on risque d'avoir une exception avec le message
+   * suivant:<br>
+   * <b>Cannot use selection function writeTime on PRIMARY KEY part first_name</b>
+   * 
+   * @param id
+   *          l'identifiant de la colonne
+   * @param columnName
+   *          le nom de la colonne
+   * @return
+   */
+  public default long getColunmWriteTime(final ID id, final String columnName) {
+    Assert.notNull(id, "L'identifiant ne peut être null");
+
+    // recuperer le nom de la primary key
+    final Field keyField = ColumnUtil.getSimplePartionKeyField(getDaoType());
+    Assert.notNull(keyField, "La clé de l'entité à chercher ne peut être null");
+    final String keyName = keyField.getName();
+
+    // recuperer le timestamp de la colonne id
+    final Select select = QueryBuilder.select().column(columnName).writeTime(columnName).as("timestamp").from(getCcf().getKeyspace(), getTypeArgumentsName());
+    select.where(eq(keyName.toLowerCase(), id));
+    final Row row = getSession().execute(select).one();
+    return row.getLong("timestamp");
+  }
+  /**
     * La session sur le keyspace dans le cluster
     *
     * @return
@@ -257,14 +298,14 @@ public interface ICommonDAO<T, ID> {
    /**
     * @return le type T fournie en paramètre de la classe
     */
-   public Class<? extends T> getDaoType();
+  Class<? extends T> getDaoType();
 
    /**
     * Retourne l'instance de la classe {@link CassandraCQLClientFactory}
     *
     * @return
     */
-    public CassandraCQLClientFactory getCcf();
+  CassandraCQLClientFactory getCcf();
 
    /**
     *  initialise l'instance de la classe {@link CassandraCQLClientFactory}

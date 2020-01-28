@@ -75,36 +75,42 @@ public class JobClockSupportImpl implements JobClockSupport {
       LOG.debug("Le timestamp de de la colonne {} est de {}", new Object[] {
             column.getName(), columnClock });
 
-      // vérification que l'horloge de la colonne ne soit pas postérieure à
-      // l'horloge actuelle du serveur
-      if (columnClock > actualClock) {
-
-         // si la différence est trop importante alors on lève une exception
-
-         if ((columnClock - actualClock) > clockConfiguration
-               .getMaxTimeSynchroError()) {
-            throw new ClockSynchronizationException(columnClock, actualClock);
-         }
-
-         if ((columnClock - actualClock) > clockConfiguration
-               .getMaxTimeSynchroWarn()) {
-            LOG
-                  .warn("Attention, les horloges des serveurs semblent désynchronisées. Le décalage est au moins de "
-                        + (columnClock - actualClock) / ONE_THOUSAND + " ms");
-         }
-
-         // Sinon, on positionne le nouveau timestamp juste au dessus de
-         // l'ancien
-         newClock = columnClock + 1;
-
-         LOG.debug("La position du nouveau timestamp est de {}",
-               new Object[] { newClock });
-      } else {
-
-         newClock = keyspace.createClock();
-      }
+      newClock = getClock(actualClock, columnClock);
 
       return newClock;
    }
+
+  public long getClock(long actualClock, long columnClock) {
+    long newClock;
+    // vérification que l'horloge de la colonne ne soit pas postérieure à
+    // l'horloge actuelle du serveur
+    if (columnClock > actualClock) {
+
+       // si la différence est trop importante alors on lève une exception
+
+       if ((columnClock - actualClock) > clockConfiguration
+             .getMaxTimeSynchroError()) {
+          throw new ClockSynchronizationException(columnClock, actualClock);
+       }
+
+       if ((columnClock - actualClock) > clockConfiguration
+             .getMaxTimeSynchroWarn()) {
+          LOG
+                .warn("Attention, les horloges des serveurs semblent désynchronisées. Le décalage est au moins de "
+                      + (columnClock - actualClock) / ONE_THOUSAND + " ms");
+       }
+
+       // Sinon, on positionne le nouveau timestamp juste au dessus de
+       // l'ancien
+       newClock = columnClock + 1;
+
+       LOG.debug("La position du nouveau timestamp est de {}",
+             new Object[] { newClock });
+    } else {
+
+       newClock = keyspace.createClock();
+    }
+    return newClock;
+  }
 
 }

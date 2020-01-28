@@ -6,19 +6,16 @@ package fr.urssaf.image.commons.cassandra.cql.dao;
 import java.util.Iterator;
 import java.util.Optional;
 
-import org.slf4j.Logger;
-
 import com.datastax.driver.core.ResultSet;
 
-
 /**
- * Classe abstraite pour les DAO CASSANDRA
+ * Interface pour effectuer un ensemble d'operations propres à certaines entités hors mis
+ * les entités de types index
  *
  * @param <T>
- *          Type de d'objet contenue dans le registre
+ *          l'entité T
  * @param <ID>
- *          Identifiant de l'objet
- *
+ *          l'identifiant de l'entié
  */
 public interface IGenericDAO<T, ID> extends ICommonDAO<T, ID> {
 
@@ -64,7 +61,14 @@ public interface IGenericDAO<T, ID> extends ICommonDAO<T, ID> {
     *
     * @param id
     */
-   void deleteById(ID id);
+  void deleteById(final ID id);
+
+  /**
+   * Supprime l'entité T avec l'ID
+   *
+   * @param id
+   */
+  void deleteById(ID id, long clock);
 
    /**
     * Supprime l'entité T fournie.
