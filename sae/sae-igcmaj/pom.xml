@@ -3,14 +3,22 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
+<<<<<<< .working
       <version>20.2.3-SNAPSHOT</version>
+=======
+      <version>20.04.0-SNAPSHOT</version>
+>>>>>>> .merge-right.r7818
    </parent>
 
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-igcmaj</artifactId>
    <name>sae-igcmaj</name>
+<<<<<<< .working
    <version>20.2.3-SNAPSHOT</version>
+=======
+   <version>20.04.0-SNAPSHOT</version>
+>>>>>>> .merge-right.r7818
    <description>Programme exécutable en mode console permettant le téléchargement des CRL.
 
 Le programme est compatible Windows et Linux.
@@ -26,7 +34,11 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-igc</artifactId>
+<<<<<<< .working
          <version>20.2.3-SNAPSHOT</version>
+=======
+         <version>20.04.0-SNAPSHOT</version>
+>>>>>>> .merge-right.r7818
       </dependency>
 
       <!-- Spring -->

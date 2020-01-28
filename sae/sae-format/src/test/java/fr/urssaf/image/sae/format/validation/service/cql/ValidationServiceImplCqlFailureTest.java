@@ -1,21 +1,16 @@
-package fr.urssaf.image.sae.format.validation.service;
+package fr.urssaf.image.sae.format.validation.service.cql;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntimeException;
+import fr.urssaf.image.sae.format.utils.AbstractReferentielFormatCqlFailureTest;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.impl.ValidationServiceImpl;
@@ -29,9 +24,8 @@ import junit.framework.Assert;
  * testés dans le package "aspect"
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-format-failure-test.xml" })
-@DirtiesContext
-public class ValidationServiceImplFailureTest {
+// @DirtiesContext
+public class ValidationServiceImplCqlFailureTest extends AbstractReferentielFormatCqlFailureTest {
 
   @Autowired
   private ValidationServiceImpl validationService;
@@ -41,15 +35,6 @@ public class ValidationServiceImplFailureTest {
 
   private static final String MESS_EXCEPT_ERRONE = "Le message de l'exception est incorrect";
   private static final String FMT_354 = "fmt/354";
-
-  @Before
-  public void setup() throws Exception {
-
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_REFERENTIEL_FORMAT, ModeGestionAPI.MODE_API.HECTOR);
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
-
-  }
 
   @Test
   public void valideServiceFailureBeanIntrouvable()

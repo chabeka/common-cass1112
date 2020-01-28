@@ -44,6 +44,17 @@ public class ParamReferentiel {
   private static final String REF_FORMAT_SUPPORT_FIND = "execution(* fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport.find(*))"
       + "&& args(idFormat)";
 
+  /********************************************************* FACADE *********************************************************************************/
+
+  private static final String REF_FORMAT_FACADE_CREATE = "execution(* fr.urssaf.image.sae.format.referentiel.dao.support.facade.ReferentielFormatSupportFacade.create(*))"
+      + "&& args(referentielFormat)";
+
+  private static final String REF_FORMAT_FACADE_DELETE = "execution(* fr.urssaf.image.sae.format.referentiel.dao.support.facade.ReferentielFormatSupportFacade.delete(*))"
+      + "&& args(idFormat)";
+
+  private static final String REF_FORMAT_FACADE_FIND = "execution(* fr.urssaf.image.sae.format.referentiel.dao.support.facade.ReferentielFormatSupportFacade.find(*))"
+      + "&& args(idFormat)";
+
   /**
    * Vérification des paramètres de la méthode "addNewFormat" de la classe
    * ReferentielFormatService Vérification des attributs obligatoires de
@@ -241,4 +252,57 @@ public class ParamReferentiel {
     return variable;
   }
 
+  /**
+   * Vérification des paramètres de la méthode "create" de la classe
+   * ReferentielFormatSupportFacade Vérification de l'objet obligatoire
+   * ReferentielFormat donné en paramètre<br>
+   * ainsi que de l'heure
+   * 
+   * @param referentielFormat
+   *          : le referentielFormat à ajouter
+   */
+  @Before(REF_FORMAT_FACADE_CREATE)
+  public final void validFacadeCreate(final FormatFichier referentielFormat) {
+    if (referentielFormat == null || referentielFormat.getIdFormat() == null) {
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.REFERENTIEL_FORMAT));
+    }
+  }
+
+  /**
+   * Vérification des paramètres de la méthode "delete" de la classe
+   * ReferentielFormatSupportFacade Vérification du String idFormat donné en
+   * paramètre<br>
+   * ainsi que de l'heure
+   * 
+   * @param idFormat
+   *          le referentielFormat à supprimer
+   */
+  @Before(REF_FORMAT_FACADE_DELETE)
+  public final void validFacadeDelete(final String idFormat) {
+
+    if (StringUtils.isBlank(idFormat)) {
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.IDFORMAT.toString()));
+    }
+  }
+
+  /**
+   * Vérification des paramètres de la méthode "find" de la classe
+   * ReferentielFormatSupportFacade Vérification du String idFormat donné en
+   * paramètre<br>
+   * 
+   * @param idFormat
+   *          le referentielFormat à recuperer
+   */
+  @Before(REF_FORMAT_FACADE_FIND)
+  public final void validFacadeFind(final String idFormat) {
+    if (StringUtils.isBlank(idFormat)) {
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.IDFORMAT.toString()));
+    }
+  }
 }

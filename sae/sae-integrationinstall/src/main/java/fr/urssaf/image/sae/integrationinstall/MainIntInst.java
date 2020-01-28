@@ -31,165 +31,169 @@ import fr.urssaf.image.sae.rnd.service.MajRndService;
  */
 public final class MainIntInst {
 
-   /**
-    * LOGGER
-    */
-   private static final Logger LOG = LoggerFactory.getLogger(MainIntInst.class);
-   
-   /**
-    * Constructeur
-    */
-   private MainIntInst() {
-   }
+  /**
+   * LOGGER
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(MainIntInst.class);
 
-   /**
-    * Méthode main du JAR Executable
-    * 
-    * @param args
-    *           arguments de la ligne de commande du JAR Executable
-    */
-   public static void main(String[] args) {
+  /**
+   * Constructeur
+   */
+  private MainIntInst() {
+  }
 
-      // Extrait les infos de la ligne de commandes
-      // La vérification du tableau args est faite par la validation AOP
-      String cheminFicConfSae = args[0];
+  /**
+   * Méthode main du JAR Executable
+   * 
+   * @param args
+   *           arguments de la ligne de commande du JAR Executable
+   */
+  public static void main(final String[] args) {
 
-      // Démarrage du contexte spring
-      ApplicationContext context = startContextSpring(cheminFicConfSae);
+    // Extrait les infos de la ligne de commandes
+    // La vérification du tableau args est faite par la validation AOP
+    final String cheminFicConfSae = args[0];
 
-      // Récupération du contexte Spring du bean permettant de lancer
-      // l'opération
-      MajLotService majLotService = context.getBean("majLotServiceImpl",
-            MajLotService.class);
+    // Démarrage du contexte spring
+    final ApplicationContext context = startContextSpring(cheminFicConfSae);
 
-      // Retire des arguments de la ligne de commande ceux que l'on a pas besoin
-      // pour le moment.
-      // On ne laisse que les arguments spécifiques à l'application concernée
-      String[] argsSpecifiques = (String[]) ArrayUtils.subarray(args, 4,
-            args.length);
+    // Récupération du contexte Spring du bean permettant de lancer
+    // l'opération
+    final MajLotService majLotService = context.getBean("majLotServiceImpl",
+                                                        MajLotService.class);
 
-      String applicationConcernee = argsSpecifiques.length > 0 ? argsSpecifiques[0]
-            : null;
-      if (applicationConcernee == null) {
-         String message = "Erreur technique : Le serveur GED ou DFCE n'est pas renseigné. Veuillez indiquer le serveur sur lequel doit avoir lieu l'opération svp (GNS, GNT ou DFCE).";
-         LOG.error(message);
-         throw new MajLotRuntimeException(message);
+    final MajLotService majCqlLotService = context.getBean("majLotServiceCQLImpl",
+                                                           MajLotService.class);
+    // Retire des arguments de la ligne de commande ceux que l'on a pas besoin
+    // pour le moment.
+    // On ne laisse que les arguments spécifiques à l'application concernée
+    final String[] argsSpecifiques = (String[]) ArrayUtils.subarray(args, 4,
+                                                                    args.length);
+
+    final String applicationConcernee = argsSpecifiques.length > 0 ? argsSpecifiques[0]
+        : null;
+    if (applicationConcernee == null) {
+      final String message = "Erreur technique : Le serveur GED ou DFCE n'est pas renseigné. Veuillez indiquer le serveur sur lequel doit avoir lieu l'opération svp (GNS, GNT ou DFCE).";
+      LOG.error(message);
+      throw new MajLotRuntimeException(message);
+    }
+
+    // Création de la base de données GED (CNS ou GNT).
+    if (MajLotServiceImpl.APPL_CONCERNEE.GNS.getApplName().equals(applicationConcernee) || 
+        MajLotServiceImpl.APPL_CONCERNEE.GNT.getApplName().equals(applicationConcernee)) {
+      final AdministrationDFCEService adminDFCE = context
+          .getBean(AdministrationDFCEService.class);
+
+      final String dataBasePath = args[1];
+      final String documentsTypePath = args[2];
+      final File xmlDataBaseModel = new File(dataBasePath);
+      final File xmlDocumentsType = new File(documentsTypePath);
+      if (!xmlDataBaseModel.isFile()) {
+        // Opération inconnue => log + exception runtime
+        final String message = "Erreur technique : Le modèle de la base de données SAE n'est pas valide.";
+        throw new IntegrationInstRuntimeException(message);
       }
-
-      // Création de la base de données GED (CNS ou GNT).
-      if (MajLotServiceImpl.APPL_CONCERNEE.GNS.getApplName().equals(applicationConcernee) || 
-            MajLotServiceImpl.APPL_CONCERNEE.GNT.getApplName().equals(applicationConcernee)) {
-         final AdministrationDFCEService adminDFCE = context
-               .getBean(AdministrationDFCEService.class);
-
-         final String dataBasePath = args[1];
-         final String documentsTypePath = args[2];
-         final File xmlDataBaseModel = new File(dataBasePath);
-         final File xmlDocumentsType = new File(documentsTypePath);
-         if (!xmlDataBaseModel.isFile()) {
-            // Opération inconnue => log + exception runtime
-            String message = "Erreur technique : Le modèle de la base de données SAE n'est pas valide.";
-            throw new IntegrationInstRuntimeException(message);
-         }
-         if (!xmlDocumentsType.isFile()) {
-            String message = "Erreur technique : Le fichier des types de documents SAE n'est pas valide.";
-            throw new IntegrationInstRuntimeException(message);
-         }
-         // Création de la connexion à DFCE.
-         DFCEConnection cnxParameter = context.getBean(DFCEConnection.class);
-         // les operations de ce services peuvent etre relativement longue
-         // on configure donc un timeout de 3h (plutot que quelques minutes)
-         cnxParameter.setTimeout(AdministrationSAEMain.TIMEOUT_DFCE);
-
-         // Appel du service de création de la base de données admin DFCE.
-         LOG.info("Lancement de la creation de la base de donnees DFCE");
-         try {
-            adminDFCE.createSAEBase(cnxParameter, xmlDataBaseModel,
-                  xmlDocumentsType);
-         } catch (BaseAdministrationServiceEx e) {
-            LOG.error("Error - " + e.getMessage());
-            throw new IntegrationInstRuntimeException(e);
-         } catch (ConnectionServiceEx e) {
-            throw new IntegrationInstRuntimeException(e);
-         }
-         LOG.info("Fin de la creation de la base de donnees DFCE");
-         LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
-         // Création de la base SAE
-         majLotService.demarreCreateSAE();
-         LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
-
-         // Mise à jour RND
-         LOG.info("Lancement de la mise à jour des code RND");
-         try {
-
-            // appel du service de mise à jour du RND
-            MajRndService majRndService = context.getBean(MajRndService.class);
-
-            majRndService.lancer();
-
-         } catch (MajRndException e) {
-            throw new IntegrationInstRuntimeException(e);
-         } catch (Exception e) {
-            throw new IntegrationInstRuntimeException(e);
-         }
-         LOG.info("Fin de la mise à jour des code RND");
-
-         // Telechargement des CRL
-         LOG.info("Lancement du telechargement des CRL");
-         final String pathIgcConfigFile = args[3];
-         try {
-            IgcConfigService igcConfigService = context
-                  .getBean(IgcConfigService.class);
-            IgcConfigs igcConfigs = igcConfigService.loadConfig(pathIgcConfigFile);
-
-            IgcDownloadService igcDownloadService = context
-                  .getBean(IgcDownloadService.class);
-            igcDownloadService.telechargeCRLs(igcConfigs);
-         } catch (IgcConfigException e) {
-            LOG.error(e.getMessage(), e);
-            throw new IntegrationInstRuntimeException(e);
-
-         } catch (IgcDownloadException e) {
-            LOG.error(e.getMessage(), e);
-            throw new IntegrationInstRuntimeException(e);
-
-         }
-         LOG.info("Fin du telechargement des CRL");
-         // Création des metadatas, indexes composites et droits dans la base SAE.
-         LOG.info("Lancement de la creation des metadonnees, des droits et des indexes composites pour la base de donnees "
-               + applicationConcernee);
-         majLotService.demarreCreateMetadatasIndexesDroitsSAE(applicationConcernee);
-         LOG.info("Fin de la creation des metadonnees, des droits et des indexes composites pour la base de donnees "
-               + applicationConcernee);
+      if (!xmlDocumentsType.isFile()) {
+        final String message = "Erreur technique : Le fichier des types de documents SAE n'est pas valide.";
+        throw new IntegrationInstRuntimeException(message);
       }
+      // Création de la connexion à DFCE.
+      final DFCEConnection cnxParameter = context.getBean(DFCEConnection.class);
+      // les operations de ce services peuvent etre relativement longue
+      // on configure donc un timeout de 3h (plutot que quelques minutes)
+      cnxParameter.setTimeout(AdministrationSAEMain.TIMEOUT_DFCE);
 
-      // on force ici la fermeture du contexte de Spring
-      // ceci a pour but de forcer la déconnexion avec Cassandra, la SGBD
-      // chargé de la persistance de la pile des travaux
-      //      LOG.debug("execute - fermeture du contexte d'application");
-      //      ((AbstractApplicationContext) context).close();
-      //      LOG.debug("execute - fermeture du contexte d'application effectuée");
+      // Appel du service de création de la base de données admin DFCE.
+      LOG.info("Lancement de la creation de la base de donnees DFCE");
+      try {
+        adminDFCE.createSAEBase(cnxParameter, xmlDataBaseModel,
+                                xmlDocumentsType);
+      } catch (final BaseAdministrationServiceEx e) {
+        LOG.error("Error - " + e.getMessage());
+        throw new IntegrationInstRuntimeException(e);
+      } catch (final ConnectionServiceEx e) {
+        throw new IntegrationInstRuntimeException(e);
+      }
+      LOG.info("Fin de la creation de la base de donnees DFCE");
+      LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
+      // Création de la base SAE
+      majLotService.demarreCreateSAE();
+      // tables cql
+      majCqlLotService.demarreCreateSAE();
+      LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
 
-      LOG.debug("execute - fin des tâches demandées");
+      // Mise à jour RND
+      LOG.info("Lancement de la mise à jour des code RND");
+      try {
 
-   }
+        // appel du service de mise à jour du RND
+        final MajRndService majRndService = context.getBean(MajRndService.class);
 
-   /**
-    * Démarage du contexte Spring
-    * 
-    * @param cheminFicConfSae
-    *           le chemin du fichier de configuration principal du sae
-    *           (sae-config.properties)
-    * @return le contexte Spring
-    */
-   protected static ApplicationContext startContextSpring(
-         String cheminFicConfSae) {
+        majRndService.lancer();
 
-      String contextConfig = "/applicationContext-sae-integrationinstall.xml";
+      } catch (final MajRndException e) {
+        throw new IntegrationInstRuntimeException(e);
+      } catch (final Exception e) {
+        throw new IntegrationInstRuntimeException(e);
+      }
+      LOG.info("Fin de la mise à jour des code RND");
 
-      return ContextFactory.createSAEApplicationContext(contextConfig,
-            cheminFicConfSae);
+      // Telechargement des CRL
+      LOG.info("Lancement du telechargement des CRL");
+      final String pathIgcConfigFile = args[3];
+      try {
+        final IgcConfigService igcConfigService = context
+            .getBean(IgcConfigService.class);
+        final IgcConfigs igcConfigs = igcConfigService.loadConfig(pathIgcConfigFile);
 
-   }
+        final IgcDownloadService igcDownloadService = context
+            .getBean(IgcDownloadService.class);
+        igcDownloadService.telechargeCRLs(igcConfigs);
+      } catch (final IgcConfigException e) {
+        LOG.error(e.getMessage(), e);
+        throw new IntegrationInstRuntimeException(e);
+
+      } catch (final IgcDownloadException e) {
+        LOG.error(e.getMessage(), e);
+        throw new IntegrationInstRuntimeException(e);
+
+      }
+      LOG.info("Fin du telechargement des CRL");
+      // Création des metadatas, indexes composites et droits dans la base SAE.
+      LOG.info("Lancement de la creation des metadonnees, des droits et des indexes composites pour la base de donnees "
+          + applicationConcernee);
+      majLotService.demarreCreateMetadatasIndexesDroitsSAE(applicationConcernee);
+      LOG.info("Fin de la creation des metadonnees, des droits et des indexes composites pour la base de donnees "
+          + applicationConcernee);
+    }
+
+    // on force ici la fermeture du contexte de Spring
+    // ceci a pour but de forcer la déconnexion avec Cassandra, la SGBD
+    // chargé de la persistance de la pile des travaux
+    //      LOG.debug("execute - fermeture du contexte d'application");
+    //      ((AbstractApplicationContext) context).close();
+    //      LOG.debug("execute - fermeture du contexte d'application effectuée");
+
+    LOG.debug("execute - fin des tâches demandées");
+
+  }
+
+  /**
+   * Démarage du contexte Spring
+   * 
+   * @param cheminFicConfSae
+   *           le chemin du fichier de configuration principal du sae
+   *           (sae-config.properties)
+   * @return le contexte Spring
+   */
+  protected static ApplicationContext startContextSpring(
+                                                         final String cheminFicConfSae) {
+
+    final String contextConfig = "/applicationContext-sae-integrationinstall.xml";
+
+    return ContextFactory.createSAEApplicationContext(contextConfig,
+                                                      cheminFicConfSae);
+
+  }
 
 }
