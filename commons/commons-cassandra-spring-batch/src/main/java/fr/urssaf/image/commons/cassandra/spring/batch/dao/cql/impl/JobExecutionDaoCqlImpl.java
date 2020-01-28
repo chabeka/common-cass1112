@@ -12,8 +12,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -22,6 +20,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.collect.Iterators;
@@ -29,6 +30,7 @@ import com.google.common.collect.Iterators;
 import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
 import fr.urssaf.image.commons.cassandra.cql.codec.JsonCodec;
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionToJobStepCql;
@@ -53,9 +55,15 @@ import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 @Repository
 public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long> implements IJobExecutionDaoCql {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(JobExecutionDaoCqlImpl.class);
-   
    /**
+   * @param ccf
+   */
+  @Autowired
+  public JobExecutionDaoCqlImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
+
+  /**
     * le nom de la colonne indexée dals la table d'index JobExecutionsRunning
     */
    private static final String JOB_NAME = "jobname";
@@ -94,9 +102,17 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
    @PostConstruct
    public void setRegister() {
 	   if(ccf != null) {
-	      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<BatchStatus>(BatchStatus.class));
-	      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-	      ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
+
+      final CodecRegistry registry = ccf.getCluster().getConfiguration().getCodecRegistry();
+      registerCodecIfNotFound(registry, new JsonCodec<>(BatchStatus.class));
+      registerCodecIfNotFound(registry, BytesBlobCodec.instance);
+      registerCodecIfNotFound(registry, ExecutionContextCodec.instance);
+
+      /*
+       * ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(BatchStatus.class));
+       * ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+       * ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
+       */
 	   }
 
    }
@@ -106,11 +122,6 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
     */
    @Override
    public void saveJobExecution(final JobExecution jobExecution) {
-	  
-	  if( LOGGER.isDebugEnabled()) {
-		  LOGGER.debug("saveJobExecution");
-	  }
-	  
       Assert.notNull(jobExecution, "JobExecution cannot be null.");
 
       validateJobExecution(jobExecution);
@@ -478,11 +489,12 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
 
    }
  
-   /**
-    * @return the logger
-    */
-   @Override
-   public Logger getLogger() {
-      return LOGGER;
-   }
+    private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

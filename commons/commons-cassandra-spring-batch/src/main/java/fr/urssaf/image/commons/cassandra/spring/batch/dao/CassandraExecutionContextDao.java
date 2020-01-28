@@ -85,9 +85,10 @@ public class CassandraExecutionContextDao implements ExecutionContextDao {
       jobExeContextDaoCql.updateExecutionContext(jobExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       jobExeContextDaoThrift.updateExecutionContext(jobExecution);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)
+        || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
+      jobExeContextDaoCql.updateExecutionContext(jobExecution);
+      jobExeContextDaoThrift.updateExecutionContext(jobExecution);
     }
 
   }

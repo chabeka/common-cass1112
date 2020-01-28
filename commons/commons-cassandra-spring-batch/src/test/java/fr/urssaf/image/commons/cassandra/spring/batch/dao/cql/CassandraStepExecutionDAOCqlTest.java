@@ -13,6 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -26,9 +28,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import junit.framework.Assert;
 
@@ -48,6 +47,9 @@ public class CassandraStepExecutionDAOCqlTest {
   private TestingServer zkServer;
 
   private CuratorFramework zkClient;
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(CassandraStepExecutionDAOCqlTest.class);
 
   @Autowired
   private CassandraServerBean server;
@@ -71,7 +73,7 @@ public class CassandraStepExecutionDAOCqlTest {
       zkServer.close();
       server.destroy();
     } catch (final Exception e) {
-      e.printStackTrace();
+      LOGGER.error(e.getMessage());
     }
   }
 

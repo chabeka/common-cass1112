@@ -11,8 +11,6 @@ import java.util.Set;
 
 import javax.annotation.PostConstruct;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
@@ -21,15 +19,19 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
+
 import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
 import fr.urssaf.image.commons.cassandra.cql.codec.JsonCodec;
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionToJobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepsCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionToJobStepDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceToJobExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepsDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.helper.CassandraJobHelper;
@@ -44,8 +46,14 @@ import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 @Repository
 public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long> implements IJobStepExecutionDaoCql {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(JobStepExecutionDaoCqlImpl.class);
 	
+  /**
+   * @param ccf
+   */
+  public JobStepExecutionDaoCqlImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
+
    @Autowired
    @Qualifier("stepexecutionidgeneratorcql")
    private IdGenerator idGenerator;
@@ -67,18 +75,20 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
    @PostConstruct
    public void setRegister() {
 	   if(ccf != null) {
-	      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<BatchStatus>(BatchStatus.class));
-	      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-	      ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
+      final CodecRegistry registry = ccf.getCluster().getConfiguration().getCodecRegistry();
+      registerCodecIfNotFound(registry, new JsonCodec<>(BatchStatus.class));
+      registerCodecIfNotFound(registry, BytesBlobCodec.instance);
+      registerCodecIfNotFound(registry, ExecutionContextCodec.instance);
+
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(BatchStatus.class));
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
 	   }
 
    }
 
    @Override
    public final void addStepExecutions(final JobExecution jobExecution) {
-	  if(LOGGER.isDebugEnabled()) {
-		  LOGGER.debug("addStepExecutions");
-	  }
       Assert.notNull(jobExecution, "JobExecution cannot be null.");
       Assert.notNull(jobExecution.getId(), "JobExecution Id cannot be null.");
       final long jobExecutionId = jobExecution.getId();
@@ -86,14 +96,14 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
       // Récupération des id des steps
       final Iterator<JobExecutionToJobStepCql> it = jobExeToStepDaoCql.findAllWithMapperById(jobExecutionId);
 
-      final List<Long> stepIds = new ArrayList<Long>();
+    final List<Long> stepIds = new ArrayList<>();
       while (it.hasNext()) {
          stepIds.add(it.next().getJobStepId());
       }
 
-      final Iterator<JobStepCql> itJobSt = this.findAllWithMapper();
+    final Iterator<JobStepCql> itJobSt = findAllWithMapper();
 
-      final List<StepExecution> list = new ArrayList<StepExecution>(stepIds.size());
+    final List<StepExecution> list = new ArrayList<>(stepIds.size());
       while (itJobSt.hasNext()) {
          final JobStepCql jobcql = itJobSt.next();
          // Charger les steps dans l'objet parent jobExecution
@@ -105,9 +115,6 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
    @Override
    public final StepExecution getStepExecution(final JobExecution jobExecution,
                                                final Long stepExecutionId) {
-	  if(LOGGER.isDebugEnabled()) {
-		  LOGGER.debug("getStepExecution");
-	  }
       final Optional<JobStepCql> opt = this.findWithMapperById(stepExecutionId);
       if (opt.isPresent()) {
          final JobStepCql stepCql = opt.get();
@@ -202,7 +209,7 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
    public final void deleteStepExecution(final Long stepExecutionId) {
 
       // On supprimee dans JobStep
-      this.deleteById(stepExecutionId);
+    deleteById(stepExecutionId);
    }
 
    /**
@@ -249,7 +256,7 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
 
       int compteur = 0;
       // recuperation des ids des steps
-      final List<Long> stepIds = new ArrayList<Long>(count);
+    final List<Long> stepIds = new ArrayList<>(count);
       while (it.hasNext()) {
          final JobStepsCql step = it.next();
       final String jobName = step.getJobName();
@@ -268,15 +275,15 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
     }
 
       // recuperation des steps en fonction de leurs ids
-      final List<JobStepCql> listStep = new ArrayList<JobStepCql>();
+    final List<JobStepCql> listStep = new ArrayList<>();
       for (final Long id : stepIds) {
-         if (this.findWithMapperById(id).isPresent()) {
-            listStep.add(this.findWithMapperById(id).get());
+      if (findWithMapperById(id).isPresent()) {
+        listStep.add(findWithMapperById(id).get());
          }
       }
 
       // transformation de JobStepCql en StepExecution
-      final List<StepExecution> list = new ArrayList<StepExecution>(stepIds.size());
+    final List<StepExecution> list = new ArrayList<>(stepIds.size());
       for (final JobStepCql step : listStep) {
          list.add(JobTranslateUtils.getStepExecutionFromStpeCql(null, step));
       }
@@ -304,12 +311,13 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
       return stepNames;
    }
    
-   /**
-    * @return the logger
-    */
-   @Override
-   public Logger getLogger() {
-      return LOGGER;
-   }
    
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

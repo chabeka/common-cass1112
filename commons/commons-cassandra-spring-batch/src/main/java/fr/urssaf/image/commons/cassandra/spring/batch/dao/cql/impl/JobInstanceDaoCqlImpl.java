@@ -21,11 +21,15 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
 import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstancesByNameCql;
@@ -48,6 +52,14 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
 
 
   private static final Logger LOGGER = LoggerFactory.getLogger(JobInstanceDaoCqlImpl.class);
+  /**
+   * @param ccf
+   */
+  @Autowired
+  public JobInstanceDaoCqlImpl(final CassandraCQLClientFactory ccf) {
+    super(ccf);
+  }
+
   /**
    *
    */
@@ -82,10 +94,14 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    */
   @PostConstruct
   public void setRegister() {
-	  if(ccf != null) {
-	    ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-	    ccf.getCluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
-	  }
+    if(ccf != null) {
+      final CodecRegistry registry = ccf.getCluster().getConfiguration().getCodecRegistry();
+      registerCodecIfNotFound(registry, BytesBlobCodec.instance);
+      registerCodecIfNotFound(registry, JobParametersCodec.instance);
+
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
+    }
 
   }
 
@@ -103,9 +119,7 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
 
   @Override
   public JobInstance createJobInstance(final String jobName, final JobParameters jobParameters) {
-	if (LOGGER.isDebugEnabled()) {
-		LOGGER.debug("createJobInstance");
-	}
+	
     Assert.notNull(jobName, "Job name must not be null.");
     Assert.notNull(jobParameters, "JobParameters must not be null.");
 
@@ -349,4 +363,12 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
      return LOGGER;
   }
   
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

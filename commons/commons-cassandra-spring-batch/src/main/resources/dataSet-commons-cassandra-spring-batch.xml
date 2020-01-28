@@ -13,9 +13,9 @@
             <name>6a6f624b6579</name>
             <validationClass>BytesType</validationClass>
             <indexType>KEYS</indexType>
-            <indexName>jobRKey_idx</indexName>
+   			<!-- <indexName>jobRKey_idx</indexName> EC--> 
          </columnMetadata>
-      </columnFamily>
+               </columnFamily>
       <columnFamily>
          <name>JobInstancesByName</name>
          <comparatorType>LongType</comparatorType>

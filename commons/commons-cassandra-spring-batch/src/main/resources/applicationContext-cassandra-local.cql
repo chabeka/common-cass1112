@@ -115,3 +115,9 @@ CREATE TABLE modeapi (
 );
 INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutions' , 'DUAL_MODE');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'DUAL_MODE');
+
+CREATE TABLE sequencescql (
+	jobidname		text,
+    value 			bigint,
+	PRIMARY KEY (jobidname)
+);
