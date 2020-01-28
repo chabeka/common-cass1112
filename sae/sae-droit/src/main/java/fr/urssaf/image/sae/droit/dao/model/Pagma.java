@@ -5,84 +5,107 @@ package fr.urssaf.image.sae.droit.dao.model;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
+
 /**
  * Classe de modèle d'un PAGMa
- * 
+ * Annotation pour Mapping avec la table cql
  */
-public class Pagma {
+@Table(name = "droitpagmacql")
+public class Pagma implements Comparable<Pagma> {
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(Pagma.class);
+  /** code unique du PAGMa */
+  @PartitionKey
+  @Column(name = "code")
+  private String code;
 
-   /** code unique du PAGMa */
-   private String code;
+  /** liste des codes des actions unitaires du PAGMa */
+  @Column(name = "actionunitaires")
+  private List<String> actionUnitaires;
 
-   /** liste des codes des actions unitaires du PAGMa */
-   private List<String> actionUnitaires;
+  /**
+   * @return le code unique du PAGMa
+   */
+  public final String getCode() {
+    return code;
+  }
 
-   /**
-    * @return le code unique du PAGMa
-    */
-   public final String getCode() {
-      return code;
-   }
+  /**
+   * @param code
+   *           code unique du PAGMa
+   */
+  public final void setCode(final String code) {
+    this.code = code;
+  }
 
-   /**
-    * @param code
-    *           code unique du PAGMa
-    */
-   public final void setCode(String code) {
-      this.code = code;
-   }
+  /**
+   * @return la liste des codes des actions unitaires du PAGMa
+   */
+  public final List<String> getActionUnitaires() {
+    return actionUnitaires;
+  }
 
-   /**
-    * @return la liste des codes des actions unitaires du PAGMa
-    */
-   public final List<String> getActionUnitaires() {
-      return actionUnitaires;
-   }
+  /**
+   * @param actionUnitaires
+   *           liste des codes des actions unitaires du PAGMa
+   */
+  public final void setActionUnitaires(final List<String> actionUnitaires) {
+    this.actionUnitaires = actionUnitaires;
+  }
 
-   /**
-    * @param actionUnitaires
-    *           liste des codes des actions unitaires du PAGMa
-    */
-   public final void setActionUnitaires(List<String> actionUnitaires) {
-      this.actionUnitaires = actionUnitaires;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean equals(final Object obj) {
+    boolean areEquals = false;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean equals(Object obj) {
-      boolean areEquals = false;
-
-      if (obj instanceof Pagma) {
-         Pagma pagma = (Pagma) obj;
-         areEquals = code.equals(pagma.getCode())
-               && actionUnitaires.size() == pagma.getActionUnitaires().size()
-               && actionUnitaires.containsAll(pagma.getActionUnitaires());
+    if (obj instanceof Pagma) {
+      final Pagma pagma = (Pagma) obj;
+      areEquals = code.equals(pagma.getCode())
+          && actionUnitaires.size() == pagma.getActionUnitaires().size()
+          && actionUnitaires.containsAll(pagma.getActionUnitaires());
+      if (!areEquals) {
+        LOGGER.warn("code:" + code + "/" + getCode() + ", actionUnitaires:" + actionUnitaires + "/" + pagma.getActionUnitaires());
       }
+    }
 
-      return areEquals;
-   }
+    return areEquals;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final int hashCode() {
-      return super.hashCode();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final int hashCode() {
+    return super.hashCode();
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final String toString() {
-      StringBuffer buffer = new StringBuffer();
-      for (String action : actionUnitaires) {
-         buffer.append("action = " + action + "\n");
-      }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final String toString() {
+    final StringBuffer buffer = new StringBuffer();
+    for (final String action : actionUnitaires) {
+      buffer.append("action = " + action + "\n");
+    }
 
-      return "code : " + code + "\nactions :\n" + buffer.toString();
-   }
+    return "code : " + code + "\nactions :\n" + buffer.toString();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(final Pagma o) {
+    return getCode().compareTo(o.getCode());
+  }
 
 }

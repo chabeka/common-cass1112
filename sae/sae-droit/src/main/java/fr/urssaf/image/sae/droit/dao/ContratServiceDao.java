@@ -24,202 +24,201 @@ import me.prettyprint.hector.api.Serializer;
 @Repository
 public class ContratServiceDao extends AbstractDao<String, String> {
 
-   public static final String CS_CFNAME = "DroitContratService";
+  public static final String CS_CFNAME = "DroitContratService";
 
-   /** code de l'organisme client lié au contrat de service */
-   public static final String CS_LIBELLE = "libelle";
+  /** code de l'organisme client lié au contrat de service */
+  public static final String CS_LIBELLE = "libelle";
 
-   /** durée maximum de l'habilitation exprimée en secondes */
-   public static final String CS_VI_DUREE = "viDuree";
+  /** durée maximum de l'habilitation exprimée en secondes */
+  public static final String CS_VI_DUREE = "viDuree";
 
-   /** description du contrat de service */
-   public static final String CS_DESCRIPTION = "description";
+  /** description du contrat de service */
+  public static final String CS_DESCRIPTION = "description";
 
-   /** CN de la pki attendue */
-   public static final String CS_PKI = "pki";
+  /** CN de la pki attendue */
+  public static final String CS_PKI = "pki";
 
-   /** liste des CN des pki attendues */
-   public static final String CS_LISTE_PKI = "listPki";
+  /** liste des CN des pki attendues */
+  public static final String CS_LISTE_PKI = "listPki";
 
-   /** CN du certificat client attendu */
-   public static final String CS_CERT = "cert";
+  /** CN du certificat client attendu */
+  public static final String CS_CERT = "cert";
 
-   /** liste des CN des certificats clients attendus */
-   public static final String CS_LISTE_CERT = "listeCert";
+  /** liste des CN des certificats clients attendus */
+  public static final String CS_LISTE_CERT = "listeCert";
 
-   /** Vérification controle de nommage */
-   public static final String CS_VERIF_NOMMAGE = "verifNommage";
-
-   /**
-    * 
-    * @param keyspace
-    *           Keyspace utilisé par la pile des travaux
-    */
-   @Autowired
-   public ContratServiceDao(Keyspace keyspace) {
-      super(keyspace);
-
-   }
+  /** Vérification controle de nommage */
+  public static final String CS_VERIF_NOMMAGE = "verifNommage";
 
    /**
-    * ajoute une colonne {@value #CS_LIBELLE}
-    * 
-    * @param updater
-    *           updater de <code>DroitContratService</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritLibelle(ColumnFamilyUpdater<String, String> updater,
-         String value, long clock) {
+   * @param keyspace
+   *          Keyspace utilisé par DroitContratService
+   */
+  @Autowired
+  public ContratServiceDao(final Keyspace keyspace) {
+    super(keyspace);
 
-      addColumn(updater, CS_LIBELLE, value, StringSerializer.get(), clock);
+  }
 
-   }
+  /**
+   * ajoute une colonne {@value #CS_LIBELLE}
+   * 
+   * @param updater
+   *           updater de <code>DroitContratService</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritLibelle(final ColumnFamilyUpdater<String, String> updater,
+                                 final String value, final long clock) {
 
-   /**
-    * ajoute une colonne {@value #CS_VI_DUREE}
-    * 
-    * @param updater
-    *           updater de <code>DroitContratService</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritViDuree(ColumnFamilyUpdater<String, String> updater,
-         Long value, long clock) {
+    addColumn(updater, CS_LIBELLE, value, StringSerializer.get(), clock);
 
-      addColumn(updater, CS_VI_DUREE, value, LongSerializer.get(), clock);
+  }
 
-   }
+  /**
+   * ajoute une colonne {@value #CS_VI_DUREE}
+   * 
+   * @param updater
+   *           updater de <code>DroitContratService</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritViDuree(final ColumnFamilyUpdater<String, String> updater,
+                                 final Long value, final long clock) {
 
-   /**
-    * ajoute une colonne {@value #CS_DESCRIPTION}
-    * 
-    * @param updater
-    *           updater de <code>DroitContratService</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritDescription(
-         ColumnFamilyUpdater<String, String> updater, String value, long clock) {
+    addColumn(updater, CS_VI_DUREE, value, LongSerializer.get(), clock);
 
-      addColumn(updater, CS_DESCRIPTION, value, StringSerializer.get(), clock);
+  }
 
-   }
+  /**
+   * ajoute une colonne {@value #CS_DESCRIPTION}
+   * 
+   * @param updater
+   *           updater de <code>DroitContratService</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritDescription(
+                                     final ColumnFamilyUpdater<String, String> updater, final String value, final long clock) {
 
-   /**
-    * ajoute une colonne {@value #CS_PKI}
-    * 
-    * @param updater
-    *           updater de <code>DroitContratService</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritIdPki(ColumnFamilyUpdater<String, String> updater,
-         String value, long clock) {
+    addColumn(updater, CS_DESCRIPTION, value, StringSerializer.get(), clock);
 
-      addColumn(updater, CS_PKI, value, StringSerializer.get(), clock);
+  }
 
-   }
+  /**
+   * ajoute une colonne {@value #CS_PKI}
+   * 
+   * @param updater
+   *           updater de <code>DroitContratService</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritIdPki(final ColumnFamilyUpdater<String, String> updater,
+                               final String value, final long clock) {
 
-   /**
-    * ajoute une colonne {@value #CS_LISTE_PKI}
-    * 
-    * @param updater
-    *           updater de <code>DroitContratService</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritListePki(ColumnFamilyUpdater<String, String> updater,
-         List<String> value, long clock) {
+    addColumn(updater, CS_PKI, value, StringSerializer.get(), clock);
 
-      addColumn(updater, CS_LISTE_PKI, value, ListSerializer.get(), clock);
+  }
 
-   }
+  /**
+   * ajoute une colonne {@value #CS_LISTE_PKI}
+   * 
+   * @param updater
+   *           updater de <code>DroitContratService</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritListePki(final ColumnFamilyUpdater<String, String> updater,
+                                  final List<String> value, final long clock) {
 
-   /**
-    * ajoute une colonne {@value #CS_CERT}
-    * 
-    * @param updater
-    *           updater de <code>DroitContratService</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritCert(ColumnFamilyUpdater<String, String> updater,
-         String value, long clock) {
+    addColumn(updater, CS_LISTE_PKI, value, ListSerializer.get(), clock);
 
-      addColumn(updater, CS_CERT, value, StringSerializer.get(), clock);
+  }
 
-   }
+  /**
+   * ajoute une colonne {@value #CS_CERT}
+   * 
+   * @param updater
+   *           updater de <code>DroitContratService</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritCert(final ColumnFamilyUpdater<String, String> updater,
+                              final String value, final long clock) {
 
-   /**
-    * ajoute une colonne {@value #CS_LISTE_CERT}
-    * 
-    * @param updater
-    *           updater de <code>DroitContratService</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritListeCert(
-         ColumnFamilyUpdater<String, String> updater, List<String> value,
-         long clock) {
+    addColumn(updater, CS_CERT, value, StringSerializer.get(), clock);
 
-      addColumn(updater, CS_LISTE_CERT, value, ListSerializer.get(), clock);
+  }
 
-   }
+  /**
+   * ajoute une colonne {@value #CS_LISTE_CERT}
+   * 
+   * @param updater
+   *           updater de <code>DroitContratService</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritListeCert(
+                                   final ColumnFamilyUpdater<String, String> updater, final List<String> value,
+                                   final long clock) {
 
-   /**
-    * ajoute une colonne {@value #CS_VERIF_NOMMAGE}
-    * 
-    * @param updater
-    *           updater de <code>DroitContratService</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritFlagControlNommage(
-         ColumnFamilyUpdater<String, String> updater, boolean value, long clock) {
+    addColumn(updater, CS_LISTE_CERT, value, ListSerializer.get(), clock);
 
-      addColumn(updater, CS_VERIF_NOMMAGE, value, BooleanSerializer.get(),
-            clock);
+  }
 
-   }
+  /**
+   * ajoute une colonne {@value #CS_VERIF_NOMMAGE}
+   * 
+   * @param updater
+   *           updater de <code>DroitContratService</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritFlagControlNommage(
+                                            final ColumnFamilyUpdater<String, String> updater, final boolean value, final long clock) {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final String getColumnFamilyName() {
-      return CS_CFNAME;
-   }
+    addColumn(updater, CS_VERIF_NOMMAGE, value, BooleanSerializer.get(),
+              clock);
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Serializer<String> getColumnKeySerializer() {
-      return StringSerializer.get();
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Serializer<String> getRowKeySerializer() {
-      return StringSerializer.get();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final String getColumnFamilyName() {
+    return CS_CFNAME;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Serializer<String> getColumnKeySerializer() {
+    return StringSerializer.get();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Serializer<String> getRowKeySerializer() {
+    return StringSerializer.get();
+  }
 }

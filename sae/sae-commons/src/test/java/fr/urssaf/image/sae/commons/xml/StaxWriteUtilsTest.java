@@ -15,97 +15,102 @@ import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import junit.framework.Assert;
 
 public class StaxWriteUtilsTest {
 
-   private static final String NAMESP = "http://www.cirtil.fr/sae/test";
-   private static final String PREFIX = "";
-   private File createdFile;
+  private static final String NAMESP = "http://www.cirtil.fr/sae/test";
+  private static final String PREFIX = "";
+  private File createdFile;
 
-   @Before
-   public void init() throws IOException {
-      createdFile = File.createTempFile("generated", ".xml");
-   }
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(StaxWriteUtilsTest.class);
 
-   @After
-   public void end() {
-      FileUtils.deleteQuietly(createdFile);
-   }
+  @Before
+  public void init() throws IOException {
+    createdFile = File.createTempFile("generated", ".xml");
+  }
 
-   @Test
-   public void generateFileTest() throws XMLStreamException, IOException {
+  @After
+  public void end() {
+    FileUtils.deleteQuietly(createdFile);
+  }
 
-      OutputStream outputStream = null;
-      XMLEventWriter writer = null;
+  @Test
+  public void generateFileTest() throws XMLStreamException, IOException {
 
-      try {
-         XMLEventFactory eventFactory = XMLEventFactory.newInstance();
-         outputStream = new FileOutputStream(createdFile);
+    OutputStream outputStream = null;
+    XMLEventWriter writer = null;
 
-         writer = StaxWriteUtils.loadWriter(outputStream);
+    try {
+      final XMLEventFactory eventFactory = XMLEventFactory.newInstance();
+      outputStream = new FileOutputStream(createdFile);
 
-         StaxWriteUtils writeUtils = new StaxWriteUtils(eventFactory, writer);
+      writer = StaxWriteUtils.loadWriter(outputStream);
 
-         writeFile(writeUtils);
+      final StaxWriteUtils writeUtils = new StaxWriteUtils(eventFactory, writer);
 
-         String sha1Attendu = "9cfe23a6afc76e4b939f39cdc47a598378c3abac";
-         String sha1Obtenu = calculeSha1(createdFile);
+      writeFile(writeUtils);
 
-         Assert.assertEquals("le sha1 doit etre correct", sha1Attendu,
-               sha1Obtenu);
+      final String sha1Attendu = "9cfe23a6afc76e4b939f39cdc47a598378c3abac";
+      final String sha1Obtenu = calculeSha1(createdFile);
 
-      } finally {
+      Assert.assertEquals("le sha1 doit etre correct", sha1Attendu,
+                          sha1Obtenu);
 
-         if (writer != null) {
-            try {
-               writer.close();
+    } finally {
 
-            } catch (XMLStreamException exception) {
-               exception.printStackTrace();
-            }
-         }
+      if (writer != null) {
+        try {
+          writer.close();
 
-         if (outputStream != null) {
-            try {
-               outputStream.close();
-
-            } catch (IOException exception) {
-               exception.printStackTrace();
-            }
-         }
-
-      }
-   }
-
-   private void writeFile(StaxWriteUtils writeUtils) throws XMLStreamException {
-
-      writeUtils.startDocument();
-      writeUtils.addStartElement("stax", PREFIX, NAMESP);
-      writeUtils.addDefaultPrefix(NAMESP);
-
-      writeUtils.addStartTag("element", PREFIX, NAMESP);
-
-      writeUtils.createTag("valeur", "valeurTagStax", PREFIX, NAMESP);
-
-      writeUtils.addEndTag("element", PREFIX, NAMESP);
-      writeUtils.addEndElement("stax", PREFIX, NAMESP);
-
-   }
-
-   private String calculeSha1(File file) throws IOException {
-
-      FileInputStream fis = new FileInputStream(file);
-      try {
-
-         return DigestUtils.shaHex(fis);
-
-      } finally {
-         if (fis != null) {
-            fis.close();
-         }
+        } catch (final XMLStreamException exception) {
+          LOGGER.error(exception.getMessage());
+        }
       }
 
-   }
+      if (outputStream != null) {
+        try {
+          outputStream.close();
+
+        } catch (final IOException exception) {
+          LOGGER.error(exception.getMessage());
+        }
+      }
+
+    }
+  }
+
+  private void writeFile(final StaxWriteUtils writeUtils) throws XMLStreamException {
+
+    writeUtils.startDocument();
+    writeUtils.addStartElement("stax", PREFIX, NAMESP);
+    writeUtils.addDefaultPrefix(NAMESP);
+
+    writeUtils.addStartTag("element", PREFIX, NAMESP);
+
+    writeUtils.createTag("valeur", "valeurTagStax", PREFIX, NAMESP);
+
+    writeUtils.addEndTag("element", PREFIX, NAMESP);
+    writeUtils.addEndElement("stax", PREFIX, NAMESP);
+
+  }
+
+  private String calculeSha1(final File file) throws IOException {
+
+    final FileInputStream fis = new FileInputStream(file);
+    try {
+
+      return DigestUtils.shaHex(fis);
+
+    } finally {
+      if (fis != null) {
+        fis.close();
+      }
+    }
+
+  }
 }

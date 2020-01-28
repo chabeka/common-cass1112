@@ -9,8 +9,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -19,6 +25,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
@@ -40,11 +48,12 @@ import fr.urssaf.image.sae.droit.model.SaePagm;
 import fr.urssaf.image.sae.droit.model.SaePagma;
 import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.model.SaePagmp;
-import junit.framework.Assert;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-droit-test.xml"})
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SaeDroitServiceCreateTest {
 
   @Autowired
@@ -73,6 +82,32 @@ public class SaeDroitServiceCreateTest {
 
   @Autowired
   private ActionUnitaireSupport support;
+
+  @Autowired
+  private CassandraServerBean cassandraServer;
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SaeDroitServiceCreateTest.class);
+
+  @After
+  public void end() throws Exception {
+    cassandraServer.resetData(true, MODE_API.HECTOR);
+  }
+
+  @Test
+  public void init() {
+    try {
+      if (cassandraServer.isCassandraStarted()) {
+        cassandraServer.resetData();
+      }
+
+      Assert.assertTrue(true);
+
+    }
+    catch (final Exception e) {
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
+    }
+  }
 
   @Test(expected = DroitRuntimeException.class)
   public void testCreateContratDejaExistant() {

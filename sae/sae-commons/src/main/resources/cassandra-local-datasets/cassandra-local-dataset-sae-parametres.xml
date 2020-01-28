@@ -15,7 +15,10 @@
       -->
       <columnFamily>
          <name>Parameters</name>
-         <comparatorType>UTF8Type</comparatorType>
+         <keyType>BytesType</keyType>
+         <comparatorType>BytesType</comparatorType>
+         <defaultColumnValueType>BytesType</defaultColumnValueType>
+
       </columnFamily>
       
    </columnFamilies>

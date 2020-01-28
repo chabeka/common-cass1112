@@ -1,20 +1,19 @@
 /**
- * 
+ * AC75095351
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
+import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import org.apache.curator.framework.CuratorFramework;
-
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
+import fr.urssaf.image.sae.droit.dao.support.facade.PrmdSupportFacade;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.service.SaePrmdService;
 import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
@@ -23,189 +22,207 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
  * Classe d'implémentation du service {@link SaePrmdService}.<br>
  * Cette classe est un singleton et peut être accessible par le mécanisme
  * d'injection IOC avec l'annotation @Autowired
- * 
+ * (Thrift et Cql)
  */
 @Component
 public class SaePrmdServiceImpl implements SaePrmdService {
 
-   private static final String CHECK = "checkPrmdInexistant";
 
-   private static final String PRMD = "Le PRMD ";
+  private static final String CHECK = "checkPrmdInexistant";
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(SaePrmdServiceImpl.class);
+  private static final String PRMD = "Le PRMD ";
 
-   private static final String TRC_CREATE = "createPrmd()";
-   private static final String TRC_EXISTS = "prmdExists()";
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SaePrmdServiceImpl.class);
 
-   private static final String TRC_FIND = "getPrmd()";
+  private static final String TRC_CREATE = "createPrmd()";
+  private static final String TRC_EXISTS = "prmdExists()";
 
-   private static final String PREFIXE_PRMD = "/DroitPrmd/";
+  private static final String TRC_FIND = "getPrmd()";
 
-   private final PrmdSupport prmdSupport;
+  private static final String PREFIXE_PRMD = "/DroitPrmd/";
 
-   private final JobClockSupport clockSupport;
 
-   private final CuratorFramework curatorClient;
+  private final CuratorFramework curatorClient;
 
-   /**
-    * constructeur
-    * 
-    * @param prmd
-    *           {@link PrmdSupport}
-    * @param clock
-    *           {@link JobClockSupport}
-    * @param curator
-    *           {@link CuratorFramework}
-    */
-   @Autowired
-   public SaePrmdServiceImpl(PrmdSupport prmd, JobClockSupport clock,
-         CuratorFramework curator) {
-      this.prmdSupport = prmd;
-      this.clockSupport = clock;
-      this.curatorClient = curator;
-   }
+  private final PrmdSupportFacade prmdSupportFacade;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void createPrmd(Prmd prmd) {
+  /**
+   * constructeur
+   * 
+   * @param prmd
+   *           {@link PrmdSupport}
+   * @param curator
+   *           {@link CuratorFramework}
+   */
+  @Autowired
+  public SaePrmdServiceImpl(final PrmdSupportFacade prmdSupportFacade,
+                            final CuratorFramework curator) {
+    this.prmdSupportFacade = prmdSupportFacade;
+    curatorClient = curator;
+  }
 
-      String resourceName = PREFIXE_PRMD + prmd.getCode();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void createPrmd(final Prmd prmd) {
 
-      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
-            resourceName);
-      try {
-         LOGGER.debug("{} - Lock Zookeeper", TRC_CREATE);
-         ZookeeperUtils.acquire(mutex, resourceName);
+    final String resourceName = PREFIXE_PRMD + prmd.getCode();
 
-         LOGGER.debug("{} - Vérification PRMD inexistant", TRC_CREATE);
-         checkPrmdInexistant(prmd);
+    final ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
+                                                            resourceName);
+    try {
+      LOGGER.debug("{} - Lock Zookeeper", TRC_CREATE);
+      ZookeeperUtils.acquire(mutex, resourceName);
 
-         LOGGER.debug("{} - Création PRMD", TRC_CREATE);
-         prmdSupport.create(prmd, clockSupport.currentCLock());
+      LOGGER.debug("{} - Vérification PRMD inexistant", TRC_CREATE);
+      checkPrmdInexistant(prmd);
 
-         checkLock(mutex, prmd);
+      LOGGER.debug("{} - Création PRMD", TRC_CREATE);
+      createOrModifyPrmd(prmd);
 
-      } finally {
-         mutex.release();
-      }
-   }
+      checkLock(mutex, prmd);
 
-   @Override
-   public final void modifyPrmd(Prmd prmd) {
-      String resourceName = PREFIXE_PRMD + prmd.getCode();
+    } finally {
+      mutex.release();
+    }
+  }
 
-      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
-            resourceName);
-      try {
-         LOGGER.debug("{} - Lock Zookeeper", TRC_CREATE);
-         ZookeeperUtils.acquire(mutex, resourceName);
+  @Override
+  public final void modifyPrmd(final Prmd prmd) {
+    final String resourceName = PREFIXE_PRMD + prmd.getCode();
 
-         LOGGER.debug("{} - Vérification PRMD existant", TRC_CREATE);
-         checkPrmdExistant(prmd);
+    final ZookeeperMutex mutex = ZookeeperUtils.createMutex(curatorClient,
+                                                            resourceName);
+    try {
+      LOGGER.debug("{} - Lock Zookeeper", TRC_CREATE);
+      ZookeeperUtils.acquire(mutex, resourceName);
 
-         LOGGER.debug("{} - Création PRMD", TRC_CREATE);
-         prmdSupport.create(prmd, clockSupport.currentCLock());
+      LOGGER.debug("{} - Vérification PRMD existant", TRC_CREATE);
+      checkPrmdExistant(prmd);
 
-         checkLock(mutex, prmd);
+      LOGGER.debug("{} - Création PRMD", TRC_CREATE);
+      createOrModifyPrmd(prmd);
 
-      } finally {
-         mutex.release();
-      }
+      checkLock(mutex, prmd);
 
-   }
+    } finally {
+      mutex.release();
+    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean prmdExists(String code) {
+  }
 
-      LOGGER.debug("{} - Début de recherche du PRMD", TRC_EXISTS);
-      boolean exists = false;
-      Prmd storedPrmd = prmdSupport.find(code);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean prmdExists(final String code) {
 
-      if (storedPrmd != null) {
-         exists = true;
-      }
+    LOGGER.debug("{} - Début de recherche du PRMD", TRC_EXISTS);
+    boolean exists = false;
+    final Prmd storedPrmd = findPrmdByCode(code);
 
-      LOGGER.debug("{} - Fin de recherche du PRMD", TRC_EXISTS);
+    if (storedPrmd != null) {
+      exists = true;
+    }
 
-      return exists;
-   }
+    LOGGER.debug("{} - Fin de recherche du PRMD", TRC_EXISTS);
 
-   /**
-    * Vérifie si le PRMD existe. Si c'est le cas renvoie une exception
-    * {@link DroitRuntimeException}
-    * 
-    * @param prmd
-    *           le PRMD a créer
-    */
-   private void checkPrmdInexistant(Prmd prmd) {
+    return exists;
+  }
 
-      if (prmdExists(prmd.getCode())) {
+  /**
+   * Vérifie si le PRMD existe. Si c'est le cas renvoie une exception
+   * {@link DroitRuntimeException}
+   * 
+   * @param prmd
+   *           le PRMD a créer
+   */
+  private void checkPrmdInexistant(final Prmd prmd) {
 
-         LOGGER.warn("{} - Le PRMD {} existe déjà dans la "
-               + "famille de colonnes DroitPRMD", CHECK, prmd.getCode());
-         throw new DroitRuntimeException(PRMD + prmd.getCode()
-               + " existe déjà dans la " + "famille de colonnes DroitPRMD");
-      }
+    if (prmdExists(prmd.getCode())) {
 
-   }
+      LOGGER.warn("{} - Le PRMD {} existe déjà dans la "
+          + "famille de colonnes DroitPRMD", CHECK, prmd.getCode());
+      throw new DroitRuntimeException(PRMD + prmd.getCode()
+      + " existe déjà dans la " + "famille de colonnes DroitPRMD");
+    }
 
-   /**
-    * Vérifie si le PRMD n'existe pas. Si c'est le cas renvoie une exception
-    * {@link DroitRuntimeException}
-    * 
-    * @param prmd
-    *           le PRMD a modifier
-    */
-   private void checkPrmdExistant(Prmd prmd) {
+  }
 
-      if (!prmdExists(prmd.getCode())) {
+  /**
+   * Vérifie si le PRMD n'existe pas. Si c'est le cas renvoie une exception
+   * {@link DroitRuntimeException}
+   * 
+   * @param prmd
+   *           le PRMD a modifier
+   */
+  private void checkPrmdExistant(final Prmd prmd) {
 
-         LOGGER.warn("{} - Le PRMD à modifier {} n'existe pas dans la "
-               + "famille de colonnes DroitPRMD", CHECK, prmd.getCode());
-         throw new DroitRuntimeException(PRMD + prmd.getCode()
-               + " à modifier n'existe pas dans la "
-               + "famille de colonnes DroitPRMD");
-      }
+    if (!prmdExists(prmd.getCode())) {
 
-   }
+      LOGGER.warn("{} - Le PRMD à modifier {} n'existe pas dans la "
+          + "famille de colonnes DroitPRMD", CHECK, prmd.getCode());
+      throw new DroitRuntimeException(PRMD + prmd.getCode()
+      + " à modifier n'existe pas dans la "
+      + "famille de colonnes DroitPRMD");
+    }
 
-   private void checkLock(ZookeeperMutex mutex, Prmd prmd) {
+  }
 
-      if (!ZookeeperUtils.isLock(mutex)) {
+  private void checkLock(final ZookeeperMutex mutex, final Prmd prmd) {
 
-         Prmd storedPrmd = prmdSupport.find(prmd.getCode());
+    if (!ZookeeperUtils.isLock(mutex)) {
 
-         if (storedPrmd == null) {
-            throw new PrmdReferenceException(PRMD + prmd.getCode()
-                  + " n'a pas été créé");
-         }
+      final Prmd storedPrmd = findPrmdByCode(prmd.getCode());
 
-         if (!storedPrmd.equals(prmd)) {
-            throw new DroitRuntimeException(PRMD + prmd.getCode()
-                  + " a déjà été créé");
-         }
-
+      if (storedPrmd == null) {
+        throw new PrmdReferenceException(PRMD + prmd.getCode()
+        + " n'a pas été créé");
       }
 
-   }
+      if (!storedPrmd.equals(prmd)) {
+        throw new DroitRuntimeException(PRMD + prmd.getCode()
+        + " a déjà été créé");
+      }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Prmd getPrmd(String code) {
+    }
 
-      LOGGER.debug("{} - Début de la récupération du PRMD", TRC_FIND);
-      Prmd storedPrmd = prmdSupport.find(code);
-      LOGGER.debug("{} - Fin de la récupération du PRMD", TRC_FIND);
+  }
 
-      return storedPrmd;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Prmd getPrmd(final String code) {
+
+    LOGGER.debug("{} - Début de la récupération du PRMD", TRC_FIND);
+    final Prmd storedPrmd = findPrmdByCode(code);
+    LOGGER.debug("{} - Fin de la récupération du PRMD", TRC_FIND);
+
+    return storedPrmd;
+  }
+
+  /**
+   * Recherche prmd par code suivant ModeGestionAPI
+   * 
+   * @param prmd
+   * @return Prmd
+   */
+  private Prmd findPrmdByCode(final String prmd) {
+
+    return prmdSupportFacade.find(prmd);
+  }
+
+  /**
+   * Création prmd par code suivant ModeGestionAPI
+   * 
+   * @param prmd
+   * @return
+   */
+  private void createOrModifyPrmd(final Prmd prmd) {
+    prmdSupportFacade.create(prmd);
+  }
 
 }

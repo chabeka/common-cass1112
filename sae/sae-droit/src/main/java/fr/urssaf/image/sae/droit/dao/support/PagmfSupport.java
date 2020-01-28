@@ -41,190 +41,195 @@ import me.prettyprint.hector.api.query.RangeSlicesQuery;
 @Component
 public class PagmfSupport {
 
-   private static final String FIN_LOG = "{} - fin";
-   private static final String DEBUT_LOG = "{} - début";
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(PagmfSupport.class);
+  private static final String FIN_LOG = "{} - fin";
+  private static final String DEBUT_LOG = "{} - début";
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(PagmfSupport.class);
 
-   private final PagmfDao pagmfDao;
+  private final PagmfDao pagmfDao;
 
-   // recherches
+  // recherches
 
-   /**
-    * constructeur
-    * 
-    * @param pagmfDao
-    *           DAO associée au pagmf
-    */
-   @Autowired
-   public PagmfSupport(PagmfDao pagmfDao) {
-      this.pagmfDao = pagmfDao;
-   }
+  /**
+   * constructeur
+   * 
+   * @param pagmfDao
+   *           DAO associée au pagmf
+   */
+  @Autowired
+  public PagmfSupport(final PagmfDao pagmfDao) {
+    this.pagmfDao = pagmfDao;
+  }
 
-   /**
-    * Création d'un nouveau Pagmf
-    * 
-    * @param pagmf
-    *           PAGMF à créer
-    * @param clock
-    *           horloge de la création
-    */
-   public final void create(Pagmf pagmf, long clock) {
-      String opePagmfPrefix = "ajouterPagmf";
+  /**
+   * Création d'un nouveau Pagmf
+   * 
+   * @param pagmf
+   *           PAGMF à créer
+   * @param clock
+   *           horloge de la création
+   */
+  public final void create(final Pagmf pagmf, final long clock) {
+    final String opePagmfPrefix = "ajouterPagmf";
 
-      LOGGER.debug(DEBUT_LOG, opePagmfPrefix);
-      LOGGER.debug("{} - Identifiant du PAGMF : {}", new String[] {
-            opePagmfPrefix, pagmf.getCodePagmf() });
+    LOGGER.debug(DEBUT_LOG, opePagmfPrefix);
+    LOGGER.debug("{} - Identifiant du PAGMF : {}", new String[] {
+                                                                 opePagmfPrefix, pagmf.getCodePagmf() });
 
-      ColumnFamilyUpdater<String, String> updater = pagmfDao.getCfTmpl()
-            .createUpdater(pagmf.getCodePagmf());
+    final ColumnFamilyUpdater<String, String> updater = pagmfDao.getCfTmpl()
+        .createUpdater(pagmf.getCodePagmf());
 
-      try {
-         pagmfDao.addPagmf(updater, pagmf, clock);
-      } catch (FormatControlProfilNotFoundException except) {
-         throw new DroitRuntimeException(except);
+    try {
+      pagmfDao.addPagmf(updater, pagmf, clock);
+    } catch (final FormatControlProfilNotFoundException except) {
+      throw new DroitRuntimeException(except);
+    }
+
+    pagmfDao.getCfTmpl().update(updater);
+
+    LOGGER.info("{} - Ajout du PAGMF : {}", new String[] { opePagmfPrefix,
+                                                           pagmf.getCodePagmf() });
+    LOGGER.debug(FIN_LOG, opePagmfPrefix);
+
+  }
+
+  /**
+   * Méthode de suppression d'un {@link Pagmf}
+   * 
+   * @param code
+   *           identifiant du PAGMa à supprimer - paramètre obligatoire
+   * @param clock
+   *           horloge de suppression - paramètre obligatoire
+   */
+  public final void delete(final String code, final Long clock) {
+
+    if (StringUtils.isBlank(code)) {
+      throw new IllegalArgumentException(ResourceMessagesUtils
+                                         .loadMessage("erreur.pagmf.notnull"));
+    }
+
+    if (clock == null || clock <= 0) {
+      throw new IllegalArgumentException(ResourceMessagesUtils
+                                         .loadMessage("erreur.param"));
+    }
+
+    final Pagmf pagmf = find(code);
+
+    if (pagmf == null) {
+      throw new PagmfNotFoundException(ResourceMessagesUtils.loadMessage(
+                                                                         "erreur.pagmf.delete", code));
+    }
+
+    try {
+      final Mutator<String> mutator = pagmfDao.createMutator();
+      pagmfDao.deletePagmf(mutator, code, clock);
+      mutator.execute();
+    } catch (final Exception except) {
+      throw new DroitRuntimeException(ResourceMessagesUtils
+                                      .loadMessage("erreur.impossible.delete.pagmf"), except);
+    }
+  }
+
+
+  /**
+   * Méthode de suppression d'une ligne avec Murator en paramètre
+   * 
+   * @param code
+   *           identifiant du PAGMf
+   * @param clock
+   *           horloge de suppression
+   * @param mutator
+   *           Mutator
+   */
+  public final void delete(final String code, final long clock, final Mutator<String> mutator) {
+    pagmfDao.mutatorSuppressionLigne(mutator, code, clock);
+  }
+
+  /**
+   * Récupération des informations associées à un {@link Pagmf}
+   * 
+   * @param code
+   *           identifiant du Pagmf
+   * @return un Pagmf contenant les informations associées.
+   */
+  public final Pagmf find(final String code) {
+
+    final ColumnFamilyResult<String, String> result = pagmfDao.getCfTmpl()
+        .queryColumns(code);
+
+    final Pagmf pagmf = getPagmfFromResult(result);
+
+    return pagmf;
+
+  }
+
+  private Pagmf getPagmfFromResult(final ColumnFamilyResult<String, String> result) {
+
+    Pagmf pagmf = null;
+
+    if (result != null && result.hasResults()) {
+      pagmf = new Pagmf();
+
+      pagmf.setCodePagmf(result.getKey());
+
+      pagmf.setDescription(result.getString(Constantes.COL_DESCRIPTION));
+
+      pagmf.setCodeFormatControlProfil(result
+                                       .getString(Constantes.COL_CODEFORMATCONTROLPROFIL));
+    }
+
+    return pagmf;
+  }
+
+  // Erreur levée quand le Pagmf demandé n’existe pas
+
+  /**
+   * Récupération de tous les {@link Pagmf} de la famille de colonne
+   * DroitPagmf.
+   * 
+   * 
+   * @return Une liste d’objet {@link Pagmf} représentant le contenu de CF
+   *         DroitPagmf.
+   */
+  public final List<Pagmf> findAll() {
+
+    try {
+      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+
+      final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
+          .createRangeSlicesQuery(pagmfDao.getKeyspace(), StringSerializer
+                                  .get(), StringSerializer.get(), bytesSerializer);
+
+      rangeSlicesQuery.setColumnFamily(pagmfDao.getColumnFamilyName());
+      rangeSlicesQuery.setRange("", "", false, AbstractDao.DEFAULT_MAX_COLS);
+      rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
+      final QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
+          .execute();
+
+      // Convertion du résultat en ColumnFamilyResultWrapper pour mieux
+      // l'utiliser
+      final QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<>();
+      final ColumnFamilyResultWrapper<String, String> result = converter
+          .getColumnFamilyResultWrapper(queryResult, StringSerializer
+                                        .get(), StringSerializer.get(), bytesSerializer);
+
+      final HectorIterator<String, String> resultIterator = new HectorIterator<>(
+          result);
+
+      final List<Pagmf> list = new ArrayList<>();
+      for (final ColumnFamilyResult<String, String> row : resultIterator) {
+        if (row != null && row.hasResults()) {
+
+          final Pagmf pagmf = getPagmfFromResult(row);
+          list.add(pagmf);
+        }
       }
 
-      pagmfDao.getCfTmpl().update(updater);
-
-      LOGGER.info("{} - Ajout du PAGMF : {}", new String[] { opePagmfPrefix,
-            pagmf.getCodePagmf() });
-      LOGGER.debug(FIN_LOG, opePagmfPrefix);
-
-   }
-
-   /**
-    * Méthode de suppression d'un {@link Pagmf}
-    * 
-    * @param code
-    *           identifiant du PAGMa à supprimer - paramètre obligatoire
-    * @param clock
-    *           horloge de suppression - paramètre obligatoire
-    */
-   public final void delete(String code, Long clock) {
-
-      if (StringUtils.isBlank(code))
-         throw new IllegalArgumentException(ResourceMessagesUtils
-               .loadMessage("erreur.pagmf.notnull"));
-
-      if (clock == null || clock <= 0)
-         throw new IllegalArgumentException(ResourceMessagesUtils
-               .loadMessage("erreur.param"));
-
-      Pagmf pagmf = find(code);
-
-      if (pagmf == null) // le Pagmf renseigné n'existe pas en base
-         throw new PagmfNotFoundException(ResourceMessagesUtils.loadMessage(
-               "erreur.pagmf.delete", code));
-
-      try {
-         Mutator<String> mutator = pagmfDao.createMutator();
-         pagmfDao.deletePagmf(mutator, code, clock);
-         mutator.execute();
-      } catch (Exception except) {
-         throw new DroitRuntimeException(ResourceMessagesUtils
-               .loadMessage("erreur.impossible.delete.pagmf"), except);
-      }
-   }
-
-   
-   /**
-    * Méthode de suppression d'une ligne avec Murator en paramètre
-    * 
-    * @param code
-    *           identifiant du PAGMf
-    * @param clock
-    *           horloge de suppression
-    * @param mutator
-    *           Mutator
-    */
-   public final void delete(String code, long clock, Mutator<String> mutator) {
-      pagmfDao.mutatorSuppressionLigne(mutator, code, clock);
-   }
-   
-   /**
-    * Récupération des informations associées à un {@link Pagmf}
-    * 
-    * @param code
-    *           identifiant du Pagmf
-    * @return un Pagmf contenant les informations associées.
-    */
-   public final Pagmf find(String code) {
-
-      ColumnFamilyResult<String, String> result = pagmfDao.getCfTmpl()
-            .queryColumns(code);
-
-      Pagmf pagmf = getPagmfFromResult(result);
-
-      return pagmf;
-
-   }
-
-   private Pagmf getPagmfFromResult(ColumnFamilyResult<String, String> result) {
-
-      Pagmf pagmf = null;
-
-      if (result != null && result.hasResults()) {
-         pagmf = new Pagmf();
-
-         pagmf.setCodePagmf(result.getKey());
-
-         pagmf.setDescription(result.getString(Constantes.COL_DESCRIPTION));
-
-         pagmf.setCodeFormatControlProfil(result
-               .getString(Constantes.COL_CODEFORMATCONTROLPROFIL));
-      }
-
-      return pagmf;
-   } // Erreur levée quand le Pagmf demandé n’existe pas
-
-   /**
-    * Récupération de tous les {@link Pagmf} de la famille de colonne
-    * DroitPagmf.
-    * 
-    * 
-    * @return Une liste d’objet {@link Pagmf} représentant le contenu de CF
-    *         DroitPagmf.
-    */
-   public final List<Pagmf> findAll() {
-
-      try {
-         BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-
-         RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-               .createRangeSlicesQuery(pagmfDao.getKeyspace(), StringSerializer
-                     .get(), StringSerializer.get(), bytesSerializer);
-
-         rangeSlicesQuery.setColumnFamily(pagmfDao.getColumnFamilyName());
-         rangeSlicesQuery.setRange("", "", false, AbstractDao.DEFAULT_MAX_COLS);
-         rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
-         QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
-               .execute();
-
-         // Convertion du résultat en ColumnFamilyResultWrapper pour mieux
-         // l'utiliser
-         QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<String, String, byte[]>();
-         ColumnFamilyResultWrapper<String, String> result = converter
-               .getColumnFamilyResultWrapper(queryResult, StringSerializer
-                     .get(), StringSerializer.get(), bytesSerializer);
-
-         HectorIterator<String, String> resultIterator = new HectorIterator<String, String>(
-               result);
-
-         List<Pagmf> list = new ArrayList<Pagmf>();
-         for (ColumnFamilyResult<String, String> row : resultIterator) {
-            if (row != null && row.hasResults()) {
-
-               Pagmf pagmf = getPagmfFromResult(row);
-               list.add(pagmf);
-            }
-         }
-
-         return list;
-      } catch (Exception except) {
-         throw new DroitRuntimeException(ResourceMessagesUtils
-               .loadMessage("erreur.impossible.recup.info"), except);
-      }
-   }
+      return list;
+    } catch (final Exception except) {
+      throw new DroitRuntimeException(ResourceMessagesUtils
+                                      .loadMessage("erreur.impossible.recup.info"), except);
+    }
+  }
 
 }

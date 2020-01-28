@@ -107,6 +107,24 @@ CREATE TABLE traceregsecuriteindexcql (
     PRIMARY KEY (identifiantindex, timestamp, identifiant)
 );
 
+CREATE TABLE tracejournalevtindexdoccql (
+	identifiant timeuuid,
+    timestamp timestamp,
+    login text,
+    codeevt text,
+    pagms list<text>,
+
+	identifiantindex uuid,
+    contexte text,
+    contratservice text,
+	infos map<text,text>,
+
+    PRIMARY KEY (identifiantindex,timestamp, identifiant)
+);
+
+
+
+
 /*
  #################JOB SPRING ######################
 */
@@ -269,8 +287,180 @@ CREATE TABLE sequences (
 );
 
 CREATE TABLE modeapi (
-	cfname text PRIMARY KEY, 
-	mode text
+	cfname text , 
+	mode text,
+	PRIMARY KEY(cfname)
+);
+INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutionscql' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'HECTOR');
+INSERT INTO modeapi(cfname, mode) VALUES ('droitactionunitaire' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('droitformatcontrolprofil' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('droitpagma' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('droitpagm' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('droitpagmp' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('droitprmd' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('droitcontratservice' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('parameters' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('dictionary' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('metadata' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('tracedestinataire' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('tracedestinatairecql' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('tracejournalevt' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('traceregexploitation' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('traceregsecurite' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('traceregtechnique' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('tracejournalevt' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('rnd' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('correspondancesrnd' , 'DATASTAX');
+
+
+CREATE TABLE droitactionunitairecql (
+	code text,
+	description text,
+	PRIMARY KEY (code)
 );
 
 
+CREATE  TYPE  controlprofil (
+	formatCode text,
+	fileFormat text,
+	formatIdentification  boolean,
+    formatValidation boolean,
+    formatValidationMode text
+); 
+
+CREATE  TABLE  droitformatcontrolprofilcql (
+	formatCode text,
+	description  text,
+    controlProfil frozen<controlprofil>,
+	PRIMARY KEY (formatCode)
+); 
+
+CREATE TABLE droitpagmacql ( 
+          code text, 
+          actionUnitaires List<text>, 
+          PRIMARY KEY (code)
+);
+
+CREATE TABLE droitpagmpcql (
+
+	code  text,
+	description text,
+	prmd text,
+	PRIMARY KEY (code)
+);
+
+CREATE TABLE droitprmdcql ( 
+          code text, 
+          bean text, 
+          description text, 
+          lucene text, 
+          metadata map<text,frozen<list<text>>>, 
+          PRIMARY KEY (code) 
+);
+
+CREATE TABLE droitpagmfcql ( 
+          codePagmf text, 
+          description text, 
+          codeFormatControlProfil text, 
+          PRIMARY KEY (codePagmf) 
+);
+
+CREATE TABLE droitpagmcql ( 
+		  idClient text,
+		  code text,
+          description text, 
+          pagma text, 
+          pagmp text, 
+          pagmf text, 
+          parametres map<text,text>, 
+          compressionPdfActive boolean, 
+          seuilCompressionPdf int, 
+          PRIMARY KEY (idClient,code) 
+);
+
+CREATE TABLE droitcontratservicecql (
+
+	codeClient text,
+	description text,
+	libelle text,
+	listPki list<text>,
+	listCert list<text>,
+	verifNommage boolean,
+	viDuree bigint,
+	PRIMARY KEY (codeClient)
+);
+
+CREATE TABLE parameterscql (
+	typeParameters text,
+	name text,
+    value blob,
+	PRIMARY KEY (typeParameters,name)
+);
+
+CREATE TABLE dictionarycql (
+	identifiant text,
+	listEntries list<text>,
+	PRIMARY KEY (identifiant)
+);
+
+ CREATE TABLE metadatacql ( 
+          longCode text,
+          sCode text,
+          type text,  
+          reqArch boolean, 
+          reqStor boolean, 
+          length int, 
+          pattern text, 
+          cons boolean, 
+          defCons boolean, 
+          search boolean, 
+          int boolean, 
+          arch  boolean, 
+          label text, 
+          descr text, 
+          hasDict boolean, 
+          dictName text, 
+          indexed boolean,      
+          modif boolean, 
+          dispo boolean, 
+          leftTrim boolean, 
+          rightTrim boolean, 
+          transf boolean, 
+
+          PRIMARY KEY (longCode)
+);
+
+CREATE TABLE referentielformatcql ( 
+          idFormat  text,
+          autoriseGED boolean, 
+          convertisseur text, 
+          description text, 
+          extension text, 
+          identificateur text, 
+          typeMime text, 
+          validator text, 
+          visualisable boolean, 
+          PRIMARY KEY (idFormat) 
+);
+
+CREATE TABLE rndcql (
+	code text,
+	codeFonction text,
+	codeActivite text,
+	dureeConservation int,
+	cloture boolean,
+	type text,
+	libelleEnd text,
+	PRIMARY KEY (code)
+);
+
+CREATE TABLE  correspondancesrndcql (
+	codeTemporaire text,
+	codeDefinitif text,
+	versionCourante text,
+	etat text,
+	dateDebutMaj timestamp,
+	dateFinMaj timestamp,
+	PRIMARY KEY ((codeTemporaire,versionCourante))
+);

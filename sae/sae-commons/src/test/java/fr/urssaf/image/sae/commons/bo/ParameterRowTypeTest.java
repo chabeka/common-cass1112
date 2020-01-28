@@ -1,8 +1,7 @@
 package fr.urssaf.image.sae.commons.bo;
 
+import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.Assert;
 
 /**
  * Tests unitaires de la classe ParameterRowType
@@ -10,31 +9,32 @@ import junit.framework.Assert;
  */
 public class ParameterRowTypeTest {
 
-   @Test
-   public void tracabiliteTest() {
+  @Test
+  public void tracabiliteTest() {
 
-      Assert.assertEquals(
-            "La méthode toString() du type de paramètre \"Traçabilité\" renvoie une valeur incorrecte",
-            "parametresTracabilite", ParameterRowType.TRACABILITE.toString());
+    Assert.assertEquals(
+                        "La méthode toString() du type de paramètre \"Traçabilité\" renvoie une valeur incorrecte",
+                        "parametresTracabilite", ParameterRowType.TRACABILITE.toString());
 
-   }
+  }
 
-   @Test
-   public void rndTest() {
+  @Test
+  public void rndTest() {
 
-      Assert.assertEquals(
-            "La méthode toString() du type de paramètre \"RND\" renvoie une valeur incorrecte",
-            "parametresRnd", ParameterRowType.parametresRnd.toString());
+    Assert.assertEquals(
+                        "La méthode toString() du type de paramètre \"RND\" renvoie une valeur incorrecte",
+                        "parametresRnd",
+                        ParameterRowType.RND.toString());
 
-   }
+  }
 
-   @Test
-   public void corbeilleTest() {
+  @Test
+  public void corbeilleTest() {
 
-      Assert.assertEquals(
-            "La méthode toString() du type de paramètre \"Corbeille\" renvoie une valeur incorrecte",
-            "parametresCorbeille", ParameterRowType.CORBEILLE.toString());
+    Assert.assertEquals(
+                        "La méthode toString() du type de paramètre \"Corbeille\" renvoie une valeur incorrecte",
+                        "parametresCorbeille", ParameterRowType.CORBEILLE.toString());
 
-   }
+  }
 
 }

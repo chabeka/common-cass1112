@@ -21,77 +21,77 @@ import me.prettyprint.hector.api.mutation.Mutator;
 @Repository
 public class PagmaDao extends AbstractDao<String, String> {
 
-   public static final String PAGMA_CFNAME = "DroitPagma";
+  public static final String PAGMA_CFNAME = "DroitPagma";
 
-   public static final int MAX_ATTRIBUTS = 100;
-
-   /**
-    * Constructeur
-    * 
-    * @param keyspace
-    *           Keyspace utilisé par la pile des travaux
-    */
-   @Autowired
-   public PagmaDao(Keyspace keyspace) {
-      super(keyspace);
-
-   }
+  public static final int MAX_ATTRIBUTS = 100;
 
    /**
-    * Ajoute une colonne Action unitaire
-    * 
-    * @param updater
-    *           updater de <code>DroitPagma</code>
-    * @param colName
-    *           identifiant de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritActionUnitaire(
-         ColumnFamilyUpdater<String, String> updater, String colName, long clock) {
+   * Constructeur
+   * 
+   * @param keyspace
+   *          Keyspace utilisé par DroitPagma
+   */
+  @Autowired
+  public PagmaDao(final Keyspace keyspace) {
+    super(keyspace);
 
-      addColumn(updater, colName, StringUtils.EMPTY, StringSerializer.get(),
-            clock);
+  }
 
-   }
+  /**
+   * Ajoute une colonne Action unitaire
+   * 
+   * @param updater
+   *           updater de <code>DroitPagma</code>
+   * @param colName
+   *           identifiant de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritActionUnitaire(
+                                        final ColumnFamilyUpdater<String, String> updater, final String colName, final long clock) {
 
-   /**
-    * Ajoute une colonne Action unitaire avec utilisation mutator
-    * 
-    * @param code
-    *           le code du PAGMa
-    * @param action
-    *           l'action unitaire
-    * @param clock
-    *           horloge de la colonne
-    * @param mutator
-    *           le mutator
-    */
-   public final void ecritActionUnitaire(String code, String action,
-         long clock, Mutator<String> mutator) {
-      addColumnWithMutator(code, action, "", StringSerializer.get(), clock,
-            mutator);
-   }
+    addColumn(updater, colName, StringUtils.EMPTY, StringSerializer.get(),
+              clock);
 
-   @Override
-   public final String getColumnFamilyName() {
-      return PAGMA_CFNAME;
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Serializer<String> getColumnKeySerializer() {
-      return StringSerializer.get();
-   }
+  /**
+   * Ajoute une colonne Action unitaire avec utilisation mutator
+   * 
+   * @param code
+   *           le code du PAGMa
+   * @param action
+   *           l'action unitaire
+   * @param clock
+   *           horloge de la colonne
+   * @param mutator
+   *           le mutator
+   */
+  public final void ecritActionUnitaire(final String code, final String action,
+                                        final long clock, final Mutator<String> mutator) {
+    addColumnWithMutator(code, action, "", StringSerializer.get(), clock,
+                         mutator);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Serializer<String> getRowKeySerializer() {
-      return StringSerializer.get();
-   }
+  @Override
+  public final String getColumnFamilyName() {
+    return PAGMA_CFNAME;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Serializer<String> getColumnKeySerializer() {
+    return StringSerializer.get();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Serializer<String> getRowKeySerializer() {
+    return StringSerializer.get();
+  }
 
 }

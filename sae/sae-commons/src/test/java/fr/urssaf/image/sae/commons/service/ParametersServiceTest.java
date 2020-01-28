@@ -5,7 +5,8 @@ import java.util.Date;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
-import junit.framework.Assert;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-commons-test.xml"})
@@ -29,9 +30,10 @@ public class ParametersServiceTest {
 
   private final Date date = new Date();
 
-  @After
-  public void end() throws Exception {
+  @Before
+  public void begin() throws Exception {
     server.resetData(true, MODE_API.HECTOR);
+
   }
 
   @Test

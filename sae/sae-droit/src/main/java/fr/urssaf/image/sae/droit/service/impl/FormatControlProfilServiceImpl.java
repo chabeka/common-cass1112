@@ -1,8 +1,9 @@
 /**
- * 
+ * AC75095351
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +19,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
-import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
+import fr.urssaf.image.sae.droit.dao.support.facade.FormatControlProfilSupportFacade;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 import fr.urssaf.image.sae.droit.service.FormatControlProfilService;
@@ -26,155 +27,163 @@ import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
 
 /**
  * Implémentation de l'interface décrivant les méthodes proposées par
- * FormatControlProfilService
- * 
+ * FormatControlProfilService Facade (Thrift et Cql)
  */
 @Service
 public class FormatControlProfilServiceImpl implements
-      FormatControlProfilService {
+FormatControlProfilService {
 
-   private final FormatControlProfilSupport formatControlSupport;
-   private final JobClockSupport clockSupport;
+  private final FormatControlProfilSupportFacade formatControlSupportFacade;
 
-   /**
-    * Gestion du cache
-    */
-   private final LoadingCache<String, FormatControlProfil> formatsControlProfil;
 
-   /**
-    * Constructeur
-    * 
-    * @param formatSup
-    *           la classe support
-    * @param clockSupport
-    *           l'horloge {@link JobClockSupport}
-    * @param value
-    *           durée du cache
-    * 
-    *           Récupération du conteneur de clockSupport
-    * 
-    *           sae.format.control.profil.cache à définir dans un fichier tel
-    *           sae-config.properties dans src/test/resources/config
-    * @param initCacheOnStartup
-    *           flag indiquant si initialise le cache au demarrage du serveur d'application
-    *           
-    *           sae.format.control.profil.initCacheOnStartup à définir dans un fichier tel
-    *           sae-config.properties dans src/test/resources/config
-    */
-   @Autowired
-   public FormatControlProfilServiceImpl(FormatControlProfilSupport formatSup,
-         JobClockSupport clockSupport,
-         @Value("${sae.format.control.profil.cache}") int value,
-         @Value("${sae.format.control.profil.initCacheOnStartup}") boolean initCacheOnStartup) {
+  /**
+   * Gestion du cache
+   */
+  private final LoadingCache<String, FormatControlProfil> formatsControlProfil;
 
-      this.formatControlSupport = formatSup;
-      this.clockSupport = clockSupport;
+  /**
+   * Constructeur
+   * 
+   * @param formatSup
+   *          la classe support
+   * @param clockSupport
+   *          l'horloge {@link JobClockSupport}
+   * @param value
+   *          durée du cache
+   *          Récupération du conteneur de clockSupport
+   *          sae.format.control.profil.cache à définir dans un fichier tel
+   *          sae-config.properties dans src/test/resources/config
+   * @param initCacheOnStartup
+   *          flag indiquant si initialise le cache au demarrage du serveur d'application
+   *          sae.format.control.profil.initCacheOnStartup à définir dans un fichier tel
+   *          sae-config.properties dans src/test/resources/config
+   */
+  @Autowired
+  public FormatControlProfilServiceImpl(final FormatControlProfilSupportFacade formatControlSupportFacade,
 
-      // Mise en cache
-      formatsControlProfil = CacheBuilder.newBuilder().refreshAfterWrite(value,
-            TimeUnit.MINUTES).build(
-            new CacheLoader<String, FormatControlProfil>() {
+                                              @Value("${sae.format.control.profil.cache}") final int value,
+                                              @Value("${sae.format.control.profil.initCacheOnStartup}") final boolean initCacheOnStartup) {
 
-               @Override
-               public FormatControlProfil load(String identifiant) {
-                  return formatControlSupport.find(identifiant);
-               }
-            });
-      
-      if (initCacheOnStartup) {
-         populateCache();
-      }
-   }
-   
-   private void populateCache() {
-      // initialisation du cache des profils de controle de format
-      List<FormatControlProfil> allFcp = formatControlSupport.findAll();
-      for (FormatControlProfil fcp : allFcp) {
-         formatsControlProfil.put(fcp.getFormatCode(), fcp);
-      }
-   }
+    this.formatControlSupportFacade = formatControlSupportFacade;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean formatControlProfilExists(String code) {
+    // Mise en cache
+    formatsControlProfil = CacheBuilder.newBuilder()
+        .refreshAfterWrite(value,
+                           TimeUnit.MINUTES)
+        .build(
+               new CacheLoader<String, FormatControlProfil>() {
 
-      try {
-         formatsControlProfil.getUnchecked(code);
-         return true;
-      } catch (InvalidCacheLoadException e) {
-         return false;
-      } catch (UncheckedExecutionException e) {
-         throw new DroitRuntimeException(e);
-      }
-   }
+                 @Override
+                 public FormatControlProfil load(final String identifiant) {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void addFormatControlProfil(
-         FormatControlProfil formatControlProfil) {
+                   return formatControlSupportFacade.find(identifiant);
+                 }
+               });
 
-      formatControlSupport.create(formatControlProfil, clockSupport
-            .currentCLock());
+    if (initCacheOnStartup) {
+      populateCache();
+    }
+  }
 
-   }
+  private void populateCache() {
+    // initialisation du cache des profils de controle de format
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void modifyFormatControlProfil(
-         FormatControlProfil formatControlProfil)
-         throws FormatControlProfilNotFoundException {
-      if (formatControlProfilExists(formatControlProfil.getFormatCode())) {
-         addFormatControlProfil(formatControlProfil);
-      } else {
-         throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
-               .loadMessage("erreur.format.control.profil.not.found",
-                     formatControlProfil.getFormatCode()));
-      }
-   }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void deleteFormatControlProfil(String codeFormatControlProfil)
-         throws FormatControlProfilNotFoundException {
+    final List<FormatControlProfil> allFcp = formatControlSupportFacade.findAll();
 
-      formatControlSupport.delete(codeFormatControlProfil, clockSupport
-            .currentCLock());
-   }
+    for (final FormatControlProfil fcp : allFcp) {
+      formatsControlProfil.put(fcp.getFormatCode(), fcp);
+    }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final FormatControlProfil getFormatControlProfil(
-         String codeFormatControlProfil)
-         throws FormatControlProfilNotFoundException {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean formatControlProfilExists(final String code) {
 
-      FormatControlProfil formatControlProfil;
-      try {
-         formatControlProfil = formatsControlProfil
-               .getUnchecked(codeFormatControlProfil);
-         return formatControlProfil;
-      } catch (InvalidCacheLoadException e) {
-         throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
-               .loadMessage("erreur.format.control.profil.not.found",
-                     codeFormatControlProfil), e);
-      } catch (UncheckedExecutionException e) {
-         throw new DroitRuntimeException(e);
-      }
-   }
+    try {
+      formatsControlProfil.getUnchecked(code);
+      return true;
+    }
+    catch (final InvalidCacheLoadException e) {
+      return false;
+    }
+    catch (final UncheckedExecutionException e) {
+      throw new DroitRuntimeException(e);
+    }
+  }
 
-   @Override
-   public final List<FormatControlProfil> getAllFormatControlProfil() {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void addFormatControlProfil(
+                                           final FormatControlProfil formatControlProfil) {
 
-      return formatControlSupport.findAll();
-   }
+    formatControlSupportFacade.create(formatControlProfil);
+
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void modifyFormatControlProfil(
+                                              final FormatControlProfil formatControlProfil)
+                                                  throws FormatControlProfilNotFoundException {
+    if (formatControlProfilExists(formatControlProfil.getFormatCode())) {
+      addFormatControlProfil(formatControlProfil);
+    } else {
+      throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
+                                                     .loadMessage("erreur.format.control.profil.not.found",
+                                                                  formatControlProfil.getFormatCode()));
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void deleteFormatControlProfil(final String codeFormatControlProfil)
+
+      throws FormatControlProfilNotFoundException {
+
+    formatControlSupportFacade.delete(codeFormatControlProfil);
+
+
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final FormatControlProfil getFormatControlProfil(
+                                                          final String codeFormatControlProfil)
+                                                              throws FormatControlProfilNotFoundException {
+
+    FormatControlProfil formatControlProfil;
+    try {
+      formatControlProfil = formatsControlProfil
+          .getUnchecked(codeFormatControlProfil);
+      return formatControlProfil;
+    }
+    catch (final InvalidCacheLoadException e) {
+      throw new FormatControlProfilNotFoundException(ResourceMessagesUtils
+                                                     .loadMessage("erreur.format.control.profil.not.found",
+                                                                  codeFormatControlProfil),
+                                                     e);
+    }
+    catch (final UncheckedExecutionException e) {
+      throw new DroitRuntimeException(e);
+    }
+  }
+
+  @Override
+  public final List<FormatControlProfil> getAllFormatControlProfil() {
+    final List<FormatControlProfil> allFcp = new ArrayList<>();
+
+    return formatControlSupportFacade.findAll();
+  }
 
 }

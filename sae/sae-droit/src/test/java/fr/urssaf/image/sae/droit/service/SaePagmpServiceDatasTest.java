@@ -7,94 +7,115 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
-import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
-import junit.framework.Assert;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SaePagmpServiceDatasTest {
 
-   @Autowired
-   private SaePagmpService service;
+  @Autowired
+  private SaePagmpService service;
 
-   @Autowired
-   private JobClockSupport clockSupport;
+  @Autowired
+  private JobClockSupport clockSupport;
 
-   @Autowired
-   private PagmpSupport pagmpSupport;
+  @Autowired
+  private PagmpSupport pagmpSupport;
 
-   @Autowired
-   private PrmdSupport prmdSupport;
+  @Autowired
+  private PrmdSupport prmdSupport;
 
-   @Autowired
-   private CassandraServerBean cassandraServer;
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-   @After
-   public void end() throws Exception {
-	   cassandraServer.resetData(true, MODE_API.HECTOR);
-   }
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(SaePagmpServiceDatasTest.class);
 
-   @Test(expected = DroitRuntimeException.class)
-   public void testPagmpExiste() {
+  @After
+  public void end() throws Exception {
+    cassandraServer.resetDataOnly();
+    ;
+  }
 
-      Pagmp pagmp = new Pagmp();
-      pagmp.setCode("codePagmp");
-      pagmp.setDescription("description Pagmp");
-      pagmp.setPrmd("prmd");
+  @Test
+  public void init() {
+    try {
+      if (cassandraServer.isCassandraStarted()) {
+        cassandraServer.resetData();
+      }
+      Assert.assertTrue(true);
+    }
+    catch (final Exception e) {
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
+    }
+  }
+  @Test(expected = PagmpReferenceException.class)
+  public void testPagmpExiste() {
 
-      pagmpSupport.create(pagmp, clockSupport.currentCLock());
+    final Pagmp pagmp = new Pagmp();
+    pagmp.setCode("codePagmp");
+    pagmp.setDescription("description Pagmp");
+    pagmp.setPrmd("prmd");
 
-      service.createPagmp(pagmp);
+    pagmpSupport.create(pagmp, clockSupport.currentCLock());
 
-   }
+    service.createPagmp(pagmp);
 
-   @Test(expected = PrmdReferenceException.class)
-   public void testPrmdInexistant() {
+  }
 
-      Pagmp pagmp = new Pagmp();
-      pagmp.setCode("codePagmp");
-      pagmp.setDescription("description Pagmp");
-      pagmp.setPrmd("prmd");
+  @Test(expected = PrmdReferenceException.class)
+  public void testPrmdInexistant() {
 
-      service.createPagmp(pagmp);
-   }
+    final Pagmp pagmp = new Pagmp();
+    pagmp.setCode("codePagmp");
+    pagmp.setDescription("description Pagmp");
+    pagmp.setPrmd("prmd");
 
-   @Test
-   public void testSucces() {
+    service.createPagmp(pagmp);
+  }
 
-      Prmd prmd = new Prmd();
-      prmd.setCode("prmd");
-      prmd.setDescription("description");
-      prmd.setLucene("lucene");
-      prmd.setBean("bean1");
-      prmd.setMetadata(new HashMap<String, List<String>>());
+  @Test
+  public void testSucces() {
 
-      prmdSupport.create(prmd, clockSupport.currentCLock());
+    final Prmd prmd = new Prmd();
+    prmd.setCode("prmd");
+    prmd.setDescription("description");
+    prmd.setLucene("lucene");
+    prmd.setBean("bean1");
+    prmd.setMetadata(new HashMap<String, List<String>>());
 
-      Pagmp pagmp = new Pagmp();
-      pagmp.setCode("codePagmp");
-      pagmp.setDescription("description Pagmp");
-      pagmp.setPrmd("prmd");
+    prmdSupport.create(prmd, clockSupport.currentCLock());
 
-      service.createPagmp(pagmp);
+    final Pagmp pagmp = new Pagmp();
+    pagmp.setCode("codePagmp");
+    pagmp.setDescription("description Pagmp");
+    pagmp.setPrmd("prmd");
 
-      Pagmp storedPamp = pagmpSupport.find("codePagmp");
+    service.createPagmp(pagmp);
 
-      Assert.assertEquals("les deux objets pagmp doivent être identiques",
-            pagmp, storedPamp);
-   }
+    final Pagmp storedPamp = pagmpSupport.find("codePagmp");
+
+    Assert.assertEquals("les deux objets pagmp doivent être identiques",
+                        pagmp, storedPamp);
+  }
 }

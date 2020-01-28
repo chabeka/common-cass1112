@@ -23,117 +23,117 @@ import me.prettyprint.hector.api.Serializer;
 @Repository
 public class PrmdDao extends AbstractDao<String, String> {
 
-   public static final String PRMD_DESCRIPTION = "description";
+  public static final String PRMD_DESCRIPTION = "description";
 
-   public static final String PRMD_LUCENE = "lucene";
+  public static final String PRMD_LUCENE = "lucene";
 
-   public static final String PRMD_METADATA = "metadata";
+  public static final String PRMD_METADATA = "metadata";
 
-   public static final String PRMD_BEAN = "bean";
+  public static final String PRMD_BEAN = "bean";
 
-   public static final String PRMD_CFNAME = "DroitPrmd";
+  public static final String PRMD_CFNAME = "DroitPrmd";
 
-   /**
-    * Constructeur
-    * 
-    * @param keyspace
-    *           Keyspace utilisé par la pile des travaux
-    */
-   @Autowired
-   public PrmdDao(Keyspace keyspace) {
-      super(keyspace);
+  /**
+   * Constructeur
+   * 
+   * @param keyspace
+   *          Keyspace utilisé par la Prmd
+   */
+  @Autowired
+  public PrmdDao(final Keyspace keyspace) {
+    super(keyspace);
 
-   }
+  }
 
-   /**
-    * ajoute une colonne {@value #PRMD_DESCRIPTION}
-    * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritDescription(
-         ColumnFamilyUpdater<String, String> updater, String value, long clock) {
+  /**
+   * ajoute une colonne {@value #PRMD_DESCRIPTION}
+   * 
+   * @param updater
+   *          updater de <code>DroitPrmd</code>
+   * @param value
+   *          valeur de la colonne
+   * @param clock
+   *          horloge de la colonne
+   */
+  public final void ecritDescription(
+                                     final ColumnFamilyUpdater<String, String> updater, final String value, final long clock) {
 
-      addColumn(updater, PRMD_DESCRIPTION, value, StringSerializer.get(), clock);
+    addColumn(updater, PRMD_DESCRIPTION, value, StringSerializer.get(), clock);
 
-   }
+  }
 
-   /**
-    * ajoute une colonne {@value #PRMD_LUCENE}
-    * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritLucene(ColumnFamilyUpdater<String, String> updater,
-         String value, long clock) {
+  /**
+   * ajoute une colonne {@value #PRMD_LUCENE}
+   * 
+   * @param updater
+   *          updater de <code>DroitPrmd</code>
+   * @param value
+   *          valeur de la colonne
+   * @param clock
+   *          horloge de la colonne
+   */
+  public final void ecritLucene(final ColumnFamilyUpdater<String, String> updater,
+                                final String value, final long clock) {
 
-      addColumn(updater, PRMD_LUCENE, value, StringSerializer.get(), clock);
+    addColumn(updater, PRMD_LUCENE, value, StringSerializer.get(), clock);
 
-   }
+  }
 
-   /**
-    * ajoute une colonne {@value #PRMD_METADATA}
-    * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritMetaData(ColumnFamilyUpdater<String, String> updater,
-         Map<String, List<String>> value, long clock) {
+  /**
+   * ajoute une colonne {@value #PRMD_METADATA}
+   * 
+   * @param updater
+   *          updater de <code>DroitPrmd</code>
+   * @param value
+   *          valeur de la colonne
+   * @param clock
+   *          horloge de la colonne
+   */
+  public final void ecritMetaData(final ColumnFamilyUpdater<String, String> updater,
+                                  final Map<String, List<String>> value, final long clock) {
 
-      addColumn(updater, PRMD_METADATA, value, MapSerializer.get(), clock);
+    addColumn(updater, PRMD_METADATA, value, MapSerializer.get(), clock);
 
-   }
+  }
 
-   /**
-    * ajoute une colonne {@value #PRMD_BEAN}
-    * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritBean(ColumnFamilyUpdater<String, String> updater,
-         String value, long clock) {
+  /**
+   * ajoute une colonne {@value #PRMD_BEAN}
+   * 
+   * @param updater
+   *          updater de <code>DroitPrmd</code>
+   * @param value
+   *          valeur de la colonne
+   * @param clock
+   *          horloge de la colonne
+   */
+  public final void ecritBean(final ColumnFamilyUpdater<String, String> updater,
+                              final String value, final long clock) {
 
-      addColumn(updater, PRMD_BEAN, value, StringSerializer.get(), clock);
+    addColumn(updater, PRMD_BEAN, value, StringSerializer.get(), clock);
 
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final String getColumnFamilyName() {
-      return PRMD_CFNAME;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final String getColumnFamilyName() {
+    return PRMD_CFNAME;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Serializer<String> getColumnKeySerializer() {
-      return StringSerializer.get();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Serializer<String> getColumnKeySerializer() {
+    return StringSerializer.get();
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Serializer<String> getRowKeySerializer() {
-      return StringSerializer.get();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Serializer<String> getRowKeySerializer() {
+    return StringSerializer.get();
+  }
 }

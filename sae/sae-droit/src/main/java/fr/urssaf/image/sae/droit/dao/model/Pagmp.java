@@ -3,98 +3,125 @@
  */
 package fr.urssaf.image.sae.droit.dao.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
+
 /**
  * Classe de modèle d'un PAGMp
- * 
+ * Annotation pour Mapping avec la table cql
  */
-public class Pagmp {
+@Table(name = "droitpagmpcql")
+public class Pagmp implements Comparable<Pagmp> {
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(Pagmp.class);
+  /** identifiant unique du PAGMp */
+  @PartitionKey
+  @Column(name = "code")
+  private String code;
 
-   /** identifiant unique du PAGMp */
-   private String code;
+  /** code du PRMD correspondant */
+  @Column(name = "prmd")
+  private String prmd;
 
-   /** code du PRMD correspondant */
-   private String prmd;
+  /** description du référentiel du PRMD */
+  @Column(name = "description")
+  private String description;
 
-   /** description du référentiel du PRMD */
-   private String description;
+  /**
+   * @return l'identifiant unique du PAGMp
+   */
+  public final String getCode() {
+    return code;
+  }
 
-   /**
-    * @return l'identifiant unique du PAGMp
-    */
-   public final String getCode() {
-      return code;
-   }
+  /**
+   * @param code
+   *           identifiant unique du PAGMp
+   */
+  public final void setCode(final String code) {
+    this.code = code;
+  }
 
-   /**
-    * @param code
-    *           identifiant unique du PAGMp
-    */
-   public final void setCode(String code) {
-      this.code = code;
-   }
+  /**
+   * @return le code du PRMD
+   */
 
-   /**
-    * @return le code du PRMD
-    */
-   public final String getPrmd() {
-      return prmd;
-   }
+  public final String getPrmd() {
+    return prmd;
+  }
 
-   /**
-    * @param prmd
-    *           code du PRMD
-    */
-   public final void setPrmd(String prmd) {
-      this.prmd = prmd;
-   }
+  /**
+   * @param prmd
+   *           code du PRMD
+   */
+  public final void setPrmd(final String prmd) {
+    this.prmd = prmd;
+  }
 
-   /**
-    * @return the description
-    */
-   public final String getDescription() {
-      return description;
-   }
+  /**
+   * @return the description
+   */
+  public final String getDescription() {
+    return description;
+  }
 
-   /**
-    * @param description
-    *           the description to set
-    */
-   public final void setDescription(String description) {
-      this.description = description;
-   }
+  /**
+   * @param description
+   *           the description to set
+   */
+  public final void setDescription(final String description) {
+    this.description = description;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean equals(Object obj) {
-      boolean areEquals = false;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean equals(final Object obj) {
+    boolean areEquals = false;
 
-      if (obj instanceof Pagmp) {
-         Pagmp pagmp = (Pagmp) obj;
-         areEquals = code.equals(pagmp.getCode())
-               && description.equals(pagmp.getDescription())
-               && prmd.equals(pagmp.getPrmd());
+    if (obj instanceof Pagmp) {
+      final Pagmp pagmp = (Pagmp) obj;
+      areEquals = code.equals(pagmp.getCode())
+          && description.equals(pagmp.getDescription())
+          && prmd.equals(pagmp.getPrmd());
+      if (!areEquals) {
+        LOGGER.warn("code:" + code + "/" + getCode()
+            + ", description:" + description + "/" + pagmp.getDescription()
+            + ", prmd:" + prmd + "/" + pagmp.getPrmd());
       }
+    }
 
-      return areEquals;
-   }
+    return areEquals;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final int hashCode() {
-      return super.hashCode();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final int hashCode() {
+    return super.hashCode();
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final String toString() {
-      return "code : " + code + "\ndescription : " + description + "\nprmd : "
-            + prmd;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final String toString() {
+    return "code : " + code + "\ndescription : " + description + "\nprmd : "
+        + prmd;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(final Pagmp o) {
+    return getCode().compareTo(o.getCode());
+  }
 
 }
