@@ -5,7 +5,7 @@
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae</artifactId>
-	<version>20.2.3-SNAPSHOT</version>
+	<version>20.04.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>sae</name>
@@ -34,6 +34,7 @@
 		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-war-plugin.version>3.2.2</maven-war-plugin.version>
 		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+		<junit5.vintage.version>5.5.2</junit5.vintage.version>
 		
 		<jackson.version>2.8.2</jackson.version>
 		<cxf.version>3.0.1</cxf.version>
@@ -42,23 +43,23 @@
 
 
 		<!-- ========================================== commons-cassandra ========================================== -->
-		<commons.cassandra>2.0.3</commons.cassandra>
+		<commons.cassandra>2.1.0-SNAPSHOT</commons.cassandra>
 
 		<!-- ========================================== commons-cassandra-spring-batch 
 			========================================== -->
-		<commons.cassandra.spring.batch>2.0.3</commons.cassandra.spring.batch>
+		<commons.cassandra.spring.batch>2.1.0-SNAPSHOT</commons.cassandra.spring.batch>
 
 		<!-- ========================================== commons-dfce ========================================== -->
-		<commons.dfce>1.11.0</commons.dfce>
+		<commons.dfce>2.1.0-SNAPSHOT</commons.dfce>
 
 		<!-- ========================================== commons-pdfbox ========================================== -->
-		<commons-pdfbox>1.1.0</commons-pdfbox>
+		<commons-pdfbox>1.1.0-SNAPSHOT</commons-pdfbox>
 
 		<!-- ========================================== commons-droid ========================================== -->
-		<commons-droid>1.1.0</commons-droid>
+		<commons-droid>1.1.0-SNAPSHOT</commons-droid>
 
 		<!-- ========================================== commons-itext ========================================== -->
-		<commons-itext>1.1.0</commons-itext>
+		<commons-itext>1.1.0-SNAPSHOT</commons-itext>
 
 		<!-- ========================================================= Version 
 			des framework/dépendances ========================================================= -->
