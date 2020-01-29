@@ -69,7 +69,7 @@ public class VerificationSupportImpl implements VerificationSupport {
    private static final String LIBELLE_BUL004 = "La modification en masse en mode 'Partiel' a été interrompue. "
          + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
-   private static final String LIBELLE_BUL005 = "Le transfert de masse en mode 'Partiel' a été interrompue. "
+   private static final String LIBELLE_BUL005 = "Le transfert de masse en mode 'Partiel' a été interrompu. "
          + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
    private static final String CATCH = "AvoidCatchingThrowable";

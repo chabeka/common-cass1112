@@ -28,7 +28,7 @@ public class JobRequestSupportCql {
    public JobRequestSupportCql() {
    }
    
-   public JobRequestSupportCql(IJobRequestDaoCql jobRequestDaoCql) {
+  public JobRequestSupportCql(final IJobRequestDaoCql jobRequestDaoCql) {
 	   this.jobRequestDaoCql = jobRequestDaoCql;
    }
 
@@ -40,7 +40,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de la création du nouveau job
     */
-   public final void ajouterJobDansJobRequest(final JobToCreate jobToCreate) {
+  public final void ajouterJobDansJobRequest(final JobToCreate jobToCreate, final long clock) {
 
       final JobRequestCql job = new JobRequestCql();
 
@@ -56,7 +56,7 @@ public class JobRequestSupportCql {
       job.setDocCount(jobToCreate.getDocCount());
       job.setDocCountTraite(jobToCreate.getDocCountTraite());
       job.setVi(jobToCreate.getVi());
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
 
    }
 
@@ -73,7 +73,7 @@ public class JobRequestSupportCql {
     *           horloge de la réservation du job
     */
    public final void reserverJobDansJobRequest(final UUID idJob, final String reservedBy,
-                                               final Date reservationDate) {
+                                              final Date reservationDate, final long clock) {
 
       Assert.notNull(idJob, "L'id du job doit être fournit");
       Assert.notNull(reservedBy, "Le host du serveur de reservation doit être renseigné");
@@ -85,7 +85,7 @@ public class JobRequestSupportCql {
       job.setState(JobState.RESERVED.name());
       job.setReservedBy(reservedBy);
       job.setReservationDate(reservationDate);
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
    }
 
    /**
@@ -98,14 +98,14 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge du démarrage du job
     */
-   public final void passerEtatEnCoursJobRequest(final UUID idJob, final Date startingDate) {
+  public final void passerEtatEnCoursJobRequest(final UUID idJob, final Date startingDate, final long clock) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
       final JobRequestCql job = opt.get();
       job.setState(JobState.STARTING.name());
       job.setStartingDate(startingDate);
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
    }
 
    /**
@@ -125,7 +125,7 @@ public class JobRequestSupportCql {
     *           horloge de conclusion du job
     */
    public final void passerEtatTermineJobRequest(final UUID idJob, final Date endingDate,
-                                                 final boolean success, final String message, final int nbDocTraite) {
+                                                final boolean success, final String message, final int nbDocTraite, final long clock) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -146,7 +146,7 @@ public class JobRequestSupportCql {
          job.setMessage(message);
       }
 
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
    }
 
    /**
@@ -159,7 +159,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de l'ajout du PID
     */
-   public final void renseignerPidDansJobRequest(final UUID idJob, final Integer pid) {
+  public final void renseignerPidDansJobRequest(final UUID idJob, final Integer pid, final long clock) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -167,7 +167,7 @@ public class JobRequestSupportCql {
 
       job.setPid(pid);
 
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
    }
 
    /**
@@ -184,7 +184,7 @@ public class JobRequestSupportCql {
     *           horloge de l'ajout du flag
     */
    public final void renseignerCheckFlagDansJobRequest(final UUID idJob,
-                                                       final Boolean toCheckFlag, final String raison) {
+                                                      final Boolean toCheckFlag, final String raison, final long clock) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -192,7 +192,7 @@ public class JobRequestSupportCql {
       job.setToCheckFlag(toCheckFlag);
       job.setToCheckFlagRaison(raison);
 
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
    }
 
    /**
@@ -203,9 +203,9 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de la suppression
     */
-   public final void deleteJobRequest(final UUID idJob) {
+  public final void deleteJobRequest(final UUID idJob, final long clock) {
 
-      jobRequestDaoCql.deleteById(idJob);
+    jobRequestDaoCql.deleteById(idJob, clock);
    }
 
    /**
@@ -218,7 +218,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de la remise à zéro
     */
-   public final void resetJob(final UUID idJob, final String etat) {
+  public final void resetJob(final UUID idJob, final String etat, final long clock) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -242,7 +242,7 @@ public class JobRequestSupportCql {
       job.setEndingDate(null);
       job.setMessage(null);
 
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
 
    }
 
@@ -256,7 +256,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de l'ajout du PID
     */
-   public final void renseignerDocCountDansJobRequest(final UUID idJob, final Integer nbDocs) {
+  public final void renseignerDocCountDansJobRequest(final UUID idJob, final Integer nbDocs, final long clock) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -264,7 +264,7 @@ public class JobRequestSupportCql {
 
       job.setDocCount(nbDocs);
 
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
 
    }
 
@@ -279,7 +279,7 @@ public class JobRequestSupportCql {
     *           horloge de l'ajout du PID
     */
    public final void renseignerDocCountTraiteDansJobRequest(final UUID idJob,
-                                                            final Integer nbDocs) {
+                                                           final Integer nbDocs, final long clock) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -287,7 +287,7 @@ public class JobRequestSupportCql {
 
       job.setDocCountTraite(nbDocs);
 
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
 
    }
 
@@ -305,7 +305,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de conclusion du job
     */
-   public final void changerEtatJobRequest(final UUID idJob, final String state, final Date endingDate, final String message) {
+  public final void changerEtatJobRequest(final UUID idJob, final String state, final Date endingDate, final String message, final long clock) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -315,7 +315,7 @@ public class JobRequestSupportCql {
       job.setEndingDate(endingDate);
       job.setMessage(message);
 
-      jobRequestDaoCql.saveWithMapper(job);
+    jobRequestDaoCql.saveWithMapper(job, clock);
 
    }
 
@@ -332,8 +332,11 @@ public class JobRequestSupportCql {
       return opt.orElse(null).getIdJob();
    }
 
-	public void setJobRequestDaoCql(IJobRequestDaoCql jobRequestDaoCql) {
+  public void setJobRequestDaoCql(final IJobRequestDaoCql jobRequestDaoCql) {
 		this.jobRequestDaoCql = jobRequestDaoCql;
 	}
      
+  public long getJobRequestColunmWriteTime(final UUID id, final String columnName) {
+    return jobRequestDaoCql.getColunmWriteTime(id, columnName);
+  }
 }

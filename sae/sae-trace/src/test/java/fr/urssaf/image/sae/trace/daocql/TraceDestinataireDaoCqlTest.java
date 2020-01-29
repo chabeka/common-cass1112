@@ -135,7 +135,7 @@ public class TraceDestinataireDaoCqlTest {
     trace.setDestinataires(dest);
     tracesupport.create(trace, new Date().getTime());
 
-    tracesupport.delete(code, new Date().getTime());
+    tracesupport.delete(code);
 
     final TraceDestinataire TraceDest = tracesupport.findById(code);
     Assert.assertNull("L'objet doit etre null", TraceDest);

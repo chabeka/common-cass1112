@@ -253,4 +253,66 @@ public class PagmCqlSupportTest {
     Assert.assertEquals("le flag compressionPdfActive doit être correct", Boolean.TRUE, res.getCompressionPdfActive());
     Assert.assertEquals("le seuilCompressionPdf doit être correct", Integer.valueOf(1048576), res.getSeuilCompressionPdf());
   }
+
+  @Test
+  public void testUpdate() {
+    final Map<String, String> param = new HashMap<>();
+    param.put("cle7", "valeur7");
+    param.put("cle8", "valeur8");
+    final PagmCql pagm1 = new PagmCql();
+    pagm1.setIdClient(ID_CLIENT);
+    pagm1.setCode(CODE1);
+    pagm1.setDescription(DESCRIPTION1);
+    pagm1.setPagma("pagma4");
+    pagm1.setPagmp("pagmp4");
+    pagm1.setParametres(param);
+    pagm1.setCompressionPdfActive(Boolean.TRUE);
+    pagm1.setSeuilCompressionPdf(Integer.valueOf(1048576)); // 1Mo
+
+    support.create(pagm1);
+
+    final PagmCql pagm1bis = new PagmCql();
+    pagm1bis.setIdClient(ID_CLIENT);
+    pagm1bis.setCode(CODE1);
+    pagm1bis.setDescription("description2");
+    pagm1bis.setPagma("pagma4");
+    pagm1bis.setPagmp("pagmp4");
+
+    pagm1bis.setParametres(param);
+    pagm1bis.setCompressionPdfActive(Boolean.TRUE);
+    pagm1bis.setSeuilCompressionPdf(Integer.valueOf(1048576)); // 1Mo
+
+    support.create(pagm1bis);
+
+    final PagmCql pagmResult = support.find(ID_CLIENT);
+    Assert.assertEquals(pagmResult, pagm1bis);
+  }
+
+  @Test
+  public void testNullIdClientValue() {
+    try {
+
+      final PagmCql pagm1 = new PagmCql();
+      pagm1.setIdClient(null);
+
+      support.create(pagm1);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "le code client ne peut etre null");
+
+    }
+
+  }
+
+  @Test
+  public void testNullEntity() {
+    try {
+      support.create(null);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "l'objet pagm ne peut etre null");
+    }
+  }
 }

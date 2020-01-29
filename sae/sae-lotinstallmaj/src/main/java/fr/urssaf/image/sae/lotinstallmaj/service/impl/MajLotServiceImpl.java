@@ -112,8 +112,6 @@ public final class MajLotServiceImpl implements MajLotService {
   
   public static final String CASSANDRA_DFCE_200200 = "CASSANDRA_DFCE_200200";
 
-  public static final String CASSANDRA_DFCE_200200 = "CASSANDRA_DFCE_200200";
-
   public static final String META_SEPA = "META_SEPA";
 
   public static final String META_130400 = "META_130400";
@@ -389,9 +387,9 @@ public final class MajLotServiceImpl implements MajLotService {
       // MAJ des métadonnées
       updateMetaDfce("META_" + nomOperation);
       // Ajout des index composites
-      if (nomOperation.contains("GNS")) {
+      if ("GNS".contains(nomOperation)) {
         addIndexesCompositeToDfce("META_" + nomOperation, APPL_CONCERNEE.GNS);
-      } else if (nomOperation.contains("GNT")) {
+      } else if ("GNT".contains(nomOperation)) {
         addIndexesCompositeToDfce("META_" + nomOperation, APPL_CONCERNEE.GNT);
       }
     }
@@ -508,9 +506,6 @@ public final class MajLotServiceImpl implements MajLotService {
 	// CASSANDRA_DFCE_200200
 	updateMetaDfce("META_200200");
 
-	// CASSANDRA_DFCE_200200
-	updateMetaDfce("META_200200");
-	
     
     try {
       if (APPL_CONCERNEE.GNT.equals(gedConcernee)) {

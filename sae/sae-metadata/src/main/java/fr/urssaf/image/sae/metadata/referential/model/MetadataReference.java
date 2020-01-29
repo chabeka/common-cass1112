@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.javers.core.metamodel.annotation.Id;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -57,6 +58,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
 
   @PartitionKey
   @Column(name = "longCode")
+  @Id // Comparaison Javers
   private String longCode;
 
   @Column(name = "sCode")
@@ -651,6 +653,7 @@ public class MetadataReference implements Serializable, Comparable<MetadataRefer
         return false;
       }
     } else if (!pattern.equals(other.pattern)) {
+
       return false;
     }
     if (requiredForArchival == null) {

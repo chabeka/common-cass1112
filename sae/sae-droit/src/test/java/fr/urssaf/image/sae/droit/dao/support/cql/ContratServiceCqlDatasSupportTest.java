@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.droit.dao.support.cql;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -187,4 +188,54 @@ public class ContratServiceCqlDatasSupportTest {
     }
   }
 
+  @Test
+  public void testUpdate() {
+
+    final ServiceContract contract = new ServiceContract();
+    contract.setCodeClient(CODE_CLIENT1);
+    contract.setDescription(DESCRIPTION1);
+    contract.setLibelle(LIBELLE1);
+    contract.setViDuree(VI_DUREE);
+    contract.setIdPki("pki 1");
+    contract.setVerifNommage(false);
+    support.create(contract);
+
+    final ServiceContract contractBis = new ServiceContract();
+    contractBis.setCodeClient(CODE_CLIENT1);
+    contractBis.setDescription(DESCRIPTION1);
+    contractBis.setLibelle(LIBELLE1 + "UPDATED");
+    contractBis.setViDuree(VI_DUREE);
+    contractBis.setIdPki("pki 1");
+    contractBis.setVerifNommage(false);
+    support.create(contractBis);
+
+    final ServiceContract contractBd = support.find(CODE_CLIENT1);
+    Assert.assertEquals(contractBd, contractBis);
+  }
+
+  @Test
+  public void testNullCodeValue() {
+    try {
+      final ServiceContract contract = new ServiceContract();
+      contract.setCodeClient(null);
+      support.create(contract);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "le code client ne peut etre null");
+    }
+
+  }
+
+  @Test
+  public void testNullEntity() {
+    try {
+      support.create(null);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "l'objet contratService ne peut etre null");
+    }
+
+  }
 }

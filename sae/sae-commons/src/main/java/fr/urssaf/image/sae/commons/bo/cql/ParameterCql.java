@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.commons.bo.cql;
 
+import org.javers.core.metamodel.annotation.Id;
+
 import com.datastax.driver.mapping.annotations.ClusteringColumn;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -17,6 +19,22 @@ import fr.urssaf.image.sae.commons.bo.ParameterType;
  */
 @Table(name = "parameterscql")
 public class ParameterCql implements Comparable<ParameterCql> {
+
+  /** Type paramètre */
+  @PartitionKey
+  @Column(name = "typeParameters")
+  @Id // Comparaison Javers
+  private ParameterRowType typeParameters;
+
+  /** Nom du paramètre */
+  @ClusteringColumn
+  @Column(name = "name")
+  @Id
+  private ParameterType name;
+
+  /** valeur du paramètre */
+  @Column(name = "value")
+  private Object value;
 
   /**
    * @return the typeParameters
@@ -63,18 +81,7 @@ public class ParameterCql implements Comparable<ParameterCql> {
     this.value = value;
   }
 
-  /** Type paramètre */
-  @PartitionKey
-  @Column(name = "typeParameters")
-  private ParameterRowType typeParameters;
-  /** Nom du paramètre */
-  @ClusteringColumn
-  @Column(name = "name")
-  private ParameterType name;
 
-  /** valeur du paramètre */
-  @Column(name = "value")
-  private Object value;
 
   /**
    * {@inheritDoc}

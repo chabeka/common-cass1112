@@ -74,7 +74,7 @@ public final class XStreamHelper {
    }
 
    /**
-    * Parse un fichier XML et renvoie l'objet qu'il repr�sente.
+   * Parse un fichier XML et renvoie l'objet qu'il représente.
     * 
     * @param <T>
     *           le type d'objet
@@ -85,9 +85,8 @@ public final class XStreamHelper {
     * @param pResultClass
     *           la classe du type d'objet
     * @param pXStream
-    *           l'instance utilis�e pour le parsing
+   *          l'instance utilisée pour le parsing
     * @return l'objet
-    * 
     */
    public static <T> T parse(final InputStreamReader pXmlFile,
          final Charset pXmlCharset, final Class<T> pResultClass,
@@ -95,7 +94,7 @@ public final class XStreamHelper {
       return pResultClass.cast(pXStream.fromXML(pXmlFile));
    }
 
-   /** Cette classe n'est pas con�ue pour �tre instanci�e. */
+  /** Cette classe n'est pas connue pour être instanciée. */
    private XStreamHelper() {
       assert false;
    }

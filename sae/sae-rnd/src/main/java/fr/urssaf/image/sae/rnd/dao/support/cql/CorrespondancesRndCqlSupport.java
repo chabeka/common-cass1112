@@ -55,7 +55,7 @@ public class CorrespondancesRndCqlSupport {
 
 
     // ATTENTION
-    final String idCorrespondance = correspondance.getCodeTemporaire() + SEPARATEUR + correspondance.getVersionCourante();
+    // final String idCorrespondance = correspondance.getCodeTemporaire() + SEPARATEUR + correspondance.getVersionCourante();
 
     rndDaoCql.saveWithMapper(correspondance);
 
@@ -72,14 +72,12 @@ public class CorrespondancesRndCqlSupport {
    *
    * @param codeTemporaire
    *          le code Correspondance dont on veut le type de document
-   *          version
+   * @param version
    *          version du code rnd
    * @return le type de document recherché
    */
   public final Correspondance find(final String codeTemporaire, final String version) {
 
-
-    // final Correspondance correspondance = rndDaoCql.findWithMapperById(codeTemporaire + SEPARATEUR + version).orElse(null);
     final Correspondance correspondance = rndDaoCql.findWithMapperByIdComposite(codeTemporaire, version).orElse(null);
     return correspondance;
   }

@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <modelVersion>4.0.0</modelVersion>
 
@@ -124,12 +126,18 @@
 			<artifactId>aspectjweaver</artifactId>
 			<version>${aspectj.version}</version>
 		</dependency>
-<!-- Commons EC-->
+		<!-- Commons Cassandra -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-cassandra</artifactId>
          <version>${commons.cassandra}</version>
       </dependency>
+		<!-- Javers pour gestion comparaison -->
+		<dependency>
+			<groupId>org.javers</groupId>
+			<artifactId>javers-core</artifactId>
+			<version>5.8.7</version>
+		</dependency>
    </dependencies>
 
 
@@ -158,10 +166,8 @@
                   </executions>
                </plugin>
 
-               <!--
-                  Ajout des suppressWarning sur les classes générées
-                  dans le code client du WS
-               -->
+					<!-- Ajout des suppressWarning sur les classes générées dans le code 
+						client du WS -->
 
                <plugin>
                   <groupId>com.google.code.maven-replacer-plugin</groupId>

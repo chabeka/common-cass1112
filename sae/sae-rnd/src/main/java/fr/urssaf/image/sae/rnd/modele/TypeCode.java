@@ -1,9 +1,5 @@
 /**
- *  TODO (AC75095351) Description du fichier
- */
-
-/**
- * TODO (AC75095351) Description du type
+ * Enumération TypeCode
  *
  */
 

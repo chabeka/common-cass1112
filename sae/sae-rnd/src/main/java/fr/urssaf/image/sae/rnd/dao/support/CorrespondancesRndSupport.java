@@ -128,16 +128,16 @@ public class CorrespondancesRndSupport {
 
       // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
       // son utilisation
-      final QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<String, String, byte[]>();
+    final QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<>();
       final ColumnFamilyResultWrapper<String, String> result = converter
             .getColumnFamilyResultWrapper(queryResult, StringSerializer.get(),
                                           StringSerializer.get(), bytesSerializer);
 
       // On itère sur le résultat
-      final HectorIterator<String, String> resultIterator = new HectorIterator<String, String>(
+    final HectorIterator<String, String> resultIterator = new HectorIterator<>(
             result);
 
-      final List<Correspondance> listeCorrespondances = new ArrayList<Correspondance>();
+    final List<Correspondance> listeCorrespondances = new ArrayList<>();
 
       for (final ColumnFamilyResult<String, String> row : resultIterator) {
 
@@ -164,11 +164,12 @@ public class CorrespondancesRndSupport {
 
    /**
     * Méthode permettant de récupérer les informations pour une correspondance
-    * spÃ©cifique
+   * spécifique
     * 
     * @param codeTemporaire
     *           Code temporaire de la correspondance
-    * @param version La version courante           
+   * @param version
+   *          La version courante
     * @return {@link Correspondance}
     */
    public final Correspondance find(final String codeTemporaire, final String version) {

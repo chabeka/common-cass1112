@@ -1,5 +1,5 @@
 /**
- *  TODO (AC75095351) Description du fichier
+ *  Classe Utils pour gérer modeAPI en test
  */
 package fr.urssaf.image.sae.rnd.util;
 
@@ -10,10 +10,7 @@ import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 
 
-/**
- * TODO (AC75095351) Description du type
- *
- */
+
 public class ModeAPIRndUtils {
 
   public static void setAllRndModeAPIThrift() {

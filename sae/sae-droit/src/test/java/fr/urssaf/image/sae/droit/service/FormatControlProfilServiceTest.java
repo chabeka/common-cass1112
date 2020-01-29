@@ -160,12 +160,13 @@ public class FormatControlProfilServiceTest {
   public void deleteFormatControlProfilFailure() {
     try {
       formControlProfilService.deleteFormatControlProfil(FORMAT_CODE);
-    } catch (final FormatControlProfilNotFoundException except) {
+    }
+    catch (final FormatControlProfilNotFoundException e) {
       Assert
       .assertEquals(
                     MESSAGE_EXCEPT_INCORRECT,
                     "Le profil de contrôle à supprimer : [formatCode] n'existe pas en base.",
-                    except.getMessage());
+                    e.getMessage());
     }
   }
 

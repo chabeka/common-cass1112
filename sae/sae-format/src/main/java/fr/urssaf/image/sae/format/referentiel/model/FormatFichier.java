@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.format.referentiel.model;
 
+import org.javers.core.metamodel.annotation.Id;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -12,8 +14,10 @@ import com.datastax.driver.mapping.annotations.Table;
  * */
 @Table(name = "referentielformatcql")
 public class FormatFichier implements Comparable<FormatFichier> {
+
   @PartitionKey
   @Column(name = "idFormat")
+  @Id
   private String idFormat;
 
   @Column(name = "typeMime")

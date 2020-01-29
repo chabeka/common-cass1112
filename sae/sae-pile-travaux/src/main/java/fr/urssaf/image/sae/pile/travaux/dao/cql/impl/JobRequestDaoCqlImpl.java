@@ -10,6 +10,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
@@ -28,7 +31,6 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 @Repository
 public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> implements IJobRequestDaoCql {
 
- 
    /**
    * @param ccf
    */
@@ -51,9 +53,14 @@ public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> im
    @PostConstruct
    public void setRegister() {
 	  if(ccf != null) {
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(VIContenuExtrait.class));
-	      // ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<JobState>(JobState.class));
-	      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+      final CodecRegistry registry = ccf.getCluster().getConfiguration().getCodecRegistry();
+      registerCodecIfNotFound(registry, new JsonCodec<>(VIContenuExtrait.class));
+      registerCodecIfNotFound(registry, BytesBlobCodec.instance);
+
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<>(VIContenuExtrait.class));
+      //// ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<JobState>(JobState.class));
+      // ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+
 	  }
    }
 
@@ -67,4 +74,12 @@ public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> im
       return Optional.ofNullable(getMapper().map(getSession().execute(query)).one());
    }
 
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

@@ -213,4 +213,10 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
       return jobRequestSupportCql.getJobRequestIdByJobKey(jobKey);
    }
 
+  @Override
+  public long getJobRequestColunmWriteTime(final UUID id, final String columnName) {
+    return jobRequestSupportCql.getJobRequestColunmWriteTime(id, columnName);
+
+  }
+
 }

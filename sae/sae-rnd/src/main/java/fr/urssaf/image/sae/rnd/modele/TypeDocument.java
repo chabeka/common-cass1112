@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.rnd.modele;
 
+import org.javers.core.metamodel.annotation.Id;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -19,6 +21,7 @@ public class TypeDocument implements Comparable<TypeDocument> {
    */
   @PartitionKey
   @Column(name = "code")
+  @Id // Comparaison Javers
   private String code;
 
   /**

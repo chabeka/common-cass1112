@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.droit.dao.support.cql;
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.After;
@@ -108,6 +109,49 @@ public class ActionUnitaireCqlSupportTest {
       }
 
       Assert.assertTrue("le code " + cle + " doit etre trouvé", found);
+    }
+  }
+
+  @Test
+  public void testUpdate() {
+
+    final ActionUnitaire actionUnitaire1 = new ActionUnitaire();
+    actionUnitaire1.setCode(CODE_TEST1);
+    actionUnitaire1.setDescription(DESCRIPTION1);
+    cqlsupport.create(actionUnitaire1);
+
+    final ActionUnitaire actionUnitaire1bis = new ActionUnitaire();
+    actionUnitaire1bis.setCode(CODE_TEST1);
+    actionUnitaire1bis.setDescription("TEST UPDATE");
+    cqlsupport.create(actionUnitaire1bis);
+
+    final ActionUnitaire actionUnitaireResult = cqlsupport.find(CODE_TEST1);
+    Assert.assertEquals(actionUnitaireResult, actionUnitaire1bis);
+  }
+
+  @Test
+  public void testNullCodeValue() {
+    try {
+      final ActionUnitaire actionUnitaire1 = new ActionUnitaire();
+      actionUnitaire1.setCode(null);
+      actionUnitaire1.setDescription(DESCRIPTION1);
+      cqlsupport.create(actionUnitaire1);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "le code ne peut être null");
+    }
+
+  }
+
+  @Test
+  public void testNullEntity() {
+    try {
+      cqlsupport.create(null);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "l'objet actionUnitaire ne peut être null");
     }
   }
 

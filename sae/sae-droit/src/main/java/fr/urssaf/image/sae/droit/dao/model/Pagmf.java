@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.droit.dao.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.javers.core.metamodel.annotation.Id;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -13,10 +12,10 @@ import com.datastax.driver.mapping.annotations.Table;
  */
 @Table(name = "droitpagmfcql")
 public class Pagmf implements Comparable<Pagmf> {
-  private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(Pagmf.class);
+
   @PartitionKey
   @Column(name = "codePagmf")
+  @Id
   private String codePagmf;
 
   @Column(name = "description")
@@ -94,8 +93,6 @@ public class Pagmf implements Comparable<Pagmf> {
         return false;
       }
     } else if (!codeFormatControlProfil.equals(other.codeFormatControlProfil)) {
-      LOGGER.warn("codePagmf:" + codePagmf + "/" + getCodePagmf() + ", codeFormatControlProfil:" + codeFormatControlProfil + "/"
-          + other.getCodeFormatControlProfil());
       return false;
     }
     if (codePagmf == null) {
@@ -110,8 +107,6 @@ public class Pagmf implements Comparable<Pagmf> {
         return false;
       }
     } else if (!description.equals(other.description)) {
-      LOGGER.warn("codePagmf:" + codePagmf + "/" + getCodePagmf() + ", description:" + description + "/"
-          + other.getDescription());
       return false;
     }
     return true;

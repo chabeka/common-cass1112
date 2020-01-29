@@ -29,8 +29,7 @@ import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDo
  * @param <CAPT>
  *          classe de capture
  */
-public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
-                                                ThreadPoolExecutor {
+public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends ThreadPoolExecutor {
 
   private static final long serialVersionUID = 1L;
 
@@ -41,25 +40,18 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
   /**
    * Constructeur
    *
-   * @param poolConfiguration
-   *          configuration du pool d'insertion des documents dans DFCE
-   * @param support
-   *          support pour l'arrêt du traitement de la capture en masse
-   * @param config
-   *          configuration pour l'arrêt du traitement de la capture en masse
-   */
-  public AbstractPoolThreadExecutor(
-                                    final DefaultPoolThreadConfiguration poolConfiguration,
-                                    final InterruptionTraitementMasseSupport support,
-                                    final InterruptionTraitementConfig config) {
+    * @param poolConfiguration configuration du pool d'insertion des documents dans
+    *                          DFCE
+    * @param support           support pour l'arrêt du traitement de la capture en
+    *                          masse
+    * @param config            configuration pour l'arrêt du traitement de la
+    *                          capture en masse
+    */
+   public AbstractPoolThreadExecutor(final DefaultPoolThreadConfiguration poolConfiguration,
+                                     final InterruptionTraitementMasseSupport support, final InterruptionTraitementConfig config) {
 
-    super(poolConfiguration.loadCorePoolSize(),
-          poolConfiguration
-                           .loadCorePoolSize(),
-          1,
-          TimeUnit.MILLISECONDS,
-          new LinkedBlockingQueue<Runnable>(),
-          new DiscardPolicy());
+      super(poolConfiguration.loadCorePoolSize(), poolConfiguration.loadCorePoolSize(), 1, TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(), new DiscardPolicy());
 
     Assert.notNull(support, "'support' is required");
 
@@ -73,19 +65,15 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
   public final void waitFinishInsertion() {
     try {
       awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-    }
-    catch (final InterruptedException e) {
+      } catch (final InterruptedException e) {
       throw new IllegalStateException(e);
     }
   }
 
   /**
-   * @param exception
-   *          Mise à jour de la première erreur
+    * @param exception Mise à jour de la première erreur
    */
-  protected final void setInsertionException(
-                                             final AbstractInsertionMasseRuntimeException exception) {
-
+   protected final void setInsertionException(final AbstractInsertionMasseRuntimeException exception) {
     synchronized (this) {
 
       // deux cas :
@@ -96,8 +84,7 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
       // dans le sommaire
       if (getInsertionMasseException() == null) {
         setInsertionMasseRuntimeException(exception);
-      } else if (getInsertionMasseException().getIndex() > exception
-                                                                    .getIndex()) {
+         } else if (getInsertionMasseException().getIndex() > exception.getIndex()) {
         setInsertionMasseRuntimeException(exception);
       }
     }
@@ -130,22 +117,18 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
   public abstract AbstractInsertionMasseRuntimeException getInsertionMasseException();
 
   /**
-   * @param exception
-   *          l'exception
+    * @param exception l'exception
    */
-  protected abstract void setInsertionMasseRuntimeException(
-                                                            AbstractInsertionMasseRuntimeException exception);
+   protected abstract void setInsertionMasseRuntimeException(AbstractInsertionMasseRuntimeException exception);
 
   /**
-   * @param runnable
-   *          le traitement en cours
+    * @param runnable le traitement en cours
    * @return le document concerné
    */
   protected abstract BOT getDocumentFromRunnable(Runnable runnable);
 
   /**
-   * @param runnable
-   *          le traitement en cours
+    * @param runnable le traitement en cours
    * @return l'index du document concerné
    */
   protected abstract int getIndexFromRunnable(Runnable runnable);
@@ -153,16 +136,13 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
   /**
    * Retourne l'erreur spécifique
    *
-   * @param index
-   *          index du document en erreur
-   * @param document
-   *          le document en erreur
-   * @param exception
-   *          exception source
+    * @param index     index du document en erreur
+    * @param document  le document en erreur
+    * @param exception exception source
    * @return l'erreur spécifique
    */
-  protected abstract AbstractInsertionMasseRuntimeException createError(
-                                                                        int index, BOT document, InterruptionTraitementException exception);
+   protected abstract AbstractInsertionMasseRuntimeException createError(int index, BOT document,
+                                                                         InterruptionTraitementException exception);
 
   /**
    * {@inheritDoc}
@@ -179,17 +159,13 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
 
       this.getSupport().verifyInterruptedProcess(getConfig());
 
-    }
-    catch (final InterruptionTraitementException e) {
+      } catch (final InterruptionTraitementException e) {
 
       // en cas d'échec de la reconnexion
 
       // levée d'une exception pour le document chargé de la
       // reconnexion
-      final AbstractInsertionMasseRuntimeException except = createError(
-                                                                        indexDocument,
-                                                                        document,
-                                                                        e);
+         final AbstractInsertionMasseRuntimeException except = createError(indexDocument, document, e);
 
       this.setInsertionException(except);
 
@@ -204,21 +180,19 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
    * <ol>
    * <li>l'insertion a réussi : on ajoute le résultat à liste des documents
    * persistés</li>
-   * <li>l'insertion a échouée :
-   * MODE TOUT OU RIEN : on shutdown le pool d'insertion</li>
-   * MODE PARTIEL : l'exception a été catchée en amont, et on continue sur les autres documents
-   * <li>l'insertion a réussi et était la dernière : on ajoute le résultat à
-   * liste des documents persistés et on shutdown le pool d'insertion</li>
+    * <li>l'insertion a échouée : MODE TOUT OU RIEN : on shutdown le pool
+    * d'insertion</li> MODE PARTIEL : l'exception a été catchée en amont, et on
+    * continue sur les autres documents
+    * <li>l'insertion a réussi et était la dernière : on ajoute le résultat à liste
+    * des documents persistés et on shutdown le pool d'insertion</li>
    * </ol>
    *
-   * @param runnable
-   *          le thread d'insertion d'un document
-   * @param throwable
-   *          l'exception éventuellement levée lors de l'insertion du document
+    * @param runnable  le thread d'insertion d'un document
+    * @param throwable l'exception éventuellement levée lors de l'insertion du
+    *                  document
    */
   @Override
-  protected void afterExecute(final Runnable runnable,
-                              final Throwable throwable) {
+   protected void afterExecute(final Runnable runnable, final Throwable throwable) {
 
     final String trcPrefix = "afterExecute()";
 
@@ -231,14 +205,11 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
 
       traitementAfterExecute(trcPrefix, document, indexDocument);
 
-    } else if (throwable != null
-        && throwable.getCause() instanceof TraitementRepriseAlreadyDoneException) {
+      } else if (throwable != null && throwable.getCause() instanceof TraitementRepriseAlreadyDoneException) {
       addDocumentToIntegratedList(document, indexDocument);
 
-      getLogger().debug(
-                        "{} - Stockage du document #{} ({}) uuid:{} pour la reprise du traitement de masse",
-                        new Object[] {trcPrefix, indexDocument + 1,
-                                      getPathName(document), getUuid(document)});
+         getLogger().debug("{} - Stockage du document #{} ({}) uuid:{} pour la reprise du traitement de masse",
+                           new Object[] { trcPrefix, indexDocument + 1, getPathName(document), getUuid(document) });
     } else {
 
       setInsertionException((AbstractInsertionMasseRuntimeException) throwable);
@@ -253,15 +224,11 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
   /**
    * Traitement lors de la fin d'execution du thread.
    *
-   * @param trcPrefix
-   *          Trace préfixe
-   * @param document
-   *          Document
-   * @param indexDocument
-   *          Index du document
+    * @param trcPrefix     Trace préfixe
+    * @param document      Document
+    * @param indexDocument Index du document
    */
-  protected void traitementAfterExecute(final String trcPrefix, final BOT document,
-                                        final int indexDocument) {
+   protected void traitementAfterExecute(final String trcPrefix, final BOT document, final int indexDocument) {
     if (StringUtils.isBlank(getPathName(document))) {
       throw new CaptureMasseRuntimeException("le nom de fichier est vide.");
     }
@@ -271,23 +238,18 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     if (getUuid(document) != null) {
       addDocumentToIntegratedList(document, indexDocument);
 
-      getLogger().debug(
-                        "{} - Stockage du document #{} ({}) uuid:{}",
-                        new Object[] {trcPrefix, indexDocument + 1,
-                                      getPathName(document), getUuid(document)});
+         getLogger().debug("{} - Stockage du document #{} ({}) uuid:{}",
+                           new Object[] { trcPrefix, indexDocument + 1, getPathName(document), getUuid(document) });
     }
   }
 
   /**
    * Ajoute le document concerné dans la liste des documents intégrés
    *
-   * @param document
-   *          le document concerné
-   * @param indexDocument
-   *          l'index du document
+    * @param document      le document concerné
+    * @param indexDocument l'index du document
    */
-  protected abstract void addDocumentToIntegratedList(BOT document,
-                                                      int indexDocument);
+   protected abstract void addDocumentToIntegratedList(BOT document, int indexDocument);
 
   /**
    * @return le logger concerné
@@ -295,15 +257,13 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
   protected abstract Logger getLogger();
 
   /**
-   * @param document
-   *          le document concerné
+    * @param document le document concerné
    * @return le nom ou le chemin du fichier
    */
   protected abstract String getPathName(BOT document);
 
   /**
-   * @param document
-   *          le document concerné
+    * @param document le document concerné
    * @return l'UUID ou le chemin du fichier
    */
   protected abstract UUID getUuid(BOT document);

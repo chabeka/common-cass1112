@@ -194,8 +194,8 @@ public class Pagm {
           || compressionPdfActive.equals(pagm.getCompressionPdfActive()))
           && (seuilCompressionPdf == null && pagm.getSeuilCompressionPdf() == null 
           || seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf()));
-    }
 
+    }
     return areEquals;
   }
 

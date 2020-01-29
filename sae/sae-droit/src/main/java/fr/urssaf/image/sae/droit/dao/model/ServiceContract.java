@@ -5,8 +5,7 @@ package fr.urssaf.image.sae.droit.dao.model;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.javers.core.metamodel.annotation.Id;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -21,13 +20,13 @@ import com.datastax.driver.mapping.annotations.Transient;
  */
 @Table(name = "droitcontratservicecql")
 public class ServiceContract implements Comparable<ServiceContract> {
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(ServiceContract.class);
+
   /** code intelligible du CS */
   @Column(name = "libelle")
   private String libelle;
   @PartitionKey
   @Column(name = "codeClient")
+  @Id
   /** code de l'organisme client lié au contrat de service */
   private String codeClient;
 
@@ -216,40 +215,6 @@ public class ServiceContract implements Comparable<ServiceContract> {
     this.listCertifsClient = listCertifsClient;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final boolean equals(final Object obj) {
-    boolean areEquals = false;
-
-    if (obj instanceof ServiceContract) {
-      final ServiceContract contract = (ServiceContract) obj;
-
-      areEquals = codeClient.equals(contract.getCodeClient())
-          && description.equals(contract.getDescription())
-          && libelle.equals(contract.getLibelle())
-          && viDuree.equals(contract.getViDuree());
-      if (!areEquals) {
-        LOGGER.warn("codeClient:" + codeClient + "/" + getCodeClient()
-        + ", description:" + description + "/" + contract.getDescription()
-        + ", libelle:" + libelle + "/" + contract.getLibelle()
-        + ", description:" + description + "/" + contract.getDescription()
-        + ", viDuree:" + viDuree + "/" + contract.getViDuree()
-            );
-      }
-    }
-
-    return areEquals;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final int hashCode() {
-    return super.hashCode();
-  }
 
   /**
    * {@inheritDoc}
@@ -262,13 +227,32 @@ public class ServiceContract implements Comparable<ServiceContract> {
         + "durée vi : " + viDuree.toString() + "\n";
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override
+  public final int hashCode() {
+     return super.hashCode();
+  }
+
+  @Override
+  public final boolean equals(final Object obj) {
+    boolean areEquals = false;
+
+    if (obj instanceof ServiceContract) {
+      final ServiceContract contract = (ServiceContract) obj;
+
+      areEquals = codeClient.equals(contract.getCodeClient())
+          && description.equals(contract.getDescription())
+          && libelle.equals(contract.getLibelle())
+          && viDuree.equals(contract.getViDuree());
+    }
+
+    return areEquals;
+  }
+
   @Override
   public int compareTo(final ServiceContract o) {
 
-    return getCodeClient().compareTo(o.getCodeClient());
+    return codeClient.compareTo(o.getCodeClient());
   }
+
 
 }

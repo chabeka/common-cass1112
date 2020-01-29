@@ -8,7 +8,7 @@
    <!-- Type de traitement de masse -->
    <som:batchMode>TOUT_OU_RIEN</som:batchMode>
    
-   <!-- Date de cr�ation du sommaire.xml -->
+   <!-- Date de création du sommaire.xml -->
    <som:dateCreation>2011-07-12</som:dateCreation>
    
    <!-- Description du traitement -->

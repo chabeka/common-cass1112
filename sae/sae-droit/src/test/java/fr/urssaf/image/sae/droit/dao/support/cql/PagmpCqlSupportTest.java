@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.droit.dao.support.cql;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.junit.After;
@@ -133,4 +134,51 @@ public class PagmpCqlSupportTest {
     }
   }
 
+  @Test
+  public void testUpdate() {
+
+    final Pagmp pagmp1 = new Pagmp();
+    pagmp1.setCode(CODE1);
+    pagmp1.setDescription(DESCRIPTION1);
+    pagmp1.setPrmd(PRMD1);
+
+    support.create(pagmp1);
+
+    final Pagmp pagmp1bis = new Pagmp();
+    pagmp1bis.setCode(CODE1);
+    pagmp1bis.setDescription("description2");
+    pagmp1bis.setPrmd(PRMD1);
+
+    support.create(pagmp1bis);
+
+    final Pagmp pagmpResult = support.find(CODE1);
+    Assert.assertEquals(pagmpResult, pagmp1bis);
+  }
+
+  @Test
+  public void testNullCodeValue() {
+    try {
+
+      final Pagmp pagmp1 = new Pagmp();
+      pagmp1.setCode(null);
+
+      support.create(pagmp1);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "le code ne peut etre null");
+    }
+
+  }
+
+  @Test
+  public void testNullEntity() {
+    try {
+      support.create(null);
+      Assert.assertTrue(false);
+    }
+    catch (final Exception e) {
+      Assert.assertEquals(e.getMessage(), "l'objet pagmp ne peut etre null");
+    }
+  }
 }

@@ -86,8 +86,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    private static final String CATCH = "AvoidCatchingThrowable";
 
    @Override
-   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int indexRun)
-         throws Exception {
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int indexRun) throws Exception {
 
       StorageDocument document = new StorageDocument();
       final String actionType = checkActionType((StorageDocument) storageDocument);
@@ -95,10 +94,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          if (actionType.equals("SUPPRESSION")) {
             final StorageDocument storageDoc = (StorageDocument) storageDocument;
             storageDoc.getMetadatas()
-                      .add(
-                           new StorageMetadata(
-                                               Constantes.CODE_COURT_META_DATE_CORBEILLE,
-                                               new Date()));
+            .add(new StorageMetadata(Constantes.CODE_COURT_META_DATE_CORBEILLE, new Date()));
             document = moveDocumentToRecycleBin(storageDoc);
          } else {
             document = transfertDocument((StorageDocument) storageDocument);
@@ -117,18 +113,42 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     * @{@link TransfertException}
     */
    @SuppressWarnings(CATCH)
-   public final StorageDocument transfertDocument(final StorageDocument document)
-         throws TransfertException {
+   public final StorageDocument transfertDocument(final StorageDocument document) throws TransfertException {
       try {
          transfertService.transfertDocMasse(document);
       }
       catch (final TransfertException e) {
+         if (isModePartielBatch()) {
+            sendExceptionInPartielMode(e);
+            LOGGER.warn("Erreur lors du transfert du document "
+                  + "de la GNT vers la GNS", e);
+            return null;
+         } else {
          throw e;
       }
+
+      }
       catch (final Exception except) {
+         if (isModePartielBatch()) {
+            sendExceptionInPartielMode(except);
+            LOGGER.warn("Erreur lors du transfert du document "
+                  + "de la GNT vers la GNS", except);
+
+            return null;
+         } else {
          throw new TransfertException(except.getMessage(), except);
       }
+
+      }
       return document;
+   }
+
+   private void sendExceptionInPartielMode(final Exception e) {
+      getCodesErreurListe().add(Constantes.ERR_BUL002);
+      getIndexErreurListe().add(index);
+      getErrorMessageList().add(e.getMessage());
+      LOGGER.warn("Erreur lors du transfert du document "
+            + "de la GNT vers la GNS", e);
    }
 
    /**
@@ -140,13 +160,11 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     * @{@link SuppressionException}
     */
    @SuppressWarnings(CATCH)
-   public final StorageDocument moveDocumentToRecycleBin(final StorageDocument document)
-         throws SuppressionException {
+   public final StorageDocument moveDocumentToRecycleBin(final StorageDocument document) throws SuppressionException {
 
       try {
          // Récuperer l'id du traitement en cours
-         final String idJob = getStepExecution().getJobParameters()
-                                                .getString(Constantes.ID_TRAITEMENT);
+         final String idJob = getStepExecution().getJobParameters().getString(Constantes.ID_TRAITEMENT);
 
          UUID uuidJob = null;
          if (StringUtils.isNotEmpty(idJob)) {
@@ -180,8 +198,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    }
 
    @Override
-   public void write(final List<? extends StorageDocument> items)
-         throws Exception {
+   public void write(final List<? extends StorageDocument> items) throws Exception {
 
       Runnable command;
 
@@ -201,18 +218,17 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
             catch (final Exception e) {
                if (isModePartielBatch()) {
                   getCodesErreurListe().add(Constantes.ERR_BUL002);
-                  getIndexErreurListe().add(getStepExecution().getExecutionContext().getInt(Constantes.CTRL_INDEX));
+                  getIndexErreurListe()
+                  .add(getStepExecution().getExecutionContext().getInt(Constantes.CTRL_INDEX));
                   getErrorMessageList().add(e.getMessage());
                   LOGGER.warn("Erreur lors de transfert du document en GNS", e);
                }
-
             }
             if (LOGGER.isDebugEnabled()) {
-               LOGGER.debug(
-                            "{} - nombre de documents en attente dans le pool : {}",
+               LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
                             TRC_INSERT,
-                            "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : "
-                                  + poolExecutor.getActiveCount());
+                            "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount()
+                            + " - Actifs : " + poolExecutor.getActiveCount());
             }
          } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
             poolExecutor.getIntegratedDocuments()

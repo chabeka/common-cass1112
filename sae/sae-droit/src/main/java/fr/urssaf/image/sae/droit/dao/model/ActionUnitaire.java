@@ -3,25 +3,50 @@
  */
 package fr.urssaf.image.sae.droit.dao.model;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.javers.core.metamodel.annotation.Id;
+import org.javers.core.metamodel.annotation.TypeName;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
+
+
 /**
  * Classe de modèle d'une action unitaire
  * Annotation pour Mapping avec la table cql
  */
+@TypeName("ActionUnitaire")
 @Table(name = "droitactionunitairecql")
 public class ActionUnitaire implements Comparable<ActionUnitaire> {
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(ActionUnitaire.class);
+
+
+  @Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ActionUnitaire other = (ActionUnitaire) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		if (description == null) {
+			if (other.description != null)
+				return false;
+		} else if (!description.equals(other.description))
+			return false;
+		return true;
+	}
 
   /** identifiant unique de l'action unitaire. */
   @PartitionKey
   @Column(name = "code")
+  @Id
   private String code;
 
   /** description de l'action unitaire */
@@ -62,44 +87,24 @@ public class ActionUnitaire implements Comparable<ActionUnitaire> {
    * {@inheritDoc}
    */
   @Override
-  public final boolean equals(final Object obj) {
-    boolean areEquals = false;
-
-    if (obj instanceof ActionUnitaire) {
-      final ActionUnitaire actionUnitaire = (ActionUnitaire) obj;
-      areEquals = code.equals(actionUnitaire.getCode())
-          && description.equals(actionUnitaire.getDescription());
-      if (!description.equals(actionUnitaire.getDescription())) {
-        LOGGER.warn("codes:" + code + "/" + actionUnitaire.getCode() + ", descriptions:" + description + "/" + actionUnitaire.getDescription());
-      }
-    }
-
-    return areEquals;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final int hashCode() {
-    return super.hashCode();
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public final String toString() {
     return "code : " + code + "\ndescription : " + description;
   }
 
-  /**
-   * {@inheritDoc}
-   */
+  @Override
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((code == null) ? 0 : code.hashCode());
+	result = prime * result + ((description == null) ? 0 : description.hashCode());
+	return result;
+  }
+
   @Override
   public int compareTo(final ActionUnitaire o) {
 
-    return getCode().compareTo(o.getCode());
+    return code.compareTo(o.getCode());
   }
+
 
 }

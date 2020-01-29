@@ -57,9 +57,12 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
  */
 @Service
 @Qualifier("saeDocumentService")
+
 @FacadePattern(participants = {SAECaptureServiceImpl.class,
                                SAEConsultationServiceImpl.class, SAESearchServiceImpl.class},
                comment = "Fournit les services des classes participantes")
+
+
 public class SAEDocumentServiceImpl implements SAEDocumentService {
 
    // @Autowired

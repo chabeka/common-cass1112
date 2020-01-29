@@ -19,13 +19,13 @@ public final class IgcFactory {
    public static final String ICG_CONFIG_ERROR = "Une erreur s'est produite lors du chargement du fichier de configuration IGC";
 
    @SuppressWarnings("PMD.LongVariable")
-   public static final String IGC_CONFIG_REQUIRED = "Le fichier de configuration gÃ©nÃ©rale du SAE ne contient pas le chemin du fichier de configuration IGC";
+  public static final String IGC_CONFIG_REQUIRED = "Le fichier de configuration générale du SAE ne contient pas le chemin du fichier de configuration IGC";
 
    @SuppressWarnings("PMD.LongVariable")
-   public static final String IGC_CONFIG_NOTEXIST = "Le fichier de configuration IGC indiquÃ© dans le fichier de configuration gÃ©nÃ©rale est introuvable (${0})";
+  public static final String IGC_CONFIG_NOTEXIST = "Le fichier de configuration IGC indiqué dans le fichier de configuration générale est introuvable (${0})";
 
    /**
-    * initialisation des rÃ©pertoires des fichiers AC racine et des CRL Ã 
+   * initialisation des répertoires des fichiers AC racine et des CRL Ã 
     * partir d'un fichier de configuration
     * 
     * <pre>
@@ -48,23 +48,21 @@ public final class IgcFactory {
     * </pre>
     * 
     * Une exception {@link IllegalArgumentException} avec le message peut-Ãªtre
-    * levÃ©e
+   * levée
     * <ul>
     * <li><code>{@value #IGC_CONFIG_REQUIRED}</code>: le fichier igcConfig.xml
-    * doit Ãªtre renseignÃ©</li>
+   * doit être renseigné</li>
     * <li><code>{@value #IGC_CONFIG_NOTEXIST}</code>: le fichier igcConfig.xml
     * doit exister</li>
     * <li><code>{@value #ICG_CONFIG_ERROR}</code>: toute autre exception sur le
     * fichier igcConfig.xml</li>
     * </ul>
     * 
-    * 
     * @param igcConfigResource
     *           fichier de configuration de l'IGC
     * @return instance de {@link IgcConfig}
-    * 
     */
-   public static IgcConfigs createIgcConfig(FileSystemResource igcConfigResource) {
+  public static IgcConfigs createIgcConfig(final FileSystemResource igcConfigResource) {
 
       // Assert.notNull(igcConfigResource, IGC_CONFIG_REQUIRED);
       //

@@ -24,11 +24,4 @@ public class JobHistoryDaoCqlImpl extends GenericDAOImpl<JobHistoryCql, UUID> im
   public JobHistoryDaoCqlImpl(final CassandraCQLClientFactory ccf) {
     super(ccf);
   }
-
-  private static final String JOBHISTORY_CFNAME = "JobHistory";
-
-  private static final int MAX_JOB_ATTIBUTS = 100;
-
-  private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
-
 }

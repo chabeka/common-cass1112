@@ -119,4 +119,13 @@ public class FormatProfil {
     return true;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "FormatProfil [fileFormat=" + fileFormat + ", formatIdentification=" + formatIdentification + ", formatValidation=" + formatValidation
+        + ", formatValidationMode=" + formatValidationMode + "]";
+  }
+
 }

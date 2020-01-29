@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.services.document.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -727,7 +726,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          }
          checkExistingFiltresMetadata(codeLongFiltresDifferent);
 
-         checkMetadataDoublon(codeLongFiltresEgal, codeLongFiltresDifferent);
+      // Ne plus faire de check sur les FiltreEgal : Evolution #232945
+      checkMetadataDoublon(codeLongFiltresDifferent);
 
          // Création de la liste des filtres
          final List<AbstractFilter> abstractFilter = creationListeFiltres(
@@ -760,23 +760,17 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          pagUntypedDoc.setLastPage(psd.getLastPage());
          pagUntypedDoc.setPageId(psd.getPageId());
 
+
          // Log la requete lucene et l'index utilisé si la requete dure plus de sae.duree.max.requete.soap secondes.
       	 // Pour diminuer le temps de la requête on peut augmenter le nombre max de documents par page
          final long endTime = System.currentTimeMillis();
          final long diff = endTime - startTime;
          if (diff / 1000 >= dureeMaxRequete) {
-        	List<String> list;
-        	if (indexOrderPreferenceList!=null) {
-          		list=indexOrderPreferenceList;
-        	}else {
-          		list=new ArrayList<>();
-        	}
-        	final List<String> listIndexOrderPreferenceList = Arrays.asList(prefixeTrc, String.join(",", list), requeteFinal);
             LOG.warn("{} - Requête de recherche dure plus de " + dureeMaxRequete + "  secondes - Index utilisé : {} - Requête Lucene utilisée : {}",
-                 listIndexOrderPreferenceList.toArray());
-        	throw new SAESearchServiceEx("Timeout requête soap, durée=" + diff / 1000 + "s");
+                 prefixeTrc,
+                 indexOrderPreferenceList,
+                 requeteFinal);
          }
-
       }
       catch (final SAESearchQueryParseException e) {
          throw new SAESearchServiceEx(
@@ -812,11 +806,9 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * @param codeLongFiltresDifferent
     * @throws DoublonFiltresMetadataEx
     */
-   private void checkMetadataDoublon(final List<String> codeLongFiltresEgal,
-                                     final List<String> codeLongFiltresDifferent)
+  private void checkMetadataDoublon(final List<String> codeLongFiltresDifferent)
          throws DoublonFiltresMetadataEx {
       final List<String> codeLongFiltres = new ArrayList<>();
-      codeLongFiltres.addAll(codeLongFiltresEgal);
       codeLongFiltres.addAll(codeLongFiltresDifferent);
 
       final Map<String, Integer> comptage = new HashMap<>();

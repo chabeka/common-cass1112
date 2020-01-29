@@ -8,29 +8,18 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.commons.bo.Parameter;
 import fr.urssaf.image.sae.commons.bo.ParameterRowType;
 import fr.urssaf.image.sae.commons.bo.ParameterType;
-import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.commons.dao.ParametersDao;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
-import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
-import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.beans.OrderedRows;
-import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.hector.api.query.QueryResult;
-import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
  * Classe permettant de réaliser des opérations sur les paramètres
@@ -159,36 +148,5 @@ public class ParametersSupport {
 
   }
 
-  public final HectorIterator<String, String> findAll() {
-
-    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-    final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-        .createRangeSlicesQuery(parametersDao.getKeyspace(),
-                                StringSerializer.get(),
-                                StringSerializer.get(),
-                                bytesSerializer);
-    rangeSlicesQuery.setColumnFamily(parametersDao.getColumnFamilyName());
-    rangeSlicesQuery.setRange(
-                              StringUtils.EMPTY,
-                              StringUtils.EMPTY,
-                              false,
-                              AbstractDao.DEFAULT_MAX_COLS);
-    rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
-    QueryResult<OrderedRows<String, String, byte[]>> queryResult;
-    queryResult = rangeSlicesQuery.execute();
-    // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
-    // son utilisation
-    final QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<>();
-    final ColumnFamilyResultWrapper<String, String> result = converter
-        .getColumnFamilyResultWrapper(queryResult,
-                                      StringSerializer.get(),
-                                      StringSerializer.get(),
-                                      bytesSerializer);
-    // On itère sur le résultat
-    final HectorIterator<String, String> resultIterator = new HectorIterator<>(
-        result);
-
-    return resultIterator;
-  }
 
 }

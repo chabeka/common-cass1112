@@ -6,37 +6,32 @@ package fr.urssaf.image.sae.commons.utils;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
-import org.apache.http.protocol.ExecutionContext;
-
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.CodecRegistry;
 import com.datastax.driver.core.DataType;
 import com.datastax.driver.core.ProtocolVersion;
 import com.datastax.driver.core.TypeCodec;
+import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.exceptions.InvalidTypeException;
 import com.datastax.driver.core.utils.Bytes;
 import com.datastax.driver.mapping.Mapper;
 
-import me.prettyprint.cassandra.serializers.AbstractSerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 
 /**
- * Classe de sérialisation/désérialisation des Object
+ * Classe de sérialisation/désérialisation des valeurs de type Object
  * Elle est utilisée par le {@link Mapper} qui se charge de mapper
  * une ligne extraite de la base cassandra pour un CF donnée.
- * <br>
- * Si la classe {@link ExecutionContext} est associée à une CF, chaque ligne de la CF
- * correspondrait à un {@link Object} java de type {@link ExecutionContext}
- * Mapping automatique: 1 instance de {@link ExecutionContext} == 1 ligne de la CF
- * Si la classe associée à la CF contient un champ de type {@link ExecutionContext}
- * Exemple: {@link JobExecution}
+ * PLus précisément, elle est utilisée par la classe ParameterCql qui possède un champ value de type Object
+ * (conversion en blob sur la CF)
  * Lors de la sauvegarde/extraction de données dans la CF, le champs sera serialisé/désérialisé
  * par le {@link Mapper} en se servant des méthodes de cette classe.
- * Dans tous les cas, pour utiliser ce mapping automatique, il faudrait enregistré la classe
+ * Dans tous les cas, pour utiliser ce mapping automatique, il faut enregistrer la classe
  * dans les Codecs du {@link Cluster}
  * Les méthodes de sérialisation/désérialisation de la classe
- * se basent sur la classe {@link AbstractSerializer }
+ * se basent sur la classe {@link ObjectSerializer }
  * Exemple d'utilisation:
- * Cluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
+ * Cluster().getConfiguration().getCodecRegistry().register(ObjectCodec.instance);
  */
 public class ObjectCodec extends TypeCodec<Object> {
 
@@ -56,7 +51,6 @@ public class ObjectCodec extends TypeCodec<Object> {
   public ByteBuffer serialize(final Object value, final ProtocolVersion protocolVersion) throws InvalidTypeException {
     final ObjectSerializer serializer = ObjectSerializer.get();
     final byte[] bytes = serializer.toBytes(value);
-    // final byte[] bytes = SerializationUtils.serialize((Serializable) value);
     return value == null ? null : ByteBuffer.wrap(Arrays.copyOf(bytes, bytes.length));
   }
 
@@ -67,10 +61,7 @@ public class ObjectCodec extends TypeCodec<Object> {
   public Object deserialize(final ByteBuffer bytes, final ProtocolVersion protocolVersion) throws InvalidTypeException {
     final ObjectSerializer serializer = ObjectSerializer.get();
     final byte[] result = bytes.duplicate().array();
-    // final byte[] result = new byte[bytes.remaining()];
     final Object obj = serializer.fromBytes(result);
-    // final Object obj = SerializationUtils.deserialize(bytes.duplicate().array());
-    // final Object obj = SerializationUtils.deserialize(result);
 
     return obj;
   }
@@ -96,11 +87,18 @@ public class ObjectCodec extends TypeCodec<Object> {
     final ObjectSerializer serializer = ObjectSerializer.get();
 
     final byte[] bytes = serializer.toBytes(value);
-    // final byte[] bytes = SerializationUtils.serialize((Serializable) value);
     if (bytes == null) {
       return "NULL";
     }
     return Bytes.toHexString(bytes);
   }
 
+  private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
+    try {
+      registry.codecFor(codec.getCqlType(), codec.getJavaType());
+    }
+    catch (final CodecNotFoundException e) {
+      registry.register(codec);
+    }
+  }
 }

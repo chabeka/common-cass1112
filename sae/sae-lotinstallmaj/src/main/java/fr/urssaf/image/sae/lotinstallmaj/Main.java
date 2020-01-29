@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.lotinstallmaj;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import fr.urssaf.image.sae.commons.context.ContextFactory;
@@ -13,6 +15,11 @@ import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.OperationCQL;
  */
 public final class Main {
 
+  /**
+   * LOGGER
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(Main.class);
+
    private Main() {
 
    }
@@ -23,30 +30,30 @@ public final class Main {
     * @param args
     *           arguments de la ligne de commande du JAR Executable
     */
-   public static void main(String[] args) {
+  public static void main(final String[] args) {
 
       // Extrait les infos de la ligne de commandes
       // La vérification du tableau args est faite par la validation AOP
-      String cheminFicConfSae = args[0];
-      String nomOperation = args[1];
+    final String cheminFicConfSae = args[0];
+    final String nomOperation = args[1];
 
       // Démarrage du contexte spring
-      ApplicationContext context = startContextSpring(cheminFicConfSae);
+    final ApplicationContext context = startContextSpring(cheminFicConfSae);
 
       // Récupération du contexte Spring du bean permettant de lancer
       // l'opération
-      MajLotService majLotService = context.getBean("majLotServiceImpl",MajLotService.class);
+    final MajLotService majLotService = context.getBean("majLotServiceImpl",MajLotService.class);
 
       // Retire des arguments de la ligne de commande ceux que l'on a déjà
       // traités.
       // On ne laisse que les arguments spécifiques à l'opération
-      String[] argsSpecifiques = (String[]) ArrayUtils.remove(args, 0);
+    final String[] argsSpecifiques = (String[]) ArrayUtils.remove(args, 0);
 
       try {
 	     
 	      // Récupération du contexte Spring du bean permettant de lancer
 	      // l'opération
-	      MajLotService majLotServicecql = context.getBean("majLotServiceCQLImpl",
+      final MajLotService majLotServicecql = context.getBean("majLotServiceCQLImpl",
 	            MajLotService.class);
 	      
 	      // Démarre l'opération sur les nouvelles tables cql
@@ -57,8 +64,8 @@ public final class Main {
 	    	  // Démarre l'opération sur les anciennes commandes
 	    	  majLotService.demarre(nomOperation, argsSpecifiques);
 	      }
-      } catch (Exception e){
-    	 
+    } catch (final Exception e){
+      LOG.error(e.getMessage());
       } finally {
     	  System.exit(0);
       }
@@ -74,9 +81,9 @@ public final class Main {
     * @return le contexte Spring
     */
    protected static ApplicationContext startContextSpring(
-         String cheminFicConfSae) {
+                                                         final String cheminFicConfSae) {
 
-      String contextConfig = "/applicationContext-sae-lotinstallmaj.xml";
+    final String contextConfig = "/applicationContext-sae-lotinstallmaj.xml";
 
       return ContextFactory.createSAEApplicationContext(contextConfig,
             cheminFicConfSae);

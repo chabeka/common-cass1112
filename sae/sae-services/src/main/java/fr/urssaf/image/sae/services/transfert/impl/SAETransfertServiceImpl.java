@@ -92,7 +92,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * l'annotation @Autowired
  */
 @Service
+
 public class SAETransfertServiceImpl extends AbstractSAEServices implements SAETransfertService {
+
 
    /**
     * Logger
@@ -161,7 +163,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
    private static final String GENERIC_ERROR_STRING = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
-  // EC
+
   @Autowired
   public SAETransfertServiceImpl(final JournalEvtServiceThriftImpl journalEvtThriftService, final JournalEvtCqlServiceImpl journalEvtCqlService) {
     super();
@@ -755,7 +757,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     * @throws TransfertException
     */
    private String getJournalSaeEventsAsJson(final UUID idArchive) throws TransfertException {
-    // EC A TESTER
+
     List<TraceJournalEvtIndexDoc> evtSae = null;
     List<TraceJournalEvtIndexDocCql> evtSaeCql = null;
     try {
@@ -764,7 +766,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
           || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
         evtSaeCql = journalEvtCqlService.getTraceJournalEvtByIdDoc(idArchive);
-
         return mapper.writeValueAsString(evtSaeCql);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
           || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {

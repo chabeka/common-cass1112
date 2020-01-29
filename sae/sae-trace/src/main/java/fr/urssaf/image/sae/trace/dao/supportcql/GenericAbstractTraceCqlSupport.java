@@ -3,12 +3,10 @@
  */
 package fr.urssaf.image.sae.trace.dao.supportcql;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,6 +33,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   // "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
 
   private static final String DATE_FORMAT = "yyyyMMdd";
+
 
   /**
    * Création d'une trace dans le registre
@@ -119,6 +118,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   @SuppressWarnings("unchecked")
   public long delete(final Date date, final long clock) {
     long nbTracesPurgees = 0;
+
 
     final Iterator<I> iterator = getIterator(date);
 
@@ -267,24 +267,6 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     return result;
   }
 
-  /**
-   * Suppression des traces dans les registres ou journaux
-   *
-   * @param iterator
-   *           Iterateur contenant les traces
-   * @param clock
-   *           l'horloge de la suppression
-   * @return le nombre d'enregistrements supprimés
-   */
-  @SuppressWarnings("unchecked")
-  long deleteRecords(final Iterator<I> iterator) {
-    long result = 0;
-    while (iterator.hasNext()) {
-      getDao().deleteById(getTraceId(iterator.next()));
-      result++;
-    }
-    return result;
-  }
 
   /**
    * Formatage de la date en yyyyMMdd

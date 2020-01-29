@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.storage.dfce.support;
 
 import java.io.BufferedInputStream;
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
@@ -15,6 +14,7 @@ import javax.activation.DataHandler;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,9 +114,17 @@ public class StorageDocumentServiceSupport {
          // -- conversion du storageDoc en DFCE Document
          final Document docDfce = BeanMapper.storageDocumentToDfceDocument(base,
                                                                            storageDocument, file);
+         DataHandler docContent = null;
+         final InputStream is = storageDocument.getContent().getInputStream();
 
-         // -- ici on récupère le contenu du fichier.
-         final DataHandler docContent = storageDocument.getContent();
+         if (!is.markSupported()) {
+           //Rendre la source de donnée ré-initialisable
+           final InputStream bufIn = new BufferedInputStream(is);
+           final InputStreamDataSource ids = new InputStreamDataSource(bufIn, storageDocument.getContent().getContentType());
+           docContent = new DataHandler(ids);
+         } else {
+           docContent = storageDocument.getContent();
+         }
 
          log.debug("{} - Début insertion du document dans DFCE", trcInsert);
 

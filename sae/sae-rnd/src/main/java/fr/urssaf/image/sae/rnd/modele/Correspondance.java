@@ -2,6 +2,8 @@ package fr.urssaf.image.sae.rnd.modele;
 
 import java.util.Date;
 
+import org.javers.core.metamodel.annotation.Id;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -21,6 +23,7 @@ public class Correspondance implements Comparable<Correspondance> {
    */
   @PartitionKey(0)
   @Column(name = "codeTemporaire")
+  @Id
   private String codeTemporaire;
 
   /**
@@ -34,6 +37,7 @@ public class Correspondance implements Comparable<Correspondance> {
    */
   @PartitionKey(1)
   @Column(name = "versionCourante")
+  @Id
   private String versionCourante;
 
   /**

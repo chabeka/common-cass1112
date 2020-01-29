@@ -122,9 +122,6 @@ public class SaeBddCqlSupport {
 
     try {
 
-      // Set<String> listeCodesTemporaires = listeCorrespondances.keySet();
-      // Iterator<String> iterateur = listeCodesTemporaires.iterator();
-
       final Iterator<Entry<String, String>> iterator = listeCorrespondances
           .entrySet().iterator();
 

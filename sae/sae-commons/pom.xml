@@ -66,5 +66,11 @@
 			<artifactId>commons-collections</artifactId>
 			<version>${apache.commons-collections.version}</version>
 		</dependency>
+		<!-- Javers pour gestion comparaison -->
+		<dependency>
+			<groupId>org.javers</groupId>
+			<artifactId>javers-core</artifactId>
+			<version>5.8.7</version>
+		</dependency>
    </dependencies>
 </project>

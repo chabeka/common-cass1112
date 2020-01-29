@@ -29,7 +29,7 @@ public class JobHistorySupportCql {
    public JobHistorySupportCql() {
    }
    
-   public JobHistorySupportCql(IJobHistoryDaoCql jobHistoryDaoCql) {
+  public JobHistorySupportCql(final IJobHistoryDaoCql jobHistoryDaoCql) {
       this.jobHistoryDaoCql = jobHistoryDaoCql;
    }
 
@@ -45,7 +45,7 @@ public class JobHistorySupportCql {
     * @param clock
     *           horloge en microsecondes de l'insertion de la trace
     */
-   public final void ajouterTrace(final UUID idJob, final UUID timestampTrace, final String messageTrace) {
+  public final void ajouterTrace(final UUID idJob, final UUID timestampTrace, final String messageTrace, final long clock) {
 
       final Map<UUID, String> trace = new HashMap<>();
       trace.put(timestampTrace, messageTrace);
@@ -56,7 +56,7 @@ public class JobHistorySupportCql {
          if (opt.isPresent()) {
             final JobHistoryCql jobHInDB = opt.get();
             jobHInDB.getTrace().put(timestampTrace, messageTrace);
-            jobHistoryDaoCql.saveWithMapper(jobHInDB);
+        jobHistoryDaoCql.saveWithMapper(jobHInDB, clock);
             isPresent = true;
          }
       }
@@ -65,7 +65,7 @@ public class JobHistorySupportCql {
          final JobHistoryCql newJobH = new JobHistoryCql();
          newJobH.setIdjob(idJob);
          newJobH.setTrace(trace);
-         jobHistoryDaoCql.saveWithMapper(newJobH);
+      jobHistoryDaoCql.saveWithMapper(newJobH, clock);
       }
    }
 
@@ -77,8 +77,8 @@ public class JobHistorySupportCql {
     * @param clock
     *           horloge de suppression du job
     */
-   public final void supprimerHistorique(final UUID idJob) {
-      jobHistoryDaoCql.deleteById(idJob);
+  public final void supprimerHistorique(final UUID idJob, final long clock) {
+    jobHistoryDaoCql.deleteById(idJob, clock);
    }
 
    public Iterator<JobHistoryCql> getJobHistory(final UUID idJob) {
@@ -89,7 +89,7 @@ public class JobHistorySupportCql {
       return jobHistoryDaoCql.findAll();
    }
 
-	public void setJobHistoryDaoCql(IJobHistoryDaoCql jobHistoryDaoCql) {
+  public void setJobHistoryDaoCql(final IJobHistoryDaoCql jobHistoryDaoCql) {
 		this.jobHistoryDaoCql = jobHistoryDaoCql;
 	}
    

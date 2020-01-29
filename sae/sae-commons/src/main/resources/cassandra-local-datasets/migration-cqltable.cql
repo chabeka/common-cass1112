@@ -280,7 +280,7 @@ CREATE INDEX jobRequestKey_idx ON jobrequestcql (jobkey);
 ########################  AUTRES TABLES ###########################
 */
 
-CREATE TABLE sequences (
+CREATE TABLE sequencescql (
 	jobidname		text,
     value 			bigint,
 	PRIMARY KEY (jobidname)
@@ -291,7 +291,7 @@ CREATE TABLE modeapi (
 	mode text,
 	PRIMARY KEY(cfname)
 );
-INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutionscql' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutions' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitactionunitaire' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitformatcontrolprofil' , 'DATASTAX');
@@ -304,7 +304,6 @@ INSERT INTO modeapi(cfname, mode) VALUES ('parameters' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('dictionary' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('metadata' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('tracedestinataire' , 'DATASTAX');
-INSERT INTO modeapi(cfname, mode) VALUES ('tracedestinatairecql' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('tracejournalevt' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('traceregexploitation' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('traceregsecurite' , 'DATASTAX');

@@ -11,6 +11,7 @@ import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
@@ -411,7 +412,7 @@ public class JobRequestCql implements Serializable, Comparable<JobRequestCql> {
    */
   @Override
   public int compareTo(final JobRequestCql job) {
-    return ("" + idJob).compareTo(job.getIdJob() + "");
+    return (TimeUUIDUtils.getTimeFromUUID(idJob) + "").compareTo(TimeUUIDUtils.getTimeFromUUID(job.getIdJob()) + "");
   }
 
   @Override
