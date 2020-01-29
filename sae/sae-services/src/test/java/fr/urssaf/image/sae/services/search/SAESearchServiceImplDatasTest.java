@@ -760,10 +760,12 @@ public class SAESearchServiceImplDatasTest {
    }
 
    /**
+   * Ne plus faire de test de doublons sur les equalFilter : Evolution #232945
     * Test de la recherche par itérateur
     *
     * @throws DoublonFiltresMetadataEx
     */
+    @Ignore
    @Test
    public final void rechercheParIterateurErreurFiltreDoublon()
          throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
@@ -788,8 +790,7 @@ public class SAESearchServiceImplDatasTest {
                                                                             "20120101",
                                                                             "20120101");
       final List<AbstractMetadata> filters = new ArrayList<>();
-      final UntypedMetadata metaFiltre = new UntypedMetadata("Titre",
-                                                             "titre_a_chercher");
+    final UntypedRangeMetadata metaFiltre = new UntypedRangeMetadata("DateArchivage", "201901010000000", "201901122356999");
 
       // Ajout du filtre en double
       filters.add(metaFiltre);
@@ -803,8 +804,8 @@ public class SAESearchServiceImplDatasTest {
          final PaginatedUntypedDocuments documents = saeSearchService
                                                                      .searchPaginated(fixedMetadatas,
                                                                                       varyingMetadata,
-                                                                                      filters,
                                                                                       new ArrayList<AbstractMetadata>(),
+                           															  filters,
                                                                                       nbDocumentsParPage,
                                                                                       pageId,
                                                                                       listeDesiredMetadata,
@@ -816,7 +817,7 @@ public class SAESearchServiceImplDatasTest {
          Assert
                .assertEquals(
                              "Le message attendu est incorrect",
-                             "La ou les métadonnées suivantes, utilisées dans le filtre de la requête de recherche par itérateur, sont en doublon : Titre",
+                          "La ou les métadonnées suivantes, utilisées dans le filtre de la requête de recherche par itérateur, sont en doublon : DateArchivage",
                              e.getMessage());
       }
 

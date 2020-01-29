@@ -25,13 +25,13 @@ public class RNDReferenceDAOImplTest {
    @Test
    public void testActiviteNull() {
       try {
-         String value = rndService.getCodeActivite("1.A.X.X.X");
+      final String value = rndService.getCodeActivite("1.A.X.X.X");
          Assert.assertTrue("le type d'activité est vide", StringUtils
                .isBlank(value));
 
-      } catch (CodeRndInexistantException e) {
+    } catch (final CodeRndInexistantException e) {
          Assert.fail("pas d'exception a lever");
-      } catch (Throwable throwable) {
+    } catch (final Throwable throwable) {
          Assert.fail("pas d'exception a lever");
       }
 
@@ -54,8 +54,8 @@ public class RNDReferenceDAOImplTest {
    @Test
    public void testRndMandatSepa() throws CodeRndInexistantException {
 
-      String codeRnd = "1.2.2.4.12";
-      TypeDocument typeDoc = rndService.getTypeDocument(codeRnd);
+    final String codeRnd = "1.2.2.4.12";
+    final TypeDocument typeDoc = rndService.getTypeDocument(codeRnd);
 
       assertEquals("Incohérence entre la DAO et l'objet retourné",
             "1.2.2.4.12", typeDoc.getCode());
