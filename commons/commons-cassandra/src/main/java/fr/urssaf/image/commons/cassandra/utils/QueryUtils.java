@@ -8,8 +8,6 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.BatchStatement;
@@ -25,7 +23,6 @@ import com.datastax.driver.mapping.annotations.PartitionKey;
  */
 public class QueryUtils {
 
-  public static final Logger LOG = Logger.getLogger(QueryUtils.class);
   
   private static final String END_BATCH = " APPLY BATCH";
 
