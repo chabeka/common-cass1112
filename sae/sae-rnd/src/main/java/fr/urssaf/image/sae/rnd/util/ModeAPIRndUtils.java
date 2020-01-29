@@ -1,5 +1,5 @@
 /**
- *  Classe Utils pour gérer modeAPI en test
+ *  Classe Utils pour gÃ©rer modeAPI en test
  */
 package fr.urssaf.image.sae.rnd.util;
 
