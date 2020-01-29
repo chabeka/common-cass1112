@@ -76,7 +76,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    * {@inheritDoc}
    */
   @Override
-  protected final IGenericDAO<TraceJournalEvtCql, UUID> getDao() {
+  public final IGenericDAO<TraceJournalEvtCql, UUID> getDao() {
     return tracejdao;
   }
 
@@ -193,14 +193,14 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    *          Horloge de création
    */
   public final void deleteIndexDoc(final UUID idDoc, final long clock) {
-    indexjDocDao.deleteById(idDoc);
+    indexjDocDao.deleteById(idDoc, clock);
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  IGenericDAO<TraceJournalEvtIndexCql, String> getIndexDao() {
+  public IGenericDAO<TraceJournalEvtIndexCql, String> getIndexDao() {
     return indexjDao;
   }
 
@@ -212,4 +212,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
     return trace.getIdentifiant();
   }
 
+  public final long getWriteTime(final UUID idDoc, final String columnName) {
+    return tracejdao.getColunmWriteTime(idDoc, columnName);
+  }
 }

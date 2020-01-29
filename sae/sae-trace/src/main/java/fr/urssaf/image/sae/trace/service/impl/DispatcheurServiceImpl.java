@@ -377,13 +377,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     case ModeGestionAPI.MODE_API.DATASTAX:
       traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
-      techCqlSupport.create(traceCql);
+      techCqlSupport.create(traceCql, clockSupport.currentCLock());
 
       break;
     case ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT:
     case ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL:
       traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
-      techCqlSupport.create(traceCql);
+      techCqlSupport.create(traceCql, clockSupport.currentCLock());
       techSupport.create(traceTechnique, clockSupport.currentCLock());
       break;
 
@@ -414,13 +414,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     case ModeGestionAPI.MODE_API.DATASTAX:
       traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
-      secuCqlSupport.create(traceCql);
+      secuCqlSupport.create(traceCql, clockSupport.currentCLock());
 
       break;
     case ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT:
     case ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL:
       traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
-      secuCqlSupport.create(traceCql);
+      secuCqlSupport.create(traceCql, clockSupport.currentCLock());
       secuSupport.create(traceSecurite, clockSupport.currentCLock());
       break;
 
@@ -454,13 +454,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     case ModeGestionAPI.MODE_API.DATASTAX:
       traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);
-      exploitCqlSupport.create(traceCql);
+      exploitCqlSupport.create(traceCql, clockSupport.currentCLock());
 
       break;
     case ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT:
     case ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL:
       traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);
-      exploitCqlSupport.create(traceCql);
+      exploitCqlSupport.create(traceCql, clockSupport.currentCLock());
       exploitSupport.create(traceExploit, clockSupport.currentCLock());
       break;
 
@@ -485,7 +485,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
     TraceJournalEvtCql traceCql;
     String idDoc;
     traceCql = UtilsTraceMapper.createTraceJournalEvtFromThriftToCql(traceJournalEvt);
-    evtCqlSupport.create(traceCql);
+    evtCqlSupport.create(traceCql, clockSupport.currentCLock());
     idDoc = getIdDoc(trace.getInfos());
     if (idDoc != null) {
       evtCqlSupport.addIndexDoc(traceCql, idDoc, currentCLock);

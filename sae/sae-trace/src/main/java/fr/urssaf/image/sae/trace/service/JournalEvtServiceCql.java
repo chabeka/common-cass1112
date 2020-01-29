@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
@@ -45,4 +46,5 @@ public interface JournalEvtServiceCql {
     */
    Logger getLogger();
 
+  JobClockSupport getClockSupport();
 }

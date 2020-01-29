@@ -99,7 +99,7 @@ public class TraceJournalEvtCqlSupportTest {
 
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace);
+    cqlsupport.create(trace, new Date().getTime());
 
     final Optional<TraceJournalEvtCql> securiteOp = cqlsupport.find(uuid);
     Assert.assertTrue("L'objet est non null", securiteOp.isPresent());
@@ -112,13 +112,15 @@ public class TraceJournalEvtCqlSupportTest {
 
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace);
+    final long timestamp = new Date().getTime();
+    cqlsupport.create(trace, timestamp);
 
-    final long nbTracesPurgees = cqlsupport.delete(new Date());
+    final long time2 = new Date().getTime();
+    final long nbTracesPurgees = cqlsupport.delete(new Date(), time2);
 
     final Optional<TraceJournalEvtCql> securiteOpt = cqlsupport.find(uuid);
-    Assert.assertFalse("aucune trace ne doit etre touvée", securiteOpt.isPresent());
 
+    Assert.assertFalse("aucune trace ne doit etre touvée", securiteOpt.isPresent());
     Assert.assertEquals("Le nombre de traces purgées est incorrect", 1L, nbTracesPurgees);
 
   }
@@ -127,7 +129,7 @@ public class TraceJournalEvtCqlSupportTest {
   public void testCreateFindByPlageSuccess() {
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace);
+    cqlsupport.create(trace, new Date().getTime());
 
     final Optional<TraceJournalEvtCql> exploitationOpt = cqlsupport.find(uuid);
     Assert.assertTrue("L'objet doit etre non null", exploitationOpt.isPresent());

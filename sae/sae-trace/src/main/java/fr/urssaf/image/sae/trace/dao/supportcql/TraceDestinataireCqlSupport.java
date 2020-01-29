@@ -72,8 +72,7 @@ public class TraceDestinataireCqlSupport {
    */
   public TraceDestinataireCqlSupport(final CassandraCQLClientFactory ccf) {
 
-    final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl();
-    dao.setCcf(ccf);
+    final ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl(ccf);
     destinatairecqldao = dao;
   }
   /**
@@ -85,7 +84,7 @@ public class TraceDestinataireCqlSupport {
    *           horloge de la création
    */
   public void create(final TraceDestinataire trace, final long clock) {
-    saveOrUpdate(trace);
+    saveOrUpdate(trace, clock);
   }
 
   /**
@@ -97,6 +96,20 @@ public class TraceDestinataireCqlSupport {
    *           horloge de suppression
    */
   public void delete(final String code, final long clock) {
+    Assert.notNull(code, "le code ne peut etre null");
+    destinatairecqldao.deleteById(code, clock);
+
+  }
+
+  /**
+   * Méthode de suppression d'une trace destinataire
+   *
+   * @param code
+   *          identifiant de la trace
+   * @param clock
+   *          horloge de suppression
+   */
+  public void delete(final String code) {
     Assert.notNull(code, "le code ne peut etre null");
     destinatairecqldao.deleteById(code);
 
@@ -135,7 +148,7 @@ public class TraceDestinataireCqlSupport {
    * @param trace
    *          la trace à Sauvegarder/updater
    */
-  private void saveOrUpdate(final TraceDestinataire trace) {
+  private void saveOrUpdate(final TraceDestinataire trace, final long clock) {
     Assert.notNull(trace, "l'objet traceDestinataire ne peut etre null");
 
     boolean isValidCode = true;
@@ -171,7 +184,7 @@ public class TraceDestinataireCqlSupport {
           }
         }
         traceFromBD.setDestinataires(destinatairesFromDB);
-        destinatairecqldao.saveWithMapper(traceFromBD);
+        destinatairecqldao.saveWithMapper(traceFromBD, clock);
       } else {
         destinatairecqldao.saveWithMapper(trace);
       }

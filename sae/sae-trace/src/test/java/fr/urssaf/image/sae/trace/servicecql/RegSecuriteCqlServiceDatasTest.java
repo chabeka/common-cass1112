@@ -267,6 +267,6 @@ public class RegSecuriteCqlServiceDatasTest extends AbstractServiceCqlTest {
     trace.setLogin(LOGIN + suffixe);
     trace.setInfos(INFOS);
 
-    support.create(trace);
+    support.create(trace, new Date().getTime());
   }
 }

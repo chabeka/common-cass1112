@@ -215,6 +215,7 @@ public class DispatcheurServiceTousRegistresDatasTest {
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       destSupport.create(trace, new Date().getTime());
+      destCqlSupport.create(trace, new Date().getTime());
     }
   }
 }

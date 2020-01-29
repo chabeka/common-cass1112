@@ -57,15 +57,16 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *           horloge de la création
    */
   @SuppressWarnings("unchecked")
-  public void create(final T trace) {
+  public void create(final T trace, final long clock) {
 
-    getDao().saveWithMapper(trace);
+
+    getDao().saveWithMapper(trace, clock);
 
     // création de l'index
     final I index = getIndexFromTrace(trace);
 
     // final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
-    getIndexDao().saveWithMapper(index);
+    getIndexDao().saveWithMapper(index, clock);
 
     /*
      * try {
@@ -90,7 +91,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          la liste des entités {@link T}
    */
   @SuppressWarnings("unchecked")
-  public void saveAllTraces(final Iterable<T> entites) {
+  public void saveAllTraces(final Iterable<T> entites, final long clock) {
     getDao().saveAll(entites);
   }
 
@@ -101,7 +102,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          la liste des entités {@link I}
    */
   @SuppressWarnings("unchecked")
-  public void saveAllIndex(final Iterable<I> entites) {
+  public void saveAllIndex(final Iterable<I> entites, final long clock) {
     getIndexDao().saveAll(entites);
   }
 
@@ -116,7 +117,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return le nombre de traces purgées
    */
   @SuppressWarnings("unchecked")
-  public long delete(final Date date) {
+  public long delete(final Date date, final long clock) {
     long nbTracesPurgees = 0;
 
     final Iterator<I> iterator = getIterator(date);
@@ -124,16 +125,13 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     if (iterator.hasNext()) {
 
       // Suppression des traces de la CF TraceJournalEvt
-      nbTracesPurgees = deleteRecords(iterator);
-
-      // Suppression des traces de la CF TraceJournalEvt
-      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator); // EC 20190918
+      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator, clock);
 
 
       // suppression de l'index
       final Iterator<I> indexToDelete = getIterator(date);
       while (indexToDelete.hasNext()) {
-        getIndexDao().delete(indexToDelete.next());
+        getIndexDao().deleteWithMapper(indexToDelete.next(), clock);
       }
     }
     return nbTracesPurgees;
@@ -183,7 +181,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   public List<I> findByDate(final Date date, final Integer limite) {
 
     List<I> list = null;
-    final int count = 0;
+    int count = 0;
     final Iterator<I> iterator = getIterator(date);
 
     if (iterator.hasNext()) {
@@ -196,6 +194,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
       } else if (limite != null && count < limite) {
         list.add(iterator.next());
       }
+      count++;
     }
 
     return list;
@@ -262,7 +261,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   long deleteRecords(final Iterator<I> iterator, final long clock) {
     long result = 0;
     while (iterator.hasNext()) {
-      getDao().deleteById(getTraceId(iterator.next()));
+      getDao().deleteById(getTraceId(iterator.next()), clock);
       result++;
     }
     return result;
@@ -307,12 +306,12 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   /**
    * @return le dao utilisé pour les traces
    */
-  abstract IGenericDAO getDao();
+  public abstract IGenericDAO getDao();
 
   /**
    * @return le dao utilisé pour les index des traces
    */
-  abstract IGenericDAO getIndexDao();
+  public abstract IGenericDAO getIndexDao();
 
   /**
    * retourne l'objet Index créé à partir de la trace
@@ -360,6 +359,11 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * Ajout save
    * EC
    */
+  public T save(final T entity, final long clock) {
+    getDao().saveWithMapper(entity, clock);
+    return entity;
+  }
+
   public T save(final T entity) {
     getDao().saveWithMapper(entity);
     return entity;

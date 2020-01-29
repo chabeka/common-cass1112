@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
@@ -33,12 +34,13 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 @Component
 public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(RegSecuriteCqlServiceImpl.class);
+
   private final TraceRegSecuriteCqlSupport support;
 
   private final LoggerSupport loggerSupport;
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(RegSecuriteCqlServiceImpl.class);
+  private final JobClockSupport clockSupport;
 
   /**
    * @param support
@@ -49,16 +51,17 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
    *           Support pour l'écriture des traces applicatives
    */
   @Autowired
-  public RegSecuriteCqlServiceImpl(final TraceRegSecuriteCqlSupport support, final LoggerSupport loggerSupport) {
+  public RegSecuriteCqlServiceImpl(final TraceRegSecuriteCqlSupport support, final JobClockSupport clockSupport, final LoggerSupport loggerSupport) {
     super();
     this.support = support;
     this.loggerSupport = loggerSupport;
+    this.clockSupport = clockSupport;
   }
   /**
    * update du bean dean le context courant de spring avec la nouvelle instance de {@link CassandraCQLClientFactory}
    * @param context
    */
-  public RegSecuriteCqlServiceImpl(final CassandraCQLClientFactory ccf) {
+  public RegSecuriteCqlServiceImpl(final CassandraCQLClientFactory ccf, final JobClockSupport clockSupport) {
 
     final ITraceRegSecuriteCqlDao dao = new TraceRegSecuriteCqlDaoImpl(ccf);
     final ITraceRegSecuriteIndexCqlDao indexDao = new TraceRegSecuriteIndexCqlDaoImpl(ccf);
@@ -66,6 +69,7 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
 
     final TraceRegSecuriteCqlSupport support = new TraceRegSecuriteCqlSupport(dao, indexDao, timeUUIDSupport);
     this.support = support;
+    this.clockSupport = clockSupport;
     loggerSupport = new LoggerSupport();
   }
 
@@ -97,6 +101,10 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
   public TraceRegSecuriteCql lecture(final UUID identifiant) {
     final Optional<TraceRegSecuriteCql> traceOpt = support.find(identifiant);
     return traceOpt.orElse(null);
+  }
+
+  public JobClockSupport getClockSupport() {
+    return clockSupport;
   }
 
 }

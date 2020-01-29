@@ -60,7 +60,7 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    * {@inheritDoc}
    */
   @Override
-  IGenericDAO<TraceRegSecuriteCql, UUID> getDao() {
+  public IGenericDAO<TraceRegSecuriteCql, UUID> getDao() {
     return dao;
   }
 
@@ -68,7 +68,7 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    * {@inheritDoc}
    */
   @Override
-  IGenericDAO<TraceRegSecuriteIndexCql, String> getIndexDao() {
+  public IGenericDAO<TraceRegSecuriteIndexCql, String> getIndexDao() {
     return indexDao;
   }
 

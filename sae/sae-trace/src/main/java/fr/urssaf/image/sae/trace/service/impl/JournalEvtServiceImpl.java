@@ -84,11 +84,10 @@ public class JournalEvtServiceImpl implements JournalEvtService {
   public JobClockSupport getClockSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
-    ) {
-      // nothing => le clock est gerer automatiquement par datastax
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
-        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
+      return journalEvtCqlService.getClockSupport();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return journalEvtServiceThrift.getClockSupport();
     }
     return null;
@@ -190,7 +189,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     long nbTracesPurgees = 0;
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = journalEvtCqlService.getSupport().delete(dateIndex);
+      nbTracesPurgees = journalEvtCqlService.getSupport().delete(dateIndex, getClockSupport().currentCLock());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = journalEvtServiceThrift.getSupport().delete(dateIndex,
                                                                     getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
@@ -200,7 +199,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
           .delete(dateIndex,
                   getClockSupport().currentCLock(),
                   nbMaxLigneEvtToDelete);
-      nbTracesPurgees = nbTracesPurgees + journalEvtCqlService.getSupport().delete(dateIndex);
+      nbTracesPurgees = nbTracesPurgees + journalEvtCqlService.getSupport().delete(dateIndex, getClockSupport().currentCLock());
     }
 
     return nbTracesPurgees;

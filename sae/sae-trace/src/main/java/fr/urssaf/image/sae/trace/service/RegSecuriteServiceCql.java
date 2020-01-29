@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
@@ -38,4 +39,5 @@ public interface RegSecuriteServiceCql {
    */
   TraceRegSecuriteCql lecture(UUID identifiant);
 
+  JobClockSupport getClockSupport();
 }
