@@ -29,6 +29,7 @@ public class PagmCql implements Comparable<PagmCql> {
   /** code intelligible du PAGM */
   @ClusteringColumn
   @Column(name = "code")
+  @Id
   private String code;
 
   /** droit d'action (PAGMa) du PAGM */
