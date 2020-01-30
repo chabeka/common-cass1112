@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -160,7 +161,9 @@ public final class MaquetteServlet extends HttpServlet {
        if( inputStream != null )
        {
           // Récupère le type MIME
-          String mimeType = servletContext.getMimeType(requestedFile);
+          String mimeType = MimetypesFileTypeMap
+              .getDefaultFileTypeMap()
+              .getContentType(requestedFile);
           
           // Copie le contenu de la ressource dans la réponse HTTP
           int length = 0 ;
