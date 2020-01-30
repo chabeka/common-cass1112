@@ -6,6 +6,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.javers.core.metamodel.annotation.Id;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
@@ -44,6 +46,7 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 public class JobRequestCql implements Serializable, Comparable<JobRequestCql> {
 
   @PartitionKey
+  @Id
   private UUID idJob;
 
   private String type;
