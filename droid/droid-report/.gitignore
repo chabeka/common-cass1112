@@ -1,3 +1,6 @@
+/.classpath
+/.project
+/.settings
+/myPdf.pdf
 /target
 /tmp
-/myPdf.pdf

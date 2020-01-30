@@ -1,3 +1,6 @@
+/.classpath
+/.project
+/.settings
 /custom_home
 /derby.log
 /droid-test-db
