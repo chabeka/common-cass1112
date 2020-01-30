@@ -765,7 +765,7 @@ public class SAESearchServiceImplDatasTest {
     *
     * @throws DoublonFiltresMetadataEx
     */
-    @Ignore
+   @Ignore
    @Test
    public final void rechercheParIterateurErreurFiltreDoublon()
          throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
