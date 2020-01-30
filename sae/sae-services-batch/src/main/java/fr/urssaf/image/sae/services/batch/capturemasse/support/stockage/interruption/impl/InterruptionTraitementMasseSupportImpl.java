@@ -19,7 +19,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.util.InterruptionTraitementUtils;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
@@ -28,10 +27,10 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  */
 @Component
 public class InterruptionTraitementMasseSupportImpl implements
-                                                    InterruptionTraitementMasseSupport {
+InterruptionTraitementMasseSupport {
 
   private static final Logger LOG = LoggerFactory
-                                                 .getLogger(InterruptionTraitementMasseSupportImpl.class);
+      .getLogger(InterruptionTraitementMasseSupportImpl.class);
 
   private final DFCEServices dfceServices;
 
@@ -39,7 +38,7 @@ public class InterruptionTraitementMasseSupportImpl implements
 
   private final StorageServiceProvider serviceProvider;
 
-  private boolean interrupted;
+  private volatile boolean interrupted;
 
   /**
    * @param dfceManager
@@ -92,7 +91,7 @@ public class InterruptionTraitementMasseSupportImpl implements
   @Override
   public final void interruption(final DateTime currentDate,
                                  final InterruptionTraitementConfig config)
-      throws InterruptionTraitementException {
+                                     throws InterruptionTraitementException {
 
     final long diffTime = InterruptionTraitementUtils.waitTime(currentDate,
                                                                config);
@@ -102,12 +101,12 @@ public class InterruptionTraitementMasseSupportImpl implements
       final DateTime endDate = currentDate.plus(diffTime);
 
       final DateTimeFormatter formatter = DateTimeFormat
-                                                        .forPattern(DATE_TIME_PATTERN);
+          .forPattern(DATE_TIME_PATTERN);
 
       LOG.debug("{} - Reprise prévue à {}",
-                LOG_PREFIX,
-                formatter
-                         .print(endDate));
+               LOG_PREFIX,
+               formatter
+               .print(endDate));
 
       // On ne ferme pas la connexion avec DFCE pour éviter une levée
       // d'exception sur les Threads en cours d'exécution qui effectuent une
@@ -134,9 +133,9 @@ public class InterruptionTraitementMasseSupportImpl implements
       }
 
       LOG.debug(
-                "{} - Réussite de la tentative n°{}/{} de reconnexion à DFCE ",
-                new Object[] {LOG_PREFIX, connectionResult.step,
-                              config.getTentatives()});
+               "{} - Réussite de la tentative n°{}/{} de reconnexion à DFCE ",
+               new Object[] {LOG_PREFIX, connectionResult.step,
+                             config.getTentatives()});
 
     }
   }
@@ -145,7 +144,7 @@ public class InterruptionTraitementMasseSupportImpl implements
   private ConnectionResult pause(final long delay,
                                  final Exception lastException, final int tentatives, final int total,
                                  final DFCEServices dfceServices)
-      throws InterruptedException {
+                                     throws InterruptedException {
 
     final int step = total - tentatives + 1;
 
@@ -158,16 +157,16 @@ public class InterruptionTraitementMasseSupportImpl implements
       final Duration duration = Duration.millis(delay);
 
       LOG.debug("{} - Interruption de {} secondes",
-                LOG_PREFIX,
-                duration
-                        .getStandardSeconds());
+               LOG_PREFIX,
+               duration
+               .getStandardSeconds());
 
       Thread.sleep(delay);
 
       try {
 
         LOG.debug("{} - Tentative n°{}/{} de reconnexion à DFCE",
-                  new Object[] {LOG_PREFIX, step, total});
+                 new Object[] {LOG_PREFIX, step, total});
 
         dfceServices.reconnect();
 
@@ -184,8 +183,8 @@ public class InterruptionTraitementMasseSupportImpl implements
         final int newTentatives = tentatives - 1;
 
         LOG.debug(
-                  "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
-                  new Object[] {LOG_PREFIX, step, total});
+                 "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
+                 new Object[] {LOG_PREFIX, step, total});
 
         connectionResult = pause(defaultDelay,
                                  e,
@@ -231,54 +230,24 @@ public class InterruptionTraitementMasseSupportImpl implements
    */
   @Override
   public void verifyInterruptedProcess(final InterruptionTraitementConfig config) throws InterruptionTraitementException {
-    // on vérifie que le traitement ne doit pas s'interrompre
-    final DateTime currentDate = new DateTime();
+
+    DateTime currentDate = new DateTime();
 
     if (config != null
         && hasInterrupted(currentDate, config)) {
 
       synchronized (this) {
+        // on vérifie que le traitement ne doit pas s'interrompre
+        currentDate = new DateTime();
 
-        // un seul thread est chargé de la reconnexion
-        // les autre attendent
-        while (Boolean.TRUE.equals(isInterrupted())) {
-
-          try {
-            this.wait();
-          }
-          catch (final InterruptedException e) {
-            throw new IllegalStateException(e);
-          }
-
-        }
-
-        // isInterrupted == null signifie que c'est le premier passage
-        // c'est donc ce thread là qui sera chargé de la reconnexion
-        if (!isInterrupted()) {
-
-          setInterrupted(Boolean.TRUE);
-        }
-
-      }
-
-      if (Boolean.TRUE.equals(isInterrupted())) {
-
-        try {
+        if (config != null
+            && hasInterrupted(currentDate, config)) {
+          interrupted = true;
           // appel de la méthode de reconnexion
           interruption(currentDate, config);
+          interrupted = false;
         }
-        finally {
-
-          // de toutes les façons il faut libérer l'ensemble des Threads en
-          // attente
-          setInterrupted(Boolean.FALSE);
-          synchronized (this) {
-            notifyAll();
-          }
-        }
-
       }
-
     }
 
   }
@@ -291,14 +260,5 @@ public class InterruptionTraitementMasseSupportImpl implements
     return interrupted;
   }
 
-  /**
-   * Setter
-   * 
-   * @param interrupted
-   *          the interrupted to set
-   */
-  private void setInterrupted(final boolean interrupted) {
-    this.interrupted = interrupted;
-  }
 
 }
