@@ -3,6 +3,7 @@ package fr.urssaf.image.commons.dfce.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -40,7 +41,7 @@ public class DFCEReconnectionAspect {
       // On se connecte si on n'est pas encore connecté
       dfceServices.connectTheFistTime();
 
-    LOG.warn("{} - Appel DFCE : {}", new Object[] {LOG_PREFIX, joinPoint.getSignature()});
+      LOG.warn("{} - Appel DFCE : {}", new Object[] {LOG_PREFIX, joinPoint.getSignature()});
       // Si jamais un des paramètres est un inputStream, on sauvegarde la position du stream
       // afin de pouvoir retenter la méthode en cas d'exception
       markInputStreams(joinPoint);
@@ -57,35 +58,29 @@ public class DFCEReconnectionAspect {
          }
          catch (final HessianConnectionException | AuthenticationCredentialsNotFoundException | NullPointerException | IOException ex) {
             LOG.warn("{} - Tentative d'établisssement d'une nouvelle connexion à DFCE suite à l'exception suivante reçue",
-                     new Object[] {LOG_PREFIX},
-                     ex);
+                  new Object[] {LOG_PREFIX},
+                  ex);
             // On se reconnecte
             dfceServices.reconnect();
             // On remet les inputStream à leur position d'origine
             resetInputStreams(joinPoint);
          }
+
          catch (final DFCERuntimeException ex) {
-
-        	if (ex.getMessage() != null) { 
-          		if (ex.getMessage().contains("Erreur HAWAI")){
-            		LOG.warn("{} - On retente l'appel à {} suite au redemarrage d'un serveur sur la tentative n°{}",
+            final String exceptionMessage = StringUtils.defaultString(ex.getMessage());
+            if (exceptionMessage.contains("Erreur HAWAI")) {
+               LOG.warn("{} - On retente l'appel à {} suite au redémarrage d'un serveur sur la tentative n°{}",
                      new Object[] {LOG_PREFIX, joinPoint.getSignature(), retryIndex});
-            		// On se reconnecte
-            		dfceServices.reconnect();
-            		// On remet les inputStream à leur position d'origine
-            		resetInputStreams(joinPoint);
-
-          		} 
-            	// Gestion des exceptions "AlreadyLockedObjectException" uniquement
-          		else if (!ex.getMessage().contains("AlreadyLockedObjectException")) {
-            		throw ex;
-          		}
+               // On se reconnecte
+               dfceServices.reconnect();
+            } else if (exceptionMessage.contains("AlreadyLockedObjectException")) {
+               LOG.warn("{} - On retente l'appel à {} suite à la réception de l'exception AlreadyLockedObjectException sur la tentative n°{}",
+                     new Object[] {LOG_PREFIX, joinPoint.getSignature(), retryIndex});
+               // Temporisation d'une seconde avant de retenter
+               Thread.sleep(1000);
+            } else {
+               throw ex;
             }
-            LOG.warn("{} - On retente l'appel à {} suite à la réception de l'exception AlreadyLockedObjectException sur la tentative n°{}",
-                     new Object[] {LOG_PREFIX, joinPoint.getSignature(), retryIndex});
-
-            // Temporisation d'une seconde
-            Thread.sleep(1000);
             // On remet les inputStream à leur position d'origine
             resetInputStreams(joinPoint);
          }
@@ -110,7 +105,7 @@ public class DFCEReconnectionAspect {
             if (!inputStream.markSupported()) {
                final Class<? extends Object> theClass = arg.getClass();
                LOG.warn("{} - Attention : l'inputstream de class {} ne supporte pas le retour arrière. Le rejeu ne fonctionnera pas en cas de reconnexion !",
-                        new Object[] {LOG_PREFIX, theClass});
+                     new Object[] {LOG_PREFIX, theClass});
             }
             inputStream.mark(5 * 1024);
          }
