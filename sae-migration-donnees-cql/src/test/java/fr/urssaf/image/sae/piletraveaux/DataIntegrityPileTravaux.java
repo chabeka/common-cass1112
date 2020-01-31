@@ -13,6 +13,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
+import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
+import org.javers.core.metamodel.clazz.EntityDefinitionBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,6 +32,7 @@ import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.piletravaux.MigrationJobHistory;
 import fr.urssaf.image.sae.piletravaux.MigrationJobQueue;
@@ -122,8 +128,17 @@ public class DataIntegrityPileTravaux {
     migJobR.migrationFromThriftToCql();
 
     try {
-      final boolean isEqBase = migJobR.compareJobRequestCql();
-      Assert.assertTrue("Les données dans la base thrift et cql doivent être égales", isEqBase);
+      final Javers javers = JaversBuilder
+                                         .javers()
+                                         .registerEntity(EntityDefinitionBuilder.entityDefinition(JobRequestCql.class)
+                                                                                .withIdPropertyName("idJob")
+                                                                                .withTypeName("JobRequestCql")
+                                                                                .build())
+                                         .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+                                         .build();
+      final Diff diff = migJobR.compareJobRequestCql(javers);
+      // final boolean isEqBase = migJobR.compareJobRequestCql();
+      Assert.assertTrue("Les données dans la base thrift et cql doivent être égales", !diff.hasChanges());
     }
     catch (final Exception e) {
       fail("Les données dans la base thrift et cql doivent être égales");

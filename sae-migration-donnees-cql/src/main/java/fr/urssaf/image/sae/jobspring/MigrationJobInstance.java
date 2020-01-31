@@ -20,6 +20,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.JobParametersSe
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.utils.CompareUtils;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
@@ -115,14 +116,20 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
 
       // On recupère l'instance dans le row
       for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
-        final JobInstance job = getTraceFromResult(row);
-        final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
+        if (RowUtils.rowBbbHasColumns(row)) {
+          final JobInstance job = getTraceFromResult(row);
+          final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
 
-        currentlistUUID.add(job.getId());
-        // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-        if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
-          jobInstancedaoCql.saveWithMapper(cql);
-          nbRows++;
+          currentlistUUID.add(job.getId());
+          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+          if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
+            LOGGER.info(" jobid : " + job.getId());
+            jobInstancedaoCql.saveWithMapper(cql);
+            nbRows++;
+            if (nbRows % 1 == 0) {// TODO
+              LOGGER.info(" Nb rows : " + nbRows);
+            }
+          }
         }
       }
 
@@ -146,7 +153,7 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
     String jobName = "";
     JobParameters jobParameters = null;
 
-    if (row != null) {
+    if (RowUtils.rowBbbHasColumns(row)) {
 
       instanceId = LongSerializer.get().fromBytes(row.getKey());
       final List<HColumn<byte[], byte[]>> tHl = row.getColumnSlice().getColumns();
@@ -301,13 +308,15 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
 
       // On recupère l'instance dans le row
       for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
-        final JobInstance job = getTraceFromResult(row);
-        final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
+        if (RowUtils.rowBbbHasColumns(row)) {
+          final JobInstance job = getTraceFromResult(row);
+          final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
 
-        currentlistUUID.add(job.getId());
-        // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-        if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
-          listJobThrift.add(cql);
+          currentlistUUID.add(job.getId());
+          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+          if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
+            listJobThrift.add(cql);
+          }
         }
       }
 

@@ -19,6 +19,7 @@ import com.datastax.driver.core.Row;
 import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobInstanceDaoThrift;
 import fr.urssaf.image.commons.cassandra.spring.batch.serializer.ExecutionContextSerializer;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 import fr.urssaf.image.sae.IMigration;
@@ -76,6 +77,10 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
   @Autowired
   IJobExecutionCqlForMigDao jobdaocqlForMig;
 
+  @Autowired
+  CassandraJobInstanceDaoThrift jobInstanceDaoThrift;
+
+
   /**
    * Migration thrift vers cql
    */
@@ -100,14 +105,34 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
       }
 
       if (key != null && !key.equals(lastKey)) {
-
+        // TODO supprimer log
+        LOGGER.info("Infos:{}",
+                    jobExecutionCql.getJobName() + "/" + jobExecutionCql.getJobExecutionId() + "/"
+                        + jobExecutionCql.getExecutionContext().capacity());
         // sauvegarde de l'objet traité
+        try {
+          if (jobExecutionCql.getExecutionContext().capacity() < 15598424) {
         jobdaocqlForMig.saveWithMapper(jobExecutionCql);
+          } else {
+            LOGGER.warn("Contexte trop gros/Infos:{}",
+                        jobExecutionCql.getJobName() + "/"
+                            + jobExecutionCql.getJobExecutionId() + "/" + jobExecutionCql.getExecutionContext().capacity());
+
+          }
+        }
+        catch (final Exception e) {
+          LOGGER.error("Exception: ", e);
+          LOGGER.error("Exception {}", jobExecutionCql.getJobName() + "/" + jobExecutionCql.getJobExecutionId());
+          throw e;
+        }
 
         // reinitialisation
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
         nbRow++;
+        if (nbRow % 100 == 0) {
+          LOGGER.info(" Nb rows : " + nbRow);
+        }
       } else {
         // construction de l'objet cql
         getJobExecutionFromResult(row, jobExecutionCql);
@@ -116,7 +141,16 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     }
     // ajout du dernier cas traité
     if (jobExecutionCql != null) {
+      try {
       jobdaocqlForMig.saveWithMapper(jobExecutionCql);
+      }
+      catch (final Exception e) {
+        LOGGER.error("Exception", e);
+        LOGGER.error("Exception", jobExecutionCql.getJobName() + "/" + jobExecutionCql.getJobExecutionId());
+        throw e;
+      }
+
+      // jobdaocqlForMig.saveWithMapper(jobExecutionCql);
       nbRow++;
     }
     LOGGER.info("MigrationJobExecution- migrationFromThriftToCql end");
@@ -353,4 +387,39 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     return listJob;
   }
 
+  /*
+   * ATTENTION POUR TEST
+   * A supprimer test executionContext
+   */
+  /*
+   * public void testExecutionContext() {
+   * final Map<String, JobParameter> mapJobParameters = new HashMap<>();
+   * mapJobParameters.put("testp1", new JobParameter("test1"));
+   * mapJobParameters.put("testp2", new JobParameter("test2"));
+   * mapJobParameters.put("testp3", new JobParameter("test3"));
+   * final JobParameters jobParameters = new JobParameters(mapJobParameters);
+   * final JobInstance jobInstance = jobInstanceDaoThrift.createJobInstance("TestContexte70000", jobParameters);
+   * final JobExecution jobExecution = new JobExecution(jobInstance, new Long(1));
+   * final Map<String, Object> mapContext = new HashMap<>();
+   * final StringBuilder sb = new StringBuilder();
+   * Contextes trop gros:11453,11452,11451,11455,11454,11457,11450 (CSPP)
+   * // 100000KO 50000OK 60000OK(13489049) 65000OK(14614049) 67500OK(15176549) 68750OK(15457799) 69375OK(15598424) 70000KO
+   * for (int i = 0; i < 70000; i++) {
+   * sb.append("Etre ou ne pas être, c'est là la question.Y a-t-il plus de noblesse d'âme à subir la fronde"
+   * + " et les flèches de la fortune outrageante, ou bien à s'armer contre une mer de douleurs et à "
+   * + "l'arrêter par une révolte ?" + i);
+   * }
+   * mapContext.put("contexteTest", sb.toString());
+   * mapContext.put("index", 1);
+   * final ExecutionContext executionContext = new ExecutionContext(mapContext);
+   * jobExecution.setStartTime(Calendar.getInstance().getTime());
+   * jobExecution.setEndTime(Calendar.getInstance().getTime());
+   * jobExecution.setStatus(BatchStatus.ABANDONED);
+   * jobExecution.setCreateTime(Calendar.getInstance().getTime());
+   * jobExecution.setLastUpdated(Calendar.getInstance().getTime());
+   * jobExecution.setVersion(1);
+   * jobExecution.setExecutionContext(executionContext);
+   * saveJobExecutionToCassandra(jobExecution);
+   * }
+   */
 }

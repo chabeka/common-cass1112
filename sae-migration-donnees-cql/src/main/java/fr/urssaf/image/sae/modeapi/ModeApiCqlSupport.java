@@ -158,25 +158,45 @@ public class ModeApiCqlSupport {
 
   public boolean isModeThriftOrDualThrift(final String cfName) {
     final ModeAPI modeAPI = findById(cfName);
+    if (modeAPI != null) {
     return modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_THRIFT) || modeAPI.getMode().equals(MODE_API.HECTOR);
+    } else {
+      throw new RuntimeException("La table modeAPI " + cfName + " n'existe pas");
+    }
   }
 
   public boolean isModeThrift(final String cfName) {
     final ModeAPI modeAPI = findById(cfName);
+    if (modeAPI != null) {
     return modeAPI.getMode().equals(MODE_API.HECTOR);
+    } else {
+      throw new RuntimeException("Le modeAPI pour la  table " + cfName + " n'existe pas");
+    }
   }
   public boolean isModeDualCql(final String cfName) {
     final ModeAPI modeAPI = findById(cfName);
+    if (modeAPI != null) {
     return modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_CQL);
+    } else {
+      throw new RuntimeException("La table modeAPI " + cfName + " n'existe pas");
+    }
   }
 
   public boolean isModeDualThrift(final String cfName) {
     final ModeAPI modeAPI = findById(cfName);
+    if (modeAPI != null) {
     return modeAPI.getMode().equals(MODE_API.DUAL_MODE_READ_THRIFT);
+    } else {
+      throw new RuntimeException("La table modeAPI " + cfName + " n'existe pas");
+    }
   }
 
   public boolean isModeCql(final String cfName) {
     final ModeAPI modeAPI = findById(cfName);
+    if (modeAPI != null) {
     return modeAPI.getMode().equals(MODE_API.DATASTAX);
+    } else {
+      throw new RuntimeException("La table modeAPI " + cfName + " n'existe pas");
+    }
   }
 }

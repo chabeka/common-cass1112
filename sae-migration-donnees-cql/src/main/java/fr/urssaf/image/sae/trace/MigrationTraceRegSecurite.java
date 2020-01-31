@@ -164,6 +164,9 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
           if (lastlistUUID == null || !lastlistUUID.contains(key)) {
             supportcql.save(trThToCql);
             totalCount++;
+            if (totalCount % 100 == 0) {
+              LOGGER.info(" Nb rows : {}", totalCount);
+            }
           }
 
           // ecriture dans le fichier
@@ -263,6 +266,9 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
             final TraceRegSecuriteIndexCql trace = createTraceIndexFromThriftToCql(next);
             supportcql.getIndexDao().saveWithMapper(trace);
             nbRow++;
+            if (nbRow % 100 == 0) {
+              LOGGER.info(" Nb rows : {}", nbRow);
+            }
           }
           // ecriture dans le fichier
           bWriter.append(DateRegUtils.getJournee(d));

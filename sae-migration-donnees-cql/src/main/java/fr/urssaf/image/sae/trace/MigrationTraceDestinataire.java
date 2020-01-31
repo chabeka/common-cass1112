@@ -21,6 +21,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.daocql.ITraceDestinataireCqlDao;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.beans.HColumn;
@@ -166,10 +167,12 @@ public class MigrationTraceDestinataire {
       startKey = lastRow.getKey();
 
       for (final me.prettyprint.hector.api.beans.Row<String, String, byte[]> row : orderedRows) {
-        final TraceDestinataire trThrift = getTraceFromResult(row);
-        if(trCql.equals(trThrift)) {
-          isEqObj = true;
-          break;
+        if (RowUtils.rowSsbHasColumns(row)) {
+          final TraceDestinataire trThrift = getTraceFromResult(row);
+          if(trCql.equals(trThrift)) {
+            isEqObj = true;
+            break;
+          }
         }
       }
 
@@ -192,8 +195,7 @@ public class MigrationTraceDestinataire {
 
     final TraceDestinataire trace = new TraceDestinataire();
 
-    if (row != null) {
-
+    if (RowUtils.rowSsbHasColumns(row)) {
       final String idTrace = row.getKey();
       trace.setCodeEvt(idTrace);
       final me.prettyprint.hector.api.beans.ColumnSlice<String, byte[]> cl = row.getColumnSlice();

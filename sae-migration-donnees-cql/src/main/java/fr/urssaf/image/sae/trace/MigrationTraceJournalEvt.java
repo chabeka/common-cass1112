@@ -41,6 +41,7 @@ import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexDocCqlDao;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import fr.urssaf.image.sae.trace.utils.UtilsTraceMapper;
 import fr.urssaf.image.sae.utils.RepriseFileUtils;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
@@ -163,25 +164,28 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         final List<UUID> currentlistUUID = new ArrayList<>();
 
         for (final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row : orderedRows) {
+          if (RowUtils.rowUsbHasColumns(row)) {
+            // on recupère la trace thrifh
+            final TraceJournalEvt trThrift = compJEvt.getTraceFromResult(row);
+            // On le transforme en cql
+            final TraceJournalEvtCql trThToCql = compJEvt.createTraceFromObjectThrift(trThrift);
 
-          // on recupère la trace thrifh
-          final TraceJournalEvt trThrift = compJEvt.getTraceFromResult(row);
-          // On le transforme en cql
-          final TraceJournalEvtCql trThToCql = compJEvt.createTraceFromObjectThrift(trThrift);
+            final UUID key = row.getKey();
 
-          final UUID key = row.getKey();
+            currentlistUUID.add(key);
+            // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+            if (lastlistUUID == null || !lastlistUUID.contains(key)) {
+              supportcql.save(trThToCql, new Date().getTime());
+              totalRow++;
+              if (totalRow % 10000 == 0) {
+                LOGGER.info(" Nb rows : {}", totalRow);
+              }
+            }
 
-          currentlistUUID.add(key);
-          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-          if (lastlistUUID == null || !lastlistUUID.contains(key)) {
-            supportcql.save(trThToCql, new Date().getTime());
-            totalRow++;
+            // ecriture dans le fichier
+            bWriter.append(key.toString());
+            bWriter.newLine();
           }
-
-          // ecriture dans le fichier
-          bWriter.append(key.toString());
-          bWriter.newLine();
-
         }
 
         // remettre à jour la map
@@ -305,6 +309,9 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
             final TraceJournalEvtIndexCql trace = createTraceIndexFromThriftToCql(next, DateRegUtils.getJournee(d));
             supportcql.getIndexDao().saveWithMapper(trace);
             nbTotalIndex++;
+            if (nbTotalIndex % 10000 == 0) {
+              LOGGER.info(" Nb rows : {}", nbTotalIndex);
+            }
           }
           // ecriture dans le fichier
           bWriter.append(DateRegUtils.getJournee(d));
@@ -401,36 +408,40 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
         // Liste des ids de l'iteration courante
         final List<UUID> currentlistUUID = new ArrayList<>();
-
+        int i = 0;
         for (final me.prettyprint.hector.api.beans.Row<String, String, byte[]> row : orderedRows) {
 
-          final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
+          if (RowUtils.rowSsbHasColumns(row)) {
+            final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
 
-          if (list != null) {
-            for (final TraceJournalEvtIndexDoc tr : list) {
-              final TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
+            if (list != null) {
+              for (final TraceJournalEvtIndexDoc tr : list) {
+                final TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
 
-              currentlistUUID.add(java.util.UUID.fromString(row.getKey()));
+                currentlistUUID.add(java.util.UUID.fromString(row.getKey()));
 
-              // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-              if (lastlistUUID == null || !lastlistUUID.contains(indxDocCql.getIdentifiantIndex())) {
-                indexDocDaocql.saveWithMapper(indxDocCql);
+                // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+                if (lastlistUUID == null || !lastlistUUID.contains(indxDocCql.getIdentifiantIndex())) {
+                  indexDocDaocql.saveWithMapper(indxDocCql);
+                }
+
+                // ecriture dans le fichier
+                bWriter.append(row.getKey());
+                bWriter.newLine();
               }
-
-              // ecriture dans le fichier
-              bWriter.append(row.getKey());
-              bWriter.newLine();
+            }
+            i++;
+            if (i % 10000 == 0) {
+              LOGGER.info(" Nb rows : {}", i);
             }
           }
         }
-
         // remettre à jour la map
         lastIteartionMap.put(iterationNB, currentlistUUID);
         lastIteartionMap.remove(iterationNB - 1);
         iterationNB++;
 
       } while (count == blockSize);
-
     }
     catch (final Exception e) {
       throw new RuntimeException(e.getMessage(), e);
@@ -500,6 +511,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
   /**
    * Comparer les Traces cql et Thrift
+   * 
    * @throws Exception
    */
   public boolean traceComparator() throws Exception {
@@ -509,6 +521,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
   /**
    * Comparer les Traces cql et Thrift
+   * 
    * @throws Exception
    */
   public boolean indexComparator() throws Exception {
@@ -518,6 +531,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
   }
   /**
    * Comparer les TracesIndex cql et Thrift
+   * 
    * @throws Exception
    */
   public boolean indexDocComparator() throws Exception {

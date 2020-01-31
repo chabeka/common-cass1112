@@ -65,6 +65,9 @@ public class MigrationJobExecutions extends MigrationJob implements IMigration {
         jobExesdao.saveWithMapper(jobExes);
       }
       nb++;
+      if (nb % 1000 == 0) {
+        LOG.info(" Nb rows : " + nb);
+      }
     }
 
     LOG.info("MigrationJobExecutions - migrationFromThriftToCql - FIN");

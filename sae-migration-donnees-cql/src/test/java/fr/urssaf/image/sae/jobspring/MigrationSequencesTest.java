@@ -8,7 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import org.javers.core.Javers;
+import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
+import org.javers.core.diff.ListCompareAlgorithm;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +27,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.ISequencesDaoCql;
-import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.spring.batch.MigrationSequences;
 import fr.urssaf.image.sae.utils.CompareUtils;
 
@@ -146,7 +148,11 @@ public class MigrationSequencesTest {
     final Iterator<SequencesCql> it=sequencesDaoCql.findAllWithMapper();
     final List<SequencesCql> listCql=new ArrayList<>();
     it.forEachRemaining(listCql::add);
-    final Diff diff = migrationSequences.compareSequences();
+    final Javers javers = JaversBuilder
+        .javers()
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+        .build();
+    final Diff diff = migrationSequences.compareSequences(javers);
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("NewObject{ new object: fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql/JOBADD }"));
@@ -161,15 +167,19 @@ public class MigrationSequencesTest {
     final Iterator<SequencesCql> it=sequencesDaoCql.findAllWithMapper();
     final List<SequencesCql> listCql=new ArrayList<>();
     it.forEachRemaining(listCql::add);
-    Optional<SequencesCql> sequencesCqlOpt=sequencesDaoCql.findWithMapperById("jobExecutionId");
+    final Optional<SequencesCql> sequencesCqlOpt=sequencesDaoCql.findWithMapperById("jobExecutionId");
     if (sequencesCqlOpt.isPresent()) {
-    	SequencesCql sequencesCql=new SequencesCql();
+      final SequencesCql sequencesCql=new SequencesCql();
     	sequencesCql.setJobIdName(sequencesCqlOpt.get().getJobIdName());
     	sequencesCql.setValue(Long.valueOf("5000"));
     	sequencesDaoCql.saveWithMapper(sequencesCql);
     }
+    final Javers javers = JaversBuilder
+        .javers()
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+        .build();
+    final Diff diff = migrationSequences.compareSequences(javers);
     
-    final Diff diff = migrationSequences.compareSequences();
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("ValueChange{ 'value' value changed from '1090' to '5000' }"));

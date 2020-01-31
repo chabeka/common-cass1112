@@ -56,6 +56,9 @@ public class MigrationJobInstancesByName extends MigrationJob implements IMigrat
         jobcql.setJobName(key);
         jobInstByNamedao.saveWithMapper(jobcql);
         nb++;
+        if (nb % 1000 == 0) {
+          LOGGER.info(" Nb rows : {}", nb);
+        }
       }
     }
     LOGGER.info(" MigrationJobInstancesByName-migrationFromThriftToCql fin");

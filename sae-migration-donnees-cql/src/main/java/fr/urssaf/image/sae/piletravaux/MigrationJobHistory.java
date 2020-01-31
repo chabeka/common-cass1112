@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +12,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.javers.core.Javers;
+import org.javers.core.diff.Diff;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,6 +168,9 @@ public class MigrationJobHistory {
           if (lastlistUUID == null || !lastlistUUID.contains(currentKey)) {
             cqldao.saveWithMapper(jobH);
             totalRow++;
+            if (totalRow % 100 == 0) {
+              LOGGER.info(" Nb rows : " + totalRow);
+            }
           }
 
           mapTrace = new HashMap<>();
@@ -253,6 +259,37 @@ public class MigrationJobHistory {
     }
 
     return isEqBase;
+  }
+
+  /**
+   * Comparaison des liste en taille et en contenu avec Javers
+   * 
+   * @param parametersThrift
+   * @param parametersCql
+   */
+  public Diff compareJobHistoryCql(final Javers javers) {
+    // liste d'objet cql venant de la base thrift après transformation
+    final List<JobHistoryCql> listJobThrift = getListJobHistoryThrift();
+
+    // liste venant de la base cql
+
+    final List<JobHistoryCql> listRToCql = new ArrayList<>();
+    final Iterator<JobHistoryCql> it = cqldao.findAllWithMapper();
+    while (it.hasNext()) {
+      final JobHistoryCql jobHistoryCql = it.next();
+      listRToCql.add(jobHistoryCql);
+    }
+    Collections.sort(listJobThrift);
+    Collections.sort(listRToCql);
+
+    final Diff diff = javers.compareCollections(listJobThrift, listRToCql, JobHistoryCql.class);
+    if (!diff.hasChanges()) {
+      LOGGER.info("MIGRATION_JobQueueCql -- Les listes JobQueue sont identiques");
+    } else {
+      LOGGER.warn("MIGRATION_JobQueueCql -- ATTENTION: Les listes JobQueue sont différentes ");
+    }
+
+    return diff;
   }
 
   /**

@@ -59,6 +59,9 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
       jobcql.setValue("");
       jobExeToJobStepDao.saveWithMapper(jobcql);
       nb++;
+      if (nb % 1000 == 0) {
+        LOG.info(" Nb rows : " + nb);
+      }
     }
 
     LOG.info("MigationJobExecutionToJobStep - migrationFromThriftToCql - FIN");

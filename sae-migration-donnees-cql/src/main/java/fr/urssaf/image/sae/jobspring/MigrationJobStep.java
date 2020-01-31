@@ -25,6 +25,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.ExecutionContex
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.utils.CompareUtils;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
@@ -126,7 +127,7 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
 
     // Numero d'itération
     int iterationNB = 0;
-
+    int nb = 0;
     do {
       rangeSlicesQuery.setRange(null, null, false, blockSize);
       rangeSlicesQuery.setKeys(startKey, null);
@@ -149,17 +150,23 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
       final List<Long> currentlistUUID = new ArrayList<>();
 
       for (final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> row : orderedRows) {
-        final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
-        final long key = row.getKey();
-        final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(stepThrift);
-        final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
-        stepcql.setJobExecutionId(jobExecutionId);
-        stepcql.setJobStepExecutionId(key);
+        if (RowUtils.rowLsbHasColumns(row)) {
+          final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
+          final long key = row.getKey();
+          final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(stepThrift);
+          final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
+          stepcql.setJobExecutionId(jobExecutionId);
+          stepcql.setJobStepExecutionId(key);
 
-        currentlistUUID.add(key);
-        // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-        if (lastlistUUID == null || !lastlistUUID.contains(key)) {
-          jobdaocql.saveWithMapper(stepcql);
+          currentlistUUID.add(key);
+          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+          if (lastlistUUID == null || !lastlistUUID.contains(key)) {
+            jobdaocql.saveWithMapper(stepcql);
+          }
+          nb++;
+          if (nb % 100 == 0) {
+            LOG.info(" Nb rows : {}", nb);
+          }
         }
       }
 
@@ -170,7 +177,7 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
 
     } while (count == blockSize);
 
-    LOG.info("MigrationJobStep - migrationFromThriftToCql- Nb total de cle dans la CF: " + totalKey);
+    LOG.info("MigrationJobStep - migrationFromThriftToCql- Nb total de cle dans la CF: " + nb);
     LOG.info("MigrationJobStep - migrationFromThriftToCql - FIN");
   }
 
@@ -275,17 +282,19 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
       final List<Long> currentlistUUID = new ArrayList<>();
 
       for (final me.prettyprint.hector.api.beans.Row<Long, String, byte[]> row : orderedRows) {
-        final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
-        final long key = row.getKey();
-        final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(stepThrift);
-        final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
-        stepcql.setJobExecutionId(jobExecutionId);
-        stepcql.setJobStepExecutionId(key);
+        if (RowUtils.rowLsbHasColumns(row)) {
+          final StepExecution stepThrift = getStepExecutionFromRow(row.getColumnSlice());
+          final long key = row.getKey();
+          final JobStepCql stepcql = JobTranslateUtils.getStpeCqlFromStepExecution(stepThrift);
+          final Long jobExecutionId = getValue(row.getColumnSlice(), JS_JOB_EXECUTION_ID_COLUMN, LongSerializer.get());
+          stepcql.setJobExecutionId(jobExecutionId);
+          stepcql.setJobStepExecutionId(key);
 
-        currentlistUUID.add(key);
-        // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-        if (lastlistUUID == null || !lastlistUUID.contains(key)) {
-          list.add(stepcql);
+          currentlistUUID.add(key);
+          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+          if (lastlistUUID == null || !lastlistUUID.contains(key)) {
+            list.add(stepcql);
+          }
         }
       }
 

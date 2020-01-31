@@ -9,9 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.javers.core.Javers;
-import org.javers.core.JaversBuilder;
 import org.javers.core.diff.Diff;
-import org.javers.core.diff.ListCompareAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,7 +129,7 @@ public class MigrationSequences {
     return listSequencesThrift;
   }
 
-  public Diff compareSequences() {
+  public Diff compareSequences(final Javers javers) {
     // liste d'objet cql venant de la base thrift après transformation
     final List<SequencesCql> sequencesThrift = findAllThrift(MigrationSequences.SEQUENCE_KEY);
     // liste venant de la base cql
@@ -143,10 +141,7 @@ public class MigrationSequences {
     }
     Collections.sort(sequencesThrift);
     Collections.sort(sequencesCql);
-    final Javers javers = JaversBuilder
-        .javers()
-        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-        .build();
+
     final Diff diff = javers.compareCollections(sequencesThrift, sequencesCql, SequencesCql.class);
     return diff;
 

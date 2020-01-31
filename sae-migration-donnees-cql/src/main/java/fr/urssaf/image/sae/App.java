@@ -8,6 +8,7 @@ import org.javers.common.collections.Arrays;
 import org.javers.core.Javers;
 import org.javers.core.JaversBuilder;
 import org.javers.core.diff.ListCompareAlgorithm;
+import org.javers.core.metamodel.clazz.EntityDefinitionBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -38,6 +39,9 @@ import fr.urssaf.image.sae.metadata.MigrationDictionary;
 import fr.urssaf.image.sae.metadata.MigrationMetadata;
 import fr.urssaf.image.sae.modeapi.ModeAPI;
 import fr.urssaf.image.sae.modeapi.ModeApiCqlSupport;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.piletravaux.MigrationJobHistory;
 import fr.urssaf.image.sae.piletravaux.MigrationJobQueue;
 import fr.urssaf.image.sae.piletravaux.MigrationJobRequest;
@@ -107,6 +111,18 @@ public class App {
 
         final Javers javers = JaversBuilder
             .javers()
+            .registerEntity(EntityDefinitionBuilder.entityDefinition(JobHistoryCql.class)
+                            .withIdPropertyName("idjob")
+                            .withTypeName("JobHistoryCql")
+                            .build())
+            .registerEntity(EntityDefinitionBuilder.entityDefinition(JobQueueCql.class)
+                            .withIdPropertyName("idJob")
+                            .withTypeName("JobQueueCql")
+                            .build())
+            .registerEntity(EntityDefinitionBuilder.entityDefinition(JobRequestCql.class)
+                            .withIdPropertyName("idJob")
+                            .withTypeName("JobRequestCql")
+                            .build())
             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
             .build();
 
@@ -200,7 +216,7 @@ public class App {
 
       App.finProgramme();
     } catch (final Exception e) {
-      App.LOG.info("Exception:" + e.getCause());
+      App.LOG.info("Exception:" + e.getMessage());
       System.exit(1);
     }
   }
@@ -234,7 +250,7 @@ public class App {
           App.LOG.warn(App.MESSAGE_DONNEES_DIFF, cfName);
           App.LOG.warn(diffM.getDiff().prettyPrint());
         } else {
-          if (!diffM.isResultCompare() && !diffM.getMessage().isEmpty()) {
+          if (!diffM.isResultCompare() && diffM.getMessage() != null) {
             App.LOG.warn(diffM.getMessage(),cfName);
           } else {
             App.LOG.warn(App.MESSAGE_DONNEES_DIFF, cfName);
@@ -513,7 +529,7 @@ public class App {
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationSequences.migrationFromCqlTothrift();
         }
-        diffM.setDiff(migrationSequences.compareSequences());
+        diffM.setDiff(migrationSequences.compareSequences(javers));
         break;
 
         // Piles de travaux
@@ -523,13 +539,11 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobHistory.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(true);
-          // result = migrationJobHistory.compareJobHistoryCql();
+          diffM.setDiff(migrationJobHistory.compareJobHistoryCql(javers));
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobHistory.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(true);
-          // result = migrationJobHistory.compareJobHistoryCql();
+          diffM.setDiff(migrationJobHistory.compareJobHistoryCql(javers));
         }
         break;
 
@@ -538,12 +552,11 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobRequest.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(true);
-          diffM.setResultCompare(migrationJobRequest.compareJobRequestCql());
+          diffM.setDiff(migrationJobRequest.compareJobRequestCql(javers));
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobRequest.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobRequest.compareJobRequestCql());
+          diffM.setDiff(migrationJobRequest.compareJobRequestCql(javers));
         }
         break;
 
@@ -552,11 +565,11 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobQueue.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobQueue.compareJobQueueCql());
+          diffM.setDiff(migrationJobQueue.compareJobQueueCql(javers));
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobQueue.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobQueue.compareJobQueueCql());
+          diffM.setDiff(migrationJobQueue.compareJobQueueCql(javers));
         }
         break;
 
@@ -592,6 +605,7 @@ public class App {
       case Constantes.CF_JOBEXECUTION:
         final MigrationJobExecution migrationJobExecution = context.getBean(MigrationJobExecution.class);
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
+          // migrationJobExecution.testExecutionContext();
           migrationJobExecution.migrationFromThriftToCql();
           diffM.setResultMigration(true);
           diffM.setResultCompare(migrationJobExecution.compareJobExecution());

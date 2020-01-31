@@ -61,6 +61,9 @@ public class MigrationJobSteps extends MigrationJob implements IMigration {
       jobcql.setStepName(stepName);
       jobStepsExeDao.saveWithMapper(jobcql);
       nb++;
+      if (nb % 1000 == 0) {
+        LOG.info(" Nb rows : {}", nb);
+      }
     }
 
     LOG.info(" MigrationJobSteps - migrationFromThriftToCql - FIN   ");

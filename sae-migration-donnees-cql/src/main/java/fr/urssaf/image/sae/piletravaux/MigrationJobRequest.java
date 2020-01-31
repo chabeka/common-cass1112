@@ -4,6 +4,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -11,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.javers.core.Javers;
+import org.javers.core.diff.Diff;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +28,7 @@ import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
+//import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 import fr.urssaf.image.sae.pile.travaux.utils.JobRequestMapper;
 import fr.urssaf.image.sae.piletravaux.dao.IGenericJobTypeDao;
@@ -160,6 +164,9 @@ public class MigrationJobRequest implements IMigration {
             if (lastlistUUID == null || !lastlistUUID.contains(jobcql.getIdJob())) {
               cqldao.saveWithMapper(jobcql);
               totalRow++;
+              if (totalRow % 100 == 0) {
+                LOGGER.info(" Nb rows : " + totalRow);
+              }
             }
 
             // ecriture dans le fichier
@@ -257,6 +264,36 @@ public class MigrationJobRequest implements IMigration {
     }
 
     return isEqBase;
+  }
+
+  /**
+   * Comparaison des liste en taille et en contenu
+   * 
+   * @param parametersThrift
+   * @param parametersCql
+   */
+  public Diff compareJobRequestCql(final Javers javers) {
+    // liste d'objet cql venant de la base thrift après transformation
+    final List<JobRequestCql> listJobThrift = getListJobRequestThrift();
+    // liste venant de la base cql
+    final List<JobRequestCql> listRToCql = new ArrayList<>();
+    final Iterator<JobRequestCql> it = cqldao.findAllWithMapper();
+
+    while (it.hasNext()) {
+      final JobRequestCql jobRequest = it.next();
+      listRToCql.add(jobRequest);
+    }
+    Collections.sort(listJobThrift);
+    Collections.sort(listRToCql);
+
+    final Diff diff = javers.compareCollections(listJobThrift, listRToCql, JobRequestCql.class);
+    if (!diff.hasChanges()) {
+      LOGGER.info("MIGRATION_JobRequestCql -- Les listes JobRequest sont identiques");
+    } else {
+      LOGGER.warn("MIGRATION_JobRequestCql -- ATTENTION: Les listes JobRequest sont différentes ");
+    }
+
+    return diff;
   }
 
   /**

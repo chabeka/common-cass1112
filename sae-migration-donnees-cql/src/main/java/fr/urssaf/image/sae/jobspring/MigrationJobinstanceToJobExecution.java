@@ -57,6 +57,9 @@ public class MigrationJobinstanceToJobExecution extends MigrationJob implements 
       jobInstToJ.setValue("");
       jobInstToJobEx.saveWithMapper(jobInstToJ);
       nb++;
+      if (nb % 1000 == 0) {
+        LOG.info(" Nb rows : {}", nb);
+      }
     }
 
     LOG.info(" MigrationJobinstanceToJobExecution - migrationFromThriftToCql - FIN   ");

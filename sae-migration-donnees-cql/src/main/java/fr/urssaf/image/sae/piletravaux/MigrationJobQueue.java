@@ -1,10 +1,13 @@
 package fr.urssaf.image.sae.piletravaux;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import org.javers.core.Javers;
+import org.javers.core.diff.Diff;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +84,9 @@ public class MigrationJobQueue implements IMigration {
       cqldao.saveWithMapper(jobCql);
 
       nb++;
+      if (nb % 100 == 0) {
+        LOGGER.info(" Nb rows : " + nb);
+      }
     }
 
 
@@ -124,7 +130,7 @@ public class MigrationJobQueue implements IMigration {
   public boolean compareJobQueueCql() {
 
     // liste d'objet cql venant de la base thrift après transformation
-    final List<JobQueueCql> listJobThrift = getListJobHistoryThrift();
+    final List<JobQueueCql> listJobThrift = getListJobQueueThrift();
 
     // liste venant de la base cql
 
@@ -147,11 +153,42 @@ public class MigrationJobQueue implements IMigration {
   }
 
   /**
+   * Comparaison des liste en taille et en contenu avec Javers
+   * 
+   * @param parametersThrift
+   * @param parametersCql
+   */
+  public Diff compareJobQueueCql(final Javers javers) {
+    // liste d'objet cql venant de la base thrift après transformation
+    final List<JobQueueCql> listJobThrift = getListJobQueueThrift();
+
+    // liste venant de la base cql
+
+    final List<JobQueueCql> listRToCql = new ArrayList<>();
+    final Iterator<JobQueueCql> it = cqldao.findAllWithMapper();
+    while (it.hasNext()) {
+      final JobQueueCql jobQueueCql = it.next();
+      listRToCql.add(jobQueueCql);
+    }
+    Collections.sort(listJobThrift);
+    Collections.sort(listRToCql);
+
+    final Diff diff = javers.compareCollections(listJobThrift, listRToCql, JobQueueCql.class);
+    if (!diff.hasChanges()) {
+      LOGGER.info("MIGRATION_JobQueueCql -- Les listes JobQueue sont identiques");
+    } else {
+      LOGGER.warn("MIGRATION_JobQueueCql -- ATTENTION: Les listes JobQueue sont différentes ");
+    }
+
+    return diff;
+  }
+
+  /**
    * Liste des job cql venant de la table thirft après transformation
    * 
    * @return
    */
-  public List<JobQueueCql> getListJobHistoryThrift() {
+  public List<JobQueueCql> getListJobQueueThrift() {
 
     final List<JobQueueCql> listJobThrift = new ArrayList<>();
 

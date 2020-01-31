@@ -56,9 +56,9 @@ public class DataIntegrityJobStepTest {
 
   private PrintStream sysout;
 
-  private static int NB_STEPS = 10;
+  private static int NB_STEPS = 54;
 
-  private static int NB_STEPEXECUTION = 100;
+  private static int NB_STEPEXECUTION = 66;
 
   private TestingServer zkServer;
 
