@@ -12,6 +12,7 @@ import com.datastax.driver.mapping.annotations.Table;
 
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
+import org.javers.core.metamodel.annotation.Id;
 
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
@@ -44,6 +45,7 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 public class JobRequestCql implements Serializable, Comparable<JobRequestCql> {
 
   @PartitionKey
+  @Id
   private UUID idJob;
 
   private String type;
