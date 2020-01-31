@@ -109,8 +109,10 @@ public final class MajLotServiceImpl implements MajLotService {
   public static final String CASSANDRA_DFCE_180901 = "CASSANDRA_DFCE_180901";
 
   public static final String CASSANDRA_DFCE_190700 = "CASSANDRA_DFCE_190700";
-  
+
   public static final String CASSANDRA_DFCE_200200 = "CASSANDRA_DFCE_200200";
+
+  public static final String CASSANDRA_DFCE_200400 = "CASSANDRA_DFCE_200400";
 
   public static final String META_SEPA = "META_SEPA";
 
@@ -373,9 +375,12 @@ public final class MajLotServiceImpl implements MajLotService {
     } else if (CASSANDRA_DFCE_190700.equalsIgnoreCase(nomOperation)) {
       // Update keyspace SAE
       updateCassandra190700();
-	} else if (CASSANDRA_DFCE_200200.equalsIgnoreCase(nomOperation)) {
+    } else if (CASSANDRA_DFCE_200200.equalsIgnoreCase(nomOperation)) {
       // Update keyspace SAE
       updateCassandra200200();
+    } else if (CASSANDRA_DFCE_200400.equalsIgnoreCase(nomOperation)) {
+      // Update keyspace SAE
+      updateCassandra200400();
     }else {
       // Opération inconnue => log + exception runtime
       final String message = String.format("Erreur technique : L'opération %s est inconnue", nomOperation);
@@ -387,12 +392,13 @@ public final class MajLotServiceImpl implements MajLotService {
       // MAJ des métadonnées
       updateMetaDfce("META_" + nomOperation);
       // Ajout des index composites
-      if ("GNS".contains(nomOperation)) {
+      if (nomOperation.contains("GNS")) {
         addIndexesCompositeToDfce("META_" + nomOperation, APPL_CONCERNEE.GNS);
-      } else if ("GNT".contains(nomOperation)) {
+      } else if (nomOperation.contains("GNT")) {
         addIndexesCompositeToDfce("META_" + nomOperation, APPL_CONCERNEE.GNT);
       }
     }
+
     catch (final IOException e) {
       // Opération inconnue => log + exception runtime
       final String message = String.format("Erreur technique : %s ", e.getMessage());
@@ -502,11 +508,13 @@ public final class MajLotServiceImpl implements MajLotService {
      * updateMetaDfce("META_180300");
      * // CASSANDRA_DFCE_190700
      * updateMetaDfce("META_190700");
+     * // CASSANDRA_DFCE_200200
+     * updateMetaDfce("META_200200");
      */
-	// CASSANDRA_DFCE_200200
-	updateMetaDfce("META_200200");
+    // CASSANDRA_DFCE_200400
+    updateMetaDfce("META_200400");
 
-    
+
     try {
       if (APPL_CONCERNEE.GNT.equals(gedConcernee)) {
         // Ajout des index composites GNT_CASSANDRA_DFCE_180300
@@ -932,7 +940,14 @@ public final class MajLotServiceImpl implements MajLotService {
     updater.updateToVersion32();
     LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
   }
-  
+
+  private void updateCassandra200400() {
+    LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 200400");
+    // Récupération de la chaîne de connexion au cluster cassandra
+    updater.updateToVersion33();
+    LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+  }
+
   /**
    * Ajout des droits GED
    */
@@ -1338,7 +1353,7 @@ public final class MajLotServiceImpl implements MajLotService {
     updater.updateToVersion29();
     updater.updateToVersion30();
     updater.updateToVersion31();
-	updater.updateToVersion32();
+    updater.updateToVersion32();
   }
 
 }

@@ -59,6 +59,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_30 = 30;
    private static final int VERSION_31 = 31;
    private static final int VERSION_32 = 32;
+   private static final int VERSION_33 = 33;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -1250,10 +1251,30 @@ public class SAECassandraUpdater {
 
 	      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
 	      
-	      // On positionne la version à 31
+	      // On positionne la version à 32
 	      saeDao.setDatabaseVersion(VERSION_32);
-	   }	   
-   
+	   }	
+	   
+   // Création des métadonnées NomContact et PrenomContact
+   public void updateToVersion33() {
+
+	      long version = saeDao.getDatabaseVersion();
+	      if (version >= VERSION_33) {
+	         LOG.info("La base de données est déja en version " + version);
+	         return;
+	      }
+
+	      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_33);
+
+	      // -- On se connecte au keyspace
+	      saeDao.connectToKeySpace();
+
+	      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+	      
+	      // On positionne la version à 33
+	      saeDao.setDatabaseVersion(VERSION_33);
+	   }	
+	   
    /**
     * Methode permettant de modifier la version de la base de données.
     * 
