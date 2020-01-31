@@ -5,7 +5,6 @@ package fr.urssaf.javaDriverTest;
 
 import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.update;
-import static org.junit.Assert.assertEquals;
 
 import java.io.PrintStream;
 import java.util.List;
@@ -23,6 +22,7 @@ import com.datastax.oss.driver.api.querybuilder.update.Update;
 
 import fr.urssaf.javaDriverTest.cleanjob.JobCleaner;
 import fr.urssaf.javaDriverTest.cleanjob.JobCleaner.JobInstanceInfo;
+import fr.urssaf.javaDriverTest.dao.BaseDAO;
 import fr.urssaf.javaDriverTest.dao.CassandraSessionFactory;
 import fr.urssaf.javaDriverTest.helper.Dumper;
 
@@ -42,9 +42,9 @@ public class CleanJobTest {
    public void init() throws Exception {
       final String servers;
       // servers = "cnp69imagedev.gidn.recouv";
-      servers = "cnp69saecas1,cnp69saecas2,cnp69saecas3";
+      // servers = "cnp69saecas1,cnp69saecas2,cnp69saecas3";
       // servers = "cnp69saecas4.cer69.recouv, cnp69saecas5.cer69.recouv, cnp69saecas6.cer69.recouv";
-      // servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
+      servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cnp69pregntcas1, cnp69pregntcas2";
       // servers = "cnp69givngntcas1, cnp69givngntcas2";
@@ -76,7 +76,7 @@ public class CleanJobTest {
 
       sysout = new PrintStream(System.out, true, "UTF-8");
       // Pour dumper sur un fichier plutôt que sur la sortie standard
-      sysout = new PrintStream("d:/temp/out.txt");
+      sysout = new PrintStream("c:/temp/out.txt");
       dumper = new Dumper(sysout);
    }
 
@@ -100,32 +100,44 @@ public class CleanJobTest {
    @Test
    public void getJobInstanceInfoTest() throws Exception {
       final JobCleaner cleaner = new JobCleaner();
-      final long jobInstanceId = 9217;
+      final long jobInstanceId = 11970;
       final JobInstanceInfo infos = cleaner.getJobInstanceInfo(session, jobInstanceId);
-      assertEquals("867a56b59e34aba79b072c5d5941993e", infos.jobKey);
+      System.out.println("JobName=" + infos.jobName);
+      System.out.println("JobKey=" + infos.jobKey);
+      // assertEquals("867a56b59e34aba79b072c5d5941993e", infos.jobKey);
    }
 
    @Test
    public void deleteOneJobInstanceTest() throws Exception {
       final JobCleaner cleaner = new JobCleaner();
-      cleaner.deleteOneJobInstance(session, 12503);
+      cleaner.deleteOneJobInstance(session, 11999);
    }
 
    @Test
    public void setAsNotRunningTest() throws Exception {
-      final String jobKey = "MANAGE_RANGE_INDEX_JOB|SAE-PROD|cot&cop&djc&";
+      // final String jobKey = "MANAGE_RANGE_INDEX_JOB|SAE-PROD|cot&cop&djc&";
+      // final String jobKey = "SYSTEM_EVENTS_PURGE_JOB";
+      final String jobKey = "MANAGE_RANGE_INDEX_JOB|GNT-PROD|sm_modification_date";
       final Update query = update("dfce", "job")
-                                                .set(Assignment.setColumn("running", literal(false)))
-                                                .whereColumn("job_key")
-                                                .isEqualTo(literal(jobKey))
-                                                .ifColumn("running")
-                                                .isEqualTo(literal(true));
+            .set(Assignment.setColumn("running", literal(false)))
+            .whereColumn("job_key")
+            .isEqualTo(literal(jobKey))
+            .ifColumn("running")
+            .isEqualTo(literal(true));
       final ResultSet result = session.execute(query.build());
       final List<String> warnings = result.getExecutionInfo().getWarnings();
       if (!warnings.isEmpty()) {
          LOGGER.warn("Warnings : {}", warnings);
       }
-
    }
 
+   @Test
+   public void findSplitJobInstanceIdTest() throws Exception {
+      final JobCleaner cleaner = new JobCleaner();
+      final String baseId = BaseDAO.getBaseName(session);
+      final String indexName = "SM_MODIFICATION_DATE";
+      final String rangeToSplit = "[min_lower_bound TO max_upper_bound]";
+      final Long jobInstance = cleaner.findSplitJobInstanceId(session, indexName, rangeToSplit, 1000000, "600000", "EQUI_DISTRIBUTED", baseId);
+      System.out.println("jobInstance = " + jobInstance);
+   }
 }

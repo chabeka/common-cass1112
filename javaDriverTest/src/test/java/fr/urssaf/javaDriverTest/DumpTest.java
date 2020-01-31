@@ -24,6 +24,7 @@ import com.datastax.oss.driver.api.querybuilder.select.Select;
 import fr.urssaf.javaDriverTest.dao.BaseDAO;
 import fr.urssaf.javaDriverTest.dao.CassandraSessionFactory;
 import fr.urssaf.javaDriverTest.dao.IndexReference;
+import fr.urssaf.javaDriverTest.helper.CQLHelper;
 import fr.urssaf.javaDriverTest.helper.Dumper;
 
 /**
@@ -39,12 +40,15 @@ public class DumpTest {
 
    @Before
    public void init() throws Exception {
-      String servers;
+      final String servers;
       // servers = "cnp69imagedev.gidn.recouv";
       // servers = "cnp69saecas1,cnp69saecas2,cnp69saecas3";
       // servers = "cnp69saecas4.cer69.recouv, cnp69saecas5.cer69.recouv, cnp69saecas6.cer69.recouv";
       // servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
+      // servers = "cnp69progednatgntcot2bocas1,cnp69progednatgntcot2bocas2";
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
+      // servers = "cnp69intgntc1cas1.gidn.recouv,cnp69intgntc1cas2.gidn.recouv";
+      // servers = "cnp69intgnsc1cas1.cer69.recouv";
       // servers = "cnp69pregntcas1, cnp69pregntcas2";
       // servers = "cnp69givngntcas1, cnp69givngntcas2";
       // servers = "hwi69gincleasaecas1.cer69.recouv,hwi69gincleasaecas2.cer69.recouv";
@@ -63,26 +67,32 @@ public class DumpTest {
       // servers = "hwi69devsaecas1.cer69.recouv,hwi69devsaecas2.cer69.recouv"; // Intégration interne GNS
       // servers = "hwi69ginsaecas2.cer69.recouv";
       // servers = "cer69-saeint3";
-      // servers = "cnp69devgntcas1.gidn.recouv, cnp69devgntcas2.gidn.recouv";
+      servers = "cnp69devgntcas1.gidn.recouv, cnp69devgntcas2.gidn.recouv";
       // servers = "cnp69dev2gntcas1.gidn.recouv, cnp69dev2gntcas2.gidn.recouv";
-      // servers = "cnp69miggntcas1.gidn.recouv,cnp69miggntcas2.gidn.recouv"; // Migration cassandra V2
+      // servers = "cnp31miggntcas3.cer31.recouv"; // Migration cassandra V2
       // servers = "cnp69dev2gntcas1.gidn.recouv";
       // servers = "cnp69devgntcas1.gidn.recouv,cnp69devgntcas2.gidn.recouv";
       // servers = "hwi69intgnscas1.gidn.recouv,hwi69intgnscas2.gidn.recouv";
       // servers = "cnp31devpicgntcas1.gidn.recouv,cnp31devpicgntcas2.gidn.recouv";
-      servers = "cnp31devpicgnscas1.gidn.recouv,cnp31devpicgnscas2.gidn.recouv";
+      // servers = "cnp31devpicgnscas1.gidn.recouv,cnp31devpicgnscas2.gidn.recouv";
       // servers = "cnp69gincleagntcas1.cer69.recouv,cnp69gincleagntcas2.cer69.recouv";
       // servers = "hwi69progednatgnspaj1bocas1,hwi69progednatgnspaj1bocas2";
       // servers = "cnp69intgnsp1cas1,cnp69intgnsp1cas2";
       // servers = "cnp69intgntp1cas1.cer69.recouv";
+      // servers = "cnp69gingntcas1.cer69.recouv";
+      // servers = "cnp69gingntp1cas1.cer69.recouv"; // GNT-PAJE-GIN
+      // servers = "cnp69gingntc1cas1.cer69.recouv"; // GNT-CESU-GIN
+      // servers = "hwi69ginsaecas1.cer69.recouv";
+      // servers = "hwi31ginsaecas1.cer31.recouv:9160,hwi31ginsaecas2.cer31.recouv:9160";
 
       final String cassandraLocalDC = "DC1";
+      // final String cassandraLocalDC = "DC6";
       // final String cassandraLocalDC = "LYON_SP";
       session = CassandraSessionFactory.getSession(servers, "root", "regina4932", cassandraLocalDC);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
       // Pour dumper sur un fichier plutôt que sur la sortie standard
-      sysout = new PrintStream("d:/temp/out.txt");
+      sysout = new PrintStream("c:/temp/out.txt");
       dumper = new Dumper(sysout);
    }
 
@@ -140,6 +150,12 @@ public class DumpTest {
    }
 
    @Test
+   public void testDump_content_repo_temp() throws Exception {
+      final ResultSet rs = session.execute("select * from dfce.content_repo_temp limit 100");
+      dumper.dumpRows(rs);
+   }
+
+   @Test
    public void testDump_dictionary() throws Exception {
       final ResultSet rs = session.execute("select * from dfce.dictionary limit 100");
       dumper.dumpRows(rs);
@@ -165,13 +181,13 @@ public class DumpTest {
 
    @Test
    public void testDump_doc_info_specific() throws Exception {
-      final UUID uuid = UUID.fromString("c43ef1c4-bc8a-4c21-92b0-6592d1662c3a");
+      final UUID uuid = UUID.fromString("C7D58B82-6F27-4344-81C7-8349765B89B8");
       final Select query = QueryBuilder.selectFrom("dfce", "doc_info")
-                                       .all()
-                                       .whereColumn("document_uuid")
-                                       .isEqualTo(literal(uuid))
-                                       .whereColumn("document_version")
-                                       .isEqualTo(literal("0.0.0"));
+            .all()
+            .whereColumn("document_uuid")
+            .isEqualTo(literal(uuid))
+            .whereColumn("document_version")
+            .isEqualTo(literal("0.0.0"));
       final ResultSet rs = session.execute(query.build());
       dumper.dumpRows(rs);
    }
@@ -184,7 +200,7 @@ public class DumpTest {
 
    @Test
    public void testDump_doc_time_series() throws Exception {
-      final ResultSet rs = session.execute("select * from dfce.doc_time_series limit 100");
+      final ResultSet rs = session.execute("select * from dfce.doc_time_series limit 500");
       dumper.dumpRows(rs);
    }
 
@@ -267,36 +283,38 @@ public class DumpTest {
       // final String index = "SM_CREATION_DATE";
       // final String index = "den";
       final Select query = QueryBuilder.selectFrom("dfce", "index_reference")
-                                       .all()
-                                       .whereColumn("index_name")
-                                       .isEqualTo(literal(index))
-                                       .whereColumn("base_id")
-                                       .isEqualTo(literal(baseId));
+            .all()
+            .whereColumn("index_name")
+            .isEqualTo(literal(index))
+            .whereColumn("base_id")
+            .isEqualTo(literal(baseId));
       final ResultSet rs = session.execute(query.build());
       dumper.dumpRows(rs);
    }
 
    @Test
    public void testDump_job_execution_by_id() throws Exception {
-      final ResultSet rs = session.execute("select * from dfce.job_execution_by_id limit 500");
+      final ResultSet rs = session.execute("select * from dfce.job_execution_by_id limit 4000");
       dumper.dumpRows(rs);
    }
 
    @Test
    public void testDump_job_execution_by_instance() throws Exception {
-      final ResultSet rs = session.execute("select * from dfce.job_execution_by_instance limit 2000");
+      final ResultSet rs = session.execute("select * from dfce.job_execution_by_instance limit 4000");
       dumper.dumpRows(rs);
    }
 
    @Test
    public void testDump_job() throws Exception {
-      final ResultSet rs = session.execute("select * from dfce.job limit 100");
+      final String query = CQLHelper.getDumpQueryWithTimestamp(session, "dfce", "job");
+      System.out.println(query);
+      final ResultSet rs = session.execute(query + " limit 100");
       dumper.dumpRows(rs);
    }
 
    @Test
    public void testDump_job_instance_by_id() throws Exception {
-      final ResultSet rs = session.execute("select * from dfce.job_instance_by_id limit 2000");
+      final ResultSet rs = session.execute("select * from dfce.job_instance_by_id limit 4000");
       dumper.dumpRows(rs);
    }
 
@@ -308,7 +326,7 @@ public class DumpTest {
 
    @Test
    public void testDump_job_instance_by_name_and_parameters() throws Exception {
-      final ResultSet rs = session.execute("select * from dfce.job_instance_by_name_and_parameters limit 2000");
+      final ResultSet rs = session.execute("select * from dfce.job_instance_by_name_and_parameters limit 4000");
       dumper.dumpRows(rs);
    }
 
@@ -326,8 +344,14 @@ public class DumpTest {
 
    @Test
    public void testDump_life_cycle_step_history() throws Exception {
-      final ResultSet rs = session.execute("select * from dfce.life_cycle_step_history limit 100");
+      final ResultSet rs = session.execute("select * from dfce.life_cycle_step_history limit 6000");
       dumper.dumpRows(rs);
+   }
+
+   @Test
+   public void testTruncate_life_cycle_step_history() throws Exception {
+      // final ResultSet rs = session.execute("TRUNCATE dfce.life_cycle_step_history ");
+      // dumper.dumpRows(rs);
    }
 
    @Test
@@ -444,22 +468,22 @@ public class DumpTest {
       final int rangeId = findRangeId(baseId, index, startDate);
       final String indexCode = "";
       final Select query = QueryBuilder.selectFrom("dfce", "term_info_range_datetime")
-                                       // .columns("metadata_value", "document_uuid")
-                                       .all()
-                                       .whereColumn("index_code")
-                                       .isEqualTo(literal(indexCode))
-                                       .whereColumn("base_uuid")
-                                       .isEqualTo(literal(baseId))
-                                       .whereColumn("metadata_name")
-                                       .isEqualTo(literal(index))
-                                       .whereColumn("range_index_id")
-                                       .isEqualTo(literal(rangeId))
-                                       .whereColumn("metadata_value")
-                                       .isGreaterThan(literal(startDate))
-                                       .whereColumn("metadata_value")
-                                       .isLessThan(literal(endDate))
-                                       // .and(QueryBuilder.gt("metadata_value", "20150520110809498"))
-                                       .limit(2000);
+            // .columns("metadata_value", "document_uuid")
+            .all()
+            .whereColumn("index_code")
+            .isEqualTo(literal(indexCode))
+            .whereColumn("base_uuid")
+            .isEqualTo(literal(baseId))
+            .whereColumn("metadata_name")
+            .isEqualTo(literal(index))
+            .whereColumn("range_index_id")
+            .isEqualTo(literal(rangeId))
+            .whereColumn("metadata_value")
+            .isGreaterThan(literal(startDate))
+            .whereColumn("metadata_value")
+            .isLessThan(literal(endDate))
+            // .and(QueryBuilder.gt("metadata_value", "20150520110809498"))
+            .limit(2000);
       System.out.println(query.build().getQuery());
       final ResultSet rs = session.execute(query.build());
       dumper.dumpRows(rs);
@@ -477,21 +501,21 @@ public class DumpTest {
       final int rangeId = findRangeId(baseId, index, startDate);
       final String indexCode = "";
       final Select query = QueryBuilder.selectFrom("dfce", "term_info_range_datetime")
-                                       // .columns("metadata_value", "document_uuid")
-                                       .all()
-                                       .whereColumn("index_code")
-                                       .isEqualTo(literal(indexCode))
-                                       .whereColumn("base_uuid")
-                                       .isEqualTo(literal(baseId))
-                                       .whereColumn("metadata_name")
-                                       .isEqualTo(literal(index))
-                                       .whereColumn("range_index_id")
-                                       .isEqualTo(literal(rangeId))
-                                       .whereColumn("metadata_value")
-                                       .isGreaterThan(literal(startDate))
-                                       .whereColumn("metadata_value")
-                                       .isLessThan(literal(endDate))
-                                       .limit(10000);
+            // .columns("metadata_value", "document_uuid")
+            .all()
+            .whereColumn("index_code")
+            .isEqualTo(literal(indexCode))
+            .whereColumn("base_uuid")
+            .isEqualTo(literal(baseId))
+            .whereColumn("metadata_name")
+            .isEqualTo(literal(index))
+            .whereColumn("range_index_id")
+            .isEqualTo(literal(rangeId))
+            .whereColumn("metadata_value")
+            .isGreaterThan(literal(startDate))
+            .whereColumn("metadata_value")
+            .isLessThan(literal(endDate))
+            .limit(10000);
       System.out.println(query.build().getQuery());
       final ResultSet rs = session.execute(query.build());
       int counter = 0;
@@ -516,7 +540,7 @@ public class DumpTest {
             System.out.println("statutWatt=" + statutWatt);
             System.out.println("codeProduit=" + codeProduit);
          }
-         */
+          */
          final String documentArchivage = getMetaValue(map, "dar");
          final String den = getMetaValue(map, "den");
          if ("true".equals(documentArchivage) && "Test 2300-Recherche-Iterateur-OK-Test-Libre".equals(den)) {
@@ -583,12 +607,12 @@ public class DumpTest {
             + "from dfce.term_info_range_string "
             + "where index_code = '' and metadata_name =? and base_uuid=? and range_index_id=? "
             + "and metadata_value > ? and metadata_value < ? order by metadata_value asc limit ?",
-                                                                indexName,
-                                                                baseId,
-                                                                BigInteger.valueOf(rangeId),
-                                                                minValue,
-                                                                maxValue,
-                                                                limit);
+            indexName,
+            baseId,
+            BigInteger.valueOf(rangeId),
+            minValue,
+            maxValue,
+            limit);
       final ResultSet rs = session.execute(query);
       dumper.dumpRows(rs);
    }
@@ -602,10 +626,10 @@ public class DumpTest {
       final String indexCode = "RB";
       final String indexName = "srt";
       final SimpleStatement query = SimpleStatement.newInstance("select * from dfce.term_info_range_string  where index_code = ? and metadata_name =? and base_uuid=? and range_index_id=? limit 100",
-                                                                indexCode,
-                                                                indexName,
-                                                                baseId,
-                                                                BigInteger.valueOf(rangeId));
+            indexCode,
+            indexName,
+            baseId,
+            BigInteger.valueOf(rangeId));
       final ResultSet rs = session.execute(query);
       dumper.dumpRows(rs);
    }
@@ -624,11 +648,11 @@ public class DumpTest {
       final String value = "d02cb203-5337-4941-be6f-52018965c68a";
       final String indexCode = "RB";
       final SimpleStatement query = SimpleStatement.newInstance("select * from dfce.term_info_range_uuid  where index_code = ? and metadata_name =? and base_uuid=? and range_index_id=? and metadata_value >= ? limit 100",
-                                                                indexCode,
-                                                                indexName,
-                                                                baseId,
-                                                                BigInteger.valueOf(rangeId),
-                                                                value);
+            indexCode,
+            indexName,
+            baseId,
+            BigInteger.valueOf(rangeId),
+            value);
       final ResultSet rs = session.execute(query);
       dumper.dumpRows(rs);
    }

@@ -23,7 +23,7 @@ public class CassandraSessionFactory {
    }
 
    public static CqlSession getSession(final String cassandraServers, final String cassandraUsername, final String cassandraPassword,
-                                       final String cassandraLocalDC) {
+         final String cassandraLocalDC) {
       final String[] servers = StringUtils.split(cassandraServers, ",");
       final List<String> contactPoints = new ArrayList<>(servers.length);
       for (String server : servers) {
@@ -31,26 +31,26 @@ public class CassandraSessionFactory {
          contactPoints.add(server + ":9042");
       }
       final DriverConfigLoader loader = DriverConfigLoader.programmaticBuilder()
-                                                          .withDuration(DefaultDriverOption.REQUEST_TIMEOUT, Duration.ofSeconds(10))
-                                                          .withString(DefaultDriverOption.AUTH_PROVIDER_CLASS,
-                                                                      "PlainTextAuthProvider")
-                                                          .withString(DefaultDriverOption.AUTH_PROVIDER_USER_NAME,
-                                                                      cassandraUsername)
-                                                          .withString(DefaultDriverOption.AUTH_PROVIDER_PASSWORD,
-                                                                      cassandraPassword)
-                                                          .withString(DefaultDriverOption.REQUEST_CONSISTENCY,
-                                                                      DefaultConsistencyLevel.QUORUM.name())
-                                                          .withString(DefaultDriverOption.PROTOCOL_VERSION,
-                                                                      DefaultProtocolVersion.V3.name())
-                                                          // .withString(DefaultDriverOption.LOAD_BALANCING_POLICY_CLASS,
-                                                          // "fr.urssaf.javaDriverTest.dao.NoLoadBalancingPolicy")
-                                                          // .withString(DefaultDriverOption.ADDRESS_TRANSLATOR_CLASS,
-                                                          // "fr.urssaf.javaDriverTest.dao.ProxyAddressTranslator")
-                                                          .withStringList(DefaultDriverOption.CONTACT_POINTS, contactPoints)
-                                                          .startProfile("slow")
-                                                          .withDuration(DefaultDriverOption.REQUEST_TIMEOUT, Duration.ofSeconds(30))
-                                                          .endProfile()
-                                                          .build();
+            .withDuration(DefaultDriverOption.REQUEST_TIMEOUT, Duration.ofSeconds(10))
+            .withString(DefaultDriverOption.AUTH_PROVIDER_CLASS,
+                  "PlainTextAuthProvider")
+            .withString(DefaultDriverOption.AUTH_PROVIDER_USER_NAME,
+                  cassandraUsername)
+            .withString(DefaultDriverOption.AUTH_PROVIDER_PASSWORD,
+                  cassandraPassword)
+            .withString(DefaultDriverOption.REQUEST_CONSISTENCY,
+                  DefaultConsistencyLevel.QUORUM.name())
+            .withString(DefaultDriverOption.PROTOCOL_VERSION,
+                  DefaultProtocolVersion.V3.name())
+            // .withString(DefaultDriverOption.LOAD_BALANCING_POLICY_CLASS,
+            // "fr.urssaf.javaDriverTest.dao.NoLoadBalancingPolicy")
+            // .withString(DefaultDriverOption.ADDRESS_TRANSLATOR_CLASS,
+            // "fr.urssaf.javaDriverTest.dao.ProxyAddressTranslator")
+            .withStringList(DefaultDriverOption.CONTACT_POINTS, contactPoints)
+            .startProfile("slow")
+            .withDuration(DefaultDriverOption.REQUEST_TIMEOUT, Duration.ofSeconds(30))
+            .endProfile()
+            .build();
 
       /*
       final ArrayList<InetSocketAddress> contactPoints = new ArrayList<>();
@@ -67,13 +67,13 @@ public class CassandraSessionFactory {
             contactPoints.add(new InetSocketAddress(address, 9042));
          }
       }
-      */
+       */
 
       return CqlSession.builder()
-                       .withConfigLoader(loader)
-                       // .addContactPoints(contactPoints)
-                       .withLocalDatacenter(cassandraLocalDC)
-                       .build();
+            .withConfigLoader(loader)
+            // .addContactPoints(contactPoints)
+            .withLocalDatacenter(cassandraLocalDC)
+            .build();
    }
 
 }

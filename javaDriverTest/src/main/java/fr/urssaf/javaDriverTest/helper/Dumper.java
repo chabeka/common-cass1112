@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
+import java.time.Instant;
 
 import com.datastax.oss.driver.api.core.CqlIdentifier;
 import com.datastax.oss.driver.api.core.cql.ColumnDefinition;
@@ -53,6 +54,11 @@ public class Dumper {
          catch (ClassNotFoundException | IOException e) {
             return new String(valueAsByteBuffer.array());
          }
+      }
+      else if (colName.toString().startsWith("writetime") && valueAsObject != null) {
+         final long value = (long) valueAsObject;
+         final Instant instant = Instant.ofEpochMilli(value / 1000);
+         return value + " (" + instant + ")";
       }
       return valueAsObject == null ? "NULL" : valueAsObject.toString();
    }

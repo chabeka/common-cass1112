@@ -101,11 +101,11 @@ public class JobCleaner {
          System.out.println("Suppression jobInstance " + jobInstanceId);
          batchBuilder.addStatement(SimpleStatement.newInstance("delete from dfce.job_instance_by_id where id=?", jobInstanceId));
          batchBuilder.addStatement(SimpleStatement.newInstance("delete from dfce.job_instance_by_name_and_id where job_name=? and id=?",
-                                                               jobInstanceInfo.jobName,
-                                                               jobInstanceId));
+               jobInstanceInfo.jobName,
+               jobInstanceId));
          batchBuilder.addStatement(SimpleStatement.newInstance("delete from dfce.job_instance_by_name_and_parameters where job_name = ? and job_parameters_key = ?",
-                                                               jobInstanceInfo.jobName,
-                                                               jobInstanceInfo.jobKey));
+               jobInstanceInfo.jobName,
+               jobInstanceInfo.jobKey));
       }
       catch (final Exception e) {
          System.out.println("Clé non trouvée dans jobInstance");
@@ -116,16 +116,16 @@ public class JobCleaner {
          System.out.println("Suppression jobExecution " + jobExecutionId);
          batchBuilder.addStatement(SimpleStatement.newInstance("delete from dfce.job_execution_by_id where id=?", jobExecutionId));
          batchBuilder.addStatement(SimpleStatement.newInstance("delete from dfce.job_execution_by_instance where job_instance_id=? and id=?",
-                                                               jobInstanceId,
-                                                               jobExecutionId));
+               jobInstanceId,
+               jobExecutionId));
 
          final List<Long> stepExecutions = getStepExecutions(session, jobExecutionId);
          for (final Long stepExecutionId : stepExecutions) {
             System.out.println("Suppression step " + stepExecutionId);
             batchBuilder.addStatement(SimpleStatement.newInstance("delete from dfce.step_execution_by_id where id=?", jobExecutionId));
             batchBuilder.addStatement(SimpleStatement.newInstance("delete from dfce.step_execution_by_job_execution where job_execution_id=? and id=?",
-                                                                  jobExecutionId,
-                                                                  stepExecutionId));
+                  jobExecutionId,
+                  stepExecutionId));
          }
       }
       final BatchStatement batch = batchBuilder.build();
@@ -201,8 +201,30 @@ public class JobCleaner {
       /*
       objectMapper.addMixIn(JobParameter.class, JobParameterMixin.class);
       objectMapper.addMixIn(JobParameters.class, JobParametersMixin.class);
-      */
+       */
       return objectMapper;
+   }
+
+   public Long findSplitJobInstanceId(final CqlSession session, final String indexName, final String range, final long splitSize,
+         final String ttl, final String strategy, final String baseId) {
+      final Map<String, JobParameter> params = new HashMap<>();
+      params.put("range.index.to.split", new JobParameter(range));
+      params.put("index.name", new JobParameter(indexName));
+      params.put("new.range.index.size", new JobParameter(splitSize));
+      params.put("cache.ttlms", new JobParameter(ttl));
+      params.put("strategy", new JobParameter(strategy));
+      params.put("base.id", new JobParameter(baseId));
+      final JobParameters jobParameters = new JobParameters(params);
+      final String jobKey = createJobKey(jobParameters);
+      final String jobName = "splitRangeIndexJob";
+      final SimpleStatement query = SimpleStatement
+            .newInstance("select id from dfce.job_instance_by_name_and_parameters where job_name=? AND job_parameters_key=?", jobName, jobKey);
+      final ResultSet rs = session.execute(query);
+      for (final Row row : rs) {
+         final long jobInstanceId = row.getLong("id");
+         return jobInstanceId;
+      }
+      return null;
    }
 
    /**
