@@ -12,6 +12,7 @@ import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 import com.google.common.collect.ComparisonChain;
+import org.javers.core.metamodel.annotation.Id;
 
 /**
  * Classe spécifique cql pour PAGM
@@ -29,6 +30,7 @@ public class PagmCql implements Comparable<PagmCql> {
   /** code intelligible du PAGM */
   @ClusteringColumn
   @Column(name = "code")
+  @Id
   private String code;
 
   /** droit d'action (PAGMa) du PAGM */
