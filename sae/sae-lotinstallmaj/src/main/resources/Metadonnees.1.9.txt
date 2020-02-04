@@ -1,5 +1,5 @@
 REFERENTIEL DES METADONNEES DU SAE																														
-Code Metadonnees	Libellé	Description	Format	Spécifiable lors de l'archivage	Obligatoire à l'archivage	Consultée par défaut	Consultable	Critère de recherche	Indexée	Formatage	Taille maximum autorisée en archivage	Exemple de valeur	Liste de valeurs fermée	Nom du dictionnaire	Annuaire	Diffusable clients	Enrichissement par le SAE	Détails de l'enrichissement	Code interne	Métadonnée gérée directement par DFCE	Acc�s via l'API DFCE	Type DFCE	Multi-valuée	Obligatoire au stockage	Date dernière MAJ	Modifiable	RG modif	Trim gauche	Trim droite	
+Code Metadonnees	Libellé	Description	Format	Spécifiable lors de l'archivage	Obligatoire à l'archivage	Consultée par défaut	Consultable	Critère de recherche	Indexée	Formatage	Taille maximum autorisée en archivage	Exemple de valeur	Liste de valeurs fermée	Nom du dictionnaire	Annuaire	Diffusable clients	Enrichissement par le SAE	Détails de l'enrichissement	Code interne	Métadonnée gérée directement par DFCE	Accès via l'API DFCE	Type DFCE	Multi-valuée	Obligatoire au stockage	Date dernière MAJ	Modifiable	RG modif	Trim gauche	Trim droite	
 Titre	Titre du document 	Titre du document	Alphanumérique	oui	oui	oui	oui	oui	non		100					oui	NON		SM_TITLE	oui		String	non	oui		oui		oui	oui	
 Periode	Période	Correspond à la période V2	Alphanumérique	oui	non	non	oui	oui	non		4					oui	NON		per	non		String	non	non		oui		oui	oui	
 Siren	Siren	Numéro de SIREN V2	Numérique	oui	non	non	oui	oui	oui		10					oui	NON		srn	non		String	non	non		oui		oui	oui	
@@ -50,8 +50,8 @@ DateModification	Date modification (DFCE)	Date modification (DFCE)	Date	non	non	
 JetonDePreuve	Identifiant du jeton de preuve issu d'une vérification de signature(s) électronique(s)	Identifiant du jeton de preuve renvoyé par les services de signature lors d'une demande de vérification de signature(s) électronique(s).	Alphanumérique	oui	non	non	oui	non	non							oui	NON		jdp	non		String	non	non		non		oui	oui	
 RUM	Référence Unique de Mandat	Référence Unique de Mandat	Alphanumérique	oui	non	non	oui	oui	oui		35					oui	NON		rum	non		String	non	non		oui		non	non	
 DateSignature	Date de signature	Date de signature	Date	oui	non	non	oui	oui	non	yyyy-mm-dd	10					oui	NON		dsi	non		Date	non	non		non		non	non	
-ReferenceDocumentaire	Référence documentaire	Référence documentaire. Utilisée pour l'instant dans les mandats SEPA	Alphanum�rique	oui	non	non	oui	oui	oui		30					oui	NON		rdo	non		String	non	non		oui		oui	oui	
+ReferenceDocumentaire	Référence documentaire	Référence documentaire. Utilisée pour l'instant dans les mandats SEPA	Alphanumérique	oui	non	non	oui	oui	oui		30					oui	NON		rdo	non		String	non	non		oui		oui	oui	
 DateCourrierV2	Date du courrier V2	Date du courrier V2 (enregistrement AAAA colonne 438 à 446)	Date	oui	non	non	oui	oui	non	yyyy-mm-dd	10					oui	NON		dcr	non		Date	non	non		oui		non	non	
 RIBA	Index RSI V2	Index RSI V2 (enregistrement BAAU colonne 28 à 47)	Alphanumérique	oui	non	non	oui	oui	oui		20					oui	NON		rib	non		String	non	non		oui		oui	oui	
-CodeProduitV2	Code produit V2	Code produit V2	Alphanum�rique	oui	non	non	oui	oui	non		5					oui	NON		cpr	non		String	non	non		oui		oui	oui	
+CodeProduitV2	Code produit V2	Code produit V2	Alphanumérique	oui	non	non	oui	oui	non		5					oui	NON		cpr	non		String	non	non		oui		oui	oui	
 CodeTraitementV2	Code traitement V2	Code traitement V2	Alphanumérique	oui	non	non	oui	oui	non		8					oui	NON		ctr	non		String	non	non		oui		oui	oui	

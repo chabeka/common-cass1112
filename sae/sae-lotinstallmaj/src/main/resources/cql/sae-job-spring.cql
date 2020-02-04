@@ -104,4 +104,8 @@ CREATE TABLE jobinstancesBynamecql (
 	PRIMARY KEY (jobname, jobinstanceid)
 )WITH CLUSTERING ORDER BY (jobinstanceid DESC);
 
-
+CREATE TABLE sequencescql (
+	jobidname		text,
+    value 			bigint,
+	PRIMARY KEY (jobidname)
+);
