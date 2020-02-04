@@ -73,6 +73,14 @@ public class SoapBuilder {
       }
    }
 
+   public static ListeMetadonneeType cloneListeMetadonnee(final ListeMetadonneeType metaListSource) {
+      final ListeMetadonneeType result = new ListeMetadonneeType();
+      for (final MetadonneeType meta : metaListSource.getMetadonnee()) {
+         result.getMetadonnee().add(buildMetadata(meta.getCode(), meta.getValeur()));
+      }
+      return result;
+   }
+
    /**
     * Récupère la liste des codes des métadonnées
     * 

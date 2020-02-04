@@ -37,6 +37,8 @@ public class Environments {
 
    public static final Environment FRONTAL_CSPP;
 
+   public static final Environment FRONTAL_LOCAL;
+
    public static final Environment MIG_GNT;
 
    /**
@@ -185,6 +187,14 @@ public class Environments {
             .build();
       FRONTAL_CSPP = new EnvironmentBuilder()
             .setUrl("http://hwi3pgedcveboappli1.cve.recouv:8080/frontalged_be/services/saeService/")
+            .setEnvCode("TODO")
+            .setAppliServer("TODO")
+            .setEcdeMountPoint("/hawai/data/frontalged/ecde")
+            .setEcdeName("cnp69-evsgivn.urdom.ad.recouv")
+            .setCassandraServers("TODO")
+            .build();
+      FRONTAL_LOCAL = new EnvironmentBuilder()
+            .setUrl("http://localhost:8080/frontalged_be/services/saeService/")
             .setEnvCode("TODO")
             .setAppliServer("TODO")
             .setEcdeMountPoint("/hawai/data/frontalged/ecde")
