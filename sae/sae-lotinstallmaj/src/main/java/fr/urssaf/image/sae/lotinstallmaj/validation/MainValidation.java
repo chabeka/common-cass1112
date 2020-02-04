@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotGeneralException;
-import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.MajLotServiceCQLImpl;
 import fr.urssaf.image.sae.lotinstallmaj.service.impl.MajLotServiceImpl;
 import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.OperationCQL;
 
@@ -23,7 +22,7 @@ import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.OperationCQL;
 public class MainValidation {
 
   private static final Logger LOG = LoggerFactory
-                                                 .getLogger(MainValidation.class);
+      .getLogger(MainValidation.class);
 
   private static final String MAIN_METHOD = "execution(void fr.urssaf.image.sae.lotinstallmaj.Main.main(*)) && args(args)";
 
@@ -77,7 +76,7 @@ public class MainValidation {
 
       final StringBuffer strBuff = new StringBuffer();
       strBuff
-             .append("Erreur : Il faut indiquer, en premier argument de la ligne de commande, le chemin complet du fichier de configuration du SAE");
+      .append("Erreur : Il faut indiquer, en premier argument de la ligne de commande, le chemin complet du fichier de configuration du SAE");
       strBuff.append(String.format(" (argument fourni : %s).", pathFile));
       final String message = strBuff.toString();
 
@@ -167,7 +166,7 @@ public class MainValidation {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_150400
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.DFCE_150400.equalsIgnoreCase(nomOperation)) {
@@ -177,19 +176,19 @@ public class MainValidation {
       return;
     }
     if (MajLotServiceImpl.GNS_DISABLE_COMPOSITE_INDEX
-                                                     .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNT_DISABLE_COMPOSITE_INDEX
-                                                     .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_150600
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_150601
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.DFCE_151000.equalsIgnoreCase(nomOperation)) {
@@ -199,165 +198,172 @@ public class MainValidation {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_151001
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_151200
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_151201
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_160300
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_160400
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_160600
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_160600
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_160601
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_160601
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_160900
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_160901
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_161100
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_170200
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_170200
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_170201.equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_170202
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_170202
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_170900
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_170901
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_180300
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_180300
-                                                   .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_180900
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
     if (MajLotServiceImpl.CASSANDRA_DFCE_180901
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
-      if (MajLotServiceImpl.CASSANDRA_DFCE_180901
-              .equalsIgnoreCase(nomOperation))
-           return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_190700
-              .equalsIgnoreCase(nomOperation))
-           return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_200200
-              .equalsIgnoreCase(nomOperation))
-           return; 
+    if (MajLotServiceImpl.CASSANDRA_DFCE_180901
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (MajLotServiceImpl.CASSANDRA_DFCE_190700
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (MajLotServiceImpl.CASSANDRA_DFCE_200200
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    } 
 
     if (MajLotServiceImpl.CASSANDRA_DFCE_200400
-                                               .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
-	
+
     // CAS Nouvelle version de la DFCE 2.3.1 avec les scripts cql
-    
+
     if (OperationCQL.DFCE_192_TO_200_SCHEMA.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-    	return;
-	}
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
     if (OperationCQL.DFCE_200_TO_210_SCHEMA.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
     if (OperationCQL.DFCE_210_TO_230_SCHEMA.getNomOp()
-            .equalsIgnoreCase(nomOperation)) {
-    	return;
-	}
-	if (OperationCQL.DFCE_230_TO_192_SCHEMA.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
-    
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (OperationCQL.DFCE_230_TO_192_SCHEMA.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+
     // Cas migration cql des tables de la base SAE
-    
-	if (OperationCQL.SAE_MODE_API.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
-	if (OperationCQL.SAE_MIG_TRACES.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
-	if (OperationCQL.SAE_MIG_PILE_TRAVAUX.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
-	if (OperationCQL.SAE_MIG_JOB_SPRING.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
-	
-	if (OperationCQL.SAE_DELETE_MIG_JOB_SPRING.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
-	if (OperationCQL.SAE_DELETE_MIG_PILE_TRAVAUX.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
-	if (OperationCQL.SAE_DELETE_MIG_TRACES.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
-	if (OperationCQL.SAE_DELETE_MODE_API.getNomOp()
-	            .equalsIgnoreCase(nomOperation)) {
-		return;
-	}
+
+    if (OperationCQL.SAE_MODE_API.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (OperationCQL.SAE_MIG_TRACES.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (OperationCQL.SAE_MIG_PILE_TRAVAUX.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (OperationCQL.SAE_MIG_JOB_SPRING.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+
+    if (OperationCQL.SAE_DELETE_MIG_JOB_SPRING.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (OperationCQL.SAE_DELETE_MIG_PILE_TRAVAUX.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (OperationCQL.SAE_DELETE_MIG_TRACES.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (OperationCQL.SAE_DELETE_MODE_API.getNomOp()
+        .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (OperationCQL.SAE_MIG_ALL.getNomOp()
+                                .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
 
     // TODO : Traiter le cas de la mise à jour de la durée de conservation de
     // 3.1.3.1.1 (en attente du JIRA CRTL-81)
