@@ -12,7 +12,6 @@ import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 import com.google.common.collect.ComparisonChain;
-import org.javers.core.metamodel.annotation.Id;
 
 /**
  * Classe spécifique cql pour PAGM
