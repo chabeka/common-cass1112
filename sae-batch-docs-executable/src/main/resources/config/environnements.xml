@@ -252,4 +252,24 @@
       <dfceSecure>false</dfceSecure>
    </configuration>
    
+   <configuration>
+      <nom>CSPP_GNT</nom>
+      <dfceAddress>http://hwi6gntcveappli1.cve.recouv:8080/dfce-webapp/</dfceAddress>
+      <dfceBaseName>GNT-PROD</dfceBaseName>
+      <dfceLogin>_ADMIN</dfceLogin>
+      <dfcePwd>DOCUBASE</dfcePwd>
+      <dfceTimeout>30000</dfceTimeout>
+      <dfceSecure>false</dfceSecure>
+   </configuration>
+   
+   <configuration>
+      <nom>CSPP_GNS</nom>
+      <dfceAddress>http://hwi6gnscveappli1.cve.recouv:8080/dfce-webapp/</dfceAddress>
+      <dfceBaseName>SAE-PROD</dfceBaseName>
+      <dfceLogin>_ADMIN</dfceLogin>
+      <dfcePwd>DOCUBASE</dfcePwd>
+      <dfceTimeout>30000</dfceTimeout>
+      <dfceSecure>false</dfceSecure>
+   </configuration>
+   
 </configurations>
