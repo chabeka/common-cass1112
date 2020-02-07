@@ -179,7 +179,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = regSecuriteCqlService.getSupport().delete(dateIndex, getClockSupport().currentCLock());
+      nbTracesPurgees = regSecuriteCqlService.getSupport().delete(dateIndex);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = regSecuriteThriftService.getSupport()
           .delete(dateIndex,
@@ -189,7 +189,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       nbTracesPurgees = regSecuriteThriftService.getSupport().delete(dateIndex,
                                                                      getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
-      nbTracesPurgees = nbTracesPurgees + regSecuriteCqlService.getSupport().delete(dateIndex, getClockSupport().currentCLock());
+      nbTracesPurgees = nbTracesPurgees + regSecuriteCqlService.getSupport().delete(dateIndex);
     }
     return nbTracesPurgees;
   }

@@ -182,7 +182,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = regTechniqueServiceCql.getSupport().delete(dateIndex, getClockSupport().currentCLock());
+      nbTracesPurgees = regTechniqueServiceCql.getSupport().delete(dateIndex);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = regTechniqueServiceThrift.getSupport().delete(dateIndex,
                                                                       getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);

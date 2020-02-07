@@ -94,7 +94,7 @@ public class TraceRegSecuriteCqlSupportTest {
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
     createTrace(uuid);
 
-    final long nbTracesPurgees = supportcql.delete(new Date(), new Date().getTime());
+    final long nbTracesPurgees = supportcql.delete(new Date());
 
     final Optional<TraceRegSecuriteCql> securiteOp = supportcql.find(uuid);
     Assert.assertFalse("aucune trace ne doit etre touvée", securiteOp.isPresent());

@@ -189,7 +189,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     long nbTracesPurgees = 0;
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = journalEvtCqlService.getSupport().delete(dateIndex, getClockSupport().currentCLock());
+      nbTracesPurgees = journalEvtCqlService.getSupport().delete(dateIndex);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = journalEvtServiceThrift.getSupport().delete(dateIndex,
                                                                     getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
@@ -199,7 +199,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
           .delete(dateIndex,
                   getClockSupport().currentCLock(),
                   nbMaxLigneEvtToDelete);
-      nbTracesPurgees = nbTracesPurgees + journalEvtCqlService.getSupport().delete(dateIndex, getClockSupport().currentCLock());
+      nbTracesPurgees = nbTracesPurgees + journalEvtCqlService.getSupport().delete(dateIndex);
     }
 
     return nbTracesPurgees;

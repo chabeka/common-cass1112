@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.apache.commons.collections.MapUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
@@ -108,6 +107,31 @@ public class TraceJournalEvtCqlSupportTest {
   }
 
   @Test
+  public void testCreateWithDateFindSuccess() {
+
+    final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
+    final TraceJournalEvtCql trace = createTrace(uuid);
+    final long time1 = new Date().getTime();
+    cqlsupport.create(trace, time1);
+
+    // enregistrer la trace avec une date superieure
+    trace.setCodeEvt("time1+1");
+    cqlsupport.create(trace, time1 + 1);
+
+    // enregistrer la trace avec une date inferieure
+    trace.setCodeEvt("time1-1");
+    cqlsupport.create(trace, time1 - 1);
+
+    final Optional<TraceJournalEvtCql> securiteOp = cqlsupport.find(uuid);
+
+    final TraceJournalEvtCql traceFromBas = securiteOp.get();
+    Assert.assertTrue("L'objet est non null", securiteOp.isPresent());
+    Assert.assertEquals("L'objet est non null", traceFromBas.getCodeEvt(), "time1+1");
+
+
+  }
+
+  @Test
   public void testDelete() {
 
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
@@ -115,8 +139,7 @@ public class TraceJournalEvtCqlSupportTest {
     final long timestamp = new Date().getTime();
     cqlsupport.create(trace, timestamp);
 
-    final long time2 = new Date().getTime();
-    final long nbTracesPurgees = cqlsupport.delete(new Date(), time2);
+    final long nbTracesPurgees = cqlsupport.delete(new Date());
 
     final Optional<TraceJournalEvtCql> securiteOpt = cqlsupport.find(uuid);
 
@@ -150,16 +173,17 @@ public class TraceJournalEvtCqlSupportTest {
 
   }
 
-  public void createTrace(final TraceJournalEvtCql trace, final long clock) {
-
-    if (MapUtils.isNotEmpty(trace.getInfos())) {
-      for (final String key : trace.getInfos().keySet()) {
-        final Map<String, String> infosCql = new HashMap<>();
-        infosCql.put(key, trace.getInfos().get(key).toString());
-        trace.setInfos(infosCql);
-      }
-    }
-  }
+  /*
+   * public void createTrace(final TraceJournalEvtCql trace) {
+   * if (MapUtils.isNotEmpty(trace.getInfos())) {
+   * for (final String key : trace.getInfos().keySet()) {
+   * final Map<String, String> infosCql = new HashMap<>();
+   * infosCql.put(key, trace.getInfos().get(key).toString());
+   * trace.setInfos(infosCql);
+   * }
+   * }
+   * }
+   */
 
   public Date getDateFormatted(final Date date) {
     Date datej = new Date();

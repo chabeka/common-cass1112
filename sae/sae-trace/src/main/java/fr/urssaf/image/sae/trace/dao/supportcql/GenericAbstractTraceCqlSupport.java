@@ -116,7 +116,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return le nombre de traces purgées
    */
   @SuppressWarnings("unchecked")
-  public long delete(final Date date, final long clock) {
+  public long delete(final Date date) {
     long nbTracesPurgees = 0;
 
 
@@ -125,13 +125,13 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     if (iterator.hasNext()) {
 
       // Suppression des traces de la CF TraceJournalEvt
-      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator, clock);
+      nbTracesPurgees = nbTracesPurgees + deleteRecords(iterator);
 
 
       // suppression de l'index
       final Iterator<I> indexToDelete = getIterator(date);
       while (indexToDelete.hasNext()) {
-        getIndexDao().deleteWithMapper(indexToDelete.next(), clock);
+        getIndexDao().deleteWithMapper(indexToDelete.next());
       }
     }
     return nbTracesPurgees;
@@ -258,10 +258,10 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return le nombre d'enregistrements supprimés
    */
   @SuppressWarnings("unchecked")
-  long deleteRecords(final Iterator<I> iterator, final long clock) {
+  long deleteRecords(final Iterator<I> iterator) {
     long result = 0;
     while (iterator.hasNext()) {
-      getDao().deleteById(getTraceId(iterator.next()), clock);
+      getDao().deleteById(getTraceId(iterator.next()));
       result++;
     }
     return result;
