@@ -62,6 +62,15 @@ public class SaeServiceStubFactory {
       return getSaeService(url, handler);
    }
 
+   public static SaeServicePortType getServiceForFrontalAllGNT(final String url) {
+      final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("WATT.p12",
+            WATT_PASS,
+            Arrays.asList("PAGM_FRONTAL_GNT_ALL"),
+            "CS_WATT",
+            VI_LOGIN);
+      return getSaeService(url, handler);
+   }
+
    public static SaeServicePortType getServiceForSaturneGNT(final String url) {
       final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("SATURNE.p12",
             SATURNE_PASS,

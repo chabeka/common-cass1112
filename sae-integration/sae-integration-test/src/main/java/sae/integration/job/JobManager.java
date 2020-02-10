@@ -110,6 +110,13 @@ public class JobManager implements Closeable {
       launchRemoteJob();
    }
 
+   public void launchSuppressionMasse(final String deletionRequest) throws Exception {
+      // Créer le job dans cassandra
+      cassandraHelper.writeSuppressionJob(jobId, deletionRequest);
+      // Appel de l'exécutable du job
+      launchRemoteJob();
+   }
+
    private void launchRemoteJob() throws Exception {
       if (withLocalDebug) {
          LOGGER.info("Il faut lancer manuellement le process sae-services-executable en mode debug local");
