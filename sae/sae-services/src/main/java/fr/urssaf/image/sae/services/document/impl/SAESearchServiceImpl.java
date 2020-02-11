@@ -714,10 +714,12 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          checkConsultableDesiredMetadata(listCodCourtConsult, isFromRefrentiel);
 
          // Vérification existence des métadonnées des filtres
-         final List<String> codeLongFiltresEgal = new ArrayList<>();
+         final Set<String> setFiltresEquals = new HashSet<>();
          for (final AbstractMetadata meta : listeFiltreEgal) {
-            codeLongFiltresEgal.add(meta.getLongCode());
+           setFiltresEquals.add(meta.getLongCode());
          }
+         final List<String> codeLongFiltresEgal = new ArrayList<>();
+         codeLongFiltresEgal.addAll(setFiltresEquals);
          checkExistingFiltresMetadata(codeLongFiltresEgal);
 
          final List<String> codeLongFiltresDifferent = new ArrayList<>();
@@ -726,8 +728,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
          }
          checkExistingFiltresMetadata(codeLongFiltresDifferent);
 
-      // Ne plus faire de check sur les FiltreEgal : Evolution #232945
-      checkMetadataDoublon(codeLongFiltresDifferent);
+         checkMetadataDoublon(codeLongFiltresEgal, codeLongFiltresDifferent);
 
          // Création de la liste des filtres
          final List<AbstractFilter> abstractFilter = creationListeFiltres(
@@ -806,9 +807,10 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * @param codeLongFiltresDifferent
     * @throws DoublonFiltresMetadataEx
     */
-  private void checkMetadataDoublon(final List<String> codeLongFiltresDifferent)
+   private void checkMetadataDoublon(final List<String> codeLongFiltresEgal, final List<String> codeLongFiltresDifferent)
          throws DoublonFiltresMetadataEx {
       final List<String> codeLongFiltres = new ArrayList<>();
+      codeLongFiltres.addAll(codeLongFiltresEgal);
       codeLongFiltres.addAll(codeLongFiltresDifferent);
 
       final Map<String, Integer> comptage = new HashMap<>();
