@@ -27,6 +27,7 @@ import fr.urssaf.image.sae.jobspring.model.GenericJobExecution;
 import fr.urssaf.image.sae.trace.dao.IJobExecutionCqlForMigDao;
 import fr.urssaf.image.sae.trace.model.JobExecutionCqlForMig;
 import fr.urssaf.image.sae.utils.CompareUtils;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -111,8 +112,8 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
                         + jobExecutionCql.getExecutionContext().capacity());
         // sauvegarde de l'objet traité
         try {
-          if (jobExecutionCql.getExecutionContext().capacity() < 15598424) {
-        jobdaocqlForMig.saveWithMapper(jobExecutionCql);
+          if (jobExecutionCql.getExecutionContext().capacity() < RowUtils.MAX_SIZE_COLUMN) {
+            jobdaocqlForMig.saveWithMapper(jobExecutionCql);
           } else {
             LOGGER.warn("Contexte trop gros/Infos:{}",
                         jobExecutionCql.getJobName() + "/"
@@ -130,7 +131,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
         nbRow++;
-        if (nbRow % 100 == 0) {
+        if (nbRow % 1000 == 0) {
           LOGGER.info(" Nb rows : " + nbRow);
         }
       } else {
@@ -142,7 +143,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     // ajout du dernier cas traité
     if (jobExecutionCql != null) {
       try {
-      jobdaocqlForMig.saveWithMapper(jobExecutionCql);
+        jobdaocqlForMig.saveWithMapper(jobExecutionCql);
       }
       catch (final Exception e) {
         LOGGER.error("Exception", e);

@@ -75,7 +75,7 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
                                 bytesSerializer,
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(JOB_INSTANCE_CF_NAME);
-    final int blockSize = 1000;
+    final int blockSize = RowUtils.BLOCK_SIZE_JOB_INSTANCE;
     byte[] startKey = new byte[0];
     int count;
     int nbRows = 0;
@@ -97,13 +97,17 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
       rangeSlicesQuery.setRange(new byte[0], new byte[0], false, blockSize);
       rangeSlicesQuery.setKeys(startKey, new byte[0]);
       rangeSlicesQuery.setRowCount(blockSize);
+
       final QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery.execute();
 
       final OrderedRows<byte[], byte[], byte[]> orderedRows = result.get();
+
       count = orderedRows.getCount();
+
 
       // Parcours des rows pour déterminer la dernière clé de l'ensemble
       final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> lastRow = orderedRows.peekLast();
+
       if (lastRow != null) {
         startKey = lastRow.getKey();
       }
@@ -116,18 +120,24 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
 
       // On recupère l'instance dans le row
       for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
-        if (RowUtils.rowBbbHasColumns(row)) {
-          final JobInstance job = getTraceFromResult(row);
-          final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
 
-          currentlistUUID.add(job.getId());
-          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-          if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
-            LOGGER.info(" jobid : " + job.getId());
-            jobInstancedaoCql.saveWithMapper(cql);
-            nbRows++;
-            if (nbRows % 1 == 0) {// TODO
-              LOGGER.info(" Nb rows : " + nbRows);
+        if (RowUtils.rowBbbHasColumns(row)) {
+
+          final JobInstance job = getTraceFromResult(row);
+          if (job != null) {
+
+            final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
+
+            currentlistUUID.add(job.getId());
+            // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+            if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
+
+              jobInstancedaoCql.saveWithMapper(cql);
+
+              nbRows++;
+              if (nbRows % 1000 == 0) {
+                LOGGER.info(" Nb rows : " + nbRows);
+              }
             }
           }
         }
@@ -156,27 +166,36 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
     if (RowUtils.rowBbbHasColumns(row)) {
 
       instanceId = LongSerializer.get().fromBytes(row.getKey());
-      final List<HColumn<byte[], byte[]>> tHl = row.getColumnSlice().getColumns();
-      for(final HColumn<byte[], byte[]> col : tHl) {
-        name = StringSerializer.get().fromBytes(col.getName());
 
-        if(name.equals("parameters")) {
+      final List<HColumn<byte[], byte[]>> tHl = row.getColumnSlice().getColumns();
+
+      for(final HColumn<byte[], byte[]> col : tHl) {
+
+        if (col.getName() != null) {
+          name = StringSerializer.get().fromBytes(col.getName());
+        }
+
+        if (name.equals("parameters")) {
           final JobParametersSerializer serializer = JobParametersSerializer.get();
           jobParameters = serializer.fromBytes(col.getValue());
         }
-        if(name.equals("name")) {
+
+        if (name.equals("name")) {
           final StringSerializer serializer = StringSerializer.get();
           jobName = serializer.fromBytes(col.getValue());
         }
-        if(name.equals("version")) {
+
+        if (name.equals("version")) {
           version = IntegerSerializer.get().fromBytes(col.getValue());
         }			  
+
       }
     }
 
     final JobInstance instance = new JobInstance(instanceId, jobParameters, jobName);
     instance.setVersion(version);
     return instance;
+
   }
 
   /**
@@ -267,7 +286,7 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
                                 bytesSerializer,
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(JOB_INSTANCE_CF_NAME);
-    final int blockSize = 1000;
+    final int blockSize = RowUtils.BLOCK_SIZE_JOB_INSTANCE;
     byte[] startKey = new byte[0];
     int count;
 
@@ -310,12 +329,14 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
       for (final me.prettyprint.hector.api.beans.Row<byte[], byte[], byte[]> row : orderedRows) {
         if (RowUtils.rowBbbHasColumns(row)) {
           final JobInstance job = getTraceFromResult(row);
-          final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
+          if (job != null) {
+            final JobInstanceCql cql = JobTranslateUtils.getJobInstanceCqlToJobInstance(job);
 
-          currentlistUUID.add(job.getId());
-          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-          if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
-            listJobThrift.add(cql);
+            currentlistUUID.add(job.getId());
+            // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+            if (lastlistUUID == null || !lastlistUUID.contains(job.getId())) {
+              listJobThrift.add(cql);
+            }
           }
         }
       }

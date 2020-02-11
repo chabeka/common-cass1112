@@ -59,6 +59,9 @@ public class MigrationJobExecutionsRunning extends MigrationJob implements IMigr
 
         jobExeToJobR.saveWithMapper(jobExes);
         nb++;
+        if (nb % 1000 == 0) {
+          LOG.info(" Nb rows : " + nb);
+        }
       }
 
     }

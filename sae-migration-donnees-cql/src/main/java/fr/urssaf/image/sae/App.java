@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.droit.MigrationPagma;
 import fr.urssaf.image.sae.droit.MigrationPagmf;
 import fr.urssaf.image.sae.droit.MigrationPagmp;
 import fr.urssaf.image.sae.droit.MigrationPrmd;
+import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.format.MigrationReferentielFormat;
 import fr.urssaf.image.sae.jobspring.MigrationJobExecution;
 import fr.urssaf.image.sae.jobspring.MigrationJobExecutionToJobStep;
@@ -53,6 +54,7 @@ import fr.urssaf.image.sae.trace.MigrationTraceJournalEvt;
 import fr.urssaf.image.sae.trace.MigrationTraceRegExploitation;
 import fr.urssaf.image.sae.trace.MigrationTraceRegSecurite;
 import fr.urssaf.image.sae.trace.MigrationTraceRegTechnique;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
  * Classe permettant de faire les migration des colonnes famillies (CF) La
@@ -84,6 +86,16 @@ public class App {
    */
   private static final String CQL_TO_THRIFT = "CQL_TO_THRIFT";
 
+  /**
+   * type archivage gnt
+   */
+  private static final String ARCHIVAGE_GNT = "GNT";
+
+  /**
+   * type archivage gns
+   */
+  private static final String ARCHIVAGE_GNS = "GNS";
+
   private static String MESSAGE_DONNEES_DIFF = "Les donnees thrift et cql pour {} sont différentes";
   private static String MESSAGE_NON_IMPL="Le  traitement pour  la  table {} n'est pas implémenté";
 
@@ -100,7 +112,7 @@ public class App {
     App.LOG.info("|___________________________|");
 
     try {
-      if (args.length == 3) {
+      if (args.length == 4) {
         // Extrait les infos de la ligne de commandes
         final String cheminFicConfSae = args[0];
 
@@ -122,6 +134,18 @@ public class App {
             .registerEntity(EntityDefinitionBuilder.entityDefinition(JobRequestCql.class)
                             .withIdPropertyName("idJob")
                             .withTypeName("JobRequestCql")
+
+                            .build())
+            .registerEntity(EntityDefinitionBuilder.entityDefinition(VIContenuExtrait.class)
+
+                            .withIdPropertyName("codeAppli")
+                            .withIdPropertyName("idUtilisateur")
+                            .withIgnoredProperties("saeDroits")
+                            .build())
+            .registerEntity(EntityDefinitionBuilder.entityDefinition(FormatControlProfil.class)
+                            .withIdPropertyName("formatCode")
+                            .withIgnoredProperties("controlProfil")
+                            .withTypeName("FormatControlProfil")
                             .build())
             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
             .build();
@@ -129,6 +153,7 @@ public class App {
         // le nom de colonne familly
         final String cfName = args[1];
         final String migrateTo = args[2]; // le sens de la migration ==> de cql vers thrift ou contraire
+        final String typeArchivage = args[3]; // le type d'archivage
 
         if (!App.THRIFT_TO_CQL.equals(migrateTo) && !App.CQL_TO_THRIFT.equals(migrateTo)) {
           App.LOG.info(" ______________________________________________________________");
@@ -144,7 +169,22 @@ public class App {
           // on sort du programme
           App.finProgramme();
         }
-        final boolean all = "ALL".equals(cfName);
+        if (!App.ARCHIVAGE_GNT.equals(typeArchivage) && !App.ARCHIVAGE_GNS.equals(typeArchivage)) {
+          App.LOG.info(" ______________________________________________________________");
+          App.LOG.info("|                                                              |");
+          App.LOG.info("|           ERREUR SUR LE TYPE D'ARCHIVAGE                     |");
+          App.LOG.info("|______________________________________________________________|");
+          App.LOG.info("|   Le string designant le type d'archivage est incorrect.     |");
+          App.LOG.info("|   Les valeurs possibles sont:                                |");
+          App.LOG.info("|    - GNT                                                     |");
+          App.LOG.info("|    - GNS                                                     |");
+          App.LOG.info("|______________________________________________________________|");
+
+          // on sort du programme
+          App.finProgramme();
+        }
+        final boolean isALL = "ALL".equals(cfName);
+        final boolean isGNT = ARCHIVAGE_GNT.equals(typeArchivage);
 
         // ############################################################################################
         // ################### Initialisation des flags modeAPI en mode DUAL THRIFT
@@ -170,33 +210,56 @@ public class App {
                                      Constantes.CF_JOBSTEP, Constantes.CF_JOBSTEPS, Constantes.CF_JOBEXECUTION_TO_JOBSTEP,
                                      Constantes.CF_JOBEXECUTIONS_RUNNING, Constantes.CF_TRACE_DESTINATAIRE,
                                      Constantes.CF_TRACE_REG_EXPLOITATION, Constantes.CF_TRACE_REG_EXPLOITATION_INDEX,
+                                     Constantes.CF_TRACE_REG_TECHNIQUE, Constantes.CF_TRACE_REG_TECHNIQUE_INDEX,
+                                     Constantes.CF_TRACE_REG_SECURITE, Constantes.CF_TRACE_REG_SECURITE_INDEX,
                                      Constantes.CF_TRACE_JOURNAL_EVT, Constantes.CF_TRACE_JOURNAL_EVT_INDEX,
-                                     Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC, Constantes.CF_TRACE_REG_TECHNIQUE,
-                                     Constantes.CF_TRACE_REG_TECHNIQUE_INDEX,
-                                     Constantes.CF_TRACE_REG_SECURITE, Constantes.CF_TRACE_REG_SECURITE_INDEX };
+                                     Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC};
 
         final int nbTablesAMigrer = tabCfName.length;
 
-
         int nbTablesTraitees = 0;
         // Migration de toutes les tables ou d'une table spécifique
-        if (all) {
+        // En archivage GNT on migre la table TraceJournalEvtIndexDoc mais pas en GNS
+        //
+
+        if (isALL) {
           // On migre toutes les tables
           for (final String cfNameTemp : tabCfName) {
-            nbTablesTraitees += 1;
-            App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfNameTemp, javers);
+            if (!cfNameTemp.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC)
+                || cfNameTemp.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC) && isGNT) {
+              nbTablesTraitees += 1;
+              App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfNameTemp, javers);
+            } else if (cfName.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC) && !isGNT) {
+              App.LOG.info(" _________________________________________________________");
+              App.LOG.info("|                                                         |");
+              App.LOG.info("|                   Cas particulier GNS                   |");
+              App.LOG.info("|_________________________________________________________|");
+              App.LOG.info("|   Pas de migration de TraceJournalEvtIndexDoc en GNS    |");
+              App.LOG.info("|_________________________________________________________|");
+            }
           }
         } else {
-          if (Arrays.asList(tabCfName).contains(cfName)) {
+          if (Arrays.asList(tabCfName).contains(cfName)
+              && (!cfName.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC)
+                  || cfName.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC) && isGNT)) {
             nbTablesTraitees = 1;
             App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfName, javers);
           } else {
-            App.LOG.info(" _________________________________________________________");
-            App.LOG.info("|                                                         |");
-            App.LOG.info("|  ERREUR: PROBLEME DE PARAMETRE                          |");
-            App.LOG.info("|_________________________________________________________|");
-            App.LOG.info("|             Cfname incorrect                            |");
-            App.LOG.info("|_________________________________________________________|");
+            if (cfName.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC) && !isGNT) {
+              App.LOG.info(" _________________________________________________________");
+              App.LOG.info("|                                                         |");
+              App.LOG.info("|                   Cas particulier GNS                   |");
+              App.LOG.info("|_________________________________________________________|");
+              App.LOG.info("|   Pas de migration de TraceJournalEvtIndexDoc en GNS    |");
+              App.LOG.info("|_________________________________________________________|");
+            } else {
+              App.LOG.info(" _________________________________________________________");
+              App.LOG.info("|                                                         |");
+              App.LOG.info("|  ERREUR: PROBLEME DE PARAMETRE                          |");
+              App.LOG.info("|_________________________________________________________|");
+              App.LOG.info("|             Cfname incorrect                            |");
+              App.LOG.info("|_________________________________________________________|");
+            }
           }
         }
         final List<ModeAPI> modeAPIs = modeApiCqlSupport.findAll();
@@ -208,7 +271,8 @@ public class App {
         App.LOG.info("|  ERREUR: PROBLEME DE FICHIERS DE CONGIGURATION          |");
         App.LOG.info("|_________________________________________________________|");
         App.LOG.info("|  Il faut préciser, dans la ligne de commande, le chemin |");
-        App.LOG.info("|  complet du fichier de configuration du SAE.            |");
+        App.LOG.info("|  complet du fichier de configuration du SAE, le nom de  |");
+        App.LOG.info("|  la Cf et le type GNS/GNT                               |");
         App.LOG.info("|_________________________________________________________|");
         // on sort du programme
 
@@ -734,12 +798,12 @@ public class App {
         final MigrationTraceRegExploitation migrationTraceRegExploitationIndex = context
         .getBean(MigrationTraceRegExploitation.class);
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
-          migrationTraceRegExploitationIndex.migrationFromThriftToCql();
+          migrationTraceRegExploitationIndex.migrationIndexFromThriftToCql();
           diffM.setResultMigration(true);
           diffM.setResultCompare(true);
           // result=migrationTraceRegExploitationIndex.traceComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
-          migrationTraceRegExploitationIndex.migrationFromCqlToThrift();
+          migrationTraceRegExploitationIndex.migrationIndexFromCqlToThrift();
           diffM.setResultMigration(true);
           diffM.setResultCompare(true);
           // result=migrationTraceRegExploitationIndex.traceComparator();
@@ -801,6 +865,7 @@ public class App {
           migrationTraceRegTechnique.migrationFromThriftToCql();
           diffM.setResultMigration(true);
           diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationTraceRegTechnique.traceComparator());
           // result = migrationTraceRegTechnique.traceComparator();
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationTraceRegTechnique.migrationFromCqlToThrift();

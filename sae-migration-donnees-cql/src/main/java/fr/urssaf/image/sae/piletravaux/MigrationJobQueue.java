@@ -84,7 +84,7 @@ public class MigrationJobQueue implements IMigration {
       cqldao.saveWithMapper(jobCql);
 
       nb++;
-      if (nb % 100 == 0) {
+      if (nb % 10 == 0) {
         LOGGER.info(" Nb rows : " + nb);
       }
     }

@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.DateSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -270,7 +271,7 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
                                 stringSerializer,
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(tableName);
-    final int blockSize = 10000;
+    final int blockSize = RowUtils.BLOCK_SIZE_DEFAULT;
     UUID startKey = null;
     int count;
     boolean isEqObj = false;
@@ -346,7 +347,7 @@ public interface ICompareTrace<T extends Trace, TC extends Trace, I extends Trac
                                 uSl,
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(tableName);
-    final int blockSize = 10000;
+    final int blockSize = RowUtils.BLOCK_SIZE_DEFAULT;
     String startKey = StringUtils.EMPTY;
     int count = 0;
     boolean isEqObj = false;

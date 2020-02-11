@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.piletravaux.dao.IGenericJobTypeDao;
 import fr.urssaf.image.sae.piletravaux.model.GenericJobType;
 import fr.urssaf.image.sae.utils.CompareUtils;
 import fr.urssaf.image.sae.utils.RepriseFileUtils;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
@@ -104,7 +105,7 @@ public class MigrationJobHistory {
                                   uuidSerializer,
                                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily(JobHistoryDao.JOBHISTORY_CFNAME);
-      final int blockSize = 1000;
+      final int blockSize = RowUtils.BLOCK_SIZE_JOB_HISTORY;
       int count = 0;
 
       // Map contenant key = (numero d'iteration) value=(liste des cles (UUID) des objets de l'iteration)
@@ -168,7 +169,7 @@ public class MigrationJobHistory {
           if (lastlistUUID == null || !lastlistUUID.contains(currentKey)) {
             cqldao.saveWithMapper(jobH);
             totalRow++;
-            if (totalRow % 100 == 0) {
+            if (totalRow % 1000 == 0) {
               LOGGER.info(" Nb rows : " + totalRow);
             }
           }
@@ -284,9 +285,9 @@ public class MigrationJobHistory {
 
     final Diff diff = javers.compareCollections(listJobThrift, listRToCql, JobHistoryCql.class);
     if (!diff.hasChanges()) {
-      LOGGER.info("MIGRATION_JobQueueCql -- Les listes JobQueue sont identiques");
+      LOGGER.info("MIGRATION_JobHistoryCql -- Les listes JobHistory sont identiques");
     } else {
-      LOGGER.warn("MIGRATION_JobQueueCql -- ATTENTION: Les listes JobQueue sont différentes ");
+      LOGGER.warn("MIGRATION_JobHistoryCql -- ATTENTION: Les listes JobHistory sont différentes ");
     }
 
     return diff;
@@ -310,7 +311,7 @@ public class MigrationJobHistory {
                                 uuidSerializer,
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(JobHistoryDao.JOBHISTORY_CFNAME);
-    final int blockSize = 1000;
+    final int blockSize = RowUtils.BLOCK_SIZE_JOB_HISTORY;
     UUID startKey = null;
     UUID currentKey = null;
     UUID lastKey = null;

@@ -129,7 +129,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
                                   stringSerializer,
                                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily(compJEvt.getTraceClasseName());
-      final int blockSize = 1000;
+      final int blockSize = RowUtils.BLOCK_SIZE_TRACE_JOURNAL_EVT;
       int count;
 
       // Map contenant key = (numero d'iteration) value=(liste des cles (UUID) des objets de l'iteration)
@@ -371,7 +371,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
                                   stringSerializer,
                                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily("TraceJournalEvtIndexDoc");
-      final int blockSize = 1000;
+      final int blockSize = RowUtils.BLOCK_SIZE_TRACE_JOURNAL_EVT;
       int count;
 
       // Map contenant key = (numero d'iteration)
@@ -587,7 +587,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
     } 
     if(isEqBase) {
-      LOGGER.info(" MigrationTraceDestinataire - OK");
+      LOGGER.info(" MigrationTraceJournalEvtIndexDoc - OK");
     }
     return isEqBase;
   }

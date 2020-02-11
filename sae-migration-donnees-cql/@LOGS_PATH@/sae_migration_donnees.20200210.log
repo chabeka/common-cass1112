@@ -1,0 +1,121 @@
+2020-02-10 09:24:56.599 INFO  fr.urssaf.image.sae.App -  ___________________________
+2020-02-10 09:24:56.601 INFO  fr.urssaf.image.sae.App - |                           |
+2020-02-10 09:24:56.601 INFO  fr.urssaf.image.sae.App - |  ENTREE PROGRAMME - MAIN  |
+2020-02-10 09:24:56.601 INFO  fr.urssaf.image.sae.App - |___________________________|
+2020-02-10 09:25:07.557 INFO  com.datastax.driver.core.GuavaCompatibility - Detected Guava >= 19 in the classpath, using modern compatibility layer
+2020-02-10 09:25:07.827 INFO  com.datastax.driver.core.Native - Could not load JNR C Library, native system calls through this library will not be available (set this logger level to DEBUG to see the full stack trace).
+2020-02-10 09:25:07.827 INFO  com.datastax.driver.core.ClockFactory - Using java.lang.System clock to generate timestamps.
+2020-02-10 09:25:08.090 WARN  com.datastax.driver.core.NettyUtil - Found Netty's native epoll transport, but not running on linux-based operating system. Using NIO instead.
+2020-02-10 09:25:08.429 INFO  com.datastax.driver.core.Cluster - Cannot connect with protocol version V4, trying with V3
+2020-02-10 09:25:09.030 INFO  com.datastax.driver.core.policies.DCAwareRoundRobinPolicy - Using data-center name 'DC1' for DCAwareRoundRobinPolicy (if this is incorrect, please provide the correct datacenter name with DCAwareRoundRobinPolicy constructor)
+2020-02-10 09:25:09.032 INFO  com.datastax.driver.core.Cluster - New Cassandra host cnp31miggntcas4.cer31.recouv/10.207.81.34:9042 added
+2020-02-10 09:25:09.032 INFO  com.datastax.driver.core.Cluster - New Cassandra host cnp31miggntcas3.cer31.recouv/10.207.81.33:9042 added
+2020-02-10 09:25:10.328 INFO  org.apache.curator.utils.Compatibility - Running in ZooKeeper 3.4.x compatibility mode
+2020-02-10 09:25:10.411 INFO  org.apache.curator.framework.imps.CuratorFrameworkImpl - Starting
+2020-02-10 09:25:10.496 INFO  org.apache.curator.framework.imps.CuratorFrameworkImpl - Default schema
+2020-02-10 09:25:10.527 INFO  org.apache.curator.framework.state.ConnectionStateManager - State change: CONNECTED
+2020-02-10 09:25:29.741 INFO  org.javers.core.JaversBuilder - mappingStyle: FIELD
+2020-02-10 09:25:29.751 INFO  org.javers.core.JaversBuilder - loading JodaAddOns ...
+2020-02-10 09:25:29.794 INFO  org.javers.core.JaversBuilder - loading GuavaAddOns ...
+2020-02-10 09:25:30.043 INFO  org.javers.core.JaversBuilder - using fake InMemoryRepository, register actual Repository implementation via JaversBuilder.registerJaversRepository()
+2020-02-10 09:25:30.095 INFO  org.javers.core.JaversBuilder - JaVers instance started in 555 ms
+2020-02-10 09:25:30.105 INFO  fr.urssaf.image.sae.App -  _____________________________________________
+2020-02-10 09:25:30.105 INFO  fr.urssaf.image.sae.App - |                                             |
+2020-02-10 09:25:30.105 INFO  fr.urssaf.image.sae.App - |  DEBUT MIGRATION                            |
+2020-02-10 09:25:30.105 INFO  fr.urssaf.image.sae.App - |_____________________________________________|
+2020-02-10 09:26:27.640 INFO  fr.urssaf.image.sae.App -  ___________________________
+2020-02-10 09:26:27.648 INFO  fr.urssaf.image.sae.App - |                           |
+2020-02-10 09:26:27.648 INFO  fr.urssaf.image.sae.App - |  ENTREE PROGRAMME - MAIN  |
+2020-02-10 09:26:27.648 INFO  fr.urssaf.image.sae.App - |___________________________|
+2020-02-10 09:26:34.475 INFO  com.datastax.driver.core.GuavaCompatibility - Detected Guava >= 19 in the classpath, using modern compatibility layer
+2020-02-10 09:26:34.707 INFO  com.datastax.driver.core.Native - Could not load JNR C Library, native system calls through this library will not be available (set this logger level to DEBUG to see the full stack trace).
+2020-02-10 09:26:34.707 INFO  com.datastax.driver.core.ClockFactory - Using java.lang.System clock to generate timestamps.
+2020-02-10 09:26:34.979 WARN  com.datastax.driver.core.NettyUtil - Found Netty's native epoll transport, but not running on linux-based operating system. Using NIO instead.
+2020-02-10 09:26:35.378 INFO  com.datastax.driver.core.Cluster - Cannot connect with protocol version V4, trying with V3
+2020-02-10 09:26:36.000 INFO  com.datastax.driver.core.policies.DCAwareRoundRobinPolicy - Using data-center name 'DC1' for DCAwareRoundRobinPolicy (if this is incorrect, please provide the correct datacenter name with DCAwareRoundRobinPolicy constructor)
+2020-02-10 09:26:36.003 INFO  com.datastax.driver.core.Cluster - New Cassandra host cnp31miggntcas4.cer31.recouv/10.207.81.34:9042 added
+2020-02-10 09:26:36.003 INFO  com.datastax.driver.core.Cluster - New Cassandra host cnp31miggntcas3.cer31.recouv/10.207.81.33:9042 added
+2020-02-10 09:26:37.271 INFO  org.apache.curator.utils.Compatibility - Running in ZooKeeper 3.4.x compatibility mode
+2020-02-10 09:26:37.309 INFO  org.apache.curator.framework.imps.CuratorFrameworkImpl - Starting
+2020-02-10 09:26:37.340 INFO  org.apache.curator.framework.imps.CuratorFrameworkImpl - Default schema
+2020-02-10 09:26:37.356 INFO  org.apache.curator.framework.state.ConnectionStateManager - State change: CONNECTED
+2020-02-10 09:26:56.721 INFO  org.javers.core.JaversBuilder - mappingStyle: FIELD
+2020-02-10 09:26:56.731 INFO  org.javers.core.JaversBuilder - loading JodaAddOns ...
+2020-02-10 09:26:56.772 INFO  org.javers.core.JaversBuilder - loading GuavaAddOns ...
+2020-02-10 09:26:56.986 INFO  org.javers.core.JaversBuilder - using fake InMemoryRepository, register actual Repository implementation via JaversBuilder.registerJaversRepository()
+2020-02-10 09:26:57.049 INFO  org.javers.core.JaversBuilder - JaVers instance started in 499 ms
+2020-02-10 09:26:57.049 INFO  fr.urssaf.image.sae.App -  _____________________________________________
+2020-02-10 09:26:57.049 INFO  fr.urssaf.image.sae.App - |                                             |
+2020-02-10 09:26:57.049 INFO  fr.urssaf.image.sae.App - |  DEBUT MIGRATION                            |
+2020-02-10 09:26:57.049 INFO  fr.urssaf.image.sae.App - |_____________________________________________|
+2020-02-10 09:32:37.061 INFO  fr.urssaf.image.sae.App -  ___________________________
+2020-02-10 09:32:37.070 INFO  fr.urssaf.image.sae.App - |                           |
+2020-02-10 09:32:37.070 INFO  fr.urssaf.image.sae.App - |  ENTREE PROGRAMME - MAIN  |
+2020-02-10 09:32:37.070 INFO  fr.urssaf.image.sae.App - |___________________________|
+2020-02-10 09:32:44.019 INFO  com.datastax.driver.core.GuavaCompatibility - Detected Guava >= 19 in the classpath, using modern compatibility layer
+2020-02-10 09:32:44.288 INFO  com.datastax.driver.core.Native - Could not load JNR C Library, native system calls through this library will not be available (set this logger level to DEBUG to see the full stack trace).
+2020-02-10 09:32:44.288 INFO  com.datastax.driver.core.ClockFactory - Using java.lang.System clock to generate timestamps.
+2020-02-10 09:32:44.601 WARN  com.datastax.driver.core.NettyUtil - Found Netty's native epoll transport, but not running on linux-based operating system. Using NIO instead.
+2020-02-10 09:32:44.973 INFO  com.datastax.driver.core.Cluster - Cannot connect with protocol version V4, trying with V3
+2020-02-10 09:32:45.551 INFO  com.datastax.driver.core.policies.DCAwareRoundRobinPolicy - Using data-center name 'DC1' for DCAwareRoundRobinPolicy (if this is incorrect, please provide the correct datacenter name with DCAwareRoundRobinPolicy constructor)
+2020-02-10 09:32:45.562 INFO  com.datastax.driver.core.Cluster - New Cassandra host cnp31miggntcas4.cer31.recouv/10.207.81.34:9042 added
+2020-02-10 09:32:45.562 INFO  com.datastax.driver.core.Cluster - New Cassandra host cnp31miggntcas3.cer31.recouv/10.207.81.33:9042 added
+2020-02-10 09:32:46.776 INFO  org.apache.curator.utils.Compatibility - Running in ZooKeeper 3.4.x compatibility mode
+2020-02-10 09:32:46.821 INFO  org.apache.curator.framework.imps.CuratorFrameworkImpl - Starting
+2020-02-10 09:32:46.852 INFO  org.apache.curator.framework.imps.CuratorFrameworkImpl - Default schema
+2020-02-10 09:32:46.876 INFO  org.apache.curator.framework.state.ConnectionStateManager - State change: CONNECTED
+2020-02-10 09:33:05.798 INFO  org.javers.core.JaversBuilder - mappingStyle: FIELD
+2020-02-10 09:33:05.817 INFO  org.javers.core.JaversBuilder - loading GuavaAddOns ...
+2020-02-10 09:33:05.869 INFO  org.javers.core.JaversBuilder - loading JodaAddOns ...
+2020-02-10 09:33:06.098 INFO  org.javers.core.JaversBuilder - using fake InMemoryRepository, register actual Repository implementation via JaversBuilder.registerJaversRepository()
+2020-02-10 09:33:06.150 INFO  org.javers.core.JaversBuilder - JaVers instance started in 522 ms
+2020-02-10 09:33:06.150 INFO  fr.urssaf.image.sae.App -  _____________________________________________
+2020-02-10 09:33:06.150 INFO  fr.urssaf.image.sae.App - |                                             |
+2020-02-10 09:33:06.150 INFO  fr.urssaf.image.sae.App - |  DEBUT MIGRATION                            |
+2020-02-10 09:33:06.160 INFO  fr.urssaf.image.sae.App - |_____________________________________________|
+2020-02-10 09:35:28.351 INFO  fr.urssaf.image.sae.App -  ___________________________
+2020-02-10 09:35:28.360 INFO  fr.urssaf.image.sae.App - |                           |
+2020-02-10 09:35:28.360 INFO  fr.urssaf.image.sae.App - |  ENTREE PROGRAMME - MAIN  |
+2020-02-10 09:35:28.360 INFO  fr.urssaf.image.sae.App - |___________________________|
+2020-02-10 09:35:35.460 INFO  com.datastax.driver.core.GuavaCompatibility - Detected Guava >= 19 in the classpath, using modern compatibility layer
+2020-02-10 09:35:35.692 INFO  com.datastax.driver.core.Native - Could not load JNR C Library, native system calls through this library will not be available (set this logger level to DEBUG to see the full stack trace).
+2020-02-10 09:35:35.692 INFO  com.datastax.driver.core.ClockFactory - Using java.lang.System clock to generate timestamps.
+2020-02-10 09:35:35.962 WARN  com.datastax.driver.core.NettyUtil - Found Netty's native epoll transport, but not running on linux-based operating system. Using NIO instead.
+2020-02-10 09:35:36.294 INFO  com.datastax.driver.core.Cluster - Cannot connect with protocol version V4, trying with V3
+2020-02-10 09:35:37.133 INFO  com.datastax.driver.core.policies.DCAwareRoundRobinPolicy - Using data-center name 'DC1' for DCAwareRoundRobinPolicy (if this is incorrect, please provide the correct datacenter name with DCAwareRoundRobinPolicy constructor)
+2020-02-10 09:35:37.143 INFO  com.datastax.driver.core.Cluster - New Cassandra host cnp31miggntcas4.cer31.recouv/10.207.81.34:9042 added
+2020-02-10 09:35:37.143 INFO  com.datastax.driver.core.Cluster - New Cassandra host cnp31miggntcas3.cer31.recouv/10.207.81.33:9042 added
+2020-02-10 09:35:38.267 INFO  org.apache.curator.utils.Compatibility - Running in ZooKeeper 3.4.x compatibility mode
+2020-02-10 09:35:38.313 INFO  org.apache.curator.framework.imps.CuratorFrameworkImpl - Starting
+2020-02-10 09:35:38.336 INFO  org.apache.curator.framework.imps.CuratorFrameworkImpl - Default schema
+2020-02-10 09:35:38.352 INFO  org.apache.curator.framework.state.ConnectionStateManager - State change: CONNECTED
+2020-02-10 09:35:57.521 INFO  org.javers.core.JaversBuilder - mappingStyle: FIELD
+2020-02-10 09:35:57.529 INFO  org.javers.core.JaversBuilder - loading JodaAddOns ...
+2020-02-10 09:35:57.571 INFO  org.javers.core.JaversBuilder - loading GuavaAddOns ...
+2020-02-10 09:35:57.793 INFO  org.javers.core.JaversBuilder - using fake InMemoryRepository, register actual Repository implementation via JaversBuilder.registerJaversRepository()
+2020-02-10 09:35:57.873 INFO  org.javers.core.JaversBuilder - JaVers instance started in 523 ms
+2020-02-10 09:35:57.873 INFO  fr.urssaf.image.sae.App -  _____________________________________________
+2020-02-10 09:35:57.881 INFO  fr.urssaf.image.sae.App - |                                             |
+2020-02-10 09:35:57.881 INFO  fr.urssaf.image.sae.App - |  DEBUT MIGRATION                            |
+2020-02-10 09:35:57.881 INFO  fr.urssaf.image.sae.App - |_____________________________________________|
+2020-02-10 09:36:07.554 INFO  fr.urssaf.image.sae.App -  _________________________________________________________
+2020-02-10 09:36:08.624 INFO  fr.urssaf.image.sae.App - |                                                         |
+2020-02-10 09:36:08.625 INFO  fr.urssaf.image.sae.App - |                   Cas particulier GNS                   |
+2020-02-10 09:36:08.625 INFO  fr.urssaf.image.sae.App - |_________________________________________________________|
+2020-02-10 09:36:08.625 INFO  fr.urssaf.image.sae.App - |   Pas de migration de TraceJournalEvtIndexDoc en GNS    |
+2020-02-10 09:36:08.625 INFO  fr.urssaf.image.sae.App - |_________________________________________________________|
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App -  _____________________________________________________________________________
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |                                                                             |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |                               RESUME MIGRATION                              |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |                                                                             |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |    Nb theorique de tables a migrer: 37                                      |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |    Nb de tables traitees: 0                                                 |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |    Nb de tables migrees: 37                                                 |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |    Nb de tables non migrees: 0                                              |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |    Nb de tables en cours de migration: 0                                    |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |    Duree de la migration : 0 h 0 min 40 s                                   |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |_____________________________________________________________________________|
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App -  ___________________________
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |                           |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |    FIN PROGRAMME - MAIN   |
+2020-02-10 09:36:08.693 INFO  fr.urssaf.image.sae.App - |___________________________|

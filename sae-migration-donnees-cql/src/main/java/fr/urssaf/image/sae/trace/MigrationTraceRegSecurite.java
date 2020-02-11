@@ -26,13 +26,9 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.commons.CompareTraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.TraceRegSecuriteIndexDao;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
-import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
-import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegExploitationCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegExploitationIndexCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteIndexCql;
@@ -40,6 +36,7 @@ import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegSecuriteCqlSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import fr.urssaf.image.sae.utils.RepriseFileUtils;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
@@ -116,7 +113,7 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
                                   stringSerializer,
                                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily(compRegSecu.getTraceClasseName());
-      final int blockSize = 1000;
+      final int blockSize = RowUtils.BLOCK_SIZE_TRACE_REG_SECURITE;
       int count;
 
       // Map contenant key = (numero d'iteration) value=(liste des cles (UUID) des objets de l'iteration)
@@ -151,28 +148,27 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
         final List<UUID> currentlistUUID = new ArrayList<>();
 
         for (final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row : orderedRows) {
+          if (RowUtils.rowUsbHasColumns(row)) {
+            // on recupère la trace thrifh
+            final TraceRegSecurite trThrift = compRegSecu.getTraceFromResult(row);
+            // On le transforme en cql
+            final TraceRegSecuriteCql trThToCql = compRegSecu.createTraceFromObjectThrift(trThrift);
 
-          // on recupère la trace thrifh
-          final TraceRegSecurite trThrift = compRegSecu.getTraceFromResult(row);
-          // On le transforme en cql
-          final TraceRegSecuriteCql trThToCql = compRegSecu.createTraceFromObjectThrift(trThrift);
+            final UUID key = row.getKey();
 
-          final UUID key = row.getKey();
-
-          currentlistUUID.add(key);
-          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-          if (lastlistUUID == null || !lastlistUUID.contains(key)) {
-            supportcql.save(trThToCql);
-            totalCount++;
-            if (totalCount % 100 == 0) {
-              LOGGER.info(" Nb rows : {}", totalCount);
+            currentlistUUID.add(key);
+            // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+            if (lastlistUUID == null || !lastlistUUID.contains(key)) {
+              supportcql.save(trThToCql);
+              totalCount++;
+              if (totalCount % 100 == 0) {
+                LOGGER.info(" Nb rows : {}", totalCount);
+              }
             }
+            // ecriture dans le fichier
+            bWriter.append(key.toString());
+            bWriter.newLine();
           }
-
-          // ecriture dans le fichier
-          bWriter.append(key.toString());
-          bWriter.newLine();
-
         }
 
         // remettre à jour la map
@@ -344,11 +340,11 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
   // Methodes utilitaires
 
   /**
-   * Créer un index {@link TraceJournalEvtIndex} à partir d'une trace {@link TraceJournalEvtIndexCql}
+   * Créer un index {@link TraceRegSecuriteIndex} à partir d'une trace {@link TraceRegSecuriteIndexCql}
    *
    * @param index
-   *           {@link TraceJournalEvtIndexCql}
-   * @return un {@link TraceJournalEvtIndex}
+   *          {@link TraceRegSecuriteIndexCql}
+   * @return un {@link TraceRegSecuriteIndex}
    */
   public TraceRegSecuriteIndex createTraceIndexFromCqlToThrift(final TraceRegSecuriteIndexCql index) {
     final TraceRegSecuriteIndex tr = new TraceRegSecuriteIndex();
@@ -387,11 +383,11 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
   }
 
   /**
-   * Créér une {@link TraceRegExploitation} à partir d'une trace {@link TraceRegExploitationCql}
+   * Créér une {@link TraceRegSecurite} à partir d'une trace {@link TraceRegSecuriteCql}
    *
    * @param traceCql
-   *           la {@link TraceRegExploitationCql}
-   * @return la trace {@link TraceRegExploitation}
+   *          la {@link TraceRegSecuriteCql}
+   * @return la trace {@link TraceRegSecurite}
    */
   public TraceRegSecurite createTraceThriftFromCqlTrace(final TraceRegSecuriteCql traceCql) {
     final TraceRegSecurite tr = new TraceRegSecurite(traceCql.getIdentifiant(), traceCql.getTimestamp());

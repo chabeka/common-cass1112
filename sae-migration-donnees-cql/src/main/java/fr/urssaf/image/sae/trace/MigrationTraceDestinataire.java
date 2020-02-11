@@ -143,7 +143,7 @@ public class MigrationTraceDestinataire {
                                 stringSerializer,
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily("TraceDestinataire");
-    final int blockSize = 10000;
+    final int blockSize = RowUtils.BLOCK_SIZE_TRACE_DESTINATAIRE;
     String startKey = "";
     int totalKey = 1;
     int count;

@@ -21,6 +21,7 @@ import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.dao.serializer.TraceJournalEvtIndexDocSerializer;
 import fr.urssaf.image.sae.trace.utils.UtilsTraceMapper;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
@@ -72,7 +73,7 @@ public class CompareIndexDoc {
                                 uSl,
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(TraceJournalEvtIndexDoc.class.getSimpleName());
-    final int blockSize = 10000;
+    final int blockSize = RowUtils.BLOCK_SIZE_TRACE_JOURNAL_EVT;
     String startKey = StringUtils.EMPTY;
     int count;
     boolean isEqObj = false;

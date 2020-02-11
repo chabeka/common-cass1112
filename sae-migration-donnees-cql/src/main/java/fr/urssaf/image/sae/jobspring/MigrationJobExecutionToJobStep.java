@@ -47,9 +47,13 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
     final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
     int nb = 0;
     while (it.hasNext()) {
+
       final Row row = (Row) it.next();
+
       final Long jobExecutionId = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
+
       final Long idStep = row.getLong("column1");
+
       // final byte[] value = BytesArraySerializer.get().fromByteBuffer(row.getBytes("value"));
 
       final JobExecutionToJobStepCql jobcql = new JobExecutionToJobStepCql();
@@ -57,9 +61,11 @@ public class MigrationJobExecutionToJobStep extends MigrationJob implements IMig
       jobcql.setJobExecutionId(jobExecutionId);
       // la value n'est pas renseignée dans l'ancien système
       jobcql.setValue("");
+
       jobExeToJobStepDao.saveWithMapper(jobcql);
+
       nb++;
-      if (nb % 1000 == 0) {
+      if (nb % 10000 == 0) {
         LOG.info(" Nb rows : " + nb);
       }
     }

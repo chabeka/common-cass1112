@@ -116,7 +116,7 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(JOBSTEP_CFNAME);
 
-    final int blockSize = 1000;
+    final int blockSize = RowUtils.BLOCK_SIZE_JOB_STEP;
     Long startKey = null;
     int totalKey = 1;
     int count;
@@ -164,7 +164,7 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
             jobdaocql.saveWithMapper(stepcql);
           }
           nb++;
-          if (nb % 100 == 0) {
+          if (nb % 1000 == 0) {
             LOG.info(" Nb rows : {}", nb);
           }
         }
@@ -252,7 +252,7 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(JOBSTEP_CFNAME);
 
-    final int blockSize = 1000;
+    final int blockSize = RowUtils.BLOCK_SIZE_JOB_STEP;
     Long startKey = null;
     int count;
 

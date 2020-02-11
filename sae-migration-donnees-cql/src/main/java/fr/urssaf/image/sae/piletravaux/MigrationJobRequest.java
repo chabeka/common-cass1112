@@ -34,6 +34,7 @@ import fr.urssaf.image.sae.pile.travaux.utils.JobRequestMapper;
 import fr.urssaf.image.sae.piletravaux.dao.IGenericJobTypeDao;
 import fr.urssaf.image.sae.utils.CompareUtils;
 import fr.urssaf.image.sae.utils.RepriseFileUtils;
+import fr.urssaf.image.sae.utils.RowUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
@@ -105,7 +106,7 @@ public class MigrationJobRequest implements IMigration {
                                   StringSerializer.get(),
                                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
-      final int blockSize = 1000;
+      final int blockSize = RowUtils.BLOCK_SIZE_JOB_REQUEST;
       int count;
 
       // Map contenant key = (numero d'iteration = mapKey)
@@ -154,24 +155,34 @@ public class MigrationJobRequest implements IMigration {
         final List<UUID> currentlistUUID = new ArrayList<>();
 
         for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
-          final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
-          // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
-          if (jobRequest != null) {
-            final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
 
-            currentlistUUID.add(jobcql.getIdJob());
-            // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-            if (lastlistUUID == null || !lastlistUUID.contains(jobcql.getIdJob())) {
-              cqldao.saveWithMapper(jobcql);
-              totalRow++;
-              if (totalRow % 100 == 0) {
-                LOGGER.info(" Nb rows : " + totalRow);
+          if (row.hasResults()) {
+
+            final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
+            // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
+
+            if (jobRequest != null) {
+              final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
+
+              currentlistUUID.add(jobcql.getIdJob());
+              // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+              if (lastlistUUID == null || !lastlistUUID.contains(jobcql.getIdJob())) {
+
+                cqldao.saveWithMapper(jobcql);
+                totalRow++;
+                if (totalRow % 1000 == 0) {
+                  LOGGER.info(" Nb rows :{}", totalRow);
+                }
+              }
+
+              // ecriture dans le fichier
+              if (jobcql.getIdJob() != null) {
+
+                bWriter.append(jobcql.getIdJob().toString());
+                bWriter.newLine();
+
               }
             }
-
-            // ecriture dans le fichier
-            bWriter.append(jobcql.getIdJob().toString());
-            bWriter.newLine();
           }
         }
 
@@ -273,20 +284,28 @@ public class MigrationJobRequest implements IMigration {
    * @param parametersCql
    */
   public Diff compareJobRequestCql(final Javers javers) {
+
     // liste d'objet cql venant de la base thrift après transformation
     final List<JobRequestCql> listJobThrift = getListJobRequestThrift();
+
     // liste venant de la base cql
     final List<JobRequestCql> listRToCql = new ArrayList<>();
+
     final Iterator<JobRequestCql> it = cqldao.findAllWithMapper();
+
 
     while (it.hasNext()) {
       final JobRequestCql jobRequest = it.next();
       listRToCql.add(jobRequest);
     }
+
     Collections.sort(listJobThrift);
+
     Collections.sort(listRToCql);
 
+
     final Diff diff = javers.compareCollections(listJobThrift, listRToCql, JobRequestCql.class);
+
     if (!diff.hasChanges()) {
       LOGGER.info("MIGRATION_JobRequestCql -- Les listes JobRequest sont identiques");
     } else {
@@ -312,7 +331,7 @@ public class MigrationJobRequest implements IMigration {
                                 StringSerializer.get(),
                                 bytesSerializer);
     rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
-    final int blockSize = 1000;
+    final int blockSize = RowUtils.BLOCK_SIZE_JOB_REQUEST;
     UUID startKey = null;
     int count;
 
@@ -363,15 +382,17 @@ public class MigrationJobRequest implements IMigration {
       final List<UUID> currentlistUUID = new ArrayList<>();
 
       for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
-        final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
-        // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
-        if (jobRequest != null) {
-          final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
+        if (row.hasResults()) {// EC A TESTER
+          final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
+          // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
+          if (jobRequest != null) {
+            final JobRequestCql jobcql = JobRequestMapper.mapJobRequestThriftToJobRequestCql(jobRequest);
 
-          currentlistUUID.add(jobcql.getIdJob());
-          // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-          if (lastlistUUID == null || !lastlistUUID.contains(jobcql.getIdJob())) {
-            listJobThrift.add(jobcql);
+            currentlistUUID.add(jobcql.getIdJob());
+            // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+            if (lastlistUUID == null || !lastlistUUID.contains(jobcql.getIdJob())) {
+              listJobThrift.add(jobcql);
+            }
           }
         }
       }
