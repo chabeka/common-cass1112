@@ -816,7 +816,7 @@ public class SAESearchServiceImplDatasTest {
       Assert
       .assertEquals(
                     "Le message attendu est incorrect",
-                          "La ou les métadonnées suivantes, utilisées dans le filtre de la requête de recherche par itérateur, sont en doublon : DateArchivage",
+                    "La ou les métadonnées suivantes, utilisées dans le filtre de la requête de recherche par itérateur, sont en doublon : DateArchivage",
                     e.getMessage());
     }
 

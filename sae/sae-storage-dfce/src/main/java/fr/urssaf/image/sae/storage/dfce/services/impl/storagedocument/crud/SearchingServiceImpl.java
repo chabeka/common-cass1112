@@ -450,25 +450,30 @@ SearchingService {
         .createChainedFilter();
 
     final List<AbstractFilter> listeFiltres = paginatedLuceneCriteria.getFilters();
-    
+
     //Recuperation des ValueFilter dans la liste et ajout dans la chainedFilter
-    Map<String, List<AbstractFilter>> mapF = getValueFilter(listeFiltres);
+    final Map<String, List<AbstractFilter>> mapF = getValueFilter(listeFiltres);
     if(!mapF.isEmpty()) {
-  	  
-  	  for(Map.Entry<String, List<AbstractFilter>> entry : mapF.entrySet()){
-  		  String shortCode = entry.getKey();
-  		  List<String> list = new ArrayList<>();
-  		  for(final AbstractFilter filtre : entry.getValue()) {
-  			  final Object value = ((ValueFilter) filtre).getValue();
-      		  list.add((String) value);
-  		  }
-  		  chainedFilter.addTermsFilter(shortCode, list, ChainedFilterOperator.AND);
-  	  }  	  
+
+      for(final Map.Entry<String, List<AbstractFilter>> entry : mapF.entrySet()){
+        final String shortCode = entry.getKey();
+        final List<String> list = new ArrayList<>();
+        Object value = null;
+        for(final AbstractFilter filtre : entry.getValue()) {
+          value = ((ValueFilter) filtre).getValue();
+          list.add((String) value);
+        }
+        if (list.size() > 1) {
+          chainedFilter.addTermsFilter(shortCode, list, ChainedFilterOperator.AND);
+        } else if (list.size() == 1) {
+          chainedFilter.addTermFilter(shortCode, (String) value, ChainedFilterOperator.AND);
+        }
+      }  	  
     }
-    
+
     // On parcourt les autres types de filtres pour les ajouter à la chainedFilter
     for (final AbstractFilter filtre : listeFiltres) {
-      
+
       if (filtre instanceof RangeFilter) {
         final Object minValue = ((RangeFilter) filtre).getMinValue();
         final Object maxValue = ((RangeFilter) filtre).getMaxValue();
@@ -543,29 +548,29 @@ SearchingService {
    * @param listeFiltres
    * @return filtresMap
    */
-  private Map<String, List<AbstractFilter>> getValueFilter(List<AbstractFilter> listeFiltres) {
-	   final Map<String, List<AbstractFilter>> filtresMap = new HashMap<String, List<AbstractFilter>>();
-	   for (final AbstractFilter ff : listeFiltres) {
-		   // si valueFilter
-		   if (ff instanceof ValueFilter) {
-			   String shortCode =  ff.getShortCode();
-			   // test si le cas de ce filtre n'a pas encore été traité
-			   if(filtresMap.get(shortCode) == null) {
-				   List<AbstractFilter> lFilters = new ArrayList<>();
-				   for (final AbstractFilter f1 : listeFiltres) {
-					   String shortCode1 =  f1.getShortCode();
-					   if(shortCode.equals(shortCode1)) {
-						   lFilters.add(f1);
-					   }
-				   }
-				   if(lFilters.size() != 0) {
-					   filtresMap.put(shortCode, lFilters);
-				   }
-			   }
-		   }
-	   }
-	return filtresMap;
-	   
+  private Map<String, List<AbstractFilter>> getValueFilter(final List<AbstractFilter> listeFiltres) {
+    final Map<String, List<AbstractFilter>> filtresMap = new HashMap<>();
+    for (final AbstractFilter ff : listeFiltres) {
+      // si valueFilter
+      if (ff instanceof ValueFilter) {
+        final String shortCode =  ff.getShortCode();
+        // test si le cas de ce filtre n'a pas encore été traité
+        if(filtresMap.get(shortCode) == null) {
+          final List<AbstractFilter> lFilters = new ArrayList<>();
+          for (final AbstractFilter f1 : listeFiltres) {
+            final String shortCode1 =  f1.getShortCode();
+            if(shortCode.equals(shortCode1) && f1 instanceof ValueFilter) {
+              lFilters.add(f1);
+            }
+          }
+          if(lFilters.size() != 0) {
+            filtresMap.put(shortCode, lFilters);
+          }
+        }
+      }
+    }
+    return filtresMap;
+
   }
   /**
    * Convertion d'une liste de métadonnées String en liste de SorageMetadata
