@@ -44,6 +44,11 @@ public final class Constantes {
   public static final String CODE_COURT_META_ID_TRANSFERT = "ifi";
 
   /**
+   * Code court de la métadonnée 'identifiant de traitement de masse interne du document'
+   */
+  public static final String ID_TRAITEMENT_MASSE_INTERNE = "iti";
+  
+  /**
    * Identifiant de l'id du traitement à reprendre
    */
   public static final String ID_TRAITEMENT_A_REPRENDRE = "uuidJobAReprendre";

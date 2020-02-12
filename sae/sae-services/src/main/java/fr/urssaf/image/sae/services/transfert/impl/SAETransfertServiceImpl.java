@@ -266,6 +266,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       final List<StorageMetadata> metas = new ArrayList<>();
       metas.add(new StorageMetadata(StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode()));
       metas.add(new StorageMetadata(StorageTechnicalMetadatas.HASH.getShortCode()));
+      metas.add(new StorageMetadata(StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE.getShortCode()));
       final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, metas);
       final StorageDocument documentGNS = storageTransfertService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
       return documentGNS;
@@ -885,6 +886,19 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     */
    private void handleUnexpectedDocInGNS(final UUID idArchive, final boolean isReprise, final UUID idTraitementMasse, final StorageDocument documentGNS)
          throws ArchiveAlreadyTransferedException {
+	   
+	   // recuperer l'IdTraitementMasse du document GNS et verifier qu'il n'est pas vide
+	   boolean isNotIdTraitementMasseDocGNS = false;
+	   for (final StorageMetadata storageMetadata : Utils.nullSafeIterable(documentGNS.getMetadatas())) {
+         if (Constantes.ID_TRAITEMENT_MASSE_INTERNE.equals(storageMetadata.getShortCode())) {
+        	 String value = storageMetadata.getValue().toString();
+        	 if(value.isEmpty()) {
+        		 isNotIdTraitementMasseDocGNS = true;
+        	 }
+            break;
+         }
+	   }
+	   
       final String uuid = idArchive.toString();
       if (isReprise) {
          // -- Pour la reprise, on supprime le document de la GNS et
@@ -900,7 +914,13 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
                final String message = format("Reprise transfert de masse - La suppression du document {} de la GNS a échoué.", uuid);
                throw new TransfertMasseRuntimeException(message);
             }
-         } else {
+         }  else if (isNotIdTraitementMasseDocGNS){
+        	 
+        	// -- Le document existe sur la GNS et sur la GNT, et on n'est pas en mode reprise. Ce n'est pas normal.
+             final String message = format("Le document {} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.", uuid);
+             throw new ArchiveAlreadyTransferedException(message);
+             
+         }	else {
             final String message = format("Reprise transfert de masse - le document {} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution",
                   uuid);
             throw new ArchiveAlreadyTransferedException(message);
