@@ -19,6 +19,14 @@
 
    <build>
 
+      <extensions>
+         <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh</artifactId>
+            <version>3.0.0</version>
+         </extension>
+      </extensions>
+
       <plugins>
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -204,5 +212,40 @@
 				</plugins>
 			</build>
 		</profile>
+      <profile>
+         <!-- Profil permettant d'envoyer le jar généré sur un serveur de test -->
+         <id>deploy_jar</id>
+         <activation>
+            <property>
+                <!-- Le profil est activé la propriété système deploy_jar_server est spécifiée
+                  par exemple avec -Ddeploy_jar_server=hwi31picgntboappli1.gidn.recouv -->
+                <name>deploy_jar_server</name>
+            </property>
+         </activation>
+         <build>
+            <plugins>
+               <plugin>
+                 <groupId>org.codehaus.mojo</groupId>
+                 <artifactId>wagon-maven-plugin</artifactId>
+                 <version>2.0.0</version>
+                 <executions>
+                   <execution>
+                     <id>upload-jar</id>
+                     <phase>install</phase>
+                     <goals>
+                       <goal>upload-single</goal>
+                     </goals>
+                     <configuration>
+                       <serverId>appli-server-default-password</serverId>
+                       <fromFile>${project.build.directory}/${project.build.finalName}.jar</fromFile>
+                       <url>scp://${deploy_jar_server}/hawai/data/ged/sae-services-executable</url>
+                       <toFile>sae-services-executable.jar</toFile>
+                     </configuration>
+                   </execution>
+                 </executions>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
 	</profiles>
 </project>

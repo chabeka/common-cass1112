@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/sae-services-executable/src/main/java/fr/urssaf/image/sae/services/executable/ServicesMain.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.ui.favoriteGroups">
+<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="fr.urssaf.image.sae.services.executable.ServicesMain"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="traitementMasse 87c998a0-4da5-11ea-bb3c-9f96a04e9067 c:/hawai/data/ged/sae-config.properties"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="sae-services-executable"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-DLOGS_UUID=87c998a0-4da5-11ea-bb3c-9f96a04e9067&#13;&#10;-Dlogback.configurationFile=C:/hawai/data/ged/sae-services-executable/logback-sae-services-executable.xml &#13;&#10;-Dfile.encoding=UTF-8"/>
+</launchConfiguration>

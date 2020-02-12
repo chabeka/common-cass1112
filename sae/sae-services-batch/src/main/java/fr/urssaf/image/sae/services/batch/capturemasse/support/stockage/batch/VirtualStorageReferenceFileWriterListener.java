@@ -24,7 +24,7 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  */
 @Component
 public class VirtualStorageReferenceFileWriterListener extends
-      AbstractDocumentWriterListener {
+AbstractDocumentWriterListener {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(VirtualStorageReferenceFileWriterListener.class);
@@ -40,17 +40,12 @@ public class VirtualStorageReferenceFileWriterListener extends
     * @param references
     *           la liste des fichiers de référence en cours d'écriture
     */
-   
-   @OnWriteError
-   @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
-   /*
-    * Alerte PMD car nous avons obligation de caster l'erreur afin de
-    * pouvoir l'exploiter plus tard
-    */
-   public final void onWriteError(Exception exception,
-         List<StorageReferenceFile> references) {
 
-      String trcPrefix = "onWriteError()";
+   @OnWriteError
+   public final void onWriteError(final Exception exception,
+         final List<StorageReferenceFile> references) {
+
+      final String trcPrefix = "onWriteError()";
       LOGGER.debug("{} - erreur lors de l'écriture des données", trcPrefix);
 
       getCodesErreurListe().add(Constantes.ERR_BUL002);
@@ -63,11 +58,11 @@ public class VirtualStorageReferenceFileWriterListener extends
    }
 
    @Override
-   public UUID launchTraitement(AbstractStorageDocument storageDocument, int indexRun)
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int docIndex)
          throws Exception {
       return null;
    }
-   
+
    /**
     * {@inheritDoc}
     */

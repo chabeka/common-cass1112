@@ -46,11 +46,11 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  */
 @Component
 public class StorageDocumentWriter extends AbstractDocumentWriterListener
-                                   implements
-                                   ItemWriter<StorageDocument> {
+implements
+ItemWriter<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
-                                                     .getLogger(StorageDocumentWriter.class);
+         .getLogger(StorageDocumentWriter.class);
 
    @Autowired
    private InsertionCapturePoolThreadExecutor poolExecutor;
@@ -64,9 +64,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
    private static final String TRC_INSERT = "StorageDocumentWriter()";
 
-   private static final String CATCH = "AvoidCatchingThrowable";
-
-   private static volatile Integer index = 0;
+   private int docIndexInWriter = 0;
 
    /**
     * {@inheritDoc}
@@ -80,54 +78,49 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
       for (final StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
          boolean isdocumentATraite = true;
          if (isModePartielBatch()) {
-            isdocumentATraite = isDocumentATraite(index);
+            isdocumentATraite = isDocumentATraite(docIndexInWriter);
          }
 
          // Si le document n'est pas en erreur, on traite, sinon on passe au
          // suivant.
          if (isdocumentATraite) {
-            command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index.intValue(),
-                                            storageDocument,
-                                            this,
-                                            getStepExecution()
-                                                              .getReadCount()
-                                                  + index.intValue());
+            command = new InsertionRunnable(docIndexInWriter, storageDocument, this);
 
             try {
                poolExecutor.execute(command);
             }
             catch (final Exception ex) {
-               // Rerprise - Si traitement déjà réaliser par le traitement nominal, on déclare le document comme traité.
+               // Reprise - Si traitement déjà réaliser par le traitement nominal, on déclare le document comme traité.
                if (isModePartielBatch()) {
                   // En mode partiel, on ajoute l'exception à la liste des exceptions et on continue le traitement des documents.
                   getCodesErreurListe().add(Constantes.ERR_BUL002);
-                  getIndexErreurListe().add(getStepExecution().getExecutionContext().getInt(Constantes.CTRL_INDEX));
+                  getIndexErreurListe().add(docIndexInWriter);
                   final String message = ex.getMessage();
                   getErrorMessageList().add(message);
                   LOGGER.warn(message, ex);
+               }
+               else {
+                  throw ex;
                }
             }
 
          }
 
-         index++;
+         docIndexInWriter++;
          LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-                      TRC_INSERT,
-                      "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : "
-                            + poolExecutor.getActiveCount());
+               TRC_INSERT,
+               "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : "
+                     + poolExecutor.getActiveCount());
       }
-
-      // Reinitialisation du compteur si prochain passage.
-      index = 0;
 
    }
 
    /**
     * {@inheritDoc}
     */
+   // Attention : cette méthode est appelée depuis un pool de thread. Elle ne doit pas utiliser docIndexInWriter dont la valeur change
    @Override
-   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int indexRun)
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int docIndex)
          throws Exception {
       try {
          final StorageDocument document = insertStorageDocument((StorageDocument) storageDocument);
@@ -138,21 +131,19 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          throw ex;
       }
       catch (final Exception ex) {
-         synchronized (this) {
-            if (isModePartielBatch()) {
+         if (isModePartielBatch()) {
+            synchronized (this) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);
-               getIndexErreurListe().add(indexRun);
+               getIndexErreurListe().add(docIndex);
                getErrorMessageList().add(ex.getMessage());
                LOGGER.warn("Une erreur est survenue lors de la persistance de document",
-                           ex);
+                     ex);
                return null;
-            } else {
-               throw ex;
             }
+         } else {
+            throw ex;
          }
-
       }
-
    }
 
    /**
@@ -165,17 +156,16 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
     *            Exception levée lors de la persistance
     * @throws TraitementRepriseAlreadyDoneException
     */
-   @SuppressWarnings(CATCH)
    public final StorageDocument insertStorageDocument(
-                                                      final StorageDocument storageDocument)
-         throws InsertionServiceEx,
-         TraitementRepriseAlreadyDoneException {
+         final StorageDocument storageDocument)
+               throws InsertionServiceEx,
+               TraitementRepriseAlreadyDoneException {
 
       try {
          final StorageDocument retour = serviceProvider
-                                                       .getStorageDocumentService()
-                                                       .insertStorageDocument(
-                                                                              storageDocument);
+               .getStorageDocumentService()
+               .insertStorageDocument(
+                     storageDocument);
 
          // trace les éventuelles erreurs d'identification ou de validation
          traceErreurIdentOrValid(storageDocument, retour);
@@ -195,19 +185,19 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             }
          }
          catch (final RetrievalServiceEx e) {
-            // Do nothing exception levé juste aprés
+            // Do nothing exception levé juste après
          }
 
          throw new InsertionServiceEx("SAE-ST-INS001",
-                                      except.getMessage(),
-                                      except);
+               except.getMessage(),
+               except);
 
       }
       catch (final Exception except) {
 
          throw new InsertionServiceEx("SAE-ST-INS001",
-                                      except.getMessage(),
-                                      except);
+               except.getMessage(),
+               except);
 
       }
 
@@ -227,40 +217,40 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          throws RetrievalServiceEx {
       boolean retour = false;
       final String idJobEnCours = getStepExecution().getJobParameters()
-                                                    .getString(Constantes.ID_TRAITEMENT);
+            .getString(Constantes.ID_TRAITEMENT);
       final List<StorageMetadata> listeMetadatas = storageDocument.getMetadatas();
 
       if (idJobEnCours != null && !idJobEnCours.isEmpty()) {
          // On recherche la metadonnée idTraitementInterne dans la liste des
          // métadonnées du document.
          StorageMetadata metadata = retrieveMetadonneeByList(listeMetadatas,
-                                                             StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
-                                                                                                                  .getShortCode());
+               StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+               .getShortCode());
 
          if (metadata == null) {
             // Si on ne trouve pas la métadonnée idTraitementInterne, on
             // l'ajoute à la liste des métadonnées.
             listeMetadatas.add(new StorageMetadata(
-                                                   StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
-                                                                                                        .getShortCode()));
+                  StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+                  .getShortCode()));
          }
 
          final StorageMetadata metadataIdGed = retrieveMetadonneeByList(
-                                                                        listeMetadatas,
-                                                                        StorageTechnicalMetadatas.IDGED.getShortCode());
+               listeMetadatas,
+               StorageTechnicalMetadatas.IDGED.getShortCode());
 
          final UUID uuid = UUID.fromString(metadataIdGed.getValue().toString());
 
          // On met à jour les metadatas du document
          final UUIDCriteria uuidCriteria = new UUIDCriteria(uuid, listeMetadatas);
          final List<StorageMetadata> listeMetadatasRetrieve = serviceProvider
-                                                                             .getStorageDocumentService()
-                                                                             .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+               .getStorageDocumentService()
+               .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
 
          // On vérifie qu'elle se trouve bien dans la liste mise à jour.
          metadata = retrieveMetadonneeByList(listeMetadatasRetrieve,
-                                             StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
-                                                                                                  .getShortCode());
+               StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+               .getShortCode());
          if (metadata != null
                && idJobEnCours.equals(metadata.getValue().toString())) {
             // On alimente l'uuid du document pour ne pas bloquer le reste du
@@ -285,12 +275,12 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
     * @return La metadonnée recherchée
     */
    private StorageMetadata retrieveMetadonneeByList(
-                                                    final List<StorageMetadata> listeMetadatas, final String shortCode) {
+         final List<StorageMetadata> listeMetadatas, final String shortCode) {
       if (shortCode != null && !shortCode.isEmpty()) {
          for (final StorageMetadata storageMetadata : Utils
-                                                           .nullSafeIterable(listeMetadatas)) {
+               .nullSafeIterable(listeMetadatas)) {
             final StorageTechnicalMetadatas technical = Utils
-                                                             .technicalMetadataFinder(storageMetadata.getShortCode());
+                  .technicalMetadataFinder(storageMetadata.getShortCode());
 
             if (shortCode.equals(technical.getShortCode())) {
                return storageMetadata;
@@ -315,24 +305,24 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
     */
    @SuppressWarnings("unchecked")
    private void ajoutFichierOrigineSiNecessaire(
-                                                final StorageDocument storageDocument, final StorageDocument retour)
-         throws FileNotFoundException, StorageDocAttachmentServiceEx {
+         final StorageDocument storageDocument, final StorageDocument retour)
+               throws FileNotFoundException, StorageDocAttachmentServiceEx {
       final String trcPrefix = "ajoutFichierOrigineSiNecessaire";
 
       if (getStepExecution() != null) {
          // recupere la map des documents compressés
          final Map<String, CompressedDocument> documentsCompressed = (Map<String, CompressedDocument>) getStepExecution()
-                                                                                                                         .getJobExecution()
-                                                                                                                         .getExecutionContext()
-                                                                                                                         .get("documentsCompressed");
+               .getJobExecution()
+               .getExecutionContext()
+               .get("documentsCompressed");
 
          if (documentsCompressed != null) {
             LOGGER.debug("{} - Clé de la map des documents compresses : {}",
-                         trcPrefix,
-                         documentsCompressed.keySet());
+                  trcPrefix,
+                  documentsCompressed.keySet());
             LOGGER.debug("{} - Recherche du document : {}",
-                         trcPrefix,
-                         storageDocument.getFilePath());
+                  trcPrefix,
+                  storageDocument.getFilePath());
             String pathOriginalFile = null;
             String originalName = null;
             // on parcours la liste des documents compressés pour savoir si le
@@ -341,11 +331,11 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             // replacementDocumentProcessor)
             // si c'est le cas, il faut stocké l'original en pièce jointe
             for (final Entry<String, CompressedDocument> entry : documentsCompressed
-                                                                                    .entrySet()) {
+                  .entrySet()) {
                final CompressedDocument doc = entry.getValue();
                LOGGER.debug("{} - Analyse du document : {}",
-                            trcPrefix,
-                            doc.getFilePath());
+                     trcPrefix,
+                     doc.getFilePath());
                if (doc.getFilePath().equals(storageDocument.getFilePath())) {
                   // on a trouvé le nom du fichier dans les listes des fichiers
                   // compressés
@@ -359,100 +349,100 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             }
             if (pathOriginalFile != null) {
                LOGGER.debug("{} - Document original trouvé : {}",
-                            trcPrefix,
-                            pathOriginalFile);
+                     trcPrefix,
+                     pathOriginalFile);
                // calcul du nom du fichier et de l'extension
                final String docName = FilenameUtils.getBaseName(originalName);
                final String extension = FilenameUtils.getExtension(originalName);
                final DataHandler contenu = new DataHandler(new FileDataSource(
-                                                                              new File(pathOriginalFile)));
+                     new File(pathOriginalFile)));
                // on a un doc original qu'on va mettre en piece jointe
                serviceProvider.getStorageDocumentService()
-                              .addDocumentAttachment(retour.getUuid(),
-                                                     docName,
-                                                     extension,
-                                                     contenu);
+               .addDocumentAttachment(retour.getUuid(),
+                     docName,
+                     extension,
+                     contenu);
             } else {
                LOGGER.debug("{} - Document original non trouvé", trcPrefix);
             }
          } else {
             LOGGER.debug("{} - La map des documents compresses n'existe pas dans le contexte spring",
-                         trcPrefix);
+                  trcPrefix);
          }
       }
    }
 
    @SuppressWarnings("unchecked")
    private void traceErreurIdentOrValid(final StorageDocument storageDocument,
-                                        final StorageDocument retour) {
+         final StorageDocument retour) {
       final String trcPrefix = "traceErreurIdentOrValid";
       LOGGER.debug("{} - début", trcPrefix);
 
       if (getStepExecution() != null) {
          // récupére la map de resultat de controle de capture de masse
          final Map<String, CaptureMasseControlResult> map = (Map<String, CaptureMasseControlResult>) getStepExecution()
-                                                                                                                       .getJobExecution()
-                                                                                                                       .getExecutionContext()
-                                                                                                                       .get("mapCaptureControlResult");
+               .getJobExecution()
+               .getExecutionContext()
+               .get("mapCaptureControlResult");
          if (map == null) {
             LOGGER.debug(
-                         "{} - Map des résultat de controle non présente dans le contexte d'éxécution",
-                         trcPrefix);
+                  "{} - Map des résultat de controle non présente dans le contexte d'éxécution",
+                  trcPrefix);
          } else {
             LOGGER.debug("{} - Map des résultat de controle récupéré",
-                         trcPrefix);
+                  trcPrefix);
             // recupére le résultat de controle de capture de masse du document
             // archive
             final CaptureMasseControlResult resultat = map.get(storageDocument
-                                                                              .getFilePath());
+                  .getFilePath());
             if (resultat == null) {
                LOGGER.debug("{} - Résultat de controle non présent dans la map pour la key {}",
-                            trcPrefix,
-                            storageDocument.getFilePath());
+                     trcPrefix,
+                     storageDocument.getFilePath());
             } else {
                LOGGER.debug("{} - Récupération OK du résultat de controle pour le document",
-                            trcPrefix);
+                     trcPrefix);
 
                // Récupère le nom de l'opération du WS
                final String contexte = Constantes.CONTEXTE_CAPTURE_MASSE;
 
                // Récupère le format du fichier
                final String formatFichier = findMetadataValue("ffi",
-                                                              storageDocument.getMetadatas());
+                     storageDocument.getMetadatas());
 
                LOGGER.debug("{} - Format de fichier : {}",
-                            trcPrefix,
-                            formatFichier);
+                     trcPrefix,
+                     formatFichier);
 
                // Récupère l'identifiant de traitement unitaire
                final String idTraitement = findMetadataValue(
-                                                             StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
-                                                                                                                  .getShortCode(),
-                                                             storageDocument.getMetadatas());
+                     StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+                     .getShortCode(),
+                     storageDocument.getMetadatas());
 
                LOGGER.debug("{} - Identifiant du traitement : {}",
-                            trcPrefix,
-                            idTraitement);
+                     trcPrefix,
+                     idTraitement);
 
                if (resultat.isIdentificationActivee()
                      && resultat.isIdentificationEchecMonitor()) {
                   tracesSupport.traceErreurIdentFormatFichier(contexte,
-                                                              formatFichier,
-                                                              resultat.getIdFormatReconnu(),
-                                                              retour
-                                                                    .getUuid()
-                                                                    .toString()
-                                                                    .toString(),
-                                                              idTraitement);
+                        formatFichier,
+                        resultat.getIdFormatReconnu(),
+                        retour
+                        .getUuid()
+                        .toString()
+                        .toString(),
+                        idTraitement);
                }
 
                if (resultat.isValidationActivee()
                      && resultat.isValidationEchecMonitor()) {
                   tracesSupport.traceErreurValidFormatFichier(contexte,
-                                                              formatFichier,
-                                                              resultat.getDetailEchecValidation(),
-                                                              retour.getUuid().toString(),
-                                                              idTraitement);
+                        formatFichier,
+                        resultat.getDetailEchecValidation(),
+                        retour.getUuid().toString(),
+                        idTraitement);
                }
             }
          }
@@ -461,7 +451,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
    }
 
    private String findMetadataValue(final String metaName,
-                                    final List<StorageMetadata> metadatas) {
+         final List<StorageMetadata> metadatas) {
       int metaIndex = 0;
       String valeur = null;
       boolean trouve = false;

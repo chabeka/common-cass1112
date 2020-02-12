@@ -28,8 +28,8 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  */
 @Component
 public class VirtualStorageDocumentWriter extends
-      AbstractDocumentWriterListener implements
-      ItemWriter<VirtualStorageDocument> {
+AbstractDocumentWriterListener implements
+ItemWriter<VirtualStorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(VirtualStorageDocumentWriter.class);
@@ -41,21 +41,19 @@ public class VirtualStorageDocumentWriter extends
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
 
-   private static final String CATCH = "AvoidCatchingThrowable";
-
    /**
     * {@inheritDoc}
     */
    @Override
-   public final void write(List<? extends VirtualStorageDocument> items)
+   public final void write(final List<? extends VirtualStorageDocument> items)
          throws Exception {
-      String trcPrefix = "write";
+      final String trcPrefix = "write";
       LOGGER.debug("{} - début", trcPrefix);
 
       Runnable command;
       int index = 0;
 
-      for (VirtualStorageDocument storageDocument : Utils
+      for (final VirtualStorageDocument storageDocument : Utils
             .nullSafeIterable(items)) {
 
          command = new InsertionVirtualRunnable(getStepExecution()
@@ -74,14 +72,14 @@ public class VirtualStorageDocumentWriter extends
       LOGGER.debug("{} - fin", trcPrefix);
 
    }
-   
+
    @Override
-   public UUID launchTraitement(AbstractStorageDocument storageDocument, int indexRun)
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int docIndex)
          throws Exception {
       // Non utilisé pour les documents virtuels. A mettre en place si besoin pour rendre le code plus générique.
       // VirtualStorageDocument document = insertStorageDocument((VirtualStorageDocument) storageDocument);
       // UUID uuid = document != null ? document.getUuid() : null;
-      
+
       return null;
    }
 
@@ -94,18 +92,17 @@ public class VirtualStorageDocumentWriter extends
     * @throws InsertionServiceEx
     *            Exception levée lors de la persistance
     */
-   @SuppressWarnings(CATCH)
    public final VirtualStorageDocument insertStorageDocument(
          final VirtualStorageDocument storageDocument)
-         throws InsertionServiceEx {
-      String trcPrefix = "insertStorageDocument()";
+               throws InsertionServiceEx {
+      final String trcPrefix = "insertStorageDocument()";
       LOGGER.debug("{} - début", trcPrefix);
 
       try {
          final UUID uuid = serviceProvider.getStorageDocumentService()
                .insertVirtualStorageDocument(storageDocument);
 
-         VirtualStorageDocument document = new VirtualStorageDocument();
+         final VirtualStorageDocument document = new VirtualStorageDocument();
          BeanUtils.copyProperties(document, storageDocument);
          document.setUuid(uuid);
 
@@ -113,7 +110,7 @@ public class VirtualStorageDocumentWriter extends
 
          return document;
 
-      } catch (Exception except) {
+      } catch (final Exception except) {
 
          throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
                except);

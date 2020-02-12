@@ -16,16 +16,17 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  */
 public class InsertionRunnable implements Runnable {
 
+   /**
+    * Index du document dans le sommaire
+    */
    private final int indexDocument;
 
    private final StorageDocument storageDocument;
 
    private final AbstractDocumentWriterListener service;
-   
-   private final int index;
+
 
    /**
-    * 
     * @param indexDocument
     *           index du document dans le sommaire, commence à 0
     * @param storageDocument
@@ -35,14 +36,12 @@ public class InsertionRunnable implements Runnable {
     */
    public InsertionRunnable(final int indexDocument,
          final StorageDocument storageDocument,
-         final AbstractDocumentWriterListener service, final int index) {
+         final AbstractDocumentWriterListener service) {
       this.indexDocument = indexDocument;
       this.storageDocument = storageDocument;
       this.service = service;
-      this.index = index;
-
    }
-   
+
 
    /**
     * {@inheritDoc}
@@ -52,11 +51,11 @@ public class InsertionRunnable implements Runnable {
 
       try {
 
-         final UUID uuid = this.service.launchTraitement(storageDocument, index);
-         
+         final UUID uuid = service.launchTraitement(storageDocument, indexDocument);
+
          storageDocument.setUuid(uuid);
 
-      } catch (Exception e) {
+      } catch (final Exception e) {
 
          throw new InsertionMasseRuntimeException(indexDocument,
                storageDocument, e);
@@ -64,13 +63,13 @@ public class InsertionRunnable implements Runnable {
       }
 
    }
-   
+
    /**
     * 
     * @return document à insérer
     */
    public final StorageDocument getStorageDocument() {
-      return this.storageDocument;
+      return storageDocument;
    }
 
    /**
@@ -78,7 +77,7 @@ public class InsertionRunnable implements Runnable {
     * @return index du document dans le sommaire
     */
    public final int getIndexDocument() {
-      return this.indexDocument;
+      return indexDocument;
    }
 
 }

@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.springframework.batch.core.ExitStatus;
@@ -60,7 +59,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
    @Override
    protected ExitStatus specificAfterStepOperations() {
       // pour l'instant nous avons fait le choix de propager l'erreur
-      // pour ne pas la cacher et attérir dans un état en erreur
+      // pour ne pas la cacher et atterrir dans un état en erreur
 
       final String trcPrefix = "specificAfterStepOperations()";
       ExitStatus exitStatus = getStepExecution().getExitStatus();
@@ -72,9 +71,9 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
       }
       catch (final Exception e) {
          getLogger().warn(
-                          "{} - erreur lors de la fermeture de la base de données",
-                          trcPrefix,
-                          e);
+               "{} - erreur lors de la fermeture de la base de données",
+               trcPrefix,
+               e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());
@@ -103,15 +102,14 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
     * Il est à traiter s'il n'est pas dans la liste des éléments déjà traités (utilisée en mode reprise)
     * et s'il n'est pas dans la liste des documents en erreur
     *
-    * @param index
-    *           index du document traité
+    * @param docIndex
+    *           index du document dans le sommaire
     * @return True est à traiter, false sinon
     */
-   protected boolean isDocumentATraite(final int index) {
+   protected boolean isDocumentATraite(final int docIndex) {
       boolean isdocumentATraite = true;
       if (isModePartielBatch() || isRepriseActifBatch()) {
-         isdocumentATraite = isDocumentATraiteByListIndex(getIndexErreurListe(), index)
-               && isDocumentATraiteByListIndex(getIndexRepriseDoneListe(), index);
+         isdocumentATraite = !getIndexErreurListe().contains(docIndex) && !getIndexRepriseDoneListe().contains(docIndex);
       }
 
       return isdocumentATraite;
@@ -121,42 +119,17 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
     * Vérifie que le document a déjà été traité par le traitement nominal lors
     * de la reprise.
     *
-    * @param index
-    *           index du document
+    * @param docIndex
+    *           index du document dans le sommaire
     * @return True si le document a déjà été traité, false sinon.
     */
-   protected boolean isDocumentDejaTraite(final int index) {
+   protected boolean isDocumentDejaTraite(final int docIndex) {
       boolean isdocumentDejaTraite = false;
       if (isRepriseActifBatch()) {
-         isdocumentDejaTraite = !isDocumentATraiteByListIndex(
-                                                              getIndexRepriseDoneListe(),
-                                                              index);
+         isdocumentDejaTraite = getIndexRepriseDoneListe().contains(docIndex);
       }
 
       return isdocumentDejaTraite;
-   }
-
-   /**
-    * Méthode permettant de voir si un index d'un document est présent dans une
-    * liste d'index de type {@link ConcurrentLinkedQueue}
-    *
-    * @param indexListe
-    *           liste d'index
-    * @param index
-    *           index à trouver
-    * @return True si l'index du document est present dans la liste, false
-    *         sinon.
-    */
-   private boolean isDocumentATraiteByListIndex(
-                                                final ConcurrentLinkedQueue<Integer> indexListe, final int index) {
-      // En mode PARTIEL, on regarde s'il y a une erreur de déclarer pour
-      // l'item. Si c'est le cas, on ne le traite pas.
-      for (final Integer indexDocError : indexListe) {
-         if (indexDocError == (getStepExecution().getReadCount() + index)) {
-            return false;
-         }
-      }
-      return true;
    }
 
    /**
@@ -164,9 +137,11 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
     * 
     * @param storageDocument
     *           Document à traiter.
+    * @param docIndex
+    *           index du document dans le sommaire
     * @return l'identifiant du document traité.
     */
-   public abstract UUID launchTraitement(final AbstractStorageDocument storageDocument, final int index) throws Exception;
+   public abstract UUID launchTraitement(final AbstractStorageDocument storageDocument, final int docIndex) throws Exception;
 
    /**
     * @return le serviceProvider

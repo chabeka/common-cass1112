@@ -19,7 +19,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.Ab
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.modification.support.stockage.multithreading.ModificationPoolThreadExecutor;
-import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
@@ -48,19 +47,11 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener i
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
-   
-   private static volatile Integer index = 0;
 
-   /**
-    * Gestionnaire des traces.
-    */
-   @Autowired
-   private TracesControlesSupport tracesSupport;
+   private int docIndexInWriter = 0;
 
    private static final String TRC_INSERT = "ModificationDocumentWriter()";
 
-   private static final String CATCH = "AvoidCatchingThrowable";
-   
    /**
     * {@inheritDoc}
     */
@@ -70,47 +61,40 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener i
       Runnable command;
 
       for (final StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
-         final boolean isdocumentATraite = isDocumentATraite(index);
+         final boolean isdocumentATraite = isDocumentATraite(docIndexInWriter);
          // Si le document n'est pas en erreur ou dans la liste de document déjà
          // traité (Reprise), on traite, sinon on passe au
          // suivant.
          if (isdocumentATraite) {
-            command = new InsertionRunnable(getStepExecution().getReadCount() + index,
-                                            storageDocument,
-                                            this,
-                                            getStepExecution().getReadCount() + index);
+            command = new InsertionRunnable(docIndexInWriter, storageDocument, this);
 
             try {
                poolExecutor.execute(command);
             }
             catch (final Exception e) {
                if (isModePartielBatch()) {
-                  getCodesErreurListe().add(Constantes.ERR_BUL002);
-                  getIndexErreurListe()
-                                       .add(getStepExecution().getExecutionContext().getInt(Constantes.CTRL_INDEX));
-                  getErrorMessageList().add(e.getMessage());
-                  LOGGER.warn("Ereur lors de la modification des documents dans DFCE", e);
+                  sendExceptionInPartielMode(e, docIndexInWriter);
+                  LOGGER.warn("Ereur lors de la modification du document", e);
+               }
+               else {
+                  throw e;
                }
             }
 
             LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-                     TRC_INSERT,
-                         "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount()
-                               + " - Actifs : " + poolExecutor.getActiveCount());
+                  TRC_INSERT,
+                  "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount()
+                  + " - Actifs : " + poolExecutor.getActiveCount());
 
-         } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
+         } else if (isDocumentDejaTraite(docIndexInWriter)) {
             poolExecutor.getIntegratedDocuments()
-                        .add(new TraitementMasseIntegratedDocument(
-                                                                   storageDocument.getUuid(),
-                                                                   null,
-                                                                   getStepExecution().getReadCount() + index));
+            .add(new TraitementMasseIntegratedDocument(
+                  storageDocument.getUuid(),
+                  null,
+                  docIndexInWriter));
          }
-         index++;
-
+         docIndexInWriter++;
       }
-
-      // Reinitialisation du compteur si prochain passage.
-      index = 0;
 
    }
 
@@ -118,54 +102,55 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener i
     * {@inheritDoc}
     */
    @Override
-   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int indexRun) throws Exception {
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int docIndex) throws Exception {
       StorageDocument document = null;
       try {
-         document = insertStorageDocument((StorageDocument) storageDocument);
+         document = updateDocument((StorageDocument) storageDocument);
       }
       catch (final Exception except) {
-         synchronized (this){
-            final String message = "Erreur DFCE - identifiant archivage " + storageDocument.getUuid() + " : "
-                  + except.getMessage();
+         final String message = "Erreur lors du traitement du document " + storageDocument.getUuid() + " : "
+               + except.getMessage();
          if (isModePartielBatch()) {
-               final Exception e = new Exception(message, except);
-            getCodesErreurListe().add(Constantes.ERR_BUL002);
-            getIndexErreurListe().add(indexRun);
-            getErrorMessageList().add(e.getMessage());
+            sendExceptionInPartielMode(except, docIndex);
             LOGGER.warn(message, except);
          } else {
-               throw new UpdateServiceEx(new Exception(message));
+            throw new UpdateServiceEx(new Exception(message));
          }
       }
-      }
-
       return document != null ? document.getUuid() : null;
    }
-   
+
+   private void sendExceptionInPartielMode(final Exception e, final int docIndex) {
+      synchronized (this) {
+         getCodesErreurListe().add(Constantes.ERR_BUL002);
+         getIndexErreurListe().add(docIndex);
+         getErrorMessageList().add(e.getMessage());
+      }
+   }
+
    /**
-    * Persistance du document
+    * Lance la modification du document
     * 
     * @param storageDocument
-    *           document à sauvegarder
+    *           document à modifier
     * @return le document avec l'uuid renseigné
     * @throws InsertionServiceEx
     *            Exception levée lors de la persistance
     */
-   @SuppressWarnings(CATCH)
-   public final StorageDocument insertStorageDocument(final StorageDocument storageDocument) throws UpdateServiceEx {
+   public final StorageDocument updateDocument(final StorageDocument storageDocument) throws UpdateServiceEx {
 
-      // Récuperer l'id du traitement en cours
+      // Récupère l'id du traitement en cours
       final String idJob = getStepExecution().getJobParameters().getString(Constantes.ID_TRAITEMENT);
-      
+
       UUID uuidJob = null;
       if(StringUtils.isNotEmpty(idJob)){
          // conversion
          uuidJob = UUID.fromString(idJob);
       }
       serviceProvider.getStorageDocumentService()
-                     .updateStorageDocument(uuidJob,
-                                            storageDocument.getUuid(),
-                                            storageDocument.getMetadatas(),
+      .updateStorageDocument(uuidJob,
+            storageDocument.getUuid(),
+            storageDocument.getMetadatas(),
             storageDocument.getMetadatasToDelete());
 
       return storageDocument;

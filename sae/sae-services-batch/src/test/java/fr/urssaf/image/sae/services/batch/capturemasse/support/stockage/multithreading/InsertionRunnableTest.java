@@ -26,7 +26,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-capturemasse-test-mock-storagedocument.xml",
-      "/applicationContext-sae-services-batch-test.xml" })
+"/applicationContext-sae-services-batch-test.xml" })
 public class InsertionRunnableTest {
 
    @Autowired
@@ -44,41 +44,39 @@ public class InsertionRunnableTest {
 
    @Test(expected = InsertionMasseRuntimeException.class)
    public void testRunRetourErreur() throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
+   InsertionIdGedExistantEx {
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new InsertionServiceEx());
+                        new InsertionServiceEx());
 
       EasyMock.replay(storageDocumentService);
 
-      InsertionRunnable insertionRunnable = new InsertionRunnable(0,
-            new StorageDocument(), writer, 0);
+      final InsertionRunnable insertionRunnable = new InsertionRunnable(0, new StorageDocument(), writer);
 
       insertionRunnable.run();
    }
 
    @Test
    public void testRunSuccess() throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
+   InsertionIdGedExistantEx {
 
-      StorageDocument storageDocument = new StorageDocument();
+      final StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
 
-      StorageDocument aIntegrer = new StorageDocument();
+      final StorageDocument aIntegrer = new StorageDocument();
       aIntegrer.setCreationDate(new Date());
       aIntegrer.setFilePath("/home");
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument);
+      .andReturn(storageDocument);
 
       EasyMock.replay(storageDocumentService);
 
-      InsertionRunnable insertionRunnable = new InsertionRunnable(0, aIntegrer,
-            writer, 0);
+      final InsertionRunnable insertionRunnable = new InsertionRunnable(0, aIntegrer, writer);
       insertionRunnable.run();
 
       Assert.assertNotNull("l'uuid du document doit être renseigné",
