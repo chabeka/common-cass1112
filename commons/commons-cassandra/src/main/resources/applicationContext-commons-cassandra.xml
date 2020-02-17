@@ -58,5 +58,16 @@
       <constructor-arg ref="keyspace" />
       <constructor-arg ref="jobClockConfiguration" />
    </bean>
-
+   
+    <bean id="modeApiCqlSupport" class="fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport">
+   		<constructor-arg ref="modeAPICqlDaoImpl" />
+   </bean>
+   
+    <bean id="modeAPICqlDaoImpl" class="fr.urssaf.image.commons.cassandra.modeapi.ModeAPICqlDaoImpl">
+   		<constructor-arg ref="cassandraCQLClientFactory" />
+   </bean>
+   
+   <bean id="modeAPIServiceImpl" class="fr.urssaf.image.commons.cassandra.modeapi.ModeAPIServiceImpl">
+   		<constructor-arg ref="modeApiCqlSupport" />
+   </bean>
 </beans>

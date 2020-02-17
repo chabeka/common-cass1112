@@ -38,18 +38,22 @@ public final class ModeGestionAPI {
    *
    * @param listeCfsModes
    */
-  public static void setListeCfsModes(final HashMap<String, String> listeCfsModes) {
-    ModeGestionAPI.listeCfsModes = listeCfsModes;
-  }
+  /*
+   * public static void setListeCfsModes(final HashMap<String, String> listeCfsModes) {
+   * ModeGestionAPI.listeCfsModes = listeCfsModes;
+   * }
+   */
 
   /**
    * Permet de lire la HashMap
    *
    * @return listeCfsModes
    */
-  public static HashMap<String, String> getListeCfsModes() {
-    return listeCfsModes;
-  }
+  /*
+   * public static HashMap<String, String> getListeCfsModes() {
+   * return listeCfsModes;
+   * }
+   */
 
   /**
    * Retourne le mode d'API pour une CF
@@ -57,14 +61,18 @@ public final class ModeGestionAPI {
    * @param cfName
    * @return listeCfsModes
    */
-  public static String getModeApiCf(final String cfName) {
-    // Dans le cas ou la HashMap contient le nom de la CF
-    // passée en paramètre comme clé
-    if (listeCfsModes.containsKey(cfName)) {
-      return listeCfsModes.get(cfName);
-    } else {
-      // Sinon par défaut on renvoit le fonctionnement avec Hector
-      return MODE_API.HECTOR;
-    }
-  }
+  /*
+   * public String getModeApiCf(final String cfName) {
+   * // Dans le cas ou la HashMap contient le nom de la CF
+   * // passée en paramètre comme clé
+   * if (listeCfsModes.containsKey(cfName)) {
+   * return listeCfsModes.get(cfName);
+   * } else {
+   * // Sinon par défaut on renvoit le fonctionnement avec Hector
+   * // return MODE_API.HECTOR;
+   * // A TESTER EC
+   * throw new RuntimeException("Le Mode API n'existe pas pour la cfName:" + cfName);
+   * }
+   * }
+   */
 }
