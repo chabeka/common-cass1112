@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services.batch.transfert.support.controle.batch;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -270,6 +271,19 @@ ItemProcessor<UntypedDocument, StorageDocument> {
     */
    @Override
    protected ExitStatus specificAfterStepOperations() {
+	   
+	   // Traitement du cas d'echec de reconnexion au DFCE après interruption survenu avant le traitement
+	   // du premier documment, ano:#443725
+       if (CollectionUtils.isNotEmpty(getCodesErreurListe()) && getCodesErreurListe().size() == 1) {
+    	   if(getErrorMessageList().contains("Error in beforeProcess.") && getCodesErreurListe().contains(Constantes.ERR_BUL002)) {
+    		   getCodesErreurListe().clear();
+    		   getCodesErreurListe().add(Constantes.ERR_BUL001);
+    		   getIndexErreurListe().clear();
+    		   getIndexErreurListe().add(0);
+    		   getErrorMessageList().clear();
+    		   getErrorMessageList().add(interruptionTraitementMasseSupport.getConnectionResultExceptionMessage());
+    	   }
+       }
       return getStepExecution().getExitStatus();
    }
 

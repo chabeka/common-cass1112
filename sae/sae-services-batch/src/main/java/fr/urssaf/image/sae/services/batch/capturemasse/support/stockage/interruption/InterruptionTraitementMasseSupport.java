@@ -51,6 +51,12 @@ public interface InterruptionTraitementMasseSupport {
   public boolean isInterrupted();
 
   /**
+   * 
+   * @return le message d'erreur lié à l'exception lorsqu'on arrive pas à se connecter au DFCE
+   */
+  public String getConnectionResultExceptionMessage();
+  
+  /**
    * Methode de vérification sur l'état du redemmarrage du serveur d'application.
    * 
    * @param config

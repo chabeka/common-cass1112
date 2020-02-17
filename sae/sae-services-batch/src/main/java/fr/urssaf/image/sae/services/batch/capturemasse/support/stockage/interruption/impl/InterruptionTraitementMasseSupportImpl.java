@@ -39,6 +39,8 @@ InterruptionTraitementMasseSupport {
   private final StorageServiceProvider serviceProvider;
 
   private volatile boolean interrupted;
+  
+  private ConnectionResult connectionResult;
 
   /**
    * @param dfceManager
@@ -113,7 +115,7 @@ InterruptionTraitementMasseSupport {
       // insertion dans DFCE
       // dfceManager.closeConnection();
 
-      ConnectionResult connectionResult;
+      
       try {
         connectionResult = pause(diffTime,
                                  null,
@@ -258,6 +260,13 @@ InterruptionTraitementMasseSupport {
   @Override
   public boolean isInterrupted() {
     return interrupted;
+  }
+
+  public String getConnectionResultExceptionMessage() {
+	  if(connectionResult != null && connectionResult.exception != null) {
+		  return connectionResult.exception.getMessage();
+	  }
+	return "";
   }
 
 
