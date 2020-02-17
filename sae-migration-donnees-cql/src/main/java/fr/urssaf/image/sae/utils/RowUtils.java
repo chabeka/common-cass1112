@@ -16,7 +16,7 @@ public class RowUtils {
 
   public final static int BLOCK_SIZE_DEFAULT = 100;
 
-  public final static int BLOCK_SIZE_TRACE_REG_TECHNIQUE = 10;
+  public final static int BLOCK_SIZE_TRACE_REG_TECHNIQUE = 3;
 
   public final static int BLOCK_SIZE_TRACE_REG_SECURITE = 100;
 

@@ -19,6 +19,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 
 
 

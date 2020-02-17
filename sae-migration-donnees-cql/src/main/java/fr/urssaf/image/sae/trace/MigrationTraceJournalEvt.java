@@ -411,31 +411,30 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         int i = 0;
         for (final me.prettyprint.hector.api.beans.Row<String, String, byte[]> row : orderedRows) {
 
-          if (RowUtils.rowSsbHasColumns(row)) {
-            final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
+          // if (RowUtils.rowSsbHasColumns(row)) {
+          final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
 
-            if (list != null) {
-              for (final TraceJournalEvtIndexDoc tr : list) {
-                final TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
+          if (list != null && !list.isEmpty()) {
+            for (final TraceJournalEvtIndexDoc tr : list) {
+              final TraceJournalEvtIndexDocCql indxDocCql = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey());
 
-                currentlistUUID.add(java.util.UUID.fromString(row.getKey()));
+              currentlistUUID.add(java.util.UUID.fromString(row.getKey()));
 
-                // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
-                if (lastlistUUID == null || !lastlistUUID.contains(indxDocCql.getIdentifiantIndex())) {
-                  indexDocDaocql.saveWithMapper(indxDocCql);
+              // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
+              if (lastlistUUID == null || !lastlistUUID.contains(indxDocCql.getIdentifiantIndex())) {
+                indexDocDaocql.saveWithMapper(indxDocCql);
+                i++;
+                if (i % 10000 == 0) {
+                  LOGGER.info(" Nb rows : {}", i);
                 }
-
-                // ecriture dans le fichier
-                bWriter.append(row.getKey());
-                bWriter.newLine();
               }
-            }
-            i++;
-            if (i % 10000 == 0) {
-              LOGGER.info(" Nb rows : {}", i);
+              // ecriture dans le fichier
+              bWriter.append(row.getKey());
+              bWriter.newLine();
             }
           }
         }
+        // }
         // remettre à jour la map
         lastIteartionMap.put(iterationNB, currentlistUUID);
         lastIteartionMap.remove(iterationNB - 1);

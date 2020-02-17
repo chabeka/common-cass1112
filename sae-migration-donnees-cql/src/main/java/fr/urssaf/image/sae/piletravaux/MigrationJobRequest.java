@@ -382,7 +382,7 @@ public class MigrationJobRequest implements IMigration {
       final List<UUID> currentlistUUID = new ArrayList<>();
 
       for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
-        if (row.hasResults()) {// EC A TESTER
+        if (row.hasResults()) {
           final JobRequest jobRequest = jobRequestSupport.createJobRequestFromResult(row);
           // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
           if (jobRequest != null) {

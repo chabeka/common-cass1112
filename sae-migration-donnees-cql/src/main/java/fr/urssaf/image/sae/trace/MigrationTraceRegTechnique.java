@@ -95,7 +95,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
     UUID startkeyError = null;
 
     try {
-
+      //LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -1", totalCount);
       file = RepriseFileUtils.getKeysFile(RepriseFileUtils.getKeyFileDir(), TRACE_REG_TECHNIQUE_TXT);
       fWriter = new FileWriter(file, true);
       bWriter = new BufferedWriter(fWriter);
@@ -105,20 +105,20 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
         startKey = UUID.fromString(strKey);
         startkeyError = startKey;
       }
-
+      // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -1", totalCount);
       // Parametrage de la requete hector
 
       final StringSerializer stringSerializer = StringSerializer.get();
       final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       final UUIDSerializer uSl = UUIDSerializer.get();
-
+      // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -2", totalCount);
       final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
           .createRangeSlicesQuery(compRegTec.getKeySpace(),
                                   uSl,
                                   stringSerializer,
                                   bytesSerializer);
       rangeSlicesQuery.setColumnFamily(compRegTec.getTraceClasseName());
-
+      // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -3", totalCount);
       final int blockSize = RowUtils.BLOCK_SIZE_TRACE_REG_TECHNIQUE;
       int count;
 
@@ -130,16 +130,16 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
 
       // Pour chaque tranche de blockSize, on recherche l'objet cql
       do {
-
+        // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -4", totalCount);
         rangeSlicesQuery.setRange("", "", false, blockSize);
         rangeSlicesQuery.setKeys(startKey, null);
         rangeSlicesQuery.setRowCount(blockSize);
         final QueryResult<OrderedRows<UUID, String, byte[]>> result = rangeSlicesQuery
             .execute();
-
+        // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -5", totalCount);
         final OrderedRows<UUID, String, byte[]> orderedRows = result.get();
         count = orderedRows.getCount();
-
+        // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -6", totalCount);
         // Parcours des rows pour déterminer la dernière clé de l'ensemble
         final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> lastRow = orderedRows.peekLast();
         // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -7", totalCount);
@@ -147,38 +147,44 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
           LOGGER.error("MigrationTraceRegTechnique-migrationFromThriftToCql-La clé de depart (startKey) dans la requete hector n'a pas été trouvé dans la table thrift");
           break;
         }
-
+        // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -8", totalCount);
         startKey = lastRow.getKey();
 
         // Liste des ids de l'iteration n-1 (null si au debut)
         final List<UUID> lastlistUUID = lastIteartionMap.get(iterationNB - 1);
-
+        // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -9", totalCount);
         // Liste des ids de l'iteration courante
         final List<UUID> currentlistUUID = new ArrayList<>();
 
         for (final me.prettyprint.hector.api.beans.Row<UUID, String, byte[]> row : orderedRows) {
           if (RowUtils.rowUsbHasColumns(row)) {
-
+            // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -10", totalCount);
             // on recupère la trace thrifh
             final TraceRegTechnique trThrift = compRegTec.getTraceFromResult(row);
-
+            // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -11", totalCount);
             // On le transforme en cql
             final TraceRegTechniqueCql trThToCql = compRegTec.createTraceFromObjectThrift(trThrift);
-
-
             final UUID key = row.getKey();
 
             currentlistUUID.add(key);
             // enregistrement ==> la condition empeche d'enregistrer la lastKey deux fois
             if (lastlistUUID == null || !lastlistUUID.contains(key)) {
 
+              /*
+               * LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-Key:{} Contexte:{} Infos:{} StackTrace:{}",
+               * key,
+               * trThToCql.getContexte() != null ? trThToCql.getContexte().length() : 0,
+               * trThToCql.getInfos() != null ? trThToCql.getInfos().size() : 0,
+               * trThToCql.getStacktrace() != null ? trThToCql.getStacktrace().length() : 0);
+               */
+
 
               if ((trThToCql.getContexte() == null || trThToCql.getContexte().length() < RowUtils.MAX_SIZE_COLUMN)
                   && (trThToCql.getInfos() == null || trThToCql.getInfos().size() < RowUtils.MAX_SIZE_COLUMN)
                   && (trThToCql.getStacktrace() == null || trThToCql.getStacktrace().length() < RowUtils.MAX_SIZE_COLUMN)) {
-
+                // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -14", totalCount);
                 supportcql.save(trThToCql);
-
+                // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -15", totalCount);
                 totalCount++;
                 if (totalCount % 1000 == 0) {
                   LOGGER.info(" Nb rows : {}", totalCount);
@@ -187,7 +193,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
                 bWriter.append(key.toString());
                 bWriter.newLine();
               } else {
-
+                // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -15", totalCount);
                 if (trThToCql.getContexte() != null) {
                   LOGGER.warn("Contexte trop gros/Id: {} Contexte:{} Infos:{} StackTrace:{}",
                               trThToCql.getIdentifiant(),
@@ -199,13 +205,13 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
             }
           }
         }
-
+        // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql-nb={} -16", totalCount);
         // remettre à jour la map
         lastIteartionMap.put(iterationNB, currentlistUUID);
         lastIteartionMap.remove(iterationNB - 1);
         iterationNB++;
 
-
+        // LOGGER.info("MigrationTraceRegTechnique-migrationFromThriftToCql- nb={}-17", totalCount);
       } while (count == blockSize);
     }
     catch (final IOException e) {
