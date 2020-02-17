@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
@@ -135,6 +136,8 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
   private final DFCEServices dfceServices;
 
+  private final ModeAPIService modeApiService;
+
   final String KEY_ID_DOC = "idDoc";
 
   /**
@@ -164,7 +167,8 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                                 final TraceRegTechniqueCqlSupport techCqlSupport, final TraceRegExploitationSupport exploitSupport,
                                 final TraceRegExploitationCqlSupport exploitCqlSupport, final TraceJournalEvtSupport evtSupport,
                                 final TraceJournalEvtCqlSupport evtCqlSupport, final TimeUUIDEtTimestampSupport timeUUIDSupport,
-                                final DFCEServices dfceServices) {
+                                final DFCEServices dfceServices,
+                                final ModeAPIService modeApiService) {
 
     this.clockSupport = clockSupport;
     this.destSupport = destSupport;
@@ -182,6 +186,8 @@ public class DispatcheurServiceImpl implements DispatcheurService {
     this.timeUUIDSupport = timeUUIDSupport;
 
     this.dfceServices = dfceServices;
+    this.modeApiService = modeApiService;
+
   }
 
   /**
@@ -197,7 +203,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     final String codeEvt = trace.getCodeEvt();
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
+    final String modeApi = modeApiService.getModeAPI(cfNameDestinataire);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       traceDest = destCqlSupport.find(codeEvt);
@@ -335,7 +341,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     final long currentCLock = clockSupport.currentCLock();
 
-    switch (ModeGestionAPI.getModeApiCf(cfNameEvt)) {
+    switch (modeApiService.getModeAPI(cfNameEvt)) {
 
     case ModeGestionAPI.MODE_API.DATASTAX:
       createTraceJournalEvt_DATASTAX(trace, traceJournalEvt, currentCLock);
@@ -373,7 +379,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     TraceRegTechniqueCql traceCql = null;
 
-    switch (ModeGestionAPI.getModeApiCf(cfNameRegTech)) {
+    switch (modeApiService.getModeAPI(cfNameRegTech)) {
 
     case ModeGestionAPI.MODE_API.DATASTAX:
       traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
@@ -410,7 +416,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
     final TraceRegSecurite traceSecurite = new TraceRegSecurite(trace, list, idTrace, timestampTrace);
     TraceRegSecuriteCql traceCql = null;
 
-    switch (ModeGestionAPI.getModeApiCf(cfNameRegSecu)) {
+    switch (modeApiService.getModeAPI(cfNameRegSecu)) {
 
     case ModeGestionAPI.MODE_API.DATASTAX:
       traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
@@ -450,7 +456,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     TraceRegExploitationCql traceCql = null;
 
-    switch (ModeGestionAPI.getModeApiCf(cfNameRefExploit)) {
+    switch (modeApiService.getModeAPI(cfNameRefExploit)) {
 
     case ModeGestionAPI.MODE_API.DATASTAX:
       traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);

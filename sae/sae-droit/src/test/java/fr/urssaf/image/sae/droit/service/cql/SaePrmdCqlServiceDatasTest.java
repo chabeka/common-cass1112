@@ -17,8 +17,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.support.cql.PrmdCqlSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
@@ -43,6 +44,9 @@ public class SaePrmdCqlServiceDatasTest {
 
   public String cfName = Constantes.CF_DROIT_PRMD;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void end() throws Exception {
     cassandraServer.resetData(true, MODE_API.DATASTAX);
@@ -51,7 +55,7 @@ public class SaePrmdCqlServiceDatasTest {
   @Test
   public void testServicePrmdNotExists() throws Exception {
 
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     final boolean value = service.prmdExists("code");
 
     Assert.assertFalse("le prmd n'existe pas", value);
@@ -59,7 +63,7 @@ public class SaePrmdCqlServiceDatasTest {
 
   @Test
   public void testServicePrmdExists() {
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     final Prmd prmd = new Prmd();
 
     prmd.setCode("codePrmd");
@@ -78,7 +82,7 @@ public class SaePrmdCqlServiceDatasTest {
   @Test(expected = DroitRuntimeException.class)
   public void testPrmdExiste() throws Exception {
 
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     final Prmd prmd = new Prmd();
 
     prmd.setCode("codePrmd");
@@ -95,7 +99,7 @@ public class SaePrmdCqlServiceDatasTest {
   @Test
   public void testSucces() throws Exception {
 
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     final Prmd prmd = new Prmd();
 
     prmd.setCode("codePrmd");

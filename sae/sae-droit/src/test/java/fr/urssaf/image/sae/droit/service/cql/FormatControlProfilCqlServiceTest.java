@@ -17,7 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
@@ -51,10 +52,13 @@ public class FormatControlProfilCqlServiceTest {
   @Autowired
   private CassandraServerBean cassandraServer;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiCqlSupport;
+
   @Before
   public void setup() throws Exception {
 
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiCqlSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
 
   @After

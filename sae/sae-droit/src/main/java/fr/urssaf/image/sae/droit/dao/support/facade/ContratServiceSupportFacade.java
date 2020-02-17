@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
@@ -32,6 +32,8 @@ public class ContratServiceSupportFacade implements IContratServiceSupportFacade
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -41,16 +43,18 @@ public class ContratServiceSupportFacade implements IContratServiceSupportFacade
   @Autowired
   public ContratServiceSupportFacade(final ContratServiceSupport contratServiceSupport,
                                      final ContratServiceCqlSupport contratServiceCqlSupport,
-                                     final JobClockSupport clockSupport) {
+                                     final JobClockSupport clockSupport,
+                                     final ModeAPIService modeApiService) {
     this.contratServiceSupport = contratServiceSupport;
     this.contratServiceCqlSupport = contratServiceCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
   @Override
   public final void create(final ServiceContract contratService) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       contratServiceSupport.create(contratService, clockSupport.currentCLock());
@@ -74,7 +78,7 @@ public class ContratServiceSupportFacade implements IContratServiceSupportFacade
   @Override
   public final ServiceContract find(final String code) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return contratServiceSupport.find(code);
@@ -99,7 +103,7 @@ public class ContratServiceSupportFacade implements IContratServiceSupportFacade
    */
   @Override
   public List<ServiceContract> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return contratServiceSupport.findAll();
@@ -126,7 +130,7 @@ public class ContratServiceSupportFacade implements IContratServiceSupportFacade
   @Override
   public void delete(final String id) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       contratServiceSupport.delete(id, clockSupport.currentCLock());
@@ -152,13 +156,13 @@ public class ContratServiceSupportFacade implements IContratServiceSupportFacade
    */
   @Override
   public List<ServiceContract> findAll(final int maxKeysToRead) {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return contratServiceSupport.findAll(maxKeysToRead);
 
     case MODE_API.DATASTAX:
-      return contratServiceCqlSupport.findAll();
+      return contratServiceCqlSupport.findAll(maxKeysToRead);
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
       return contratServiceSupport.findAll(maxKeysToRead);

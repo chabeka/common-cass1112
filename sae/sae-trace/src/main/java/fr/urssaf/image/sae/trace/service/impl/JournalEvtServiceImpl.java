@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
@@ -47,17 +48,21 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
   private static final String DEBUT_LOG = "{} - Début";
 
+  private final ModeAPIService modeApiService;
+
   @Autowired
-  public JournalEvtServiceImpl(final JournalEvtServiceThrift journalEvtServiceThrift, final JournalEvtServiceCql journalEvtCqlService) {
+  public JournalEvtServiceImpl(final JournalEvtServiceThrift journalEvtServiceThrift, final JournalEvtServiceCql journalEvtCqlService,
+                               final ModeAPIService modeApiService) {
     super();
     this.journalEvtServiceThrift = journalEvtServiceThrift;
     this.journalEvtCqlService = journalEvtCqlService;
+    this.modeApiService = modeApiService;
   }
 
   @Override
   public String export(final Date date, final String repertoire, final String idJournalPrecedent, final String hashJournalPrecedent) {
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return journalEvtCqlService.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
@@ -70,7 +75,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
   }
 
   public LoggerSupport getLoggerSupport() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return journalEvtCqlService.getLoggerSupport();
@@ -82,7 +87,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
   }
 
   public JobClockSupport getClockSupport() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return journalEvtCqlService.getClockSupport();
@@ -94,7 +99,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
   }
 
   public Logger getLogger() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return journalEvtCqlService.getLogger();
@@ -110,7 +115,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    */
   @Override
   public TraceJournalEvt lecture(final UUID identifiant) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX) 
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final TraceJournalEvtCql tracecql = journalEvtCqlService.lecture(identifiant);
@@ -186,7 +191,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    * @return
    */
   private long deleteEvt(final int nbMaxLigneEvtToDelete, final Date dateIndex) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     long nbTracesPurgees = 0;
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       nbTracesPurgees = journalEvtCqlService.getSupport().delete(dateIndex);
@@ -275,7 +280,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
   private List<TraceJournalEvtIndex> findEvtByDate(final int limite, final int countLeft, List<TraceJournalEvtIndex> result, final Date currentDate, final Date startDate,
                                                    final Date endDate) {
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDate(currentDate, limite);

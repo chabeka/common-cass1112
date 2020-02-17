@@ -14,9 +14,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -72,6 +73,9 @@ public class SAECommonCaptureServiceImplCqlTest extends AbstractServiceCqlTest {
   @Autowired
   private RndCqlSupport rndCqlSupport;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   /**
    * @return Le service saeCommonCaptureService
    */
@@ -91,12 +95,14 @@ public class SAECommonCaptureServiceImplCqlTest extends AbstractServiceCqlTest {
   @BeforeClass
   public static void beforeClass() throws IOException {
     init = false;
-    ModeApiAllUtils.setAllModeAPICql();
+
   }
 
   @Before
   public void init() throws InterruptedException, Exception {
+
     initMetadata();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     // initialisation du contexte de sécurité
     final VIContenuExtrait viExtrait = new VIContenuExtrait();
     viExtrait.setCodeAppli("TESTS_UNITAIRES");

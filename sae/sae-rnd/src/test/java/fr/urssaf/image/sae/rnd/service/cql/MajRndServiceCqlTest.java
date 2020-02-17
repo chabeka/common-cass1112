@@ -27,8 +27,9 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
@@ -87,11 +88,12 @@ public class MajRndServiceCqlTest {
   @Autowired
   private TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
-
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   @Before
   public void before() throws Exception {
-    ModeApiAllUtils.setAllModeAPICql();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
 
     // server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);

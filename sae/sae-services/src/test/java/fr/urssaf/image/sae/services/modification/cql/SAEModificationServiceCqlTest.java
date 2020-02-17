@@ -25,9 +25,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -107,10 +108,13 @@ public class SAEModificationServiceCqlTest extends AbstractServiceCqlTest {
 
   private EcdeTestDocument ecde;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @BeforeClass
   public static void beforeClass() throws IOException {
     init = false;
-    ModeApiAllUtils.setAllModeAPICql();
+
   }
 
 
@@ -140,7 +144,7 @@ public class SAEModificationServiceCqlTest extends AbstractServiceCqlTest {
   @Before
   public void init() throws Exception {
     initMetadata();
-    // server.resetData(true, MODE_API.HECTOR);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
 
     final VIContenuExtrait viExtrait = new VIContenuExtrait();
     viExtrait.setCodeAppli("TESTS_UNITAIRES");

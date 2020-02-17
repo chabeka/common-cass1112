@@ -15,15 +15,17 @@ import fr.urssaf.image.sae.services.document.SAEDocumentService;
 @Component
 public final class SAEServiceManager {
 
-   @Autowired
-   private SAEServiceProvider provider;
+  @Autowired
+  private SAEServiceProvider provider;
 
-   /**
-    * 
-    * @return l'ensemble des services du SAE
-    */
-   public SAEDocumentService loadSAEDocumentService() {
-      return provider.getSaeDocumentService();
-   }
+  // @Autowired
+  // CassandraApiGestionServiceImpl cassandraApiGestionServiceImpl;
+  /**
+   * 
+   * @return l'ensemble des services du SAE
+   */
+  public SAEDocumentService loadSAEDocumentService() {
+    return provider.getSaeDocumentService();
+  }
 
 }

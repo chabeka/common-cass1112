@@ -9,7 +9,7 @@ import javax.mail.util.ByteArrayDataSource;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,10 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -38,9 +39,12 @@ public class SAEControlesCaptureFormatSupportTest {
   @Autowired
   private SAEControlesCaptureFormatSupport controleFormatSupport;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPIThrift();
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  @Before
+  public void before() throws IOException {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
 
   private SAEDocument buildSaeDocument() {

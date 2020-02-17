@@ -87,7 +87,7 @@ public class ContratServiceCqlSupport {
   private void saveOrUpdate(final ServiceContract contratService) {
     Assert.notNull(contratService, "l'objet contratService ne peut etre null");
     Assert.notNull(contratService.getCodeClient(), "le code client ne peut etre null");
-        contratservicedaocql.saveWithMapper(contratService);
+    contratservicedaocql.saveWithMapper(contratService);
   }
   /**
    * {@inheritDoc}
@@ -107,7 +107,7 @@ public class ContratServiceCqlSupport {
    * {@inheritDoc}
    */
   public List<ServiceContract> findAll(final int max) {
-    // A CORRIGER
+
     int i = 0;
     final Iterator<ServiceContract> it = contratservicedaocql.findAllWithMapper();
     final List<ServiceContract> list = new ArrayList<>();

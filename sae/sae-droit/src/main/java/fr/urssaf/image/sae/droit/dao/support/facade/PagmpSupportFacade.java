@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
@@ -33,6 +33,8 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -42,16 +44,18 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
   @Autowired
   public PagmpSupportFacade(final PagmpSupport pagmpSupport,
                             final PagmpCqlSupport pagmpCqlSupport,
-                            final JobClockSupport clockSupport) {
+                            final JobClockSupport clockSupport,
+                            final ModeAPIService modeApiService) {
     this.pagmpSupport = pagmpSupport;
     this.pagmpCqlSupport = pagmpCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
   @Override
   public final void create(final Pagmp pagmp) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       pagmpSupport.create(pagmp, clockSupport.currentCLock());
@@ -75,7 +79,7 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
   @Override
   public final Pagmp find(final String code) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return pagmpSupport.find(code);
@@ -100,7 +104,7 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
    */
   @Override
   public List<Pagmp> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return pagmpSupport.findAll();
@@ -125,7 +129,7 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
   @Override
   public void delete(final String id) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       pagmpSupport.delete(id, clockSupport.currentCLock());
@@ -151,7 +155,7 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
    */
   @Override
   public void create(final Pagmp pagmp, final Mutator<String> mutator) {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       pagmpSupport.create(pagmp, clockSupport.currentCLock(), mutator);
@@ -179,7 +183,7 @@ public class PagmpSupportFacade implements IPagmsSupportFacade<Pagmp> {
   @Override
   public void delete(final String id, final Mutator<String> mutator) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       pagmpSupport.delete(id, clockSupport.currentCLock(), mutator);

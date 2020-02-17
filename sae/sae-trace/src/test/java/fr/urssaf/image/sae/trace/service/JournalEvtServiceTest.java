@@ -18,7 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -41,9 +42,12 @@ public class JournalEvtServiceTest {
 
   private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void start() throws Exception {
-    ModeApiAllUtils.setAllModeAPIThrift();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
 
   @Test
@@ -270,7 +274,7 @@ public class JournalEvtServiceTest {
 
     try {
       FileUtils.writeStringToFile(file,
-                                  "ceci est un fichier et non un répertoire");
+          "ceci est un fichier et non un répertoire");
       service.export(new Date(), file.getAbsolutePath(), "c", "d");
       Assert.fail(ILLEGAL_EXPECTED);
 

@@ -52,7 +52,8 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+
+    if (!infos.isEmpty()) { 
       tr.setInfos(infos);
     }
     return tr;
@@ -79,7 +80,7 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+    if (!infos.isEmpty()) { 
       tr.setInfos(infos);
     }
     return tr;
@@ -99,7 +100,7 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+    if (!infos.isEmpty()) { 
       tr.setInfos(infos);
     }
     return tr;
@@ -119,7 +120,7 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+    if (!infos.isEmpty()) { 
       tr.setInfos(infos);
     }
     return tr;
@@ -139,7 +140,7 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+    if (!infos.isEmpty()) { 
       tr.setInfos(infos);
     }
     tr.setStacktrace(traceCql.getStacktrace());
@@ -160,7 +161,7 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+    if (!infos.isEmpty()) {
       tr.setInfos(infos);
     }
     tr.setStacktrace(traceThrift.getStacktrace());
@@ -214,7 +215,7 @@ public class UtilsTraceMapper {
    *          index Thrift
    * @return index cql
    */
-  public static TraceJournalEvtIndexCql createJournalIndexFromThriftToCql(final TraceJournalEvtIndex index, String key) {
+  public static TraceJournalEvtIndexCql createJournalIndexFromThriftToCql(final TraceJournalEvtIndex index, final String key) {
     final TraceJournalEvtIndexCql tr = new TraceJournalEvtIndexCql();
 
     tr.setContexte(index.getContexte());
@@ -249,7 +250,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegSecuriteIndexCql createTraceRegSecuIndexFromThriftToCql(final TraceRegSecuriteIndex index, String key) {
+  public static TraceRegSecuriteIndexCql createTraceRegSecuIndexFromThriftToCql(final TraceRegSecuriteIndex index, final String key) {
     final TraceRegSecuriteIndexCql tr = new TraceRegSecuriteIndexCql();
     // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
@@ -275,7 +276,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegTechniqueIndexCql createTraceRegTechniqueIndexFromThriftToCql(final TraceRegTechniqueIndex index, String key) {
+  public static TraceRegTechniqueIndexCql createTraceRegTechniqueIndexFromThriftToCql(final TraceRegTechniqueIndex index, final String key) {
     final TraceRegTechniqueIndexCql tr = new TraceRegTechniqueIndexCql();
     // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
@@ -301,7 +302,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegExploitationIndexCql createTraceRegExploitationIndexFromThriftToCql(final TraceRegExploitationIndex index, String key) {
+  public static TraceRegExploitationIndexCql createTraceRegExploitationIndexFromThriftToCql(final TraceRegExploitationIndex index, final String key) {
     final TraceRegExploitationIndexCql tr = new TraceRegExploitationIndexCql();
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
@@ -359,7 +360,7 @@ public class UtilsTraceMapper {
    *          {@link TraceJournalEvtIndexCql}
    * @return un {@link TraceJournalEvtIndex}
    */
-  public static TraceJournalEvtIndexDocCql createTraceIndexDocFromThriftToCql(final TraceJournalEvtIndexDoc index, String key) {
+  public static TraceJournalEvtIndexDocCql createTraceIndexDocFromThriftToCql(final TraceJournalEvtIndexDoc index, final String key) {
     final TraceJournalEvtIndexDocCql tr = new TraceJournalEvtIndexDocCql();
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
@@ -370,7 +371,7 @@ public class UtilsTraceMapper {
     tr.setIdentifiantIndex(java.util.UUID.fromString(key));
     tr.setContexte(index.getContexte());
     tr.setContratService(index.getContratService());
-    
+
     final Map<String, String> infos = new HashMap<>();
     if (index.getInfos() != null && !index.getInfos().isEmpty()) {
       for (final Entry<String, Object> entry : index.getInfos().entrySet()) {
@@ -378,7 +379,7 @@ public class UtilsTraceMapper {
       }
       tr.setInfos(infos);
     }
-    
+
 
     return tr;
   }
@@ -391,8 +392,8 @@ public class UtilsTraceMapper {
    * @return un {@link TraceJournalEvtIndex}
    */
   public static TraceJournalEvtIndexDocCql createTraceIndexDocFromCqlToThrift(final TraceJournalEvtIndexDoc index, final String idDoc) {
-    
-	final TraceJournalEvtIndexDocCql tr = new TraceJournalEvtIndexDocCql();
+
+    final TraceJournalEvtIndexDocCql tr = new TraceJournalEvtIndexDocCql();
     tr.setIdentifiantIndex(java.util.UUID.fromString(idDoc));
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
@@ -402,14 +403,14 @@ public class UtilsTraceMapper {
 
     tr.setContexte(index.getContexte());
     tr.setContratService(index.getContratService());
-    
+
     final Map<String, String> infos = new HashMap<>();
     if (index.getInfos() != null && !index.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : index.getInfos().entrySet()) {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+    if (!infos.isEmpty()) { 
       tr.setInfos(infos);
     }
 

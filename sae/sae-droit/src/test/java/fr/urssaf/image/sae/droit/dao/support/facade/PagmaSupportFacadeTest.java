@@ -19,7 +19,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmaCqlSupport;
@@ -49,6 +50,9 @@ public class PagmaSupportFacadeTest {
   @Autowired
   private PagmaCqlSupport supportCql;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void end() throws Exception {
     cassandraServer.resetData();
@@ -57,14 +61,15 @@ public class PagmaSupportFacadeTest {
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() {
     // On se met sur mode API inconnu
-    GestionModeApiUtils.setModeApiUnknown(Constantes.CF_DROIT_PAGMA);
+    modeApiSupport.updateModeApi("UNKNOWN", Constantes.CF_DROIT_PAGMA);
+
     supportFacade.find("TEST");
   }
 
   @Test
   public void testCreationDualReadThrift() {
     // On se met sur mode dual read thrift
-    GestionModeApiUtils.setModeApiDualReadThrift(Constantes.CF_DROIT_PAGMA);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT, Constantes.CF_DROIT_PAGMA);
     final List<String> listeAu = Arrays.asList(ACTIONS1);
     final Pagma pagma = new Pagma();
     pagma.setActionUnitaires(listeAu);
@@ -84,7 +89,7 @@ public class PagmaSupportFacadeTest {
   @Test
   public void testCreationDualReadCql() {
     // On se met sur mode dual read cql
-    GestionModeApiUtils.setModeApiDualReadCql(Constantes.CF_DROIT_PAGMA);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL, Constantes.CF_DROIT_PAGMA);
     final List<String> listeAu = Arrays.asList(ACTIONS1);
     final Pagma pagma = new Pagma();
     pagma.setActionUnitaires(listeAu);

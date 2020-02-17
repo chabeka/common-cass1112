@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +26,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.access.AccessDeniedException;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -88,14 +88,20 @@ public class SAECaptureServiceDroitsCqlTest extends AbstractServiceCqlTest {
 
   private File fileDoc;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPICql();
-  }
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+  /*
+   * @BeforeClass
+   * public static void beforeClass() throws IOException {
+   * ModeApiAllUtils.setAllModeAPICql();
+   * }
+   */
 
   @Before
   public void before() throws InterruptedException, Exception {
+
     initMetadata();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     // initialisation de l'uuid de l'archive
     uuid = null;
 

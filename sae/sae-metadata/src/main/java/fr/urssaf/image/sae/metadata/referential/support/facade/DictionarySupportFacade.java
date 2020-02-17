@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.metadata.referential.dao.cql.IDictionaryDaoCql;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
@@ -34,6 +34,8 @@ public class DictionarySupportFacade {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -43,16 +45,18 @@ public class DictionarySupportFacade {
   @Autowired
   public DictionarySupportFacade(final DictionarySupport dictionarySupport,
                                  final DictionaryCqlSupport dictionaryCqlSupport,
-                                 final JobClockSupport clockSupport) {
+                                 final JobClockSupport clockSupport,
+                                 final ModeAPIService modeApiService) {
     this.dictionarySupport = dictionarySupport;
     this.dictionaryCqlSupport = dictionaryCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
 
   public final void addElement(final String identifiant, final String value) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       dictionarySupport.addElement(identifiant, value, clockSupport.currentCLock());
@@ -76,7 +80,7 @@ public class DictionarySupportFacade {
 
   public final Dictionary find(final String identifiant) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return dictionarySupport.find(identifiant);
@@ -100,7 +104,7 @@ public class DictionarySupportFacade {
    */
 
   public List<Dictionary> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return dictionarySupport.findAll();
@@ -125,7 +129,7 @@ public class DictionarySupportFacade {
 
   public void deleteElement(final String identifiant, final String value) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       dictionarySupport.deleteElement(identifiant, value, clockSupport.currentCLock());

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
@@ -38,6 +39,8 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(TraceDestinataireServiceImpl.class);
 
+  private final ModeAPIService modeApiService;
+
   /**
    * Constructeur
    * 
@@ -48,9 +51,11 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
    */
   @Autowired
   public TraceDestinataireServiceImpl(final TraceDestinataireSupport traceDestinataireSupport,
-                                      final TraceDestinataireCqlSupport traceDestinataireCqlSupport) {
+                                      final TraceDestinataireCqlSupport traceDestinataireCqlSupport,
+                                      final ModeAPIService modeApiService) {
     this.traceDestinataireSupport = traceDestinataireSupport;
     this.traceDestinataireCqlSupport = traceDestinataireCqlSupport;
+    this.modeApiService = modeApiService;
   }
 
   /**
@@ -63,7 +68,7 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
     LOGGER.debug(DEBUT_LOG, prefix);
 
     List<TraceDestinataire> listeTraceDestinataire = new ArrayList<>();
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {

@@ -20,6 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
@@ -28,7 +30,6 @@ import fr.urssaf.image.sae.droit.dao.support.cql.PagmpCqlSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PrmdCqlSupport;
 import fr.urssaf.image.sae.droit.service.SaePagmpService;
 import fr.urssaf.image.sae.droit.utils.Constantes;
-import fr.urssaf.image.sae.droit.utils.ModeAPIDroitUtils;
 
 /**
  * Classe Test de la classe {@link SaePagmpService} en mode Cql
@@ -56,9 +57,13 @@ public class SaePagmpCqlServiceDatasTest {
 
   public String cfName = Constantes.CF_DROIT_PAGMP;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void start() throws Exception {
-    ModeAPIDroitUtils.setAllDroitsModeAPICql();
+
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
 
   @After

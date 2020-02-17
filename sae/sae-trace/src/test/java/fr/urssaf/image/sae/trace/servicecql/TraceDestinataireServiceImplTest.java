@@ -18,7 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.trace.commons.TraceDestinataireEnum;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
@@ -55,6 +56,9 @@ public class TraceDestinataireServiceImplTest {
 
   private final String cfName = "tracedestinataire";
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void init() throws Exception {
     server.resetData();
@@ -62,7 +66,7 @@ public class TraceDestinataireServiceImplTest {
 
   @Test
   public void testGetCodeEvenementByTypeTrace() {
-    GestionModeApiUtils.setModeApiThrift(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT, cfName);
     final String code = "TEST|CREATE";
     final TraceDestinataire trace = new TraceDestinataire();
     trace.setCodeEvt(code);

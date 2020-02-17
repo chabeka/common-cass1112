@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 
 /**
@@ -38,6 +38,9 @@ public abstract class AbstractServiceCqlTest {
   @Autowired
   TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   protected static boolean init = false;
 
   private static final Logger LOGGER = LoggerFactory
@@ -51,7 +54,7 @@ public abstract class AbstractServiceCqlTest {
   @Before
   public void setup() throws Exception {
     initData();
-    ModeApiAllUtils.setAllModeAPICql();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
 
   @After

@@ -10,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.service.SaeActionUnitaireService;
 import fr.urssaf.image.sae.droit.utils.Constantes;
@@ -29,14 +30,16 @@ public class SaeActionUnitaireCqlServiceTest {
 
   public String cfName = Constantes.CF_DROIT_ACTION_UNITAIRE;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
 
   @Test
   public void testActionUnitaireObligatoire() {
 
     try {
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
 
-      GestionModeApiUtils.setModeApiCql(cfName);
       service.createActionUnitaire(null);
       Assert.fail("exception attendue");
     }
@@ -53,7 +56,7 @@ public class SaeActionUnitaireCqlServiceTest {
   public void testCodeObligatoire() {
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final ActionUnitaire actionUnitaire = new ActionUnitaire();
       actionUnitaire.setDescription("test création");
 
@@ -77,7 +80,7 @@ public class SaeActionUnitaireCqlServiceTest {
   public void testDescriptionObligatoire() {
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final ActionUnitaire actionUnitaire = new ActionUnitaire();
       actionUnitaire.setCode("test1");
 

@@ -13,11 +13,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -51,6 +53,9 @@ public class SAECaptureServiceValidationTest {
 
   private static URI ecdeURL;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @BeforeClass
   public static void beforeClass() {
 
@@ -59,12 +64,12 @@ public class SAECaptureServiceValidationTest {
 
     metadatas = new ArrayList<>();
     metadatas.add(new UntypedMetadata("test", "test"));
-    ModeApiAllUtils.setAllModeAPIThrift();
+
   }
 
   @Before
   public void before() {
-
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     service = new SAECaptureService() {
 
       @Override

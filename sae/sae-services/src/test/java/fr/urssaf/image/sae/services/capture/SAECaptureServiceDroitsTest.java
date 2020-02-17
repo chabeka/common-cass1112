@@ -18,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -30,8 +29,9 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -88,14 +88,19 @@ public class SAECaptureServiceDroitsTest {
 
   private File fileDoc;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPIThrift();
-  }
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  /*
+   * @BeforeClass
+   * public static void beforeClass() throws IOException {
+   * ModeApiAllUtils.setAllModeAPIThrift();
+   * }
+   */
 
   @Before
   public void before() {
-
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
     // initialisation de l'uuid de l'archive
     uuid = null;
 
@@ -176,7 +181,7 @@ public class SAECaptureServiceDroitsTest {
     fos.close();
 
     final File srcFile = new File(
-                                  "src/test/resources/doc/attestation_consultation.pdf");
+        "src/test/resources/doc/attestation_consultation.pdf");
 
     final List<UntypedMetadata> metadatas = new ArrayList<>();
 

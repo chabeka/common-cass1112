@@ -21,7 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
@@ -61,9 +62,12 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
   private final String cfNameDestinataire = "tracedestinataire";
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void start() throws Exception {
-    ModeApiAllUtils.setAllModeAPIThrift();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
 
   @Autowired
@@ -89,6 +93,9 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
   @Autowired
   private JournalEvtService evtService;
+
+  @Autowired
+  private ModeAPIService modeApiService;
 
   @After
   public void after() throws Exception {
@@ -258,7 +265,7 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
             .asList(Constantes.REG_ALL_INFOS));
     trace.setDestinataires(map);
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
+    final String modeApi = modeApiService.getModeAPI(cfNameDestinataire);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       destCqlSupport.create(trace, new Date().getTime());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {

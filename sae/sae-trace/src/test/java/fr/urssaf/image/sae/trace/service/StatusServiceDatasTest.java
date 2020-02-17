@@ -11,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.commons.utils.Constantes;
@@ -28,9 +29,14 @@ public class StatusServiceDatasTest {
   @Autowired
   private ParametersService paramService;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void begin() throws Exception {
-    GestionModeApiUtils.setModeApiThrift(Constantes.CF_PARAMETERS);
+
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.HECTOR, Constantes.CF_PARAMETERS);
+
   }
 
   @Test

@@ -6,14 +6,15 @@ package fr.urssaf.image.sae.services.controles;
 import java.io.IOException;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 
 /**
  * Classe permettant de tester le service de contrôle.
@@ -25,9 +26,19 @@ public class SaeControleMetadataServiceTest {
   @Autowired
   private SaeControleMetadataService service;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPIThrift();
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  /*
+   * @BeforeClass
+   * public static void beforeClass() throws IOException {
+   * ModeApiAllUtils.setAllModeAPIThrift();
+   * }
+   */
+
+  @Before
+  public void start() throws IOException {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
 
   @Test

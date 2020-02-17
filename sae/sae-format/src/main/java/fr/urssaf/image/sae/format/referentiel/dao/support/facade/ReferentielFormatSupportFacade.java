@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -33,6 +33,8 @@ public class ReferentielFormatSupportFacade {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
 
   /**
    * constructeur
@@ -43,18 +45,19 @@ public class ReferentielFormatSupportFacade {
   @Autowired
   public ReferentielFormatSupportFacade(final ReferentielFormatSupport referentielFormatSupport,
                                         final ReferentielFormatCqlSupport referentielFormatCqlSupport,
-                                        final JobClockSupport clockSupport) {
+                                        final JobClockSupport clockSupport,
+                                        final ModeAPIService modeApiService) {
     this.referentielFormatSupport = referentielFormatSupport;
     this.referentielFormatCqlSupport = referentielFormatCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
 
   }
 
 
   public final void create(final FormatFichier formatFichier) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
-
+    switch (modeApiService.getModeAPI(cfName)) {
     case MODE_API.HECTOR:
       referentielFormatSupport.create(formatFichier, clockSupport.currentCLock());
       break;
@@ -77,7 +80,7 @@ public class ReferentielFormatSupportFacade {
 
   public final FormatFichier find(final String idFormat) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return referentielFormatSupport.find(idFormat);
@@ -101,7 +104,7 @@ public class ReferentielFormatSupportFacade {
    */
 
   public List<FormatFichier> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return referentielFormatSupport.findAll();
@@ -128,7 +131,7 @@ public class ReferentielFormatSupportFacade {
 
   public void delete(final String idFormat) throws UnknownFormatException {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       referentielFormatSupport.delete(idFormat, clockSupport.currentCLock());

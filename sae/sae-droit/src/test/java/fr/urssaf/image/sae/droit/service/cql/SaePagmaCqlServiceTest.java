@@ -14,7 +14,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.service.SaePagmaService;
 import fr.urssaf.image.sae.droit.utils.Constantes;
@@ -33,13 +34,15 @@ public class SaePagmaCqlServiceTest {
 
   public String cfName = Constantes.CF_DROIT_PAGMA;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   @Test
   public void testPagmaObligatoire() throws Exception {
 
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       service.createPagma(null);
       Assert.fail("erreur attendue");
     }
@@ -59,7 +62,7 @@ public class SaePagmaCqlServiceTest {
   public void testCodePagmaObligatoire() throws Exception {
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final Pagma pagma = new Pagma();
       pagma.setActionUnitaires(Arrays.asList(new String[] {"action1"}));
 
@@ -82,7 +85,7 @@ public class SaePagmaCqlServiceTest {
   public void testActionsUnitairesPagmaObligatoire() throws Exception {
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final Pagma pagma = new Pagma();
       pagma.setCode("code");
 

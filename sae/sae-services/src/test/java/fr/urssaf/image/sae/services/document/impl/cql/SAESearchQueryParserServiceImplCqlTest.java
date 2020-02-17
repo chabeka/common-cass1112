@@ -9,7 +9,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.services.AbstractServiceCqlTest;
 import fr.urssaf.image.sae.services.document.impl.SAESearchQueryParserServiceImpl;
 import fr.urssaf.image.sae.services.document.model.SAESearchQueryParserResult;
@@ -20,16 +21,20 @@ import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 /*@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })*/
 public class SAESearchQueryParserServiceImplCqlTest extends AbstractServiceCqlTest {
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
     init = false;
-    ModeApiAllUtils.setAllModeAPICql();
+
   }
 
   @Before
   public void before() throws Exception {
+
     initMetadata();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
   @Autowired
   private SAESearchQueryParserServiceImpl queryParseService;

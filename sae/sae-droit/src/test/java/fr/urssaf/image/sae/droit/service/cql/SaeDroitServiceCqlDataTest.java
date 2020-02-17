@@ -22,6 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
@@ -158,18 +159,25 @@ public class SaeDroitServiceCqlDataTest {
   @Autowired
   private CassandraServerBean server;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void setup() throws Exception {
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(cfName, "DATASTAX");
-    modesApiTest.put("droitactionunitaire", "DATASTAX");
-    modesApiTest.put("droitformatcontrolprofil", "DATASTAX");
-    modesApiTest.put("droitpagmf", "DATASTAX");
-    modesApiTest.put("droitpagmp", "DATASTAX");
-    modesApiTest.put("droitpagma", "DATASTAX");
-    modesApiTest.put("droitpagm", "DATASTAX");
-    modesApiTest.put("droitprmd", "DATASTAX");
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
+    /*
+     * final HashMap<String, String> modesApiTest = new HashMap<>();
+     * modesApiTest.put(cfName, "DATASTAX");
+     * modesApiTest.put("droitactionunitaire", "DATASTAX");
+     * modesApiTest.put("droitformatcontrolprofil", "DATASTAX");
+     * modesApiTest.put("droitpagmf", "DATASTAX");
+     * modesApiTest.put("droitpagmp", "DATASTAX");
+     * modesApiTest.put("droitpagma", "DATASTAX");
+     * modesApiTest.put("droitpagm", "DATASTAX");
+     * modesApiTest.put("droitprmd", "DATASTAX");
+     * ModeGestionAPI.setListeCfsModes(modesApiTest);
+     */
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+
   }
 
   @After

@@ -15,7 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
@@ -45,6 +46,9 @@ public class DictionaryCqlServiceTest {
 
   private final String cfName = Constantes.CF_DICTIONARY;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void after() throws Exception {
     server.resetDataOnly();
@@ -62,7 +66,9 @@ public class DictionaryCqlServiceTest {
   @Before
   public void setup() throws Exception {
 
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
+
+
   }
 
   /**

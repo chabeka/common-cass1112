@@ -24,6 +24,8 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
@@ -33,7 +35,6 @@ import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
-import fr.urssaf.image.sae.rnd.util.ModeAPIRndUtils;
 import fr.urssaf.image.sae.rnd.utils.SaeLogAppender;
 import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
@@ -78,9 +79,12 @@ public class MajRndServiceTest {
 
   private SaeLogAppender logAppender;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void before() throws SaeBddRuntimeException, RndRecuperationException {
-    ModeAPIRndUtils.setAllRndModeAPIThrift();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 
     logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");

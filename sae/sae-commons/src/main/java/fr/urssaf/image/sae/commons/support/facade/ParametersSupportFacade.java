@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.bo.Parameter;
 import fr.urssaf.image.sae.commons.bo.ParameterRowType;
@@ -34,6 +34,8 @@ public class ParametersSupportFacade {
   private final ParametersCqlSupport parametersCqlSupport;
 
   private final JobClockSupport clockSupport;
+
+  private final ModeAPIService modeApiService;
   /**
    * Constructeur
    * 
@@ -43,10 +45,12 @@ public class ParametersSupportFacade {
   @Autowired
   public ParametersSupportFacade(final ParametersSupport parametersSupport,
                                  final ParametersCqlSupport parametersCqlSupport,
-                                 final JobClockSupport clockSupport) {
+                                 final JobClockSupport clockSupport,
+                                 final ModeAPIService modeApiService) {
     this.parametersSupport = parametersSupport;
     this.parametersCqlSupport = parametersCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
   /**
@@ -62,7 +66,7 @@ public class ParametersSupportFacade {
   public final void create(final Parameter parameter, final ParameterRowType rowKey) {
     final ParameterCql parameterCql = ParametersUtils.convertParameterToParameterCql(rowKey, parameter);
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       parametersSupport.create(parameter, rowKey, clockSupport.currentCLock());
@@ -99,7 +103,7 @@ public class ParametersSupportFacade {
                               final ParameterRowType rowKey) throws ParameterNotFoundException {
 
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return parametersSupport.find(parameterName, rowKey);

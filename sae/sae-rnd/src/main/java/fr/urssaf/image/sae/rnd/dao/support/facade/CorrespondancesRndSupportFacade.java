@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.rnd.dao.cql.ICorrespondancesDaoCql;
@@ -34,6 +34,8 @@ public class CorrespondancesRndSupportFacade {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -43,16 +45,18 @@ public class CorrespondancesRndSupportFacade {
   @Autowired
   public CorrespondancesRndSupportFacade(final CorrespondancesRndSupport correspondancesRndSupport,
                                          final CorrespondancesRndCqlSupport correspondancesRndCqlSupport,
-                                         final JobClockSupport clockSupport) {
+                                         final JobClockSupport clockSupport,
+                                         final ModeAPIService modeApiService) {
     this.correspondancesRndSupport = correspondancesRndSupport;
     this.correspondancesRndCqlSupport = correspondancesRndCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
 
   public final void ajouterCorrespondance(final Correspondance correspondance) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       correspondancesRndSupport.ajouterCorrespondance(correspondance, clockSupport.currentCLock());
@@ -76,7 +80,7 @@ public class CorrespondancesRndSupportFacade {
 
   public final Correspondance getCorrespondance(final String codeTemporaire, final String version) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return correspondancesRndSupport.find(codeTemporaire, version);
@@ -100,7 +104,7 @@ public class CorrespondancesRndSupportFacade {
    */
 
   public List<Correspondance> getAllCorrespondances() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return correspondancesRndSupport.getAllCorrespondances();

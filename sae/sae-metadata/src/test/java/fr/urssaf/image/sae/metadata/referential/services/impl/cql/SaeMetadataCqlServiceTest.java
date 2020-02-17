@@ -12,8 +12,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 import fr.urssaf.image.sae.metadata.referential.services.impl.SaeMetaDataServiceImpl;
@@ -40,10 +41,12 @@ public class SaeMetadataCqlServiceTest {
 
   private final String cfName = Constantes.CF_METADATA;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void setup() throws Exception {
-
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
   }
 
   @After

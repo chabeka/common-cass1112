@@ -37,11 +37,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -123,19 +124,22 @@ public class SAEDocumentAttachmentServiceImplTest {
   private SAECaptureService captureService;
 
   @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  @Autowired
   @Qualifier("saeConsultationService")
   private SAEConsultationService consultationService;
+
 
   @BeforeClass
   public static void beforeClass() throws IOException {
     path = new ClassPathResource("doc/attestation_consultation.pdf")
         .getFile().getAbsolutePath();
-    ModeApiAllUtils.setAllModeAPIThrift();
   }
 
   @Before
   public void before() throws Exception {
-
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
     // initialisation de l'uuid de l'archive
     uuid = null;
 

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
@@ -58,7 +61,6 @@ import fr.urssaf.image.sae.droit.model.SaePagma;
 import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
-import fr.urssaf.image.sae.droit.utils.ModeAPIDroitUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -158,17 +160,26 @@ public class SaeDroitServiceDataTest {
   @Autowired
   private CassandraServerBean cassandraServer;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void end() throws Exception {
     cassandraServer.clearAndLoad();
 
   }
+
+  @Before
+  public void start() throws Exception {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+  }
+
   @Test
   public void init() {
     try {
       if (cassandraServer.isCassandraStarted()) {
         cassandraServer.resetData();
-        ModeAPIDroitUtils.setAllDroitsModeAPIThrift();
+        modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
       }
       Assert.assertTrue(true);
     }

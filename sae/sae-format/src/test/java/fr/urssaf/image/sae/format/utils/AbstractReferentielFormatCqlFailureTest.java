@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.format.utils;
 
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Before;
@@ -10,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.format.referentiel.dao.support.facade.ReferentielFormatSupportFacade;
@@ -34,12 +33,12 @@ public class AbstractReferentielFormatCqlFailureTest {
   @Autowired
   private ReferentielFormatSupportFacade referentielFormatSupportFacade;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
   @Before
   public void setup() throws Exception {
 
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_REFERENTIEL_FORMAT, ModeGestionAPI.MODE_API.DATASTAX);
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     if (server.getStartLocal()) {
       // server.resetData(false, MODE_API.DATASTAX);
       createReferentielFormat();

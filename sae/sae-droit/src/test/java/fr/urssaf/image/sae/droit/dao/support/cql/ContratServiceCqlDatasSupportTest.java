@@ -78,7 +78,7 @@ public class ContratServiceCqlDatasSupportTest {
     contract.setLibelle(LIBELLE1);
     contract.setViDuree(VI_DUREE);
     contract.setIdPki(ID_PKI);
-    final List<String> listPki = new ArrayList<>();// AJOUT EC
+    final List<String> listPki = new ArrayList<>();
     listPki.add(ID_PKI);
     contract.setListPki(listPki);
     contract.setVerifNommage(false);

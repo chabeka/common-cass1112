@@ -22,7 +22,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.CollectionUtils;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
@@ -36,7 +38,6 @@ import fr.urssaf.image.sae.droit.model.SaeContratService;
 import fr.urssaf.image.sae.droit.model.SaePagm;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
-import fr.urssaf.image.sae.droit.utils.ModeAPIDroitUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -74,6 +75,9 @@ public class ContratServiceSupportTest {
 
   @Autowired
   private SaeDroitService saeDroitService;
+
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ContratServiceSupportTest.class);
@@ -118,7 +122,8 @@ public class ContratServiceSupportTest {
     if (cassandraServer.isCassandraStarted()) {
       try {
         cassandraServer.resetData();
-        ModeAPIDroitUtils.setAllDroitsModeAPIThrift();
+        modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+
         createActionsUnitaires();
         createPagma();
         createPrmd();

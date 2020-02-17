@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
@@ -32,6 +32,8 @@ public class ActionUnitaireSupportFacade implements ISupportFacade<ActionUnitair
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -41,16 +43,17 @@ public class ActionUnitaireSupportFacade implements ISupportFacade<ActionUnitair
   @Autowired
   public ActionUnitaireSupportFacade(final ActionUnitaireSupport actionUnitaireSupport,
                                      final ActionUnitaireCqlSupport actionUnitaireCqlSupport,
-                                     final JobClockSupport clockSupport) {
+                                     final JobClockSupport clockSupport, final ModeAPIService modeApiService) {
     this.actionUnitaireSupport = actionUnitaireSupport;
     this.actionUnitaireCqlSupport = actionUnitaireCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService=modeApiService;
   }
 
   @Override
   public final void create(final ActionUnitaire actionUnitaire) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       actionUnitaireSupport.create(actionUnitaire, clockSupport.currentCLock());
@@ -75,7 +78,7 @@ public class ActionUnitaireSupportFacade implements ISupportFacade<ActionUnitair
   @Override
   public final ActionUnitaire find(final String code) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return actionUnitaireSupport.find(code);
@@ -99,7 +102,7 @@ public class ActionUnitaireSupportFacade implements ISupportFacade<ActionUnitair
    */
   @Override
   public List<ActionUnitaire> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return actionUnitaireSupport.findAll();
@@ -124,7 +127,7 @@ public class ActionUnitaireSupportFacade implements ISupportFacade<ActionUnitair
   @Override
   public void delete(final String id) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       actionUnitaireSupport.delete(id, clockSupport.currentCLock());

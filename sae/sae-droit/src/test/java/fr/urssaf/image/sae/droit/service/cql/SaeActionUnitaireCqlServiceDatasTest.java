@@ -17,7 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.support.cql.ActionUnitaireCqlSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
@@ -46,10 +47,12 @@ public class SaeActionUnitaireCqlServiceDatasTest {
 
   public String cfName = Constantes.CF_DROIT_ACTION_UNITAIRE;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void setup() throws Exception {
-
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
   }
   @After
   public void end() throws Exception {
@@ -82,8 +85,7 @@ public class SaeActionUnitaireCqlServiceDatasTest {
 
   @Test
   public void testActionUnitaireSucces() throws Exception {
-    // cassandraServercql.resetData(true);
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
 
     final ActionUnitaire actionUnitaire = new ActionUnitaire();
     actionUnitaire.setCode("codeAction");

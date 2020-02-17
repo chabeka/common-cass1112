@@ -17,8 +17,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.service.SaePrmdService;
 import fr.urssaf.image.sae.droit.utils.Constantes;
@@ -46,6 +47,9 @@ public class SaePrmdCqlServiceTest {
 
   public String cfName = Constantes.CF_DROIT_PRMD;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void end() throws Exception {
     cassandraServer.resetData(true, MODE_API.DATASTAX);
@@ -54,7 +58,7 @@ public class SaePrmdCqlServiceTest {
   @Test
   public void testCreatePrmdObligatoire() {
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       service.createPrmd(null);
       Assert.fail(ERREUR_ATTENDUE);
     }
@@ -74,7 +78,7 @@ public class SaePrmdCqlServiceTest {
   @Test
   public void testCreateCodePrmdObligatoire() {
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final Prmd prmd = new Prmd();
       prmd.setDescription("description");
       prmd.setLucene("lucène");
@@ -98,7 +102,7 @@ public class SaePrmdCqlServiceTest {
   @Test
   public void testCreateDescriptionObligatoire() {
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final Prmd prmd = new Prmd();
       prmd.setCode("code");
       prmd.setLucene("lucène");
@@ -121,7 +125,7 @@ public class SaePrmdCqlServiceTest {
   @Test
   public void testCheckCodeObligatoire() {
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       service.prmdExists(null);
       Assert.fail(ERREUR_ATTENDUE);
     }

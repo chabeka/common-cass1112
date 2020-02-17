@@ -111,7 +111,7 @@
      <constructor-arg ref="transfertTraceRegTechniqueIndexDao" />
    </bean>
       
-   <bean id="dispatcherServiceTransfert" autowire-candidate="false" 
+  <bean id="dispatcherServiceTransfert" autowire-candidate="false" 
       class="fr.urssaf.image.sae.trace.service.impl.DispatcheurServiceImpl">
      <constructor-arg ref="transfertTraceJobClockSupport" />
      <constructor-arg ref="transfertTraceDestinataireSupport" />
@@ -121,6 +121,7 @@
      <constructor-arg ref="transfertTraceJournalEvtSupport" />
      <constructor-arg ref="dfceServicesTransfert" />
      <constructor-arg ref="transfertTimeUUIDEtTimestampSupport" />  
+    
    </bean>
    
 </beans>

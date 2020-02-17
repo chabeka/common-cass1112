@@ -19,8 +19,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenceException;
@@ -51,6 +52,9 @@ public class SaePagmaServiceDatasTest {
   @Autowired
   private CassandraServerBean cassandraServer;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   private final String cfName = Constantes.CF_DROIT_PAGMA;
 
   private static final Logger LOGGER = LoggerFactory
@@ -58,7 +62,8 @@ public class SaePagmaServiceDatasTest {
 
   @Before
   public void start() throws Exception {
-    GestionModeApiUtils.setModeApiThrift(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.HECTOR, cfName);
+
   }
 
   @After

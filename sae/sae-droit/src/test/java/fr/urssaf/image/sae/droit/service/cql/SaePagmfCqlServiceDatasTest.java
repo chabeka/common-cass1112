@@ -13,8 +13,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmfCqlSupport;
 import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
@@ -45,12 +46,14 @@ public class SaePagmfCqlServiceDatasTest {
 
   public String cfName = Constantes.CF_DROIT_PAGMF;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
 
   @Test(expected = PagmfNotFoundException.class)
   public void testPagmfInexistant() throws Exception {
     cassandraServer.resetData(true, MODE_API.DATASTAX);
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     service.getPagmf("test");
 
 
@@ -61,8 +64,7 @@ public class SaePagmfCqlServiceDatasTest {
   @Test
   public void testSucces() throws Exception {
     cassandraServer.resetData(true, MODE_API.DATASTAX);
-    GestionModeApiUtils.setModeApiCql(cfName);
-
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     final Pagmf pagmf = new Pagmf();
     pagmf.setCodePagmf("codePagmf");
     pagmf.setDescription("description Pagmf");

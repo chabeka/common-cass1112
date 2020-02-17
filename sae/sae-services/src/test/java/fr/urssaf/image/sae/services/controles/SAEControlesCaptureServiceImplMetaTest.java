@@ -10,7 +10,7 @@ import javax.activation.DataHandler;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +20,11 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.utils.InputStreamSource;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -41,9 +42,12 @@ public class SAEControlesCaptureServiceImplMetaTest {
   @Autowired
   SAEControlesCaptureService saeControlesCaptureService;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPIThrift();
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  @Before
+  public void start() throws IOException {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
 
   /**

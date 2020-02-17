@@ -14,7 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.CorrespondancesRndCqlSupport;
@@ -39,6 +40,9 @@ public class CorrespondanceRndSupportFacadeTest {
   @Autowired
   private CorrespondancesRndCqlSupport supportCql;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void after() throws Exception {
     server.clearTables();
@@ -47,14 +51,15 @@ public class CorrespondanceRndSupportFacadeTest {
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws MajCorrespondancesException {
     // On se met sur mode API inconnu
-    GestionModeApiUtils.setModeApiUnknown(Constantes.CF_CORRESPONDANCES_RND);
+    modeApiSupport.updateModeApi("UNKNOWN", Constantes.CF_CORRESPONDANCES_RND);
     supportFacade.getCorrespondance("TEST", "1");
   }
 
   @Test
   public void testCreationDualReadThrift() throws MajCorrespondancesException {
     // On se met sur mode dual read thrift
-    GestionModeApiUtils.setModeApiDualReadThrift(Constantes.CF_CORRESPONDANCES_RND);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT, Constantes.CF_CORRESPONDANCES_RND);
+
     // On ajoute un rnd avec la facade sur les tables thrift et cql
     final String codeTemporaire = "a.a.a.a.a";
     final String version = "11.4";
@@ -80,7 +85,7 @@ public class CorrespondanceRndSupportFacadeTest {
   @Test
   public void testCreationDualReadCql() throws MajCorrespondancesException {
     // On se met sur mode dual read cql
-    GestionModeApiUtils.setModeApiDualReadCql(Constantes.CF_CORRESPONDANCES_RND);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL, Constantes.CF_CORRESPONDANCES_RND);
     // On ajoute un rnd avec la facade sur les tables thrift et cql
     final String codeTemporaire = "a.a.a.a.a";
     final String version = "11.4";

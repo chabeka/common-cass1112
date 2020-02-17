@@ -21,7 +21,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +29,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -83,514 +83,514 @@ import net.docubase.toolkit.model.note.Note;
 @ContextConfiguration(locations = {"/applicationContext-sae-services-test.xml"})
 public class SAETransfertMasseServiceTest {
 
-   @Autowired
-   private SAETransfertService saeTransfertService;
+  @Autowired
+  private SAETransfertService saeTransfertService;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private ParametersService parametersService;
+  @Autowired
+  private ParametersService parametersService;
 
-   @Autowired
-   private RndSupport rndSupport;
+  @Autowired
+  private RndSupport rndSupport;
 
-   @Autowired
-   private JobClockSupport jobClockSupport;
+  @Autowired
+  private JobClockSupport jobClockSupport;
 
-   @Autowired
-   @Qualifier("SAEServiceTestProvider")
-   private SAEServiceTestProvider testProviderGNT;
+  @Autowired
+  @Qualifier("SAEServiceTestProvider")
+  private SAEServiceTestProvider testProviderGNT;
 
-   @Autowired
-   @Qualifier("saeServiceTestProviderTransfert")
-   private SAEServiceTestProvider testProviderGNS;
+  @Autowired
+  @Qualifier("saeServiceTestProviderTransfert")
+  private SAEServiceTestProvider testProviderGNS;
 
-   private UUID uidDocGNT;
+  private UUID uidDocGNT;
 
-   private UUID uidDocGNS;
+  private UUID uidDocGNS;
 
-   private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+  private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
-   private static File srcFile = new File(
-                                          "src/test/resources/doc/attestation_consultation.pdf");
+  private static File srcFile = new File(
+      "src/test/resources/doc/attestation_consultation.pdf");
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPIThrift();
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+
+
+  @After
+  public void end() throws Exception {
+
+    server.resetData(true, MODE_API.HECTOR);
+
+    if (uidDocGNT != null) {
+      testProviderGNT.deleteDocument(uidDocGNT);
+    }
+    if (uidDocGNS != null) {
+      testProviderGNS.deleteDocument(uidDocGNS);
+    }
+
+    AuthenticationContext.setAuthenticationToken(null);
   }
 
-   @After
-   public void end() throws Exception {
+  @Before
+  public void init() throws Exception {
 
-      server.resetData(true, MODE_API.HECTOR);
+    //server.resetData(true, MODE_API.HECTOR);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      if (uidDocGNT != null) {
-         testProviderGNT.deleteDocument(uidDocGNT);
-      }
-      if (uidDocGNS != null) {
-         testProviderGNS.deleteDocument(uidDocGNS);
-      }
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitAll");
+    prmd.setCode("default");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] {"modification", "recherche",
+                                         "suppression", "transfert", "archivage_unitaire", "transfert_masse"};
+    saePrmds.add(saePrmd);
 
-      AuthenticationContext.setAuthenticationToken(null);
-   }
+    saeDroits.put("suppression", saePrmds);
+    saeDroits.put("modification", saePrmds);
+    saeDroits.put("recherche", saePrmds);
+    saeDroits.put("transfert", saePrmds);
+    saeDroits.put("archivage_unitaire", saePrmds);
+    saeDroits.put("transfert_masse", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
 
-   @Before
-   public void init() throws Exception {
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(),
+                                                                                 viExtrait,
+                                                                                 roles);
+    AuthenticationContext.setAuthenticationToken(token);
 
-      //server.resetData(true, MODE_API.HECTOR);
+    // Paramétrage du RND
+    parametersService.setVersionRndDateMaj(new Date());
+    parametersService.setVersionRndNumero("11.2");
 
-      final VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+    final TypeDocument typeDocCree = new TypeDocument();
+    typeDocCree.setCloture(false);
+    typeDocCree.setCode("2.3.1.1.12");
+    typeDocCree.setCodeActivite("3");
+    typeDocCree.setCodeFonction("2");
+    typeDocCree.setDureeConservation(1825);
+    typeDocCree.setLibelle("Libellé 2.3.1.1.12");
+    typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
-      final SaeDroits saeDroits = new SaeDroits();
-      final List<SaePrmd> saePrmds = new ArrayList<>();
-      final SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      final Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("default");
-      saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] {"modification", "recherche",
-                                           "suppression", "transfert", "archivage_unitaire", "transfert_masse"};
-      saePrmds.add(saePrmd);
+    rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+  }
 
-      saeDroits.put("suppression", saePrmds);
-      saeDroits.put("modification", saePrmds);
-      saeDroits.put("recherche", saePrmds);
-      saeDroits.put("transfert", saePrmds);
-      saeDroits.put("archivage_unitaire", saePrmds);
-      saeDroits.put("transfert_masse", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
+  @Test
+  public void testSuccess() throws Exception {
 
-      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
-                                                                                   viExtrait.getIdUtilisateur(),
-                                                                                   viExtrait,
-                                                                                   roles);
-      AuthenticationContext.setAuthenticationToken(token);
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
 
-      // Paramétrage du RND
-      parametersService.setVersionRndDateMaj(new Date());
-      parametersService.setVersionRndNumero("11.2");
+    // MODIFIER DES METADONNEES
 
-      final TypeDocument typeDocCree = new TypeDocument();
-      typeDocCree.setCloture(false);
-      typeDocCree.setCode("2.3.1.1.12");
-      typeDocCree.setCodeActivite("3");
-      typeDocCree.setCodeFonction("2");
-      typeDocCree.setDureeConservation(1825);
-      typeDocCree.setLibelle("Libellé 2.3.1.1.12");
-      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+    // -- Transfert du document vers la GNS
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("Siren", "siren"));
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
+    listeMeta.add(new UntypedMetadata("StatutWATT", "PRET"));
+    listeMeta.add(new UntypedMetadata("TracabilitePostArchivage", ""));
+    listeMeta.add(new UntypedMetadata("AnneeExercice", ""));
 
-      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-   }
+    try {
+      // Connexion à la GNS, en attendant correction de DFCEServicesImpl qui devrait se connecter automatiquement
+      // testProviderGNS.getDfceServices().connectTheFistTime();
 
-   @Test
-   public void testSuccess() throws Exception {
+      final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
+      saeTransfertService.transfertDocMasse(document);
 
-      // -- Insertion d'un document de test sur la GNT
-      uidDocGNT = insertDoc(testProviderGNT);
+      // -- Vérification présence fichier transféré
+      final Document doc = testProviderGNS.searchDocument(uidDocGNT);
+      Assert.assertNotNull("l'UUID '" + uidDocGNT
+                           + "' doit exister dans la GNS", doc);
 
-      // MODIFIER DES METADONNEES
+      // recupere l'identifiant du document que l'on a transfere en GNS
+      // pour pouvoir le supprimer a la fin du test
+      uidDocGNS = doc.getUuid();
 
-      // -- Transfert du document vers la GNS
-      final List<UntypedMetadata> listeMeta = new ArrayList<>();
-      listeMeta.add(new UntypedMetadata("Siren", "siren"));
-      listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
-      listeMeta.add(new UntypedMetadata("StatutWATT", "PRET"));
-      listeMeta.add(new UntypedMetadata("TracabilitePostArchivage", ""));
-      listeMeta.add(new UntypedMetadata("AnneeExercice", ""));
+      // le doc à été supprimé par transferDoc()
+      // ne pas le re-suppr. dans "@After" erreur dfce.
+      uidDocGNT = null;
 
-      try {
-         // Connexion à la GNS, en attendant correction de DFCEServicesImpl qui devrait se connecter automatiquement
-         // testProviderGNS.getDfceServices().connectTheFistTime();
+      // test sur les métadonnées techniques
+      assertDocument(doc);
 
-         final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
-         saeTransfertService.transfertDocMasse(document);
+      final StorageDocument documentGNS = BeanMapper.dfceMetaDataToStorageDocument(doc, null, testProviderGNS.getDfceServices());
 
-         // -- Vérification présence fichier transféré
-         final Document doc = testProviderGNS.searchDocument(uidDocGNT);
-         Assert.assertNotNull("l'UUID '" + uidDocGNT
-               + "' doit exister dans la GNS", doc);
+      Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "srn").equals("siren"));
+      Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "cop").equals("CER68"));
+      Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "dar").equals(true));
+      Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "nid").equals("UR747872013004000005"));
+      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "toa"));
+      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "dco"));
+      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "aex"));
+      // Le statut WATT n'est pas transférable. Il ne doit pas exister en GNS malgré la demande de modification au moment du transfert
+      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "swa"));
 
-         // recupere l'identifiant du document que l'on a transfere en GNS
-         // pour pouvoir le supprimer a la fin du test
-         uidDocGNS = doc.getUuid();
+    }
+    catch (final TraitementRepriseAlreadyDoneException e) {
+      Assert.fail("Exception non prévu");
+    }
+  }
 
-         // le doc à été supprimé par transferDoc()
-         // ne pas le re-suppr. dans "@After" erreur dfce.
-         uidDocGNT = null;
+  @Test
+  public void testErreurMetaNonModifiable()
+      throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
 
-         // test sur les métadonnées techniques
-         assertDocument(doc);
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
 
-         final StorageDocument documentGNS = BeanMapper.dfceMetaDataToStorageDocument(doc, null, testProviderGNS.getDfceServices());
+    // MODIFIER DES METADONNEES
 
-         Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "srn").equals("siren"));
-         Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "cop").equals("CER68"));
-         Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "dar").equals(true));
-         Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "nid").equals("UR747872013004000005"));
-         Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "toa"));
-         Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "dco"));
-         Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "aex"));
-         // Le statut WATT n'est pas transférable. Il ne doit pas exister en GNS malgré la demande de modification au moment du transfert
-         Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "swa"));
+    // -- Transfert du document vers la GNS
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
 
-      }
-      catch (final TraitementRepriseAlreadyDoneException e) {
-         Assert.fail("Exception non prévu");
-      }
-   }
+    try {
+      saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
 
-   @Test
-   public void testErreurMetaNonModifiable()
-         throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
+      Assert.fail("Une exception de type TransfertException est attendue");
+    }
+    catch (final TransfertException e) {
+      Assert.assertTrue("L'exception de type NotModifiableMetadataEx est attendue", e.getCause() instanceof NotModifiableMetadataEx);
+      Assert.assertTrue("Attendu : La ou les métadonnées suivantes ne sont pas modifiables : ApplicationProductrice",
+                        e.getCause()
+                        .getMessage()
+                        .contains("La ou les métadonnées suivantes ne sont pas modifiables : ApplicationProductrice"));
+    }
+  }
 
-      // -- Insertion d'un document de test sur la GNT
-      uidDocGNT = insertDoc(testProviderGNT);
+  @Test
+  public void testErreurMetaNonSupprimable()
+      throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
 
-      // MODIFIER DES METADONNEES
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
 
-      // -- Transfert du document vers la GNS
-      final List<UntypedMetadata> listeMeta = new ArrayList<>();
-      listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
-      listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
+    // MODIFIER DES METADONNEES
 
-      try {
-         saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
+    // -- Transfert du document vers la GNS
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", ""));
+    listeMeta.add(new UntypedMetadata("DateCreation", ""));
+    listeMeta.add(new UntypedMetadata("Titre", ""));
 
-         Assert.fail("Une exception de type TransfertException est attendue");
-      }
-      catch (final TransfertException e) {
-         Assert.assertTrue("L'exception de type NotModifiableMetadataEx est attendue", e.getCause() instanceof NotModifiableMetadataEx);
-         Assert.assertTrue("Attendu : La ou les métadonnées suivantes ne sont pas modifiables : ApplicationProductrice",
-                           e.getCause()
-                            .getMessage()
-                            .contains("La ou les métadonnées suivantes ne sont pas modifiables : ApplicationProductrice"));
-      }
-   }
+    try {
+      saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
 
-   @Test
-   public void testErreurMetaNonSupprimable()
-         throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
+      Assert.fail("Une exception de type TransfertException est attendue");
+    }
+    catch (final TransfertException e) {
+      Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
+      Assert.assertTrue("Attendu : La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre",
+                        e.getCause()
+                        .getMessage()
+                        .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre"));
+    }
+  }
 
-      // -- Insertion d'un document de test sur la GNT
-      uidDocGNT = insertDoc(testProviderGNT);
+  @Test
+  public void testErreurMetaNonSupprimableCodeRnd()
+      throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
 
-      // MODIFIER DES METADONNEES
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
 
-      // -- Transfert du document vers la GNS
-      final List<UntypedMetadata> listeMeta = new ArrayList<>();
-      listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", ""));
-      listeMeta.add(new UntypedMetadata("DateCreation", ""));
-      listeMeta.add(new UntypedMetadata("Titre", ""));
+    // MODIFIER DES METADONNEES
 
-      try {
-         saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
+    // -- Transfert du document vers la GNS
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("CodeRND", ""));
 
-         Assert.fail("Une exception de type TransfertException est attendue");
-      }
-      catch (final TransfertException e) {
-         Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
-         Assert.assertTrue("Attendu : La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre",
-                           e.getCause()
-                            .getMessage()
-                            .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre"));
-      }
-   }
+    try {
+      saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
 
-   @Test
-   public void testErreurMetaNonSupprimableCodeRnd()
-         throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
+      Assert.fail("Une exception de type TransfertException est attendue");
+    }
+    catch (final TransfertException e) {
+      Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
+      Assert.assertTrue("Attendu : La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND",
+                        e.getCause()
+                        .getMessage()
+                        .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND"));
+    }
+  }
 
-      // -- Insertion d'un document de test sur la GNT
-      uidDocGNT = insertDoc(testProviderGNT);
+  @Test
+  public void testArchiveInexistante() throws TransfertException,
+  ArchiveAlreadyTransferedException, ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException,
+  UnknownCodeRndEx {
 
-      // MODIFIER DES METADONNEES
+    // -- Appel méthode de transfert sur un doc déjà transféré
+    try {
 
-      // -- Transfert du document vers la GNS
-      final List<UntypedMetadata> listeMeta = new ArrayList<>();
-      listeMeta.add(new UntypedMetadata("CodeRND", ""));
-
-      try {
-         saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
-
-         Assert.fail("Une exception de type TransfertException est attendue");
-      }
-      catch (final TransfertException e) {
-         Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
-         Assert.assertTrue("Attendu : La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND",
-                           e.getCause()
-                            .getMessage()
-                            .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND"));
-      }
-   }
-
-   @Test
-   public void testArchiveInexistante() throws TransfertException,
-         ArchiveAlreadyTransferedException, ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException,
-         UnknownCodeRndEx {
-
-      // -- Appel méthode de transfert sur un doc déjà transféré
-      try {
-
-         final UUID uuid = UUID.randomUUID();
-
-         final List<UntypedMetadata> listeMeta = new ArrayList<>();
-         listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
-         listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
-
-         saeTransfertService.controleDocumentTransfertMasse(uuid,
-                                                            listeMeta,
-                                                            false,
-                                                            null,
-                                                            false);
-         Assert.fail("une ArchiveInexistanteEx est attendue");
-
-      }
-      catch (final TransfertException e) {
-         Assert.assertTrue(e.getCause() instanceof ArchiveInexistanteEx);
-         // On a la bonne exception
-      }
-      catch (final TraitementRepriseAlreadyDoneException e) {
-         Assert.fail("Exception non prévu");
-      }
-   }
-
-   @Test
-   // @Ignore("Mis en commentaire le temps de la release")
-   public void testArchiveDejaTransferee() throws ConnectionServiceEx,
-         IOException, ParseException {
-
-      // -- Insertion d'un document de test sur la GNS
-      uidDocGNS = insertDoc(testProviderGNS);
-
-      // -- Recherche du document inséré
-      final Document doc = testProviderGNS.searchDocument(uidDocGNS);
-
-      Assert.assertNotNull(
-                           "l'UUID '" + uidDocGNS + "' doit exister sur la GNS",
-                           doc);
+      final UUID uuid = UUID.randomUUID();
 
       final List<UntypedMetadata> listeMeta = new ArrayList<>();
       listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
       listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
 
-      // -- Appel méthode de transfert sur un doc déjà transféré
-      try {
-         saeTransfertService.controleDocumentTransfertMasse(uidDocGNS,
-                                                            listeMeta,
-                                                            false,
-                                                            null,
-                                                            false);
-         Assert.fail("une ArchiveAlreadyTransferedException est attendue");
+      saeTransfertService.controleDocumentTransfertMasse(uuid,
+                                                         listeMeta,
+                                                         false,
+                                                         null,
+                                                         false);
+      Assert.fail("une ArchiveInexistanteEx est attendue");
 
+    }
+    catch (final TransfertException e) {
+      Assert.assertTrue(e.getCause() instanceof ArchiveInexistanteEx);
+      // On a la bonne exception
+    }
+    catch (final TraitementRepriseAlreadyDoneException e) {
+      Assert.fail("Exception non prévu");
+    }
+  }
+
+  @Test
+  // @Ignore("Mis en commentaire le temps de la release")
+  public void testArchiveDejaTransferee() throws ConnectionServiceEx,
+  IOException, ParseException {
+
+    // -- Insertion d'un document de test sur la GNS
+    uidDocGNS = insertDoc(testProviderGNS);
+
+    // -- Recherche du document inséré
+    final Document doc = testProviderGNS.searchDocument(uidDocGNS);
+
+    Assert.assertNotNull(
+                         "l'UUID '" + uidDocGNS + "' doit exister sur la GNS",
+                         doc);
+
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
+
+    // -- Appel méthode de transfert sur un doc déjà transféré
+    try {
+      saeTransfertService.controleDocumentTransfertMasse(uidDocGNS,
+                                                         listeMeta,
+                                                         false,
+                                                         null,
+                                                         false);
+      Assert.fail("une ArchiveAlreadyTransferedException est attendue");
+
+    }
+    catch (final ArchiveAlreadyTransferedException e) {
+      // On a la bonne exception
+    }
+    catch (final Exception e) {
+      Assert.fail("une ArchiveAlreadyTransferedException est attendue: "
+          + e.getMessage());
+    }
+  }
+
+  @Test
+  public void testTransfertNoteSuccess() throws ConnectionServiceEx,
+  IOException, ParseException, TransfertException,
+  ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
+  SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+  RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+  UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+  EmptyDocumentEx, RequiredArchivableMetadataEx,
+  NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+  CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+  ValidationExceptionInvalidFile, UnknownFormatException, ReferentialException, RetrievalServiceEx, InvalidSAETypeException,
+  MappingFromReferentialException {
+
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
+
+    // -- Ajout d'une note au document
+    testProviderGNT.addNoteDocument(uidDocGNT, "Contenu de la note");
+
+    // -- Transfert du document vers la GNS
+    try {
+      final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(
+                                                                                          uidDocGNT,
+                                                                                          null,
+                                                                                          false,
+                                                                                          UUID.randomUUID(),
+                                                                                          false);
+
+      saeTransfertService.transfertDocMasse(document);
+
+      // -- Vérification présence fichier transféré
+      final Document doc = testProviderGNS.searchDocument(uidDocGNT);
+      Assert.assertNotNull("l'UUID '" + uidDocGNT
+                           + "' doit exister dans la GNS", doc);
+
+      // recupere l'identifiant du document que l'on a transfere en GNS
+      // pour pouvoir le supprimer a la fin du test
+      uidDocGNS = doc.getUuid();
+
+      // le doc à été supprimé par transferDoc()
+      // ne pas le re-suppr. dans "@After" erreur dfce.
+      uidDocGNT = null;
+
+      // test sur le bon transfert de la note
+      final List<Note> listeNotes = testProviderGNS.getNoteDocument(uidDocGNS);
+
+      if (listeNotes.size() > 0) {
+        Assert.assertEquals("Le contenu de la note est incorrect",
+                            "Contenu de la note",
+                            listeNotes.get(0).getContent());
+      } else {
+        Assert.fail("Une note doit être présente sur le document");
       }
-      catch (final ArchiveAlreadyTransferedException e) {
-         // On a la bonne exception
-      }
-      catch (final Exception e) {
-         Assert.fail("une ArchiveAlreadyTransferedException est attendue: "
-               + e.getMessage());
-      }
-   }
+    }
+    catch (final TraitementRepriseAlreadyDoneException e) {
+      Assert.fail("Aucune exception ne doit être remonté");
+    }
+  }
 
-   @Test
-   public void testTransfertNoteSuccess() throws ConnectionServiceEx,
-         IOException, ParseException, TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
-         SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException, ReferentialException, RetrievalServiceEx, InvalidSAETypeException,
-         MappingFromReferentialException {
+  @Test
+  public void testErreurMetaInexistante()
+      throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
 
-      // -- Insertion d'un document de test sur la GNT
-      uidDocGNT = insertDoc(testProviderGNT);
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
 
-      // -- Ajout d'une note au document
-      testProviderGNT.addNoteDocument(uidDocGNT, "Contenu de la note");
+    // MODIFIER DES METADONNEES
 
-      // -- Transfert du document vers la GNS
-      try {
-         final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(
-                                                                                             uidDocGNT,
-                                                                                             null,
-                                                                                             false,
-                                                                                             UUID.randomUUID(),
-                                                                                             false);
+    // -- Transfert du document vers la GNS
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("Titi", "Test"));
+    listeMeta.add(new UntypedMetadata("Toto", "11"));
 
-         saeTransfertService.transfertDocMasse(document);
+    try {
+      final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
 
-         // -- Vérification présence fichier transféré
-         final Document doc = testProviderGNS.searchDocument(uidDocGNT);
-         Assert.assertNotNull("l'UUID '" + uidDocGNT
-               + "' doit exister dans la GNS", doc);
+      saeTransfertService.transfertDocMasse(document);
 
-         // recupere l'identifiant du document que l'on a transfere en GNS
-         // pour pouvoir le supprimer a la fin du test
-         uidDocGNS = doc.getUuid();
+      Assert.fail("Une exception de type TransfertException est attendue");
+    }
+    catch (final Exception e) {
+      Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof UnknownMetadataEx);
+      Assert.assertTrue("Attendu : Le message de l'exception attendue est : 'La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto'",
+                        e.getCause()
+                        .getMessage()
+                        .contains("La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto"));
+      ;
+    }
+  }
 
-         // le doc à été supprimé par transferDoc()
-         // ne pas le re-suppr. dans "@After" erreur dfce.
-         uidDocGNT = null;
+  private UUID insertDoc(final SAEServiceTestProvider testProvider)
+      throws IOException, ConnectionServiceEx, ParseException {
 
-         // test sur le bon transfert de la note
-         final List<Note> listeNotes = testProviderGNS.getNoteDocument(uidDocGNS);
+    final byte[] content = FileUtils.readFileToByteArray(srcFile);
 
-         if (listeNotes.size() > 0) {
-            Assert.assertEquals("Le contenu de la note est incorrect",
-                                "Contenu de la note",
-                                listeNotes.get(0).getContent());
-         } else {
-            Assert.fail("Une note doit être présente sur le document");
-         }
-      }
-      catch (final TraitementRepriseAlreadyDoneException e) {
-         Assert.fail("Aucune exception ne doit être remonté");
-      }
-   }
+    final String parsePatterns = new String("yyyy-MM-dd");
+    final Map<String, Object> metadatas = new HashMap<>();
 
-   @Test
-   public void testErreurMetaInexistante()
-         throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
+    final DateTimeFormatter formatter = DateTimeFormat.forPattern(parsePatterns)
+        .withZoneUTC();
+    final DateTime dt = formatter.parseDateTime("2014-10-28");
+    final Date date = dt.toDate();
 
-      // -- Insertion d'un document de test sur la GNT
-      uidDocGNT = insertDoc(testProviderGNT);
+    metadatas.put("apr", "ADELAIDE");
+    metadatas.put("cop", "CER69");
+    metadatas.put("cog", "UR750");
+    metadatas.put("vrn", "11.1");
+    metadatas.put("dom", "2");
+    metadatas.put("act", "3");
+    metadatas.put("nbp", "2");
+    metadatas.put("ffi", "fmt/1354");
+    metadatas.put("cse", "ATT_PROD_001");
+    metadatas.put("dre", date);// date réception
+    metadatas.put("dfc", date);// date fin conservation
+    metadatas.put("cot", Boolean.TRUE);
+    metadatas.put("bap", Boolean.TRUE);
+    metadatas.put("aex", "100");
+    metadatas.put("mch", "100");
+    metadatas.put("mre", "100");
+    metadatas.put("jdp", "1A2B3C4D5E6F7G8H9I");
+    // Identifiant d'archivage AED et flag indiquant que le document est archivable
+    metadatas.put("nid", "UR747872013004000005");
+    metadatas.put("dar", "true");
 
-      // MODIFIER DES METADONNEES
+    final String documentTitle = "attestation_transfert";
+    final String documentType = "pdf";
+    final String codeRND = "2.3.1.1.12";
+    final String title = "Attestation de transfert";
 
-      // -- Transfert du document vers la GNS
-      final List<UntypedMetadata> listeMeta = new ArrayList<>();
-      listeMeta.add(new UntypedMetadata("Titi", "Test"));
-      listeMeta.add(new UntypedMetadata("Toto", "11"));
+    return testProvider.captureDocument(content,
+                                        metadatas,
+                                        documentTitle,
+                                        documentType,
+                                        date,
+                                        date,
+                                        codeRND,
+                                        title,
+                                        null);
+  }
 
-      try {
-         final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
+  private static void assertDocument(final Document doc)
+      throws FileNotFoundException, IOException {
 
-         saeTransfertService.transfertDocMasse(document);
+    // TEST sur métadonnée : Titre
+    Assert.assertEquals("la métadonnée 'Titre(sm_title)' est incorrecte",
+                        "Attestation de transfert",
+                        doc.getTitle());
 
-         Assert.fail("Une exception de type TransfertException est attendue");
-      }
-      catch (final Exception e) {
-         Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof UnknownMetadataEx);
-         Assert.assertTrue("Attendu : Le message de l'exception attendue est : 'La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto'",
-                           e.getCause()
-                            .getMessage()
-                            .contains("La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto"));
-         ;
-      }
-   }
+    // TEST sur métadonnée : DateCreation
+    Assert.assertEquals(
+                        "la métadonnée 'DateCreation(sm_creation_date)' est incorrecte",
+                        "2014-10-28 00:00:00",
+                        DateFormatUtils.formatUTC(doc
+                                                  .getCreationDate(),
+                                                  DATE_FORMAT));
 
-   private UUID insertDoc(final SAEServiceTestProvider testProvider)
-         throws IOException, ConnectionServiceEx, ParseException {
+    // TEST sur les métadonnées : DateModification & DateArchivage
+    Assert.assertTrue("la métadonnée 'DateArchivage(sm_archivage_date)':"
+        + doc.getArchivageDate()
+        + " et 'DateModification(sm_modification)':"
+        + doc.getModificationDate(),
+        doc.getArchivageDate()
+        .equals(
+                doc.getModificationDate()));
 
-      final byte[] content = FileUtils.readFileToByteArray(srcFile);
+    // TEST sur métadonnée : DateDebutConservation
+    Assert
+    .assertEquals(
+                  "la métadonnée 'DateDebutConservation(sm_life_cycle_reference_date)' est incorrecte",
+                  "2014-10-28 00:00:00",
+                  DateFormatUtils.formatUTC(doc
+                                            .getLifeCycleReferenceDate(),
+                                            DATE_FORMAT));
 
-      final String parsePatterns = new String("yyyy-MM-dd");
-      final Map<String, Object> metadatas = new HashMap<>();
+    // TEST sur métadonnée : TypeHash
+    Assert.assertEquals(
+                        "la métadonnée 'TypeHash(sm_digest_algorithm)' est incorrecte",
+                        "SHA-1",
+                        doc.getDigestAlgorithm());
 
-      final DateTimeFormatter formatter = DateTimeFormat.forPattern(parsePatterns)
-                                                        .withZoneUTC();
-      final DateTime dt = formatter.parseDateTime("2014-10-28");
-      final Date date = dt.toDate();
+    // TEST sur métadonnée : Hash
+    final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+    Assert.assertEquals("la métadonnée 'Hash(sm_digest)' est incorrecte",
+                        hash,
+                        doc.getDigest());
 
-      metadatas.put("apr", "ADELAIDE");
-      metadatas.put("cop", "CER69");
-      metadatas.put("cog", "UR750");
-      metadatas.put("vrn", "11.1");
-      metadatas.put("dom", "2");
-      metadatas.put("act", "3");
-      metadatas.put("nbp", "2");
-      metadatas.put("ffi", "fmt/1354");
-      metadatas.put("cse", "ATT_PROD_001");
-      metadatas.put("dre", date);// date réception
-      metadatas.put("dfc", date);// date fin conservation
-      metadatas.put("cot", Boolean.TRUE);
-      metadatas.put("bap", Boolean.TRUE);
-      metadatas.put("aex", "100");
-      metadatas.put("mch", "100");
-      metadatas.put("mre", "100");
-      metadatas.put("jdp", "1A2B3C4D5E6F7G8H9I");
-      // Identifiant d'archivage AED et flag indiquant que le document est archivable
-      metadatas.put("nid", "UR747872013004000005");
-      metadatas.put("dar", "true");
+    // TEST sur métadonnée : NomFichier
+    Assert.assertEquals(
+                        "la métadonnée 'NomFichier(sm_filename)' est incorrecte",
+                        "attestation_transfert",
+                        doc.getFilename());
 
-      final String documentTitle = "attestation_transfert";
-      final String documentType = "pdf";
-      final String codeRND = "2.3.1.1.12";
-      final String title = "Attestation de transfert";
-
-      return testProvider.captureDocument(content,
-                                          metadatas,
-                                          documentTitle,
-                                          documentType,
-                                          date,
-                                          date,
-                                          codeRND,
-                                          title,
-                                          null);
-   }
-
-   private static void assertDocument(final Document doc)
-         throws FileNotFoundException, IOException {
-
-      // TEST sur métadonnée : Titre
-      Assert.assertEquals("la métadonnée 'Titre(sm_title)' est incorrecte",
-                          "Attestation de transfert",
-                          doc.getTitle());
-
-      // TEST sur métadonnée : DateCreation
-      Assert.assertEquals(
-                          "la métadonnée 'DateCreation(sm_creation_date)' est incorrecte",
-                          "2014-10-28 00:00:00",
-                          DateFormatUtils.formatUTC(doc
-                                                       .getCreationDate(),
-                                                    DATE_FORMAT));
-
-      // TEST sur les métadonnées : DateModification & DateArchivage
-      Assert.assertTrue("la métadonnée 'DateArchivage(sm_archivage_date)':"
-            + doc.getArchivageDate()
-            + " et 'DateModification(sm_modification)':"
-            + doc.getModificationDate(),
-                        doc.getArchivageDate()
-                           .equals(
-                                   doc.getModificationDate()));
-
-      // TEST sur métadonnée : DateDebutConservation
-      Assert
-            .assertEquals(
-                          "la métadonnée 'DateDebutConservation(sm_life_cycle_reference_date)' est incorrecte",
-                          "2014-10-28 00:00:00",
-                          DateFormatUtils.formatUTC(doc
-                                                       .getLifeCycleReferenceDate(),
-                                                    DATE_FORMAT));
-
-      // TEST sur métadonnée : TypeHash
-      Assert.assertEquals(
-                          "la métadonnée 'TypeHash(sm_digest_algorithm)' est incorrecte",
-                          "SHA-1",
-                          doc.getDigestAlgorithm());
-
-      // TEST sur métadonnée : Hash
-      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
-      Assert.assertEquals("la métadonnée 'Hash(sm_digest)' est incorrecte",
-                          hash,
-                          doc.getDigest());
-
-      // TEST sur métadonnée : NomFichier
-      Assert.assertEquals(
-                          "la métadonnée 'NomFichier(sm_filename)' est incorrecte",
-                          "attestation_transfert",
-                          doc.getFilename());
-
-      Assert.assertEquals(
-                          "la métadonnée 'NomFichier(sm_extension)' est incorrecte",
-                          "pdf",
-                          doc.getExtension());
-   }
+    Assert.assertEquals(
+                        "la métadonnée 'NomFichier(sm_extension)' est incorrecte",
+                        "pdf",
+                        doc.getExtension());
+  }
 }

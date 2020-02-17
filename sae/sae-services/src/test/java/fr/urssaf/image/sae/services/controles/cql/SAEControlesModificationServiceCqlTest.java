@@ -13,8 +13,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.services.AbstractServiceCqlTest;
 import fr.urssaf.image.sae.services.controles.SAEControlesModificationService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -37,15 +38,19 @@ public class SAEControlesModificationServiceCqlTest extends AbstractServiceCqlTe
   @Autowired
   private SAEControlesModificationService service;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @BeforeClass
   public static void beforeClass() throws IOException {
     init = false;
-    ModeApiAllUtils.setAllModeAPICql();
   }
 
   @Before
   public void before() throws Exception {
+
     initMetadata();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
   /*
    * La liste des métadonnées à modifier ne doit pas être nulle

@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
@@ -35,6 +35,8 @@ public class FormatControlProfilSupportFacade implements IFormatControlProfilFac
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FormatControlProfilSupportFacade.class);
 
@@ -47,17 +49,19 @@ public class FormatControlProfilSupportFacade implements IFormatControlProfilFac
   @Autowired
   public FormatControlProfilSupportFacade(final FormatControlProfilSupport formatControlProfilSupport,
                                           final FormatControlProfilCqlSupport formatControlProfilCqlSupport,
-                                          final JobClockSupport clockSupport) {
+                                          final JobClockSupport clockSupport,
+                                          final ModeAPIService modeApiService) {
 
     this.formatControlProfilSupport = formatControlProfilSupport;
     this.formatControlProfilCqlSupport = formatControlProfilCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
   @Override
   public final void create(final FormatControlProfil formatControlProfil) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       formatControlProfilSupport.create(formatControlProfil, clockSupport.currentCLock());
@@ -81,7 +85,7 @@ public class FormatControlProfilSupportFacade implements IFormatControlProfilFac
   @Override
   public final FormatControlProfil find(final String code) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return formatControlProfilSupport.find(code);
@@ -112,7 +116,7 @@ public class FormatControlProfilSupportFacade implements IFormatControlProfilFac
    */
   @Override
   public List<FormatControlProfil> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return formatControlProfilSupport.findAll();
@@ -143,25 +147,25 @@ public class FormatControlProfilSupportFacade implements IFormatControlProfilFac
   public void delete(final String id) throws FormatControlProfilNotFoundException {
 
 
-      switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
-      case MODE_API.HECTOR:
-        formatControlProfilSupport.delete(id, clockSupport.currentCLock());
-        break;
+    case MODE_API.HECTOR:
+      formatControlProfilSupport.delete(id, clockSupport.currentCLock());
+      break;
 
-      case MODE_API.DATASTAX:
+    case MODE_API.DATASTAX:
       formatControlProfilCqlSupport.delete(id, clockSupport.currentCLock());
-        break;
+      break;
 
-      case MODE_API.DUAL_MODE_READ_THRIFT:
-      case MODE_API.DUAL_MODE_READ_CQL:
-        formatControlProfilSupport.delete(id, clockSupport.currentCLock());
+    case MODE_API.DUAL_MODE_READ_THRIFT:
+    case MODE_API.DUAL_MODE_READ_CQL:
+      formatControlProfilSupport.delete(id, clockSupport.currentCLock());
       formatControlProfilCqlSupport.delete(id, clockSupport.currentCLock());
-        break;
+      break;
 
-      default:
-        throw new ModeGestionAPIUnkownException("FormatControlProfilSupportFacade/delete/Mode API inconnu");
-      }
+    default:
+      throw new ModeGestionAPIUnkownException("FormatControlProfilSupportFacade/delete/Mode API inconnu");
+    }
 
 
 

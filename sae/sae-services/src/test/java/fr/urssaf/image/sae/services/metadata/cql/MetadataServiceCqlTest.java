@@ -1,13 +1,11 @@
 package fr.urssaf.image.sae.services.metadata.cql;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
@@ -30,14 +29,13 @@ import fr.urssaf.image.sae.services.metadata.impl.MetadataServiceImpl;
 @ContextConfiguration(locations = {"/applicationContext-sae-services-test.xml"})
 public class MetadataServiceCqlTest {
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPICql();
-  }
 
   @Before
   public void before() throws Exception {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     createAllMetadata();
   }
 

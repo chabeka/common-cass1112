@@ -14,8 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
-import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
@@ -45,9 +46,12 @@ public class RegTechniqueCqlServiceTest {
 
   private static final String cfName = "traceregtechnique";
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Test
   public void testLectureIdentifiantObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.lecture(null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -57,7 +61,7 @@ public class RegTechniqueCqlServiceTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "identifiant"),
+                              "identifiant"),
                           exception.getMessage());
 
     }
@@ -69,7 +73,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureDateDebutObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.lecture(null, null, 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -79,7 +83,7 @@ public class RegTechniqueCqlServiceTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date de début"),
+                              "date de début"),
                           exception.getMessage());
 
     }
@@ -91,7 +95,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureDateFinObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.lecture(new Date(), null, 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -101,7 +105,7 @@ public class RegTechniqueCqlServiceTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date de fin"),
+                              "date de fin"),
                           exception.getMessage());
 
     }
@@ -113,10 +117,10 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureDateDebutInfDateFin() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service
-             .lecture(DateUtils.addHours(new Date(), 2), new Date(), 0, true);
+      .lecture(DateUtils.addHours(new Date(), 2), new Date(), 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
 
     }
@@ -134,7 +138,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureDateDebutEqDateFin() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       final Date date = new Date();
       service.lecture(date, date, 0, true);
@@ -155,10 +159,10 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureLimiteObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service
-             .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
+      .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
 
     }
@@ -166,7 +170,7 @@ public class RegTechniqueCqlServiceTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "limite"),
+                              "limite"),
                           exception.getMessage());
 
     }
@@ -178,7 +182,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testPurgeDateDebutObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.purge(null, 1);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -188,7 +192,7 @@ public class RegTechniqueCqlServiceTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date de purge"),
+                              "date de purge"),
                           exception.getMessage());
 
     }
@@ -200,7 +204,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testHasRecordsDebutObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.hasRecords(null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -210,7 +214,7 @@ public class RegTechniqueCqlServiceTest {
       Assert.assertEquals(MESSAGE_OK,
                           StringUtils.replace(MESSAGE_ERREUR,
                                               ARG_0,
-                                              "date"),
+                              "date"),
                           exception.getMessage());
 
     }

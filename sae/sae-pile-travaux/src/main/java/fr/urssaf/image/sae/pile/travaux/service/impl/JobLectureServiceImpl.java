@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
@@ -38,16 +39,21 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   private final JobLectureThriftService jobLectureThriftService;
 
+  private final ModeAPIService modeApiService;
+
   @Autowired
-  public JobLectureServiceImpl(final JobLectureCqlService jobLectureCqlService, final JobLectureThriftService jobLectureThriftService) {
+  public JobLectureServiceImpl(final JobLectureCqlService jobLectureCqlService,
+                               final JobLectureThriftService jobLectureThriftService,
+                               final ModeAPIService modeApiService) {
     super();
     this.jobLectureCqlService = jobLectureCqlService;
     this.jobLectureThriftService = jobLectureThriftService;
+    this.modeApiService = modeApiService;
   }
 
   @Override
   public JobRequest getJobRequest(final UUID jobRequestUUID) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final JobRequestCql jobRequestCql = jobLectureCqlService.getJobRequest(jobRequestUUID);
@@ -64,7 +70,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public Iterator<JobQueue> getUnreservedJobRequestIterator() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return JobsQueueMapper.mapIteratorJobQueueToIteratorJobQueueCql(jobLectureCqlService.getUnreservedJobRequestIterator());
@@ -77,7 +83,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public List<JobQueue> getNonTerminatedSimpleJobs(final String hostname) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return JobsQueueMapper.mapListJobQueueToListJobQueueCql(jobLectureCqlService.getNonTerminatedSimpleJobs(hostname));
@@ -90,7 +96,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public List<JobRequest> getNonTerminatedJobs(final String key) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<JobRequest> listJobT = new ArrayList<>();
@@ -108,7 +114,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public List<JobHistory> getJobHistory(final UUID idJob) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return JobHistoryMapper.mapListJobHistoryCqlToListJobHistory(jobLectureCqlService.getJobHistory(idJob).get(0));
@@ -121,7 +127,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public List<JobRequest> getAllJobs(final Keyspace keyspace) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<JobRequest> listJobT = new ArrayList<>();
@@ -139,7 +145,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public List<JobRequest> getAllJobs(final Keyspace keyspace, final int maxKeysToRead) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<JobRequest> listJobT = new ArrayList<>();
@@ -157,7 +163,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public List<JobRequest> getJobsToDelete(final Keyspace keyspace, final Date dateMax) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<JobRequest> listJobT = new ArrayList<>();
@@ -175,7 +181,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public boolean isJobResettable(final JobRequest job) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return jobLectureCqlService.isJobResettable(JobRequestMapper.mapJobRequestThriftToJobRequestCql(job));
@@ -188,7 +194,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public boolean isJobRemovable(final JobRequest job) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return jobLectureCqlService.isJobRemovable(JobRequestMapper.mapJobRequestThriftToJobRequestCql(job));
@@ -201,7 +207,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public JobRequest getJobRequestNotNull(final UUID uuidJob) throws JobInexistantException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final JobRequestCql cql = jobLectureCqlService.getJobRequestNotNull(uuidJob);
@@ -215,7 +221,7 @@ public class JobLectureServiceImpl implements JobLectureService {
 
   @Override
   public UUID getJobRequestIdByJobKey(final byte[] jobKey) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return jobLectureCqlService.getJobRequestIdByJobKey(jobKey);

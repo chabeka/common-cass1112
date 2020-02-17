@@ -11,10 +11,12 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.service.RndService;
@@ -27,15 +29,19 @@ public class RNDReferenceDAOImplCqlTest extends AbstractServiceCqlTest {
 
   private RndService rndService;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @BeforeClass
   public static void beforeClass() throws IOException {
     init = false;
-    ModeApiAllUtils.setAllModeAPICql();
+
   }
 
   @Before
   public void before() throws Exception {
     initMetadata();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
   @Test
   public void testActiviteNull() {

@@ -272,7 +272,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 
       // force la recuperation du cache des pagms
       final List<Pagm> pagms = pagmSupport.find(cs.getCodeClient());
-      // ATTENTION ANALYSE DE CODE A FAIRE
+
       if (pagms != null) {
         pagmsCache.put(cs.getCodeClient(), pagms);
         for (final Pagm pagm : pagms) {

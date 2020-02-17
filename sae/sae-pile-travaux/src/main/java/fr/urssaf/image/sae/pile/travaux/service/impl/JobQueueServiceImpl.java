@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
@@ -32,16 +33,21 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   private final JobQueueThriftService jobQueueThriftService;
 
+  private final ModeAPIService modeApiService;
+
   @Autowired
-  public JobQueueServiceImpl(final JobQueueCqlService jobQueueCqlService, final JobQueueThriftService jobQueueThriftService) {
+  public JobQueueServiceImpl(final JobQueueCqlService jobQueueCqlService,
+                             final JobQueueThriftService jobQueueThriftService,
+                             final ModeAPIService modeApiService) {
     super();
     this.jobQueueCqlService = jobQueueCqlService;
     this.jobQueueThriftService = jobQueueThriftService;
+    this.modeApiService = modeApiService;
   }
 
   @Override
   public void addJob(final JobToCreate jobToCreate) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.addJob(jobToCreate);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -56,7 +62,7 @@ public class JobQueueServiceImpl implements JobQueueService {
   @Override
   public void reserveJob(final UUID idJob, final String hostname, final Date dateReservation)
       throws JobDejaReserveException, JobInexistantException, LockTimeoutException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.reserveJob(idJob, hostname, dateReservation);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -70,7 +76,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void startingJob(final UUID idJob, final Date dateDebutTraitement) throws JobInexistantException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.startingJob(idJob, dateDebutTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -84,7 +90,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement) throws JobInexistantException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -99,7 +105,7 @@ public class JobQueueServiceImpl implements JobQueueService {
   @Override
   public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement, final String message, final String codeTraitement)
       throws JobInexistantException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -115,7 +121,7 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement, final String message, final String codeTraitement,
                         final int nbDocumentTraite)
                             throws JobInexistantException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -129,7 +135,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void addHistory(final UUID jobUuid, final UUID timeUuid, final String description) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.addHistory(jobUuid, timeUuid, description);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -143,7 +149,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void renseignerPidJob(final UUID idJob, final Integer pid) throws JobInexistantException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.renseignerPidJob(idJob, pid);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -157,7 +163,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void renseignerDocCountJob(final UUID idJob, final Integer nbDocs) throws JobInexistantException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.renseignerDocCountJob(idJob, nbDocs);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -171,7 +177,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void updateToCheckFlag(final UUID idJob, final Boolean toCheckFlag, final String raison) throws JobInexistantException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.updateToCheckFlag(idJob, toCheckFlag, raison);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -185,7 +191,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void deleteJob(final UUID idJob) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.deleteJob(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -199,7 +205,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void resetJob(final UUID idJob) throws JobNonReinitialisableException {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.resetJob(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -213,7 +219,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public List<String> getHosts() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return jobQueueCqlService.getHosts();
@@ -226,7 +232,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void addJobsQueue(final JobToCreate jobToCreate) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.addJobsQueue(jobToCreate);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -240,7 +246,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void reserverJobDansJobsQueues(final UUID idJob, final String hostname, final String type, final Map<String, String> jobParameters) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -254,7 +260,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void deleteJobFromJobsQueues(final UUID idJob) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.deleteJobFromJobsQueues(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -268,7 +274,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void changerEtatJobRequest(final UUID idJob, final String stateJob, final Date endingDate, final String message) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -282,7 +288,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
   @Override
   public void deleteJobAndSemaphoreFromJobsQueues(final UUID idJob, final String codeTraitement) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       jobQueueCqlService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {

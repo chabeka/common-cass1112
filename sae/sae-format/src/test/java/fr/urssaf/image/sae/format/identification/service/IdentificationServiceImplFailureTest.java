@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.format.identification.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntimeException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
@@ -33,12 +32,13 @@ public class IdentificationServiceImplFailureTest {
   @Autowired
   private IdentificationServiceImpl identificationService;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void setup() throws Exception {
 
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_REFERENTIEL_FORMAT, ModeGestionAPI.MODE_API.HECTOR);
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
 
   }
   @Test

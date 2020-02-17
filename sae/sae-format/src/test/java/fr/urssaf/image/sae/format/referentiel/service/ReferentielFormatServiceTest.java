@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.format.referentiel.service;
 
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Before;
@@ -11,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
@@ -32,12 +31,12 @@ public class ReferentielFormatServiceTest {
 
   private static final String ERREUR_FIND_MESSAGE = "FIND - Erreur : Le message de l'exception est incorrect";
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
   @Before
   public void setup() throws Exception {
 
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_REFERENTIEL_FORMAT, ModeGestionAPI.MODE_API.HECTOR);
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
 
   @Test

@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.services.search;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,7 +7,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -40,10 +39,9 @@ public class SAESearchServiceImplTest {
   @Qualifier("saeSearchService")
   private SAESearchService saeSearchService;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPIThrift();
-  }
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
 
   @After
   public void end() {
@@ -51,7 +49,7 @@ public class SAESearchServiceImplTest {
   }
 
   private void initDroits() {
-
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     final VIContenuExtrait viExtrait = new VIContenuExtrait();
     viExtrait.setCodeAppli("TESTS_UNITAIRES");
     viExtrait.setIdUtilisateur("UTILISATEUR TEST");

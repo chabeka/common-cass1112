@@ -20,13 +20,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.SaeBddCqlSupport;
 import fr.urssaf.image.sae.rnd.exception.MajRndException;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
 import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
 import fr.urssaf.image.sae.rnd.service.MajRndService;
-import fr.urssaf.image.sae.rnd.util.ModeAPIRndUtils;
 import fr.urssaf.image.sae.rnd.utils.SaeLogAppender;
 import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;
 
@@ -53,6 +54,9 @@ public class MajRndExceptionServiceCqlTest {
 
   private SaeLogAppender logAppender;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void before() throws SaeBddRuntimeException, RndRecuperationException {
     EasyMock.resetToNice(rndRecuperationService);
@@ -60,7 +64,7 @@ public class MajRndExceptionServiceCqlTest {
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
     logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
     logger.addAppender(logAppender);
-    ModeAPIRndUtils.setAllRndModeAPICql();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
 
     // EasyMock.reset(rndRecuperationService);
 

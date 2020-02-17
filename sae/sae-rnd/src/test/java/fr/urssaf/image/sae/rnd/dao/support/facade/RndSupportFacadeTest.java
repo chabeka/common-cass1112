@@ -14,7 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
@@ -39,6 +40,9 @@ public class RndSupportFacadeTest {
   @Autowired
   private RndCqlSupport supportCql;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   private static final Logger LOGGER = LoggerFactory
       .getLogger(RndSupportFacadeTest.class);
 
@@ -50,14 +54,15 @@ public class RndSupportFacadeTest {
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws CodeRndInexistantException {
     // On se met sur mode API inconnu
-    GestionModeApiUtils.setModeApiUnknown(Constantes.CF_RND);
+    modeApiSupport.updateModeApi("UNKNOWN", Constantes.CF_RND);
+
     supportFacade.getRnd("TEST");
   }
 
   @Test
   public void testCreationDualReadThrift() throws CodeRndInexistantException {
     // On se met sur mode dual read thrift
-    GestionModeApiUtils.setModeApiDualReadThrift(Constantes.CF_RND);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT, Constantes.CF_RND);
     // On ajoute un rnd avec la facade sur les tables thrift et cql
     final String code = "1.2.1.1.1";
     final TypeDocument typeDocCree = new TypeDocument();
@@ -82,7 +87,7 @@ public class RndSupportFacadeTest {
   @Test
   public void testCreationDualReadCql() throws CodeRndInexistantException {
     // On se met sur mode dual read cql
-    GestionModeApiUtils.setModeApiDualReadCql(Constantes.CF_RND);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL, Constantes.CF_RND);
     // On ajoute un rnd avec la facade sur les tables thrift et cql
     final String code = "1.2.1.1.1";
     final TypeDocument typeDocCree = new TypeDocument();

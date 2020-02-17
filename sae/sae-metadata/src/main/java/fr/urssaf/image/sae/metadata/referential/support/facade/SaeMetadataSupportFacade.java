@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
@@ -31,6 +31,8 @@ public class SaeMetadataSupportFacade {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -40,16 +42,18 @@ public class SaeMetadataSupportFacade {
   @Autowired
   public SaeMetadataSupportFacade(final SaeMetadataSupport metadataSupport,
                                   final SaeMetadataCqlSupport metadataCqlSupport,
-                                  final JobClockSupport clockSupport) {
+                                  final JobClockSupport clockSupport,
+                                  final ModeAPIService modeApiService) {
     this.metadataSupport = metadataSupport;
     this.metadataCqlSupport = metadataCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
 
   public final void create(final MetadataReference metadata) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       metadataSupport.create(metadata, clockSupport.currentCLock());
@@ -73,7 +77,7 @@ public class SaeMetadataSupportFacade {
 
   public final void modify(final MetadataReference metadata) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       metadataSupport.modify(metadata, clockSupport.currentCLock());
@@ -97,7 +101,7 @@ public class SaeMetadataSupportFacade {
 
   public final MetadataReference find(final String identifiant) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return metadataSupport.find(identifiant);
@@ -121,7 +125,7 @@ public class SaeMetadataSupportFacade {
    */
 
   public List<MetadataReference> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return metadataSupport.findAll();
@@ -145,7 +149,7 @@ public class SaeMetadataSupportFacade {
    */
 
   public List<MetadataReference> findMetadatasRecherchables() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return metadataSupport.findMetadatasRecherchables();
@@ -165,7 +169,7 @@ public class SaeMetadataSupportFacade {
   }
 
   public List<MetadataReference> findMetadatasConsultables() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return metadataSupport.findMetadatasConsultables();

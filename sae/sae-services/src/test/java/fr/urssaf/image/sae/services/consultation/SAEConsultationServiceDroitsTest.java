@@ -15,7 +15,6 @@ import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +23,10 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -55,14 +55,19 @@ public class SAEConsultationServiceDroitsTest {
 
   private UUID uuid;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPIThrift();
-  }
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  /*
+   * @BeforeClass
+   * public static void beforeClass() throws IOException {
+   * ModeApiAllUtils.setAllModeAPIThrift();
+   * }
+   */
 
   @Before
   public void before() {
-
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
     // initialisation de l'uuid de l'archive
     uuid = null;
 

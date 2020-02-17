@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
@@ -57,6 +58,8 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
   private static final String DEBUT_LOG = "{} - Début";
 
+  private final ModeAPIService modeApiService;
+
   /**
    * Constructeur
    * 
@@ -69,19 +72,21 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
    */
   @Autowired
   public RegTechniqueServiceImpl(final RegTechniqueServiceCql regTechniqueServiceCql, final RegTechniqueServiceThrift regTechniqueServiceThrift,
-                                 final JobClockSupport clockSupport, final LoggerSupport loggerSupport) {
+                                 final JobClockSupport clockSupport, final LoggerSupport loggerSupport,
+                                 final ModeAPIService modeApiService) {
     super();
     this.regTechniqueServiceCql = regTechniqueServiceCql;
     this.regTechniqueServiceThrift = regTechniqueServiceThrift;
     this.clockSupport = clockSupport;
     this.loggerSupport = loggerSupport;
+    this.modeApiService = modeApiService;
   }
 
   /**
    * {@inheritDoc}
    */
   public JobClockSupport getClockSupport() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return regTechniqueServiceCql.getClockSupport();
@@ -108,7 +113,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
   @Override
   public TraceRegTechnique lecture(final UUID identifiant) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       // ON MAP
@@ -180,7 +185,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
   private long deleteRegTechniqueIndexByDate(final int nbMaxLigneEvtToDelete, final Date dateIndex) {
     long nbTracesPurgees = 0;
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       nbTracesPurgees = regTechniqueServiceCql.getSupport().delete(dateIndex);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -262,7 +267,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
    */
   private List<TraceRegTechniqueIndex> findTraceRegTechniqueIndexByDate(final int limite, final int countLeft, List<TraceRegTechniqueIndex> result, final Date currentDate,
                                                                         final Date startDate, final Date endDate) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<TraceRegTechniqueIndexCql> resultCql = regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);

@@ -12,7 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
@@ -37,7 +38,8 @@ public class RndServiceCqlTest {
 
   private final String cfName = Constantes.CF_RND;
 
-
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   @After
   public void after() throws Exception {
@@ -46,7 +48,8 @@ public class RndServiceCqlTest {
 
   @Before
   public void before() {
-    GestionModeApiUtils.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
+
     final TypeDocument typeDocCree = new TypeDocument();
     typeDocCree.setCloture(false);
     typeDocCree.setCode("1.2.1.1.1");

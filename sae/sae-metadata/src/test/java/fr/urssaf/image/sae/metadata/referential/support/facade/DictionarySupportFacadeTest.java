@@ -12,7 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
@@ -37,6 +38,9 @@ public class DictionarySupportFacadeTest {
   @Autowired
   private DictionaryCqlSupport supportCql;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void end() throws Exception {
     cassandraServer.resetDataOnly();
@@ -56,14 +60,15 @@ public class DictionarySupportFacadeTest {
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws DictionaryNotFoundException {
     // On se met sur mode API inconnu
-    GestionModeApiUtils.setModeApiUnknown(Constantes.CF_DICTIONARY);
+    modeApiSupport.updateModeApi("UNKNOWN", Constantes.CF_DICTIONARY);
+
     supportFacade.find("TEST");
   }
 
   @Test
   public void testCreationDualReadThrift() throws DictionaryNotFoundException {
     // On se met sur mode dual read thrift
-    GestionModeApiUtils.setModeApiDualReadThrift(Constantes.CF_DICTIONARY);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT, Constantes.CF_DICTIONARY);
     // On ajoute un dictionary avec la facade sur les tables thrift et cql
     final String identifiant = "idTest";
     supportFacade.addElement(identifiant, "valueTest");
@@ -78,7 +83,7 @@ public class DictionarySupportFacadeTest {
   @Test
   public void testCreationDualReadCql() throws DictionaryNotFoundException {
     // On se met sur mode dual read cql
-    GestionModeApiUtils.setModeApiDualReadCql(Constantes.CF_DICTIONARY);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL, Constantes.CF_DICTIONARY);
     // On ajoute un dictionary avec la facade sur les tables thrift et cql
     final String identifiant = "idTest";
     supportFacade.addElement(identifiant, "valueTest");

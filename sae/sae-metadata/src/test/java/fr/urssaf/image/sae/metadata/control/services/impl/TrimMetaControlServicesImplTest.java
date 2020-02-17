@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.metadata.control.services.impl;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.After;
@@ -21,11 +20,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.metadata.test.constants.Constants;
 import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
-import fr.urssaf.image.sae.metadata.utils.Constantes;
 
 /**
  * 
@@ -44,6 +43,9 @@ public class TrimMetaControlServicesImplTest {
   @Autowired
   private CassandraServerBean server;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   private static final Logger LOGGER = LoggerFactory.getLogger(TrimMetaControlServicesImplTest.class);
 
   @After
@@ -54,11 +56,15 @@ public class TrimMetaControlServicesImplTest {
   @Before
   public void start() throws Exception {
     // server.clearAndLoad();
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_METADATA, ModeGestionAPI.MODE_API.HECTOR);
-    modesApiTest.put("tracedestinataire", ModeGestionAPI.MODE_API.HECTOR);
-    modesApiTest.put("traceregtechnique", ModeGestionAPI.MODE_API.HECTOR);
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
+    /*
+     * final HashMap<String, String> modesApiTest = new HashMap<>();
+     * modesApiTest.put(Constantes.CF_METADATA, ModeGestionAPI.MODE_API.HECTOR);
+     * modesApiTest.put("tracedestinataire", ModeGestionAPI.MODE_API.HECTOR);
+     * modesApiTest.put("traceregtechnique", ModeGestionAPI.MODE_API.HECTOR);
+     * ModeGestionAPI.setListeCfsModes(modesApiTest);
+     */
+
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
 
   @Test

@@ -5,7 +5,6 @@ package fr.urssaf.image.sae.metadata.control.services.impl.cql;
 
 import java.net.URL;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Assert;
@@ -24,12 +23,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.facade.SaeMetadataSupportFacade;
-import fr.urssaf.image.sae.metadata.utils.Constantes;
 import fr.urssaf.image.sae.metadata.utils.MetadataUtils;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
@@ -60,6 +59,9 @@ public abstract class AbstractMetadataControlCqlTest {
   @Autowired
   TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   private static final Logger LOG = LoggerFactory
       .getLogger(AbstractMetadataControlCqlTest.class);
 
@@ -74,11 +76,13 @@ public abstract class AbstractMetadataControlCqlTest {
 
   @Before
   public void setup() throws Exception {
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_METADATA, ModeGestionAPI.MODE_API.DATASTAX);
-    modesApiTest.put("tracedestinataire", ModeGestionAPI.MODE_API.DATASTAX);
-    modesApiTest.put("traceregtechnique", ModeGestionAPI.MODE_API.DATASTAX);
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
+    /*
+     * final HashMap<String, String> modesApiTest = new HashMap<>();
+     * modesApiTest.put(Constantes.CF_METADATA, ModeGestionAPI.MODE_API.DATASTAX);
+     * modesApiTest.put("tracedestinataire", ModeGestionAPI.MODE_API.DATASTAX);
+     * modesApiTest.put("traceregtechnique", ModeGestionAPI.MODE_API.DATASTAX);
+     * ModeGestionAPI.setListeCfsModes(modesApiTest);
+     */
     if (server.getStartLocal()) {
       if (init) {
         server.clearTables();
@@ -86,6 +90,7 @@ public abstract class AbstractMetadataControlCqlTest {
         server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
         init = true;
       }
+      modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
 
       createAllMetadata();
       createAllTraceDestinataire();

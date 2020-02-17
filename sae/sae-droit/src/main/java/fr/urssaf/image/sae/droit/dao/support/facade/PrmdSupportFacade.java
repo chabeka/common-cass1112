@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
@@ -32,6 +32,8 @@ public class PrmdSupportFacade implements ISupportFacade<Prmd> {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -41,16 +43,18 @@ public class PrmdSupportFacade implements ISupportFacade<Prmd> {
   @Autowired
   public PrmdSupportFacade(final PrmdSupport prmdSupport,
                            final PrmdCqlSupport prmdCqlSupport,
-                           final JobClockSupport clockSupport) {
+                           final JobClockSupport clockSupport,
+                           final ModeAPIService modeApiService) {
     this.prmdSupport = prmdSupport;
     this.prmdCqlSupport = prmdCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
   @Override
   public final void create(final Prmd prmd) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       prmdSupport.create(prmd, clockSupport.currentCLock());
@@ -74,7 +78,7 @@ public class PrmdSupportFacade implements ISupportFacade<Prmd> {
   @Override
   public final Prmd find(final String code) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return prmdSupport.find(code);
@@ -99,7 +103,7 @@ public class PrmdSupportFacade implements ISupportFacade<Prmd> {
    */
   @Override
   public List<Prmd> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return prmdSupport.findAll();
@@ -124,7 +128,7 @@ public class PrmdSupportFacade implements ISupportFacade<Prmd> {
   @Override
   public void delete(final String id) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       prmdSupport.delete(id, clockSupport.currentCLock());

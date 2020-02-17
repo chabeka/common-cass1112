@@ -38,7 +38,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class MappingDocumentServiceImpl implements MappingDocumentService {
 
-  // @Autowired EC
   private MetadataReferenceDAO referenceDAO;
 
   @Autowired

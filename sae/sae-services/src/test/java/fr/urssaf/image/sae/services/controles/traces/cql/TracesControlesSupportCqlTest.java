@@ -12,7 +12,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.services.AbstractServiceCqlTest;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
@@ -41,15 +42,20 @@ public class TracesControlesSupportCqlTest extends AbstractServiceCqlTest {
   @Autowired
   private TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @BeforeClass
   public static void beforeClass() throws IOException {
     init = false;
-    ModeApiAllUtils.setAllModeAPICql();
+
   }
 
   @Before
   public void before() throws Exception {
+
     initMetadata();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
   @Test
   public void traceErreurIdentFormatFichierWithoutAuthenticationAndIdDoc() {

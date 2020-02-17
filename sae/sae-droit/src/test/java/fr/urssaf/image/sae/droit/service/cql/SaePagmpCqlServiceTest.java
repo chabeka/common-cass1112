@@ -12,7 +12,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 import fr.urssaf.image.sae.droit.service.SaePagmpService;
 import fr.urssaf.image.sae.droit.utils.Constantes;
@@ -39,12 +40,14 @@ public class SaePagmpCqlServiceTest {
 
   public String cfName = Constantes.CF_DROIT_PAGMP;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   @Test
   public void testCreatePagmpObligatoire() {
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       service.createPagmp(null);
       Assert.fail(ERREUR_ATTENDUE);
     }
@@ -64,7 +67,7 @@ public class SaePagmpCqlServiceTest {
   public void testCreateCodePagmpObligatoire() {
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final Pagmp pagmp = new Pagmp();
       pagmp.setDescription("description");
       pagmp.setPrmd("prmd");
@@ -88,7 +91,7 @@ public class SaePagmpCqlServiceTest {
   public void testCreateDescriptionPagmpObligatoire() {
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final Pagmp pagmp = new Pagmp();
       pagmp.setCode("code");
       pagmp.setPrmd("prmd");
@@ -112,7 +115,7 @@ public class SaePagmpCqlServiceTest {
   public void testCreatePrmdPagmpObligatoire() {
 
     try {
-      GestionModeApiUtils.setModeApiCql(cfName);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
       final Pagmp pagmp = new Pagmp();
       pagmp.setDescription("description");
       pagmp.setCode("code");

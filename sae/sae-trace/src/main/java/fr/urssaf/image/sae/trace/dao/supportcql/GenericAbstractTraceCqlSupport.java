@@ -339,7 +339,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
 
   /**
    * Ajout save
-   * EC
+   * 
    */
   public T save(final T entity, final long clock) {
     getDao().saveWithMapper(entity, clock);

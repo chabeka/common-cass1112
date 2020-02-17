@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.modelcql.PagmCql;
@@ -35,6 +35,8 @@ public class PagmSupportFacade {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -44,10 +46,12 @@ public class PagmSupportFacade {
   @Autowired
   public PagmSupportFacade(final PagmSupport pagmSupport,
                            final PagmCqlSupport pagmCqlSupport,
-                           final JobClockSupport clockSupport) {
+                           final JobClockSupport clockSupport,
+                           final ModeAPIService modeApiService) {
     this.pagmSupport = pagmSupport;
     this.pagmCqlSupport = pagmCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
 
@@ -55,7 +59,7 @@ public class PagmSupportFacade {
 
     final PagmCql pagmCql = PagmUtils.convertPagmToPagmCql(idClient, pagm);
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       pagmSupport.create(idClient, pagm, clockSupport.currentCLock());
@@ -79,7 +83,7 @@ public class PagmSupportFacade {
 
   public final List<Pagm> find(final String code) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return pagmSupport.find(code);
@@ -107,7 +111,7 @@ public class PagmSupportFacade {
 
   public void delete(final String idClient, final String codePagm) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       pagmSupport.delete(idClient, codePagm, clockSupport.currentCLock());
@@ -135,7 +139,7 @@ public class PagmSupportFacade {
   public void create(final String idClient, final Pagm pagm, final Mutator<String> mutator) {
     final PagmCql pagmCql = PagmUtils.convertPagmToPagmCql(idClient, pagm);
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       pagmSupport.create(idClient, pagm, clockSupport.currentCLock(), mutator);
@@ -162,7 +166,7 @@ public class PagmSupportFacade {
    */
 
   public void delete(final String idClient, final String codePagm, final Mutator<String> mutator) {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       pagmSupport.delete(idClient, codePagm, clockSupport.currentCLock(), mutator);

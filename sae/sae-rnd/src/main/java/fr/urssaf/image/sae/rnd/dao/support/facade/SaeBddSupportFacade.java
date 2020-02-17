@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.rnd.dao.support.SaeBddSupport;
@@ -34,6 +34,8 @@ public class SaeBddSupportFacade {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -43,16 +45,18 @@ public class SaeBddSupportFacade {
   @Autowired
   public SaeBddSupportFacade(final SaeBddSupport saeBddSupport,
                              final SaeBddCqlSupport saeBddCqlSupport,
-                             final JobClockSupport clockSupport) {
+                             final JobClockSupport clockSupport,
+                             final ModeAPIService modeApiService) {
     this.saeBddSupport = saeBddSupport;
     this.saeBddCqlSupport = saeBddCqlSupport;
     this.clockSupport = clockSupport;
+    this.modeApiService = modeApiService;
   }
 
 
   public final VersionRnd getVersionRnd() throws SaeBddRuntimeException {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return saeBddSupport.getVersionRnd();
@@ -73,7 +77,7 @@ public class SaeBddSupportFacade {
 
   public final void updateVersionRnd(final VersionRnd versionRnd) throws SaeBddRuntimeException {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       saeBddSupport.updateVersionRnd(versionRnd);
@@ -97,7 +101,7 @@ public class SaeBddSupportFacade {
 
   public final void updateRnd(final List<TypeDocument> listeTypeDocs) throws SaeBddRuntimeException {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       saeBddSupport.updateRnd(listeTypeDocs);
@@ -123,7 +127,7 @@ public class SaeBddSupportFacade {
                                           final Map<String, String> listeCorrespondances, final String version)
                                               throws SaeBddRuntimeException {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       saeBddSupport.updateCorrespondances(listeCorrespondances, version);
@@ -152,7 +156,7 @@ public class SaeBddSupportFacade {
    */
 
   public List<Correspondance> getAllCorrespondances() throws SaeBddRuntimeException {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return saeBddSupport.getAllCorrespondances();
@@ -173,7 +177,7 @@ public class SaeBddSupportFacade {
 
   public final void startMajCorrespondance(final Correspondance correspondance) throws SaeBddRuntimeException {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       saeBddSupport.startMajCorrespondance(correspondance);

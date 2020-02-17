@@ -18,7 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
@@ -45,6 +46,9 @@ public class ReferentielFormatCqlSupportTest {
 
   @Autowired
   private CassandraServerBean server;
+
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   private static final String FIND_MESSAGE_INCORRECT = "FIND - Erreur : Le message de l'exception est incorrect";
 
@@ -74,7 +78,8 @@ public class ReferentielFormatCqlSupportTest {
         LOGGER.error("Erreur sur la suppression du format lambda {}", e.getMessage());
       }
       final int taille = listFormatFichierBase.size();
-      GestionModeApiUtils.setModeApiCql(Constantes.CF_REFERENTIEL_FORMAT);
+      modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, Constantes.CF_REFERENTIEL_FORMAT);
+
     }
     // Assert.assertEquals(listFormatFichier.size(), listFormatFichierBase.size());
   }

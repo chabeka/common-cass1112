@@ -17,8 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
-import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
@@ -43,11 +44,14 @@ public class JournalEvtServiceCqlImplTest {
 
   public String cfName = "tracejournalevt";
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
 
   @Test
   public void testLectureIdentifiantObligatoire() {
 
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
 
     try {
       service.lecture(null);
@@ -70,7 +74,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureDateDebutObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.lecture(null, null, 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -92,7 +96,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureDateFinObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.lecture(new Date(), null, 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -114,7 +118,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureDateDebutInfDateFin() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service
       .lecture(DateUtils.addYears(new Date(), -2), new Date(), 0, true);
@@ -138,7 +142,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureDateDebutEqDateFin() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       final Date date = new Date();
       service.lecture(date, date, 0, true);
@@ -158,7 +162,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureLimiteObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service
       .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
@@ -181,7 +185,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testPurgeDateDebutObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.purge(null, 1);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -203,7 +207,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testHasRecordsDebutObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.hasRecords(null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -225,7 +229,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportDateObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.export(null, null, null, null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -246,7 +250,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportRepertoireObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.export(new Date(), null, null, null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -267,7 +271,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportIdObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.export(new Date(), "fichier", null, null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -288,7 +292,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportHashObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.export(new Date(), "fichier", "c", null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -309,7 +313,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportRepertoireExisteObligatoire() {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     try {
       service.export(new Date(), "fichierInexistant", "c", "d");
       Assert.fail(ILLEGAL_EXPECTED);
@@ -327,7 +331,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportRepertoireIsRepertoireObligatoire() throws IOException {
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     final File file = File.createTempFile("repertoire", ".tmp");
 
     try {

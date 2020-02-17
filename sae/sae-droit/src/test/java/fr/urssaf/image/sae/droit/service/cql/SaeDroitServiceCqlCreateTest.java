@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
@@ -43,7 +44,6 @@ import fr.urssaf.image.sae.droit.model.SaePagma;
 import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.model.SaePagmp;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
-import fr.urssaf.image.sae.droit.utils.Constantes;
 
 /**
  * Classe Test de la classe {@link SaeDroitService} en mode Cql
@@ -80,18 +80,12 @@ public class SaeDroitServiceCqlCreateTest {
   @Autowired
   private ActionUnitaireCqlSupport actionUnitaireCqlsupport;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void setup() throws Exception {
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_DROIT_CONTRAT_SERVICE, "DATASTAX");
-    modesApiTest.put(Constantes.CF_DROIT_ACTION_UNITAIRE, "DATASTAX");
-    modesApiTest.put(Constantes.CF_DROIT_FORMAT_CONTROL_PROFIL, "DATASTAX");
-    modesApiTest.put(Constantes.CF_DROIT_PAGMA, "DATASTAX");
-    modesApiTest.put(Constantes.CF_DROIT_PAGMP, "DATASTAX");
-    modesApiTest.put(Constantes.CF_DROIT_PAGMF, "DATASTAX");
-    modesApiTest.put(Constantes.CF_DROIT_PAGM, "DATASTAX");
-    modesApiTest.put(Constantes.CF_DROIT_PRMD, "DATASTAX");
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
 
 

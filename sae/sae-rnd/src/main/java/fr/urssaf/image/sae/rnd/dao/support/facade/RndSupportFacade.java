@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.rnd.dao.cql.IRndDaoCql;
@@ -34,6 +34,8 @@ public class RndSupportFacade {
 
   private final JobClockSupport clockSupport;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * constructeur
    * 
@@ -43,16 +45,18 @@ public class RndSupportFacade {
   @Autowired
   public RndSupportFacade(final RndSupport rndSupport,
                           final RndCqlSupport rndCqlSupport,
-                          final JobClockSupport clockSupport) {
+                          final JobClockSupport clockSupport,
+                          final ModeAPIService modeAPIService) {
     this.rndSupport = rndSupport;
     this.rndCqlSupport = rndCqlSupport;
     this.clockSupport = clockSupport;
+    modeApiService = modeAPIService;
   }
 
 
   public final void ajouterRnd(final TypeDocument typeDocument) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       rndSupport.ajouterRnd(typeDocument, clockSupport.currentCLock());
@@ -76,7 +80,7 @@ public class RndSupportFacade {
 
   public final TypeDocument getRnd(final String code) {
 
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return rndSupport.getRnd(code);
@@ -100,7 +104,7 @@ public class RndSupportFacade {
    */
 
   public List<TypeDocument> findAll() {
-    switch (ModeGestionAPI.getModeApiCf(cfName)) {
+    switch (modeApiService.getModeAPI(cfName)) {
 
     case MODE_API.HECTOR:
       return rndSupport.findAll();

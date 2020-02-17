@@ -14,7 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.bo.Parameter;
 import fr.urssaf.image.sae.commons.bo.ParameterRowType;
 import fr.urssaf.image.sae.commons.bo.ParameterType;
@@ -32,7 +33,7 @@ import fr.urssaf.image.sae.commons.utils.Constantes;
 public class ParametersSupportFacadeTest {
 
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(ParametersSupportFacadeTest.class);
+      .getLogger(ParametersSupportFacadeTest.class);
 
   @Autowired
   private CassandraServerBean cassandraServer;
@@ -45,6 +46,9 @@ public class ParametersSupportFacadeTest {
 
   @Autowired
   private ParametersCqlSupport supportCql;
+
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   @After
   public void end() throws Exception {
@@ -68,7 +72,7 @@ public class ParametersSupportFacadeTest {
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws ParameterNotFoundException {
     // On se met sur mode API inconnu
-    GestionModeApiUtils.setModeApiUnknown(Constantes.CF_PARAMETERS);
+    modeApiSupport.updateModeApi("UNKNOWN", Constantes.CF_PARAMETERS);
 
     supportFacade.find(ParameterType.JOURNALISATION_EVT_META_TITRE,
                        ParameterRowType.TRACABILITE);
@@ -77,7 +81,7 @@ public class ParametersSupportFacadeTest {
   @Test
   public void testCreationDualReadThrift() throws ParameterNotFoundException {
     // On se met sur mode dual read thrift
-    GestionModeApiUtils.setModeApiDualReadThrift(Constantes.CF_PARAMETERS);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT, Constantes.CF_PARAMETERS);
     final Parameter parameter = new Parameter(ParameterType.PURGE_CORBEILLE_DUREE, 20);
 
     // On ajoute un parameter avec la facade sur les tables thrift et cql
@@ -95,7 +99,7 @@ public class ParametersSupportFacadeTest {
   @Test
   public void testCreationDualReadCql() throws ParameterNotFoundException {
     // On se met sur mode dual read cql
-    GestionModeApiUtils.setModeApiDualReadCql(Constantes.CF_PARAMETERS);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL, Constantes.CF_PARAMETERS);
     final Parameter parameter = new Parameter(ParameterType.PURGE_CORBEILLE_DUREE, 20);
 
     // On ajoute un parameter avec la facade sur les tables thrift et cql

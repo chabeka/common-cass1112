@@ -15,10 +15,11 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -65,6 +66,9 @@ public class SAEEnrichmentMetadataServiceImplCqlTest extends AbstractServiceCqlT
   @Autowired
   private ParametersService parametersService;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
 
   /**
    * @return Le service de mappingService
@@ -100,7 +104,7 @@ public class SAEEnrichmentMetadataServiceImplCqlTest extends AbstractServiceCqlT
   @BeforeClass
   public static void beforeClass() throws IOException {
     init = false;
-    ModeApiAllUtils.setAllModeAPICql();
+
   }
 
   /**
@@ -112,6 +116,7 @@ public class SAEEnrichmentMetadataServiceImplCqlTest extends AbstractServiceCqlT
   @Before
   public final void preparationDonnees() throws InterruptedException, Exception {
     initMetadata();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     final TypeDocument typeDocCree = new TypeDocument();
     typeDocCree.setCloture(false);
     typeDocCree.setCode("2.3.1.1.12");

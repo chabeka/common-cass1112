@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.droit.service.cql;
 
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -21,7 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenceException;
@@ -52,6 +51,9 @@ public class SaePagmaCqlServiceDatasTest {
   private CassandraServerBean cassandraServer;
 
   public String cfName = Constantes.CF_DROIT_PAGMA;
+
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(SaePagmaCqlServiceDatasTest.class);
@@ -125,10 +127,7 @@ public class SaePagmaCqlServiceDatasTest {
    * 
    */
   private void initModeAPI() {
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_DROIT_PAGMA, MODE_API.DATASTAX);
-    modesApiTest.put(Constantes.CF_DROIT_ACTION_UNITAIRE, MODE_API.DATASTAX);
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
 
 }

@@ -106,6 +106,9 @@ public class TraceJournalEvtCqlSupportTest {
 
   }
 
+  /**
+   * Test pour valider le fonctionnement du create avec date en version cql
+   */
   @Test
   public void testCreateWithDateFindSuccess() {
 

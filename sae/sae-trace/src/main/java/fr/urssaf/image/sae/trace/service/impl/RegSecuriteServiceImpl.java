@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
@@ -47,15 +48,20 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
   private static final String DEBUT_LOG = "{} - Début";
 
+  private final ModeAPIService modeApiService;
+
   @Autowired
-  public RegSecuriteServiceImpl(final RegSecuriteServiceThrift regSecuriteThriftServiceImpl, final RegSecuriteServiceCql regSecuriteCqlServiceImpl) {
+  public RegSecuriteServiceImpl(final RegSecuriteServiceThrift regSecuriteThriftServiceImpl,
+                                final RegSecuriteServiceCql regSecuriteCqlServiceImpl,
+                                final ModeAPIService modeApiService) {
     super();
     regSecuriteCqlService = regSecuriteCqlServiceImpl;
     regSecuriteThriftService = regSecuriteThriftServiceImpl;
+    this.modeApiService = modeApiService;
   }
 
   public LoggerSupport getLoggerSupport() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return regSecuriteCqlService.getLoggerSupport();
@@ -67,7 +73,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   }
 
   public JobClockSupport getClockSupport() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return regSecuriteCqlService.getClockSupport();
@@ -80,7 +86,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   }
 
   public Logger getLogger() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return regSecuriteCqlService.getLogger();
@@ -97,7 +103,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
    */
   @Override
   public TraceRegSecurite lecture(final UUID identifiant) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       // ON MAP
@@ -177,7 +183,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   private long deleteRegSecuriteIndexByDate(final int nbMaxLigneEvtToDelete, final Date dateIndex) {
     long nbTracesPurgees = 0;
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       nbTracesPurgees = regSecuriteCqlService.getSupport().delete(dateIndex);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
@@ -260,7 +266,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
    */
   private List<TraceRegSecuriteIndex> findTraceRegSecuriteIndexByDate(final int limite, final int countLeft, List<TraceRegSecuriteIndex> result, final Date currentDate,
                                                                       final Date startDate, final Date endDate) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       final List<TraceRegSecuriteIndexCql> resultCql = regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
       if (resultCql != null) {

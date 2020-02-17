@@ -14,13 +14,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegSecuriteCqlSupport;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
-import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
+
 
 /*@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })*/
@@ -64,6 +66,9 @@ public class RegSecuriteCqlServiceDatasTest extends AbstractServiceCqlTest {
 
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
 
   @Test
@@ -139,7 +144,7 @@ public class RegSecuriteCqlServiceDatasTest extends AbstractServiceCqlTest {
                                                          true);
     Assert.assertNull("il ne doit pas y avoir de resultat", result);
 
-    GestionModeApiTest.setModeApiCql(cfName);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     createTraces();
 
     result = service.lecture(dateStart,

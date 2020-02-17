@@ -16,100 +16,179 @@ import fr.urssaf.image.sae.droit.model.SaeDroits;
  */
 public class VIContenuExtrait {
 
-   private String codeAppli;
 
-   private String idUtilisateur;
+  private String codeAppli;
 
-   private SaeDroits saeDroits;
+  private String idUtilisateur;
 
-   private List<String> pagms = new ArrayList<String>();
-   
-   // Note : Utilisation d'un Set et non d'une liste pour éviter les doublons.
-   private List<FormatControlProfil> listControlProfil = new ArrayList<FormatControlProfil>();
+  private SaeDroits saeDroits;
 
-   /**
-    * @return the listControlProfil
-    */
-   public List<FormatControlProfil> getListControlProfil() {
-      return listControlProfil;
-   }
+  private List<String> pagms = new ArrayList<>();
 
-   /**
-    * @param listControlProfil
-    *           the listControlProfil to set
-    */
-   public void setListControlProfil(
-         List<FormatControlProfil> listControlProfil) {
-      this.listControlProfil = listControlProfil;
-   }
+  // Note : Utilisation d'un Set et non d'une liste pour éviter les doublons.
+  private List<FormatControlProfil> listControlProfil = new ArrayList<>();
 
-   /**
-    * 
-    * @return Le code de l'application consommatrice
-    */
-   public final String getCodeAppli() {
-      return codeAppli;
-   }
+  /**
+   * @return the listControlProfil
+   */
+  public List<FormatControlProfil> getListControlProfil() {
+    return listControlProfil;
+  }
 
-   /**
-    * 
-    * @param codeAppli
-    *           Le code de l'application consommatrice
-    */
-   public final void setCodeAppli(String codeAppli) {
-      this.codeAppli = codeAppli;
-   }
+  /**
+   * @param listControlProfil
+   *           the listControlProfil to set
+   */
+  public void setListControlProfil(
+                                   final List<FormatControlProfil> listControlProfil) {
+    this.listControlProfil = listControlProfil;
+  }
 
-   /**
-    * 
-    * @return L'identifiant de l'utilisateur authentifié dans l'application
-    *         consommatrice
-    */
-   public final String getIdUtilisateur() {
-      return idUtilisateur;
-   }
+  /**
+   * 
+   * @return Le code de l'application consommatrice
+   */
+  public final String getCodeAppli() {
+    return codeAppli;
+  }
 
-   /**
-    * 
-    * @param idUtilisateur
-    *           L'identifiant de l'utilisateur authentifié dans l'application
-    *           consommatrice
-    */
-   public final void setIdUtilisateur(String idUtilisateur) {
-      this.idUtilisateur = idUtilisateur;
-   }
+  /**
+   * 
+   * @param codeAppli
+   *           Le code de l'application consommatrice
+   */
+  public final void setCodeAppli(final String codeAppli) {
+    this.codeAppli = codeAppli;
+  }
 
-   /**
-    * @return la liste des droits du SAE
-    */
-   public final SaeDroits getSaeDroits() {
-      return saeDroits;
-   }
+  /**
+   * 
+   * @return L'identifiant de l'utilisateur authentifié dans l'application
+   *         consommatrice
+   */
+  public final String getIdUtilisateur() {
+    return idUtilisateur;
+  }
 
-   /**
-    * @param saeDroits
-    *           la liste des droits du SAE
-    */
-   public final void setSaeDroits(SaeDroits saeDroits) {
-      this.saeDroits = saeDroits;
-   }
+  /**
+   * 
+   * @param idUtilisateur
+   *           L'identifiant de l'utilisateur authentifié dans l'application
+   *           consommatrice
+   */
+  public final void setIdUtilisateur(final String idUtilisateur) {
+    this.idUtilisateur = idUtilisateur;
+  }
 
-   /**
-    * Le ou les PAGM
-    * 
-    * @return Le ou les PAGM
-    */
-   public List<String> getPagms() {
-      return pagms;
-   }
+  /**
+   * @return la liste des droits du SAE
+   */
+  public final SaeDroits getSaeDroits() {
+    return saeDroits;
+  }
 
-   /**
-    * Le ou les PAGM
-    * 
-    * @param pagms
-    *           Le ou les PAGM
-    */
-   public void setPagms(List<String> pagms) {
-      this.pagms = pagms;
-   }
+  /**
+   * @param saeDroits
+   *           la liste des droits du SAE
+   */
+  public final void setSaeDroits(final SaeDroits saeDroits) {
+    this.saeDroits = saeDroits;
+  }
+
+  /**
+   * Le ou les PAGM
+   * 
+   * @return Le ou les PAGM
+   */
+  public List<String> getPagms() {
+    return pagms;
+  }
+
+  /**
+   * Le ou les PAGM
+   * 
+   * @param pagms
+   *           Le ou les PAGM
+   */
+  public void setPagms(final List<String> pagms) {
+    this.pagms = pagms;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (codeAppli == null ? 0 : codeAppli.hashCode());
+    result = prime * result + (idUtilisateur == null ? 0 : idUtilisateur.hashCode());
+    result = prime * result + (listControlProfil == null ? 0 : listControlProfil.hashCode());
+    result = prime * result + (pagms == null ? 0 : pagms.hashCode());
+    result = prime * result + (saeDroits == null ? 0 : saeDroits.hashCode());
+    return result;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final VIContenuExtrait other = (VIContenuExtrait) obj;
+    if (codeAppli == null) {
+      if (other.codeAppli != null) {
+        return false;
+      }
+    } else if (!codeAppli.equals(other.codeAppli)) {
+      return false;
+    }
+    if (idUtilisateur == null) {
+      if (other.idUtilisateur != null) {
+        return false;
+      }
+    } else if (!idUtilisateur.equals(other.idUtilisateur)) {
+      return false;
+    }
+    if (listControlProfil == null) {
+      if (other.listControlProfil != null) {
+        return false;
+      }
+    } else if (listControlProfil.isEmpty() && !other.listControlProfil.isEmpty()) {
+      return false;
+
+    } else if (!listControlProfil.equals(other.listControlProfil)) {
+      return false;
+    }
+    if (pagms == null) {
+      if (other.pagms != null) {
+        return false;
+      }
+    } else if (!pagms.equals(other.pagms)) {
+      return false;
+    }
+    if (saeDroits == null) {
+      if (other.saeDroits != null) {
+        return false;
+      }
+    } else if (!saeDroits.equals(other.saeDroits)) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public int compareTo(final VIContenuExtrait o) {
+    return (codeAppli + idUtilisateur).compareTo(o.getCodeAppli() + o.getIdUtilisateur());
+  }
 }

@@ -12,7 +12,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
@@ -37,6 +38,9 @@ public class SaeMetadataSupportFacadeTest {
   @Autowired
   private SaeMetadataCqlSupport supportCql;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void end() throws Exception {
     cassandraServer.resetDataOnly();
@@ -54,14 +58,14 @@ public class SaeMetadataSupportFacadeTest {
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws DictionaryNotFoundException {
     // On se met sur mode API inconnu
-    GestionModeApiUtils.setModeApiUnknown(Constantes.CF_METADATA);
+    modeApiSupport.updateModeApi("UNKNOWN", Constantes.CF_METADATA);
     supportFacade.find("TEST");
   }
 
   @Test
   public void testCreationDualReadThrift() throws DictionaryNotFoundException {
     // On se met sur mode dual read thrift
-    GestionModeApiUtils.setModeApiDualReadThrift(Constantes.CF_METADATA);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT, Constantes.CF_METADATA);
     final MetadataReference metadata = getMetadataReference();
     // On ajoute un metadata avec la facade sur les tables thrift et cql
     supportFacade.create(metadata);
@@ -78,7 +82,7 @@ public class SaeMetadataSupportFacadeTest {
   @Test
   public void testCreationDualReadCql() throws DictionaryNotFoundException {
     // On se met sur mode dual read cql
-    GestionModeApiUtils.setModeApiDualReadCql(Constantes.CF_METADATA);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL, Constantes.CF_METADATA);
     final MetadataReference metadata = getMetadataReference();
     // On ajoute un metadata avec la facade sur les tables thrift et cql
     supportFacade.create(metadata);

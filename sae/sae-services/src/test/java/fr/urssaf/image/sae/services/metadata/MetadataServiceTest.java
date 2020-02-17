@@ -1,17 +1,16 @@
 package fr.urssaf.image.sae.services.metadata;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 
 
@@ -22,13 +21,12 @@ public class MetadataServiceTest {
   @Autowired
   private MetadataService metadataService;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    ModeApiAllUtils.setAllModeAPIThrift();
-  }
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
   @Test
   public void getClientAvailableMetadata() {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
     final List<MetadataReference> metadatas = metadataService
         .getClientAvailableMetadata();
     Assert
