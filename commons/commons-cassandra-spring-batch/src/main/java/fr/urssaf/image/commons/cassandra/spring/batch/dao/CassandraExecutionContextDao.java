@@ -9,6 +9,7 @@ import org.springframework.batch.core.repository.dao.ExecutionContextDao;
 import org.springframework.batch.item.ExecutionContext;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.impl.CassandraExecutionContextDaoCqlImpl;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraExecutionContextDaoThrift;
 
@@ -27,6 +28,8 @@ public class CassandraExecutionContextDao implements ExecutionContextDao {
   /** le dao thrift */
   private final CassandraExecutionContextDaoThrift jobExeContextDaoThrift;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * Constructeur
    * 
@@ -35,10 +38,13 @@ public class CassandraExecutionContextDao implements ExecutionContextDao {
    * @param daoThrift
    *          DAO pour le thrift
    */
-  public CassandraExecutionContextDao(final CassandraExecutionContextDaoCqlImpl daoCql, final CassandraExecutionContextDaoThrift daoThrift) {
+  public CassandraExecutionContextDao(final CassandraExecutionContextDaoCqlImpl daoCql,
+                                      final CassandraExecutionContextDaoThrift daoThrift,
+                                      final ModeAPIService modeApiService) {
     super();
     jobExeContextDaoCql = daoCql;
     jobExeContextDaoThrift = daoThrift;
+    this.modeApiService = modeApiService;
   }
 
   @Override
@@ -79,7 +85,7 @@ public class CassandraExecutionContextDao implements ExecutionContextDao {
 
   @Override
   public void updateExecutionContext(final JobExecution jobExecution) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       jobExeContextDaoCql.updateExecutionContext(jobExecution);

@@ -7,6 +7,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraStepExecutionDaoThrift;
 
@@ -27,6 +28,8 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
 
   private final IJobStepExecutionDaoCql daoCql;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * COnstructeur
    * 
@@ -35,15 +38,18 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
    * @param daoThriftparam
    *          DAO parametre pour le Thrift
    */
-  public CassandraStepExecutionDao(final IJobStepExecutionDaoCql daoCqlparam, final CassandraStepExecutionDaoThrift daoThriftparam) {
+  public CassandraStepExecutionDao(final IJobStepExecutionDaoCql daoCqlparam,
+                                   final CassandraStepExecutionDaoThrift daoThriftparam,
+                                   final ModeAPIService modeApiService) {
     super();
     daoCql = daoCqlparam;
     daoThrift = daoThriftparam;
+    this.modeApiService = modeApiService;
   }
 
   @Override
   public final void addStepExecutions(final JobExecution jobExecution) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       daoCql.addStepExecutions(jobExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
@@ -57,7 +63,7 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
 
   @Override
   public final StepExecution getStepExecution(final JobExecution jobExecution, final Long stepExecutionId) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       return daoCql.getStepExecution(jobExecution, stepExecutionId);
@@ -70,7 +76,7 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
 
   @Override
   public final void saveStepExecution(final StepExecution stepExecution) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       daoCql.saveStepExecution(stepExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
@@ -88,7 +94,7 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
     // d'enregister le stepExecution
     // en base de données.
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       daoCql.updateStepExecution(stepExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
@@ -107,7 +113,7 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
    *          : id du step à supprimer
    */
   public final void deleteStepExecution(final Long stepExecutionId) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       daoCql.deleteStepExecution(stepExecutionId);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
@@ -126,7 +132,7 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
    *          : jobExecution concerné
    */
   public final void deleteStepsOfExecution(final JobExecution jobExecution) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       daoCql.deleteStepsOfExecution(jobExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
@@ -141,7 +147,7 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
   @SuppressWarnings("unchecked")
   @Override
   public final int countStepExecutions(final String jobNamePattern, final String stepNamePattern) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi) ||
         ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       return daoCql.countStepExecutions(jobNamePattern, stepNamePattern);
@@ -155,7 +161,7 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
   @SuppressWarnings("unchecked")
   @Override
   public final Collection<StepExecution> findStepExecutions(final String jobNamePattern, final String stepNamePattern, final int start, final int count) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       return daoCql.findStepExecutions(jobNamePattern, stepNamePattern, start, count);
@@ -169,7 +175,7 @@ public class CassandraStepExecutionDao implements SearchableStepExecutionDao {
   @SuppressWarnings("unchecked")
   @Override
   public final Collection<String> findStepNamesForJobExecution(final String jobName, final String excludesPattern) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
       return daoCql.findStepNamesForJobExecution(jobName, excludesPattern);

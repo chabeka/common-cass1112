@@ -11,6 +11,7 @@ import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameters;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobInstanceDaoThrift;
 
@@ -33,6 +34,8 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
   /** Le dao thrift */
   private final CassandraJobInstanceDaoThrift jobInstanceDaoThrift;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * Constructeur
    * 
@@ -41,15 +44,19 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
    * @param daoThrift
    *          DAO pour le Thrift
    */
-  public CassandraJobInstanceDao(final IJobInstanceDaoCql daoCql, final CassandraJobInstanceDaoThrift daoThrift) {
+  public CassandraJobInstanceDao(final IJobInstanceDaoCql daoCql,
+                                 final CassandraJobInstanceDaoThrift daoThrift,
+                                 final ModeAPIService modeApiService) {
     super();
     jobInstanceDaoCql = daoCql;
     jobInstanceDaoThrift = daoThrift;
+    this.modeApiService = modeApiService;
+
   }
 
   @Override
   public JobInstance createJobInstance(final String jobName, final JobParameters jobParameters) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       return jobInstanceDaoCql.createJobInstance(jobName, jobParameters);
@@ -71,7 +78,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
 
   @Override
   public JobInstance getJobInstance(final String jobName, final JobParameters jobParameters) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -85,7 +92,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
 
   @Override
   public JobInstance getJobInstance(final Long instanceId) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -99,7 +106,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
 
   @Override
   public JobInstance getJobInstance(final JobExecution jobExecution) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -113,7 +120,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
 
   @Override
   public List<JobInstance> getJobInstances(final String jobName, final int start, final int count) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -127,7 +134,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
 
   @Override
   public List<String> getJobNames() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -141,7 +148,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
 
   @Override
   public int countJobInstances(final String name) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -164,7 +171,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
    */
   public void reserveJob(final long instanceId, final String serverName) {
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       jobInstanceDaoCql.reserveJob(instanceId, serverName);
@@ -187,7 +194,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
    */
   public final String getReservingServer(final long instanceId) {
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -205,7 +212,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
    * @return Liste des jobs non réservés
    */
   public final List<JobInstance> getUnreservedJobInstances() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {

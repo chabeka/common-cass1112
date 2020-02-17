@@ -14,6 +14,7 @@ import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobExecutionDaoThrift;
 
@@ -31,6 +32,8 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
   /** le dao cql */
   private final IJobExecutionDaoCql jobExeDaoCql;
 
+  private final ModeAPIService modeApiService;
+
   /**
    * Contructeur
    *
@@ -39,16 +42,19 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
    * @param daoThrift
    *           le dao thrift
    */
-  public CassandraJobExecutionDao(final IJobExecutionDaoCql daoCql, final CassandraJobExecutionDaoThrift daoThrift) {
+  public CassandraJobExecutionDao(final IJobExecutionDaoCql daoCql,
+                                  final CassandraJobExecutionDaoThrift daoThrift,
+                                  final ModeAPIService modeApiService) {
     super();
     jobExeDaoCql = daoCql;
     jobExeDaoThrift = daoThrift;
+    this.modeApiService = modeApiService;
 
   }
 
   @Override
   public void saveJobExecution(final JobExecution jobExecution) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       jobExeDaoCql.saveJobExecution(jobExecution);
@@ -64,7 +70,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public void updateJobExecution(final JobExecution jobExecution) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       jobExeDaoCql.updateJobExecution(jobExecution);
@@ -80,7 +86,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public List<JobExecution> findJobExecutions(final JobInstance jobInstance) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -94,7 +100,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public JobExecution getLastJobExecution(final JobInstance jobInstance) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -108,7 +114,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public Set<JobExecution> findRunningJobExecutions(final String jobName) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -122,7 +128,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public JobExecution getJobExecution(final Long executionId) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -136,7 +142,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public void synchronizeStatus(final JobExecution jobExecution) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
       jobExeDaoCql.synchronizeStatus(jobExecution);
@@ -152,7 +158,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public int countJobExecutions() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -166,7 +172,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public List<JobExecution> getJobExecutions(final String jobName, final int start, final int count) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -180,7 +186,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public List<JobExecution> getJobExecutions(final int start, final int count) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi) 
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -194,7 +200,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public int countJobExecutions(final String jobName) {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
@@ -208,7 +214,7 @@ public class CassandraJobExecutionDao implements SearchableJobExecutionDao {
 
   @Override
   public Collection<JobExecution> getRunningJobExecutions() {
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    final String modeApi = modeApiService.getModeAPI(cfName);
 
     if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)
         || ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL.equals(modeApi)) {
