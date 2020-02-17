@@ -70,6 +70,11 @@ public class InterruptionSupportValidationTest {
         public void verifyInterruptedProcess(InterruptionTraitementConfig config) throws InterruptionTraitementException {          
         }
 
+		@Override
+		public String getConnectionResultExceptionMessage() {
+			return "";
+		}
+
       };
 
       support.interruption(ARG_CURRENT_DATE, ARG_INTERRUPTION_CONFIG);

@@ -69,6 +69,11 @@ public class HasInterruptedSupportValidationTest {
       public void verifyInterruptedProcess(final InterruptionTraitementConfig config) throws InterruptionTraitementException {
       }
 
+	@Override
+	public String getConnectionResultExceptionMessage() {
+		return "";
+	}
+
     };
 
     support.hasInterrupted(ARG_CURRENT_DATE, ARG_INTERRUPTION_CONFIG);
