@@ -181,6 +181,39 @@ public class ClusterCQLConnecter {
   }
 
   /**
+   * Methode permettant de merger un dataset
+   * 
+   * @param testSession2
+   * @param dropAndCreateKeyspace
+   * @param dataSets
+   *          fichier CQL
+   * @return Le dataSet permettant contenant le load CQL
+   */
+  /*
+   * private FileCQLDataSet mergeCqlDataSet(final boolean dropAndCreateKeyspace, final String dataSet) {
+   * LOG.debug("Merge des datasets en cours");
+   * // On vérifie que le keyspace existe pour le créer si besoin
+   * final boolean createKeyspace = !(isExistKeyspace(testSession) && !dropAndCreateKeyspace);
+   * // Vérification des paramètres d'entrée
+   * Assert.notNull(dataSet, "L'objet  Dataset est vide");
+   * final String fileDataSetTmp = "target/tmp/migration-cqltable-common.cql";
+   * final Path tmpFileDataSet = Paths.get(fileDataSetTmp);
+   * final InputStream dataSetStream = getClass().getClassLoader().getResourceAsStream(dataSet);
+   * if (dataSetStream != null) {
+   * try (BufferedReader br = new BufferedReader(new InputStreamReader(dataSetStream, "UTF-8"))) {
+   * String text = null;
+   * while ((text = br.readLine()) != null) {
+   * bw.write(text);
+   * bw.newLine();
+   * }
+   * } finally {
+   * }
+   * }
+   * return new FileCQLDataSet(tmpFileDataSet.toFile().getAbsolutePath(), createKeyspace, dropAndCreateKeyspace, CassandraServerBean.KEYSPACE_TU);
+   * }
+   */
+
+  /**
    * Vérifie si le keyspace existe ou pas.
    * 
    * @param session
@@ -205,13 +238,13 @@ public class ClusterCQLConnecter {
 
     return existKeyspace;
   }
- /**
-  * Charger les données dans les tables à partir des jeux de données
-  * @param dropAndCreateKeyspace 
-  * 	indique si le keyspace recréé ou pas
-  * @param newDataSets
-  * 	Les jeux de données à charger
-  */
+  /**
+   * Charger les données dans les tables à partir des jeux de données
+   * @param dropAndCreateKeyspace 
+   * 	indique si le keyspace recréé ou pas
+   * @param newDataSets
+   * 	Les jeux de données à charger
+   */
   public void loadDataSetToServer(final boolean dropAndCreateKeyspace, final String... newDataSets) {
     // On injecte les jeux de données
     if (newDataSets != null && newDataSets.length > 0) {
@@ -219,6 +252,24 @@ public class ClusterCQLConnecter {
       cqlDataLoader.load(mergeCqlDataSets(dropAndCreateKeyspace, newDataSets));
     }
   }
+
+  /**
+   * Charger les données dans les tables à partir des jeux de données
+   * 
+   * @param dropAndCreateKeyspace
+   *          indique si le keyspace recréé ou pas
+   * @param newDataSets
+   *          Un jeu de données à charger ou un script cql de création
+   */
+  /*
+   * public void loadDataSetToServer(final boolean dropAndCreateKeyspace, final String dataSets) {
+   * // On injecte les jeux de données
+   * if (dataSets != null && dataSets.length() > 0) {
+   * final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
+   * cqlDataLoader.load(mergeCqlDataSet(dropAndCreateKeyspace, dataSets));
+   * }
+   * }
+   */
   /**
    * Arrête le cluster (partie cliente) de test
    */
@@ -245,4 +296,5 @@ public class ClusterCQLConnecter {
       tables.forEach(table -> testSession.execute(QueryBuilder.truncate(table)));
     }
   }
+
 }

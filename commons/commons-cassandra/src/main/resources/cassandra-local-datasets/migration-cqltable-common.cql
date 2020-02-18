@@ -268,11 +268,7 @@ CREATE TABLE sequences (
 	PRIMARY KEY (jobidname)
 );
 
-CREATE TABLE modeapi (
-	cfname text , 
-	mode text,
-	PRIMARY KEY(cfname)
-);
+
 
 CREATE TABLE droitactionunitairecql (
 	code text,
@@ -423,4 +419,11 @@ CREATE TABLE  correspondancesrndcql (
 	dateDebutMaj timestamp,
 	dateFinMaj timestamp,
 	PRIMARY KEY ((codeTemporaire,versionCourante))
+);
+
+
+CREATE TABLE sequencescql (
+	jobidname		text,
+    value 			bigint,
+	PRIMARY KEY (jobidname)
 );

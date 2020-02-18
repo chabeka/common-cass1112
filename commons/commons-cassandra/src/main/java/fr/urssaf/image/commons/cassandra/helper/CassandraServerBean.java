@@ -201,6 +201,18 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
       }
       connecter.loadDataSetToServer(dropAndCreateKeyspace, newDataSets);
 
+      // Création mode api avec connecteur cql
+
+      if (cqlconnecter == null) {
+        cqlconnecter = new ClusterCQLConnecter(getCqlHosts());
+      }
+      cqlSession = cqlconnecter.getTestSession();
+      // On créé la table via le connecteur cql
+      if (dataSetsCql != null && dataSetsCql.length == 3 && dataSetsCql[2].contains("modeapi")) {
+        final String[] dataModeapi = new String[] {dataSetsCql[2]};
+
+        cqlconnecter.loadDataSetToServer(false, dataModeapi);
+      }
 
     } else if (ModeGestionAPI.MODE_API.DATASTAX.equals(mode)) {
       if (newDataSets == null || newDataSets != null && newDataSets.length == 0) {
