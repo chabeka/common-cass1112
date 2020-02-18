@@ -9,12 +9,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -39,6 +42,14 @@ public class PrmdServiceDatasTest {
 
   @Autowired
   private PrmdService prmdService;
+
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+  }
 
   @Test
   public void prmdInexistantDansStatiquesEtDynamiques() {

@@ -55,15 +55,6 @@ public class TrimMetaControlServicesImplTest {
 
   @Before
   public void start() throws Exception {
-    // server.clearAndLoad();
-    /*
-     * final HashMap<String, String> modesApiTest = new HashMap<>();
-     * modesApiTest.put(Constantes.CF_METADATA, ModeGestionAPI.MODE_API.HECTOR);
-     * modesApiTest.put("tracedestinataire", ModeGestionAPI.MODE_API.HECTOR);
-     * modesApiTest.put("traceregtechnique", ModeGestionAPI.MODE_API.HECTOR);
-     * ModeGestionAPI.setListeCfsModes(modesApiTest);
-     */
-
     modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
 

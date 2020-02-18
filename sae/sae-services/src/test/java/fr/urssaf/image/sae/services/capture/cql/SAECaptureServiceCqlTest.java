@@ -41,8 +41,6 @@ import org.springframework.core.io.ClassPathResource;
 //import com.sun.istack.ByteArrayDataSource;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.commons.utils.InputStreamSource;
@@ -119,8 +117,7 @@ public class SAECaptureServiceCqlTest extends AbstractServiceCqlTest {
   @Autowired
   private RndCqlSupport rndCqlSupport;
 
-  @Autowired
-  private ModeApiCqlSupport modeApiSupport;
+
 
   @BeforeClass
   public static void beforeClass() throws IOException {
@@ -134,7 +131,7 @@ public class SAECaptureServiceCqlTest extends AbstractServiceCqlTest {
   public void before() throws Exception {
 
     initMetadata();
-    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+
     // createAllMetadata();
     // initialisation de l'uuid de l'archive
     uuid = null;

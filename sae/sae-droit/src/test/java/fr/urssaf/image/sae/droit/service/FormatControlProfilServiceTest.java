@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
@@ -40,11 +41,13 @@ public class FormatControlProfilServiceTest {
   @Autowired
   private CassandraServerBean cassandraServer;
 
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
   @Before
   public void setup() throws Exception {
-
     cassandraServer.resetData(true, MODE_API.HECTOR);
-
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
   }
 
   @Test

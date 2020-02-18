@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -24,9 +25,13 @@ public class SaePagmaServiceTest {
   @Autowired
   private SaePagmaService service;
 
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
   @Test
   public void testPagmaObligatoire() throws Exception {
     cassandraServer.resetData(true, MODE_API.HECTOR);
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
     try {
       service.createPagma(null);
       Assert.fail("erreur attendue");
@@ -42,6 +47,7 @@ public class SaePagmaServiceTest {
   @Test
   public void testCodePagmaObligatoire() throws Exception {
     cassandraServer.resetData(true, MODE_API.HECTOR);
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
     try {
       final Pagma pagma = new Pagma();
       pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
@@ -60,6 +66,7 @@ public class SaePagmaServiceTest {
   @Test
   public void testActionsUnitairesPagmaObligatoire() throws Exception {
     cassandraServer.resetData(true, MODE_API.HECTOR);
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
     try {
       final Pagma pagma = new Pagma();
       pagma.setCode("code");

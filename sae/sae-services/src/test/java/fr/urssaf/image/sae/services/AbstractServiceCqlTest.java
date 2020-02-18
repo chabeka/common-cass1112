@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.format.referentiel.dao.support.facade.ReferentielFormatSupportFacade;
@@ -51,6 +52,9 @@ public abstract class AbstractServiceCqlTest {
   @Autowired
   TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   protected static boolean init = false;
 
 
@@ -68,6 +72,8 @@ public abstract class AbstractServiceCqlTest {
         server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
         init = true;
       }
+      modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+      Thread.sleep(20000);
       createAllMetadata();
       createReferentielFormat();
       createAllTraceDestinataire();

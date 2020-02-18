@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.metadata.test.constants.Constants;
@@ -39,6 +42,14 @@ public class SearchableControlServicesImplTest {
   private CassandraServerBean server;
 
   private static final Logger LOGGER = LoggerFactory.getLogger(SearchableControlServicesImplTest.class);
+
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+  }
 
   @After
   public void after() throws Exception {

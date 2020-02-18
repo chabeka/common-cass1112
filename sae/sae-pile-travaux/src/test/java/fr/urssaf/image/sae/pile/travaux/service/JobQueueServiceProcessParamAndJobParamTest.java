@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -33,195 +34,198 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 @DirtiesContext
 public class JobQueueServiceProcessParamAndJobParamTest {
 
-   @Autowired
-   private JobQueueService jobQueueService;
+  @Autowired
+  private JobQueueService jobQueueService;
 
-   @Autowired
-   private JobLectureService jobLectureService;
+  @Autowired
+  private JobLectureService jobLectureService;
 
-   @Autowired
-   private CassandraServerBean serverBean;
+  @Autowired
+  private CassandraServerBean serverBean;
 
-   private UUID idJobWithParam;
-   private UUID idJobWithJobParam;
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
 
-   private void setJobWithParam(UUID idJob) {
-      this.idJobWithParam = idJob;
-   }
+  private UUID idJobWithParam;
+  private UUID idJobWithJobParam;
 
-   private void setJobWithJobParam(UUID idJob) {
-      this.idJobWithJobParam = idJob;
-   }
+  private void setJobWithParam(final UUID idJob) {
+    idJobWithParam = idJob;
+  }
 
-   @Before
-   public void before() {
+  private void setJobWithJobParam(final UUID idJob) {
+    idJobWithJobParam = idJob;
+  }
 
-      setJobWithParam(null);
-      setJobWithJobParam(null);
-   }
+  @Before
+  public void before() {
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+    setJobWithParam(null);
+    setJobWithJobParam(null);
+  }
 
-   @After
-   public void after() throws Exception {
+  @After
+  public void after() throws Exception {
 
-      // suppression du traitement de masse
-      if (idJobWithParam != null) {
+    // suppression du traitement de masse
+    if (idJobWithParam != null) {
 
-         jobQueueService.deleteJob(idJobWithParam);
-
-      }
-      // suppression du traitement de masse avec les job parameters
-      if (idJobWithJobParam != null) {
-
-         jobQueueService.deleteJob(idJobWithJobParam);
-
-      }
-
-      serverBean.resetData(true, MODE_API.HECTOR);
-   }
-
-   @Test
-   public void startingJob_success() throws JobInexistantException,
-         JobDejaReserveException, LockTimeoutException {
-
-      idJobWithParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      createJobWithParam(idJobWithParam);
-
-      idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      createJobWithJobParam(idJobWithJobParam);
-
-      jobQueueService.reserveJob(idJobWithParam, "hostname", new Date());
-
-      jobQueueService.reserveJob(idJobWithJobParam, "hostname", new Date());
-
-      Date dateDebutTraitement = new Date();
-      jobQueueService.startingJob(idJobWithParam, dateDebutTraitement);
-
-      jobQueueService.startingJob(idJobWithJobParam, dateDebutTraitement);
-
-      // vérification de JobRequest
-      JobRequest jobRequest = jobLectureService.getJobRequest(idJobWithParam);
-      Assert.assertEquals("l'état est inattendu", JobState.STARTING, jobRequest
-            .getState());
-      Assert.assertEquals("la date de démarrage est inattendue",
-            dateDebutTraitement, jobRequest.getStartingDate());
-
-      // vérification de JobRequest
-      JobRequest jobRequestJobParam = jobLectureService
-            .getJobRequest(idJobWithJobParam);
-      Assert.assertEquals("l'état est inattendu", JobState.STARTING,
-            jobRequestJobParam.getState());
-      Assert.assertEquals("la date de démarrage est inattendue",
-            dateDebutTraitement, jobRequestJobParam.getStartingDate());
-
-      // vérification de JobsQueues
-
-      // rien à vérifier
-
-      // vérification de JobHistory
-      List<JobHistory> histories = jobLectureService
-            .getJobHistory(idJobWithParam);
-
-      Assert.assertEquals("le nombre de message est inattendu", 3, histories
-            .size());
-
-      Assert.assertEquals(
-            "le message de l'ajout d'un traitement est inattendu",
-            "DEMARRAGE DU JOB", histories.get(2).getTrace());
-
-      // vérification de JobHistory
-      List<JobHistory> historiesJobParam = jobLectureService
-            .getJobHistory(idJobWithJobParam);
-
-      Assert.assertEquals("le nombre de message est inattendu", 3,
-            historiesJobParam.size());
-
-      Assert.assertEquals(
-            "le message de l'ajout d'un traitement est inattendu",
-            "DEMARRAGE DU JOB", historiesJobParam.get(2).getTrace());
-   }
-
-   private void createJobWithJobParam(UUID idJob) {
-
-      Date dateCreation = new Date();
-
-      Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put("parameters", "param");
-
-      JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("ArchivageMasse");
-      job.setJobParameters(jobParam);
-      job.setClientHost("clientHost");
-      job.setDocCount(100);
-      job.setSaeHost("saeHost");
-      job.setCreationDate(dateCreation);
-      String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
-
-      jobQueueService.addJob(job);
-   }
-
-   private void createJobWithParam(UUID idJob) {
-
-      Date dateCreation = new Date();
-
-      JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("ArchivageMasse");
-      job.setParameters("Parameters");
-      job.setClientHost("clientHost");
-      job.setDocCount(100);
-      job.setSaeHost("saeHost");
-      job.setCreationDate(dateCreation);
-      String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
-
-      jobQueueService.addJob(job);
-   }
-
-   @Test
-   public void startingJob_failure_jobInexistantException() {
-
-      idJobWithParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-
-      // on s'assure qu'il n'existe pas
       jobQueueService.deleteJob(idJobWithParam);
 
-      try {
-         jobQueueService.startingJob(idJobWithParam, new Date());
-         Assert.fail("Une exception JobInexistantException devrait être lever");
-      } catch (JobInexistantException e) {
+    }
+    // suppression du traitement de masse avec les job parameters
+    if (idJobWithJobParam != null) {
 
-         Assert.assertEquals("l'identifiant du job est inattendu",
-               idJobWithParam, e.getInstanceId());
-         Assert
-               .assertEquals("le message de l'exception est inattendu",
-                     "Impossible de lancer, de modifier ou de réserver le traitement n°"
-                           + idJobWithParam + " car il n'existe pas.", e
-                           .getMessage());
-      }
-   }
-
-   @Test
-   public void startingJobWithJobParam_failure_jobInexistantException() {
-
-      idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-
-      // on s'assure qu'il n'existe pas
       jobQueueService.deleteJob(idJobWithJobParam);
 
-      try {
-         jobQueueService.startingJob(idJobWithJobParam, new Date());
-         Assert.fail("Une exception JobInexistantException devrait être lever");
-      } catch (JobInexistantException e) {
+    }
 
-         Assert.assertEquals("l'identifiant du job est inattendu",
-               idJobWithJobParam, e.getInstanceId());
-         Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer, de modifier ou de réserver le traitement n°"
-                     + idJobWithJobParam + " car il n'existe pas.", e
-                     .getMessage());
-      }
-   }
+    serverBean.resetData(true, MODE_API.HECTOR);
+  }
+
+  @Test
+  public void startingJob_success() throws JobInexistantException,
+  JobDejaReserveException, LockTimeoutException {
+
+    idJobWithParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    createJobWithParam(idJobWithParam);
+
+    idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    createJobWithJobParam(idJobWithJobParam);
+
+    jobQueueService.reserveJob(idJobWithParam, "hostname", new Date());
+
+    jobQueueService.reserveJob(idJobWithJobParam, "hostname", new Date());
+
+    final Date dateDebutTraitement = new Date();
+    jobQueueService.startingJob(idJobWithParam, dateDebutTraitement);
+
+    jobQueueService.startingJob(idJobWithJobParam, dateDebutTraitement);
+
+    // vérification de JobRequest
+    final JobRequest jobRequest = jobLectureService.getJobRequest(idJobWithParam);
+    Assert.assertEquals("l'état est inattendu", JobState.STARTING, jobRequest
+                        .getState());
+    Assert.assertEquals("la date de démarrage est inattendue",
+                        dateDebutTraitement, jobRequest.getStartingDate());
+
+    // vérification de JobRequest
+    final JobRequest jobRequestJobParam = jobLectureService
+        .getJobRequest(idJobWithJobParam);
+    Assert.assertEquals("l'état est inattendu", JobState.STARTING,
+                        jobRequestJobParam.getState());
+    Assert.assertEquals("la date de démarrage est inattendue",
+                        dateDebutTraitement, jobRequestJobParam.getStartingDate());
+
+    // vérification de JobsQueues
+
+    // rien à vérifier
+
+    // vérification de JobHistory
+    final List<JobHistory> histories = jobLectureService
+        .getJobHistory(idJobWithParam);
+
+    Assert.assertEquals("le nombre de message est inattendu", 3, histories
+                        .size());
+
+    Assert.assertEquals(
+                        "le message de l'ajout d'un traitement est inattendu",
+                        "DEMARRAGE DU JOB", histories.get(2).getTrace());
+
+    // vérification de JobHistory
+    final List<JobHistory> historiesJobParam = jobLectureService
+        .getJobHistory(idJobWithJobParam);
+
+    Assert.assertEquals("le nombre de message est inattendu", 3,
+                        historiesJobParam.size());
+
+    Assert.assertEquals(
+                        "le message de l'ajout d'un traitement est inattendu",
+                        "DEMARRAGE DU JOB", historiesJobParam.get(2).getTrace());
+  }
+
+  private void createJobWithJobParam(final UUID idJob) {
+
+    final Date dateCreation = new Date();
+
+    final Map<String, String> jobParam = new HashMap<>();
+    jobParam.put("parameters", "param");
+
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("ArchivageMasse");
+    job.setJobParameters(jobParam);
+    job.setClientHost("clientHost");
+    job.setDocCount(100);
+    job.setSaeHost("saeHost");
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
+
+    jobQueueService.addJob(job);
+  }
+
+  private void createJobWithParam(final UUID idJob) {
+
+    final Date dateCreation = new Date();
+
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("ArchivageMasse");
+    job.setParameters("Parameters");
+    job.setClientHost("clientHost");
+    job.setDocCount(100);
+    job.setSaeHost("saeHost");
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
+
+    jobQueueService.addJob(job);
+  }
+
+  @Test
+  public void startingJob_failure_jobInexistantException() {
+
+    idJobWithParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+    // on s'assure qu'il n'existe pas
+    jobQueueService.deleteJob(idJobWithParam);
+
+    try {
+      jobQueueService.startingJob(idJobWithParam, new Date());
+      Assert.fail("Une exception JobInexistantException devrait être lever");
+    } catch (final JobInexistantException e) {
+
+      Assert.assertEquals("l'identifiant du job est inattendu",
+                          idJobWithParam, e.getInstanceId());
+      Assert
+      .assertEquals("le message de l'exception est inattendu",
+                    "Impossible de lancer, de modifier ou de réserver le traitement n°"
+                        + idJobWithParam + " car il n'existe pas.", e
+                        .getMessage());
+    }
+  }
+
+  @Test
+  public void startingJobWithJobParam_failure_jobInexistantException() {
+
+    idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+    // on s'assure qu'il n'existe pas
+    jobQueueService.deleteJob(idJobWithJobParam);
+
+    try {
+      jobQueueService.startingJob(idJobWithJobParam, new Date());
+      Assert.fail("Une exception JobInexistantException devrait être lever");
+    } catch (final JobInexistantException e) {
+
+      Assert.assertEquals("l'identifiant du job est inattendu",
+                          idJobWithJobParam, e.getInstanceId());
+      Assert.assertEquals("le message de l'exception est inattendu",
+                          "Impossible de lancer, de modifier ou de réserver le traitement n°"
+                              + idJobWithJobParam + " car il n'existe pas.", e
+                              .getMessage());
+    }
+  }
 
 }

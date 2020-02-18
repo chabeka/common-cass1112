@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -43,12 +44,16 @@ public class JobQueueServiceProcessExistingJobsTest {
 
   private UUID idJobWithJobParam;
 
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
   @Before
   public void init()throws Exception, IOException,
   InterruptedException, ConfigurationException{
     // on s'assure que le job initialisé dans le fichier dataSet-avec-job-ase-pile-travaux.xml est bien chargé
     // On démarre un serveur cassandra local
     // EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
 
   }
 

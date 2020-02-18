@@ -73,7 +73,13 @@ public class ParametersSupportFacadeTest {
   public void testModeAPIInconnu() throws ParameterNotFoundException {
     // On se met sur mode API inconnu
     modeApiSupport.updateModeApi("UNKNOWN", Constantes.CF_PARAMETERS);
-
+    // On attends que le cache soit modifié
+    try {
+      Thread.sleep(45000);
+    }
+    catch (final InterruptedException e) {
+      e.printStackTrace();
+    }
     supportFacade.find(ParameterType.JOURNALISATION_EVT_META_TITRE,
                        ParameterRowType.TRACABILITE);
   }

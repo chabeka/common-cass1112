@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +28,7 @@ import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
@@ -86,12 +88,20 @@ public class SaeDroitServiceCreateTest {
   @Autowired
   private CassandraServerBean cassandraServer;
 
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
   private static final Logger LOGGER = LoggerFactory
       .getLogger(SaeDroitServiceCreateTest.class);
 
   @After
   public void end() throws Exception {
     cassandraServer.resetData(true, MODE_API.HECTOR);
+  }
+
+  @Before
+  public void start() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
   }
 
   @Test

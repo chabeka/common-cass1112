@@ -46,12 +46,6 @@ public class ValidationServiceImplFailureTest {
   @Before
   public void setup() throws Exception {
     modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
-    /*
-     * final HashMap<String, String> modesApiTest = new HashMap<>();
-     * modesApiTest.put(Constantes.CF_REFERENTIEL_FORMAT, ModeGestionAPI.MODE_API.HECTOR);
-     * ModeGestionAPI.setListeCfsModes(modesApiTest);
-     */
-
   }
 
   @Test

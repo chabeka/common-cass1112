@@ -286,11 +286,6 @@ CREATE TABLE sequencescql (
 	PRIMARY KEY (jobidname)
 );
 
-CREATE TABLE modeapi (
-	cfname text , 
-	mode text,
-	PRIMARY KEY(cfname)
-);
 
 CREATE TABLE droitactionunitairecql (
 	code text,
