@@ -1,5 +1,11 @@
 /*#TABLES DEJA MIGREES*/
 
+CREATE TABLE IF NOT EXISTS modeapi (
+	cfname text , 
+	mode text,
+	PRIMARY KEY(cfname)
+);
+
 /*#TRACE#*/
 INSERT INTO modeapi (cfname,mode) VALUES ('tracejournalevtcql','DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi (cfname,mode) VALUES ('tracejournalevtindexcql','DUAL_MODE_READ_THRIFT');
