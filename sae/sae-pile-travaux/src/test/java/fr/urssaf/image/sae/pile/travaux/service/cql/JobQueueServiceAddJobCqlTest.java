@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
@@ -41,11 +42,19 @@ public class JobQueueServiceAddJobCqlTest {
   @Autowired
   private CassandraServerBean cassandraServer;
 
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
   private UUID idJob;
 
   @After
   public void after() throws Exception {
-	  cassandraServer.resetData();
+    cassandraServer.resetData();
+  }
+
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
   }
 
   @Test

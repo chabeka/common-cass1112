@@ -1,13 +1,11 @@
 package fr.urssaf.image.sae.pile.travaux.service.cql;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,12 +15,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.Metadata;
-import com.datastax.driver.core.TableMetadata;
-
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -44,17 +38,24 @@ public class JobQueueServiceProcessParamAndJobParamCqlTest {
   @Autowired
   private JobLectureCqlService jobLectureService;
 
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
   private UUID idJobWithParam;
 
   private UUID idJobWithJobParam;
 
-  
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
+  }
+
   @Test
   public void startingJob_success() throws JobInexistantException, JobDejaReserveException, LockTimeoutException, InterruptedException {
 
     idJobWithParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-     
-  
+
+
     createJobWithParam(idJobWithParam);
 
     idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();

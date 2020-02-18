@@ -15,6 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.exception.ClockSynchronizationException;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
@@ -35,89 +37,92 @@ import me.prettyprint.hector.api.beans.HColumn;
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class JobClockSupportTest {
 
-   @Autowired
-   private JobClockSupport support;
+  @Autowired
+  private JobClockSupport support;
 
-   @Autowired
-   private JobClockConfiguration configuration;
+  @Autowired
+  private JobClockConfiguration configuration;
 
-   @Autowired
-   private JobQueueService jobQueueService;
+  @Autowired
+  private JobQueueService jobQueueService;
 
-   @Autowired
-   private Keyspace keyspace;
+  @Autowired
+  private Keyspace keyspace;
 
-   private ColumnFamilyTemplate<UUID, String> template;
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
 
-   @Before
-   public void before() {
+  private ColumnFamilyTemplate<UUID, String> template;
 
-      template = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
-            "JobRequest", UUIDSerializer.get(), StringSerializer.get());
+  @Before
+  public void before() {
 
-   }
+    template = new ThriftColumnFamilyTemplate<>(keyspace,
+        "JobRequest", UUIDSerializer.get(), StringSerializer.get());
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+  }
 
-   private HColumn<?, ?> addJob() {
+  private HColumn<?, ?> addJob() {
 
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      Date dateCreation = new Date();
-      
-      Map<String,String> jobParam= new HashMap<String, String>();
-      jobParam.put("parameters", "param");
+    final Date dateCreation = new Date();
 
-      JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("type");
-      job.setJobParameters(jobParam);
-      job.setCreationDate(dateCreation);
-      String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
+    final Map<String,String> jobParam= new HashMap<>();
+    jobParam.put("parameters", "param");
 
-      jobQueueService.addJob(job);
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("type");
+    job.setJobParameters(jobParam);
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
 
-      HColumn<?, ?> column = template.querySingleColumn(idJob, "state",
-            StringSerializer.get());
+    jobQueueService.addJob(job);
 
-      return column;
-   }
+    final HColumn<?, ?> column = template.querySingleColumn(idJob, "state",
+                                                            StringSerializer.get());
 
-   @Test
-   public void synchronisation_success() {
+    return column;
+  }
 
-      HColumn<?, ?> column = addJob();
+  @Test
+  public void synchronisation_success() {
 
-      long time = support.currentCLock(column);
+    final HColumn<?, ?> column = addJob();
 
-      Assert.assertTrue("Il n'y a aucun problème de synchronisation", time > 0);
-   }
+    final long time = support.currentCLock(column);
 
-   @Test
-   public void synchronisation_warning() {
+    Assert.assertTrue("Il n'y a aucun problème de synchronisation", time > 0);
+  }
 
-      long decalage = configuration.getMaxTimeSynchroWarn() + 100;
+  @Test
+  public void synchronisation_warning() {
 
-      Assert.assertTrue("Il n'y a aucun problème de synchronisation",
-            decalage < configuration.getMaxTimeSynchroError());
+    final long decalage = configuration.getMaxTimeSynchroWarn() + 100;
 
-      HColumn<?, ?> column = addJob();
-      column.setClock(keyspace.createClock() + decalage);
+    Assert.assertTrue("Il n'y a aucun problème de synchronisation",
+                      decalage < configuration.getMaxTimeSynchroError());
 
-      long time = support.currentCLock(column);
+    final HColumn<?, ?> column = addJob();
+    column.setClock(keyspace.createClock() + decalage);
 
-      Assert.assertTrue("Il y a aucun problème de synchronisation", time > 0);
+    final long time = support.currentCLock(column);
 
-   }
+    Assert.assertTrue("Il y a aucun problème de synchronisation", time > 0);
 
-   @Test(expected = ClockSynchronizationException.class)
-   public void synchronisation_failure() {
+  }
 
-      long decalage = configuration.getMaxTimeSynchroError() + 10000;
+  @Test(expected = ClockSynchronizationException.class)
+  public void synchronisation_failure() {
 
-      HColumn<?, ?> column = addJob();
-      column.setClock(keyspace.createClock() + decalage);
+    final long decalage = configuration.getMaxTimeSynchroError() + 10000;
 
-      support.currentCLock(column);
+    final HColumn<?, ?> column = addJob();
+    column.setClock(keyspace.createClock() + decalage);
 
-   }
+    support.currentCLock(column);
+
+  }
 }

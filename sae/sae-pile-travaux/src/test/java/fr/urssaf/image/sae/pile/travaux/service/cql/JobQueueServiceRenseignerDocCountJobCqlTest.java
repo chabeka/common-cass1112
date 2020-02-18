@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
@@ -30,128 +31,136 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 @DirtiesContext
 public class JobQueueServiceRenseignerDocCountJobCqlTest {
 
-   @Autowired
-   private JobQueueCqlService jobQueueService;
+  @Autowired
+  private JobQueueCqlService jobQueueService;
 
-   @Autowired
-   private JobLectureCqlService jobLectureService;
-   
-   @Autowired
-   private CassandraServerBean serverBean;
+  @Autowired
+  private JobLectureCqlService jobLectureService;
 
-   private UUID idJob;
+  @Autowired
+  private CassandraServerBean serverBean;
 
-   @After
-   public void after() throws Exception {
-	   serverBean.resetData();
-   }
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
 
-   @Test
-   public void renseignerDocCountJob_success() throws JobInexistantException {
+  private UUID idJob;
 
-      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
+  }
 
-      createJob(idJob);
+  @After
+  public void after() throws Exception {
+    serverBean.resetData();
+  }
 
-      final Integer docCount = 100;
-      jobQueueService.renseignerDocCountJob(idJob, docCount);
+  @Test
+  public void renseignerDocCountJob_success() throws JobInexistantException {
 
-      // vérification de JobRequest
-      JobRequestCql jobRequest = jobLectureService.getJobRequest(idJob);
+    idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      Assert.assertEquals("le nombre de docs traités est inattendu", docCount, jobRequest
-                                                                                         .getDocCount());
+    createJob(idJob);
 
-      // vérification de JobsQueues
+    final Integer docCount = 100;
+    jobQueueService.renseignerDocCountJob(idJob, docCount);
 
-      // rien à vérifier
+    // vérification de JobRequest
+    JobRequestCql jobRequest = jobLectureService.getJobRequest(idJob);
 
-      // vérification de JobHistory
-      List<JobHistoryCql> histories = jobLectureService.getJobHistory(idJob);
+    Assert.assertEquals("le nombre de docs traités est inattendu", docCount, jobRequest
+                        .getDocCount());
 
-      // Assert.assertEquals("le nombre de message est inattendu", 2, histories.size());
+    // vérification de JobsQueues
 
-      Assert.assertNotNull(histories.get(0));
-      Assert.assertEquals("le nombre de message est inattendu", 2, histories.get(0).getTrace().size());
+    // rien à vérifier
 
-      boolean isJobCreated = false;
+    // vérification de JobHistory
+    List<JobHistoryCql> histories = jobLectureService.getJobHistory(idJob);
 
-      final Map<UUID, String> map = histories.get(0).getTrace();
-      for (final Map.Entry<UUID, String> entry : map.entrySet()) {
-         if ("DOC_COUNT RENSEIGNE".equals(entry.getValue())) {
-            isJobCreated = true;
-         }
+    // Assert.assertEquals("le nombre de message est inattendu", 2, histories.size());
+
+    Assert.assertNotNull(histories.get(0));
+    Assert.assertEquals("le nombre de message est inattendu", 2, histories.get(0).getTrace().size());
+
+    boolean isJobCreated = false;
+
+    final Map<UUID, String> map = histories.get(0).getTrace();
+    for (final Map.Entry<UUID, String> entry : map.entrySet()) {
+      if ("DOC_COUNT RENSEIGNE".equals(entry.getValue())) {
+        isJobCreated = true;
       }
-      Assert.assertTrue("le message de l'ajout d'un traitement est inattendu", isJobCreated);
+    }
+    Assert.assertTrue("le message de l'ajout d'un traitement est inattendu", isJobCreated);
 
-      // Assert.assertEquals("le message de l'ajout d'un traitement est inattendu","DOC_COUNT RENSEIGNE",histories.get(1).getTrace());
+    // Assert.assertEquals("le message de l'ajout d'un traitement est inattendu","DOC_COUNT RENSEIGNE",histories.get(1).getTrace());
 
-      // on renseigne une seconde fois le nombre de docs
-      final Integer otherDocCount = 150;
-      jobQueueService.renseignerDocCountJob(idJob, otherDocCount);
+    // on renseigne une seconde fois le nombre de docs
+    final Integer otherDocCount = 150;
+    jobQueueService.renseignerDocCountJob(idJob, otherDocCount);
 
-      // vérification de JobRequest
-      jobRequest = jobLectureService.getJobRequest(idJob);
+    // vérification de JobRequest
+    jobRequest = jobLectureService.getJobRequest(idJob);
 
-      Assert.assertEquals("le nombre de docs traités est inattendu",
-                          otherDocCount,
-                          jobRequest.getDocCount());
+    Assert.assertEquals("le nombre de docs traités est inattendu",
+                        otherDocCount,
+                        jobRequest.getDocCount());
 
-      // vérification de JobsQueues
+    // vérification de JobsQueues
 
-      // rien à vérifier
+    // rien à vérifier
 
-      // vérification de JobHistory
-      histories = jobLectureService.getJobHistory(idJob);
-      Assert.assertNotNull(histories);
+    // vérification de JobHistory
+    histories = jobLectureService.getJobHistory(idJob);
+    Assert.assertNotNull(histories);
 
-      final JobHistoryCql jobH = histories.get(0);
-      final Map<UUID, String> mapH = jobH.getTrace();
-      Assert.assertTrue("La map ne peut etre vide ", !mapH.isEmpty());
-      Assert.assertEquals("le nombre de message est inattendu", 3, mapH.values().size());
+    final JobHistoryCql jobH = histories.get(0);
+    final Map<UUID, String> mapH = jobH.getTrace();
+    Assert.assertTrue("La map ne peut etre vide ", !mapH.isEmpty());
+    Assert.assertEquals("le nombre de message est inattendu", 3, mapH.values().size());
 
-   }
+  }
 
-   @Test
-   public void renseignerPidJob_failure_jobInexistantException() {
+  @Test
+  public void renseignerPidJob_failure_jobInexistantException() {
 
-      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      // on s'assure qu'il n'existe pas
-      jobQueueService.deleteJob(idJob);
+    // on s'assure qu'il n'existe pas
+    jobQueueService.deleteJob(idJob);
 
-      try {
-         jobQueueService.renseignerDocCountJob(idJob, 100);
-         Assert.fail("Une exception JobInexistantException devrait être lever");
-      }
-      catch (final JobInexistantException e) {
+    try {
+      jobQueueService.renseignerDocCountJob(idJob, 100);
+      Assert.fail("Une exception JobInexistantException devrait être lever");
+    }
+    catch (final JobInexistantException e) {
 
-         Assert.assertEquals("l'identifiant du job est inattendu", idJob, e.getInstanceId());
-         Assert.assertEquals("le message de l'exception est inattendu",
-                             "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
-                                   + " car il n'existe pas.",
-                             e.getMessage());
-      }
-   }
+      Assert.assertEquals("l'identifiant du job est inattendu", idJob, e.getInstanceId());
+      Assert.assertEquals("le message de l'exception est inattendu",
+                          "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
+                          + " car il n'existe pas.",
+                          e.getMessage());
+    }
+  }
 
-   private void createJob(final UUID idJob) {
+  private void createJob(final UUID idJob) {
 
-      final Date dateCreation = new Date();
-      final Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put("parameters", "param");
+    final Date dateCreation = new Date();
+    final Map<String, String> jobParam = new HashMap<>();
+    jobParam.put("parameters", "param");
 
-      final JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("ArchivageMasse");
-      job.setJobParameters(jobParam);
-      job.setClientHost("clientHost");
-      job.setDocCount(100);
-      job.setSaeHost("saeHost");
-      job.setCreationDate(dateCreation);
-      final String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("ArchivageMasse");
+    job.setJobParameters(jobParam);
+    job.setClientHost("clientHost");
+    job.setDocCount(100);
+    job.setSaeHost("saeHost");
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
 
-      jobQueueService.addJob(job);
-   }
+    jobQueueService.addJob(job);
+  }
 
 }

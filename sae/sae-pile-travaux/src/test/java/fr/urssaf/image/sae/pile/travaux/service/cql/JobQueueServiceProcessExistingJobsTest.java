@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -47,6 +48,9 @@ public class JobQueueServiceProcessExistingJobsTest {
   @Autowired
   private JobLectureCqlService jobLectureServiceCql;
 
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
   private UUID idJobWithJobParam;
 
   @Before
@@ -58,6 +62,11 @@ public class JobQueueServiceProcessExistingJobsTest {
 
     // Add old job
     ajouterJobDansJobRequest();
+  }
+
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
   }
 
   @After

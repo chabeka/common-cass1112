@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
@@ -30,139 +31,147 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 @DirtiesContext
 public class JobQueueServiceUpdateToCheckFlagCqlTest {
 
-   @Autowired
-   private JobQueueCqlService jobQueueService;
+  @Autowired
+  private JobQueueCqlService jobQueueService;
 
-   @Autowired
-   private JobLectureCqlService jobLectureService;
-   
-   @Autowired
-   private CassandraServerBean cassandraServer;
+  @Autowired
+  private JobLectureCqlService jobLectureService;
 
-   private UUID idJob;
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-   @After
-   public void after() throws Exception {
-	   cassandraServer.resetData();
-   }
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
 
-   @Test
-   public void updateToCheckFlag_success() throws JobInexistantException {
+  private UUID idJob;
 
-      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
+  }
 
-      createJob(idJob);
+  @After
+  public void after() throws Exception {
+    cassandraServer.resetData();
+  }
 
-      jobQueueService.updateToCheckFlag(idJob, true, "raison de mettre à vrai");
+  @Test
+  public void updateToCheckFlag_success() throws JobInexistantException {
 
-      // vérification de JobRequest
-      JobRequestCql jobRequest = jobLectureService.getJobRequest(idJob);
+    idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      Assert.assertTrue("le toCheckFlag de traitement est inattendu",
-                        jobRequest.getToCheckFlag());
+    createJob(idJob);
 
-      Assert.assertEquals("le toCheckFlagRaison de traitement est inattendu",
-                          "raison de mettre à vrai",
-                          jobRequest.getToCheckFlagRaison());
+    jobQueueService.updateToCheckFlag(idJob, true, "raison de mettre à vrai");
 
-      // vérification de JobsQueues
+    // vérification de JobRequest
+    JobRequestCql jobRequest = jobLectureService.getJobRequest(idJob);
 
-      // rien à vérifier
+    Assert.assertTrue("le toCheckFlag de traitement est inattendu",
+                      jobRequest.getToCheckFlag());
 
-      // vérification de JobHistory
-      List<JobHistoryCql> histories = jobLectureService.getJobHistory(idJob);
+    Assert.assertEquals("le toCheckFlagRaison de traitement est inattendu",
+                        "raison de mettre à vrai",
+                        jobRequest.getToCheckFlagRaison());
 
-      Assert.assertNotNull(histories.get(0));
-      Assert.assertEquals("le nombre de message est inattendu", 2, histories.get(0).getTrace().size());
+    // vérification de JobsQueues
 
-      boolean isPositioned = false;
+    // rien à vérifier
 
-      Map<UUID, String> map2 = histories.get(0).getTrace();
-      for (final Map.Entry<UUID, String> entry : map2.entrySet()) {
-         if ("TOCHECKFLAG POSITIONNE A true AVEC LA RAISON raison de mettre à vrai".equals(entry.getValue())) {
-            isPositioned = true;
-         }
+    // vérification de JobHistory
+    List<JobHistoryCql> histories = jobLectureService.getJobHistory(idJob);
+
+    Assert.assertNotNull(histories.get(0));
+    Assert.assertEquals("le nombre de message est inattendu", 2, histories.get(0).getTrace().size());
+
+    boolean isPositioned = false;
+
+    Map<UUID, String> map2 = histories.get(0).getTrace();
+    for (final Map.Entry<UUID, String> entry : map2.entrySet()) {
+      if ("TOCHECKFLAG POSITIONNE A true AVEC LA RAISON raison de mettre à vrai".equals(entry.getValue())) {
+        isPositioned = true;
       }
-      Assert.assertTrue("le message de l'ajout d'un traitement est inattendu", isPositioned);
+    }
+    Assert.assertTrue("le message de l'ajout d'un traitement est inattendu", isPositioned);
 
-      // on renseigne une seconde fois le toCheckToFlag
+    // on renseigne une seconde fois le toCheckToFlag
 
-      jobQueueService.updateToCheckFlag(idJob,
-                                        false,
-                                        "raison de mettre à false");
+    jobQueueService.updateToCheckFlag(idJob,
+                                      false,
+                                      "raison de mettre à false");
 
-      // vérification de JobRequest
-      jobRequest = jobLectureService.getJobRequest(idJob);
+    // vérification de JobRequest
+    jobRequest = jobLectureService.getJobRequest(idJob);
 
-      Assert.assertFalse("le toCheckFlag de traitement est inattendu",
-                         jobRequest.getToCheckFlag());
+    Assert.assertFalse("le toCheckFlag de traitement est inattendu",
+                       jobRequest.getToCheckFlag());
 
-      Assert.assertEquals("le toCheckFlagRaison de traitement est inattendu",
-                          "raison de mettre à false",
-                          jobRequest.getToCheckFlagRaison());
+    Assert.assertEquals("le toCheckFlagRaison de traitement est inattendu",
+                        "raison de mettre à false",
+                        jobRequest.getToCheckFlagRaison());
 
-      // vérification de JobsQueues
+    // vérification de JobsQueues
 
-      // rien à vérifier
+    // rien à vérifier
 
-      // vérification de JobHistory
-      histories = jobLectureService.getJobHistory(idJob);
+    // vérification de JobHistory
+    histories = jobLectureService.getJobHistory(idJob);
 
-      map2 = histories.get(0).getTrace();
+    map2 = histories.get(0).getTrace();
 
-      Assert.assertNotNull(histories.get(0));
-      Assert.assertEquals("le nombre de message est inattendu", 3, histories.get(0).getTrace().size());
+    Assert.assertNotNull(histories.get(0));
+    Assert.assertEquals("le nombre de message est inattendu", 3, histories.get(0).getTrace().size());
 
-      for (final Map.Entry<UUID, String> entry : map2.entrySet()) {
-         if ("TOCHECKFLAG POSITIONNE A true AVEC LA RAISON raison de mettre à vrai".equals(entry.getValue())) {
-            isPositioned = true;
-         }
+    for (final Map.Entry<UUID, String> entry : map2.entrySet()) {
+      if ("TOCHECKFLAG POSITIONNE A true AVEC LA RAISON raison de mettre à vrai".equals(entry.getValue())) {
+        isPositioned = true;
       }
-      Assert.assertTrue("le message de l'ajout d'un traitement est inattendu", isPositioned);
+    }
+    Assert.assertTrue("le message de l'ajout d'un traitement est inattendu", isPositioned);
 
-   }
+  }
 
-   @Test
-   public void renseignerPidJob_failure_jobInexistantException() {
+  @Test
+  public void renseignerPidJob_failure_jobInexistantException() {
 
-      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      // on s'assure qu'il n'existe pas
-      jobQueueService.deleteJob(idJob);
+    // on s'assure qu'il n'existe pas
+    jobQueueService.deleteJob(idJob);
 
-      try {
-         jobQueueService.updateToCheckFlag(idJob, true, "blabla");
-         Assert.fail("Une exception JobInexistantException devrait être lever");
-      }
-      catch (final JobInexistantException e) {
+    try {
+      jobQueueService.updateToCheckFlag(idJob, true, "blabla");
+      Assert.fail("Une exception JobInexistantException devrait être lever");
+    }
+    catch (final JobInexistantException e) {
 
-         Assert.assertEquals("l'identifiant du job est inattendu", idJob, e
-                                                                           .getInstanceId());
-         Assert.assertEquals("le message de l'exception est inattendu",
-                             "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
-                                   + " car il n'existe pas.",
-                             e.getMessage());
-      }
-   }
+      Assert.assertEquals("l'identifiant du job est inattendu", idJob, e
+                          .getInstanceId());
+      Assert.assertEquals("le message de l'exception est inattendu",
+                          "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
+                          + " car il n'existe pas.",
+                          e.getMessage());
+    }
+  }
 
-   private void createJob(final UUID idJob) {
+  private void createJob(final UUID idJob) {
 
-      final Date dateCreation = new Date();
-      final Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put("parameters", "param");
+    final Date dateCreation = new Date();
+    final Map<String, String> jobParam = new HashMap<>();
+    jobParam.put("parameters", "param");
 
-      final JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("ArchivageMasse");
-      job.setJobParameters(jobParam);
-      job.setClientHost("clientHost");
-      job.setDocCount(100);
-      job.setSaeHost("saeHost");
-      job.setCreationDate(dateCreation);
-      final String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("ArchivageMasse");
+    job.setJobParameters(jobParam);
+    job.setClientHost("clientHost");
+    job.setDocCount(100);
+    job.setSaeHost("saeHost");
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
 
-      jobQueueService.addJob(job);
-   }
+    jobQueueService.addJob(job);
+  }
 
 }

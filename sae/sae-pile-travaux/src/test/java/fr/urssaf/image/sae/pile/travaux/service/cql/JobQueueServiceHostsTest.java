@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -31,76 +32,84 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 @DirtiesContext
 public class JobQueueServiceHostsTest {
 
-   @Autowired
-   private JobQueueCqlService jobQueueService;
+  @Autowired
+  private JobQueueCqlService jobQueueService;
 
-   @Autowired
-   private JobLectureCqlService jobLectureService;
+  @Autowired
+  private JobLectureCqlService jobLectureService;
 
-   private UUID idJob;
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
 
-   @Autowired
-   private CassandraServerBean cassandraServer;
-   
-   @After
-   public void after() throws Exception {
-	   cassandraServer.resetData(true, MODE_API.DATASTAX);
-   }
+  private UUID idJob;
 
-   @Test
-   @Ignore
-   public void getHosts() throws JobInexistantException,
-         JobDejaReserveException, LockTimeoutException {
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-      // verifie quy'aucun host n'a traite de jobs
-      List<String> hosts = jobQueueService.getHosts();
-      Assert.assertNotNull("La liste des hosts ne doit pas être null", hosts);
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
+  }
 
-      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      createJob(idJob);
+  @After
+  public void after() throws Exception {
+    cassandraServer.resetData(true, MODE_API.DATASTAX);
+  }
 
-      jobQueueService.reserveJob(idJob, "hostname1", new Date());
+  @Test
+  @Ignore
+  public void getHosts() throws JobInexistantException,
+  JobDejaReserveException, LockTimeoutException {
 
-      final Date dateDebutTraitement = new Date();
-      jobQueueService.startingJob(idJob, dateDebutTraitement);
+    // verifie quy'aucun host n'a traite de jobs
+    List<String> hosts = jobQueueService.getHosts();
+    Assert.assertNotNull("La liste des hosts ne doit pas être null", hosts);
 
-      final Date dateFinTraitement = new Date();
-      jobQueueService.endingJob(idJob, true, dateFinTraitement);
+    idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    createJob(idJob);
 
-      hosts = jobQueueService.getHosts();
-      Assert.assertNotNull("La liste des hosts ne doit pas être null", hosts);
-      Assert.assertTrue("La liste des hosts ne doit pas être vide", hosts.isEmpty());
+    jobQueueService.reserveJob(idJob, "hostname1", new Date());
 
-      boolean hostPresent = false;
-      for (final String hostname : hosts) {
-         if (hostname.equals("hostname")) {
-            hostPresent = true;
-            break;
-         }
+    final Date dateDebutTraitement = new Date();
+    jobQueueService.startingJob(idJob, dateDebutTraitement);
+
+    final Date dateFinTraitement = new Date();
+    jobQueueService.endingJob(idJob, true, dateFinTraitement);
+
+    hosts = jobQueueService.getHosts();
+    Assert.assertNotNull("La liste des hosts ne doit pas être null", hosts);
+    Assert.assertTrue("La liste des hosts ne doit pas être vide", hosts.isEmpty());
+
+    boolean hostPresent = false;
+    for (final String hostname : hosts) {
+      if (hostname.equals("hostname")) {
+        hostPresent = true;
+        break;
       }
-      Assert.assertFalse("Le nom du hosts n'est pas present dans la liste", hostPresent);
+    }
+    Assert.assertFalse("Le nom du hosts n'est pas present dans la liste", hostPresent);
 
-   }
+  }
 
-   private void createJob(final UUID idJob) {
+  private void createJob(final UUID idJob) {
 
-      final Date dateCreation = new Date();
+    final Date dateCreation = new Date();
 
-      final Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put("parameters", "param");
+    final Map<String, String> jobParam = new HashMap<>();
+    jobParam.put("parameters", "param");
 
-      final JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("ArchivageMasse");
-      job.setJobParameters(jobParam);
-      job.setClientHost("clientHost");
-      job.setDocCount(100);
-      job.setSaeHost("saeHost");
-      job.setCreationDate(dateCreation);
-      final String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("ArchivageMasse");
+    job.setJobParameters(jobParam);
+    job.setClientHost("clientHost");
+    job.setDocCount(100);
+    job.setSaeHost("saeHost");
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
 
-      jobQueueService.addJob(job);
-   }
+    jobQueueService.addJob(job);
+  }
 
 }

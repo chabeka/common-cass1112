@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
@@ -36,158 +37,166 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 @DirtiesContext
 public class JobQueueServiceResetJobCqlTest {
 
-   @Autowired
-   private JobQueueCqlService jobQueueService;
+  @Autowired
+  private JobQueueCqlService jobQueueService;
 
-   @Autowired
-   private JobLectureCqlService jobLectureService;
+  @Autowired
+  private JobLectureCqlService jobLectureService;
 
-   @Autowired
-   private CassandraServerBean cassandraServer;
-   
-   private UUID idJob;
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-   @After
-   public void after() throws Exception {
-	   cassandraServer.resetData(true, MODE_API.DATASTAX);
-   }
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
 
-   /*
-    * @Test public void resetJob_success() throws JobDejaReserveException,
-    * JobInexistantException, LockTimeoutException,
-    * JobNonReinitialisableException {
-    * idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis(); createJob(idJob);
-    * // On réserve le job afin d'attribuer des valeurs aux paramètres Date
-    * dateReservation = new Date(); String reservedBy = "hostname";
-    * jobQueueService.reserveJob(idJob, reservedBy, dateReservation);
-    * // Reset du job jobQueueService.resetJob(idJob);
-    * // vérification de JobRequest JobRequest jobRequest =
-    * jobLectureService.getJobRequest(idJob);
-    * Assert.assertEquals("l'état est inattendu", JobState.CREATED, jobRequest
-    * .getState());
-    * Assert.assertEquals("le reservedBy est inattendu", "", jobRequest
-    * .getReservedBy());
-    * Assert.assertNull("la date de réservation est inattendue", jobRequest
-    * .getReservationDate()); Assert .assertNull("startingDate inattendue",
-    * jobRequest.getStartingDate()); Assert.assertEquals("le Pid est inattendu",
-    * Integer.valueOf(0), jobRequest.getPid());
-    * Assert.assertNull("endingDate inattendue", jobRequest.getEndingDate());
-    * Assert.assertEquals("le message est inattendu", "", jobRequest
-    * .getMessage());
-    * // vérification de JobHistory List<JobHistory> histories =
-    * jobLectureService.getJobHistory(idJob);
-    * Assert.assertEquals("le nombre de message est inattendu", 3, histories
-    * .size());
-    * Assert.assertEquals(
-    * "le message de l'ajout d'un traitement est inattendu", "RESET DU JOB",
-    * histories.get(2).getTrace()); }
-    */
+  private UUID idJob;
 
-   @Test
-   public void resetJob_success() throws JobDejaReserveException,
-         JobInexistantException, LockTimeoutException,
-         JobNonReinitialisableException {
+  @Before
+  public void setup() throws Exception {
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
+  }
 
-      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      // Création du job
-      createJob(idJob);
+  @After
+  public void after() throws Exception {
+    cassandraServer.resetData(true, MODE_API.DATASTAX);
+  }
 
-      // Réservation du job afin de le rendre reinitialisable
-      final Date dateReservation = new Date();
-      final String reservedBy = "hostname";
-      jobQueueService.reserveJob(idJob, reservedBy, dateReservation);
+  /*
+   * @Test public void resetJob_success() throws JobDejaReserveException,
+   * JobInexistantException, LockTimeoutException,
+   * JobNonReinitialisableException {
+   * idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis(); createJob(idJob);
+   * // On réserve le job afin d'attribuer des valeurs aux paramètres Date
+   * dateReservation = new Date(); String reservedBy = "hostname";
+   * jobQueueService.reserveJob(idJob, reservedBy, dateReservation);
+   * // Reset du job jobQueueService.resetJob(idJob);
+   * // vérification de JobRequest JobRequest jobRequest =
+   * jobLectureService.getJobRequest(idJob);
+   * Assert.assertEquals("l'état est inattendu", JobState.CREATED, jobRequest
+   * .getState());
+   * Assert.assertEquals("le reservedBy est inattendu", "", jobRequest
+   * .getReservedBy());
+   * Assert.assertNull("la date de réservation est inattendue", jobRequest
+   * .getReservationDate()); Assert .assertNull("startingDate inattendue",
+   * jobRequest.getStartingDate()); Assert.assertEquals("le Pid est inattendu",
+   * Integer.valueOf(0), jobRequest.getPid());
+   * Assert.assertNull("endingDate inattendue", jobRequest.getEndingDate());
+   * Assert.assertEquals("le message est inattendu", "", jobRequest
+   * .getMessage());
+   * // vérification de JobHistory List<JobHistory> histories =
+   * jobLectureService.getJobHistory(idJob);
+   * Assert.assertEquals("le nombre de message est inattendu", 3, histories
+   * .size());
+   * Assert.assertEquals(
+   * "le message de l'ajout d'un traitement est inattendu", "RESET DU JOB",
+   * histories.get(2).getTrace()); }
+   */
 
-      // Reset du job
-      jobQueueService.resetJob(idJob);
+  @Test
+  public void resetJob_success() throws JobDejaReserveException,
+  JobInexistantException, LockTimeoutException,
+  JobNonReinitialisableException {
 
-      // vérification de JobRequest
-      final JobRequestCql jobRequest = jobLectureService.getJobRequest(idJob);
-      Assert.assertEquals("l'état est inattendu", JobState.CREATED.name(), jobRequest
-                                                                                     .getState());
+    idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    // Création du job
+    createJob(idJob);
 
-      // vérification de JobsQueues
-      final Iterator<JobQueueCql> jobQueuesEnAttente = jobLectureService
-                                                                        .getUnreservedJobRequestIterator();
+    // Réservation du job afin de le rendre reinitialisable
+    final Date dateReservation = new Date();
+    final String reservedBy = "hostname";
+    jobQueueService.reserveJob(idJob, reservedBy, dateReservation);
 
-      JobQueueCql jobQueueEnAttente = null;
-      while (jobQueuesEnAttente.hasNext() && jobQueueEnAttente == null) {
-         final JobQueueCql jobQueueElement = jobQueuesEnAttente.next();
-         if (jobQueueElement.getIdJob().equals(idJob)) {
-            jobQueueEnAttente = jobQueueElement;
-         }
+    // Reset du job
+    jobQueueService.resetJob(idJob);
+
+    // vérification de JobRequest
+    final JobRequestCql jobRequest = jobLectureService.getJobRequest(idJob);
+    Assert.assertEquals("l'état est inattendu", JobState.CREATED.name(), jobRequest
+                        .getState());
+
+    // vérification de JobsQueues
+    final Iterator<JobQueueCql> jobQueuesEnAttente = jobLectureService
+        .getUnreservedJobRequestIterator();
+
+    JobQueueCql jobQueueEnAttente = null;
+    while (jobQueuesEnAttente.hasNext() && jobQueueEnAttente == null) {
+      final JobQueueCql jobQueueElement = jobQueuesEnAttente.next();
+      if (jobQueueElement.getIdJob().equals(idJob)) {
+        jobQueueEnAttente = jobQueueElement;
       }
+    }
 
-      Assert.assertNotNull("le job doit exister dans la file d'attente",
-                           jobQueueEnAttente);
-      Assert.assertEquals("le type de traitement est inattendu",
-                          "ArchivageMasse",
-                          jobQueueEnAttente.getType());
-      Assert.assertEquals("les paramètres sont inattendus",
-                          "param",
-                          jobQueueEnAttente.getJobParameters().get("parameters"));
+    Assert.assertNotNull("le job doit exister dans la file d'attente",
+                         jobQueueEnAttente);
+    Assert.assertEquals("le type de traitement est inattendu",
+                        "ArchivageMasse",
+                        jobQueueEnAttente.getType());
+    Assert.assertEquals("les paramètres sont inattendus",
+                        "param",
+                        jobQueueEnAttente.getJobParameters().get("parameters"));
 
-      final Iterator<JobQueueCql> jobQueues = jobLectureService
-                                                               .getNonTerminatedSimpleJobs(reservedBy).iterator();
+    final Iterator<JobQueueCql> jobQueues = jobLectureService
+        .getNonTerminatedSimpleJobs(reservedBy).iterator();
 
-      JobQueueCql jobQueue = null;
-      while (jobQueues.hasNext() && jobQueue == null) {
-         final JobQueueCql jobQueueElement = jobQueues.next();
-         if (jobQueueElement.getIdJob().equals(idJob)) {
-            jobQueue = jobQueueElement;
-         }
+    JobQueueCql jobQueue = null;
+    while (jobQueues.hasNext() && jobQueue == null) {
+      final JobQueueCql jobQueueElement = jobQueues.next();
+      if (jobQueueElement.getIdJob().equals(idJob)) {
+        jobQueue = jobQueueElement;
       }
+    }
 
-      Assert.assertNull(
-                        "le job ne doit pas exister dans la file de réservation de "
-                              + reservedBy,
-                        jobQueue);
+    Assert.assertNull(
+                      "le job ne doit pas exister dans la file de réservation de "
+                          + reservedBy,
+                          jobQueue);
 
-      // vérification de JobHistory
-      final List<JobHistoryCql> histories = jobLectureService.getJobHistory(idJob);
+    // vérification de JobHistory
+    final List<JobHistoryCql> histories = jobLectureService.getJobHistory(idJob);
 
-      Assert.assertNotNull(histories.get(0));
-      Assert.assertEquals("le nombre de message est inattendu", 3, histories.get(0).getTrace().size());
+    Assert.assertNotNull(histories.get(0));
+    Assert.assertEquals("le nombre de message est inattendu", 3, histories.get(0).getTrace().size());
 
-      boolean isResetJob = false;
+    boolean isResetJob = false;
 
-      final Map<UUID, String> map2 = histories.get(0).getTrace();
-      for (final Map.Entry<UUID, String> entry : map2.entrySet()) {
-         if ("RESET DU JOB".equals(entry.getValue())) {
-            isResetJob = true;
-         }
+    final Map<UUID, String> map2 = histories.get(0).getTrace();
+    for (final Map.Entry<UUID, String> entry : map2.entrySet()) {
+      if ("RESET DU JOB".equals(entry.getValue())) {
+        isResetJob = true;
       }
-      Assert.assertTrue("le message de l'ajout d'un traitement est inattendu", isResetJob);
-   }
+    }
+    Assert.assertTrue("le message de l'ajout d'un traitement est inattendu", isResetJob);
+  }
 
-   @Test(expected = JobNonReinitialisableException.class)
-   public void resetJob_failure() throws JobNonReinitialisableException {
+  @Test(expected = JobNonReinitialisableException.class)
+  public void resetJob_failure() throws JobNonReinitialisableException {
 
-      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      createJob(idJob);
+    idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    createJob(idJob);
 
-      // On tente de relancer un job qui n'est ni à l'état RESERVED, ni à l'état
-      // STARTING
-      jobQueueService.resetJob(idJob);
-   }
+    // On tente de relancer un job qui n'est ni à l'état RESERVED, ni à l'état
+    // STARTING
+    jobQueueService.resetJob(idJob);
+  }
 
-   private void createJob(final UUID idJob) {
+  private void createJob(final UUID idJob) {
 
-      final Date dateCreation = new Date();
+    final Date dateCreation = new Date();
 
-      final Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put("parameters", "param");
+    final Map<String, String> jobParam = new HashMap<>();
+    jobParam.put("parameters", "param");
 
-      final JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("ArchivageMasse");
-      job.setJobParameters(jobParam);
-      job.setClientHost("clientHost");
-      job.setDocCount(100);
-      job.setSaeHost("saeHost");
-      job.setCreationDate(dateCreation);
-      final String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("ArchivageMasse");
+    job.setJobParameters(jobParam);
+    job.setClientHost("clientHost");
+    job.setDocCount(100);
+    job.setSaeHost("saeHost");
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
 
-      jobQueueService.addJob(job);
-   }
+    jobQueueService.addJob(job);
+  }
 }
