@@ -14,11 +14,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
+import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
+import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
+import fr.urssaf.image.sae.metadata.referential.support.cql.SaeMetadataCqlSupport;
 import fr.urssaf.image.sae.metadata.referential.support.facade.SaeMetadataSupportFacade;
 import fr.urssaf.image.sae.metadata.utils.MetadataUtils;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
@@ -33,8 +38,11 @@ public class MetadataServiceCqlTest {
   private ModeApiCqlSupport modeApiSupport;
 
 
+  private ModeAPIService modeApiService;
+
   @Before
   public void before() throws Exception {
+    server.resetData();
     modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     createAllMetadata();
   }
@@ -54,6 +62,18 @@ public class MetadataServiceCqlTest {
 
   @Autowired
   protected SaeMetadataSupportFacade saeMetadataSupportFacade;
+
+  @Autowired
+  private DFCEServices dfceServices;
+
+  @Autowired
+  private SaeMetadataSupport metadataSupport;
+
+  @Autowired
+  private SaeMetadataCqlSupport metadataCqlSupport;
+
+  @Autowired
+  private JobClockSupport clockSupport;
 
   @Test
   public void getClientAvailableMetadata() {

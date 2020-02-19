@@ -163,6 +163,7 @@ public class SAECaptureServiceTest {
     // Paramétrage du RND
 
     server.resetData(true, MODE_API.HECTOR);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
     parametersService.setVersionRndDateMaj(new Date());
     parametersService.setVersionRndNumero("11.2");
 
