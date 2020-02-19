@@ -10,6 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
@@ -33,6 +35,9 @@ public class RndServiceTest {
   @Autowired
   private JobClockSupport jobClockSupport;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @After
   public void after() throws Exception {
     server.resetData();
@@ -40,6 +45,7 @@ public class RndServiceTest {
 
   @Before
   public void before() {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
     final TypeDocument typeDocCree = new TypeDocument();
     typeDocCree.setCloture(false);
     typeDocCree.setCode("1.2.1.1.1");

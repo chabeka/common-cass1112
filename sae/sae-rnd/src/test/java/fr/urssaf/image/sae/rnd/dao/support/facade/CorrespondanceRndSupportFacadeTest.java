@@ -5,6 +5,7 @@ import java.util.Date;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -48,6 +49,7 @@ public class CorrespondanceRndSupportFacadeTest {
     server.clearTables();
   }
 
+  @Ignore
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws MajCorrespondancesException {
     // On se met sur mode API inconnu

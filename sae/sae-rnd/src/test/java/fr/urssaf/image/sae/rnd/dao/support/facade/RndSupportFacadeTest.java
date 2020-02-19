@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.rnd.dao.support.facade;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -51,6 +52,7 @@ public class RndSupportFacadeTest {
     server.resetDataOnly();
   }
 
+  @Ignore
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws CodeRndInexistantException {
     // On se met sur mode API inconnu

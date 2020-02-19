@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.SaeBddCqlSupport;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
 import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
@@ -37,9 +38,12 @@ public class MajCorrespondancesServiceCqlTest {
   @Autowired
   private RndRecuperationService rndRecuperationService;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void before() throws SaeBddRuntimeException, RndRecuperationException {
-
+    modeApiSupport.initTables(MODE_API.DATASTAX);
     final Map<String, String> listeCorrespondances = new TreeMap<>();
     listeCorrespondances.put("1.1.1.1.1", "2.2.2.2.2");
     saeBddSupport.updateCorrespondances(listeCorrespondances, "11.4");
