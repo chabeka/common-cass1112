@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -34,203 +36,211 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 @DirtiesContext
 public class JobQueueServiceTest {
 
-   @Autowired
-   private JobQueueService jobQueueService;
+  @Autowired
+  private JobQueueService jobQueueService;
 
-   @Autowired
-   private JobLectureService jobLectureService;
+  @Autowired
+  private JobLectureService jobLectureService;
 
-   @Autowired
-   private CassandraServerBean cassandraServer;
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-   @After
-   public final void init() throws Exception {
-      // Après chaque test, on reset les données de cassandra
-      cassandraServer.resetData(true, MODE_API.HECTOR);
-   }
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
 
-   @Test
-   public void concurrentReservation() throws Exception {
-      // On crée 5 jobs
-      UUID[] uuids = new UUID[5];
+  @Before
+  public void before() {
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+  }
+
+  @After
+  public final void init() throws Exception {
+    // Après chaque test, on reset les données de cassandra
+    cassandraServer.resetData(true, MODE_API.HECTOR);
+  }
+
+  @Test
+  public void concurrentReservation() throws Exception {
+    // On crée 5 jobs
+    final UUID[] uuids = new UUID[5];
+    for (int i = 0; i < 5; i++) {
+      uuids[i] = addJobForTest(i);
+    }
+    // On crée 10 threads
+    final Map<UUID, UUID> resevationMap = new ConcurrentHashMap<>();
+    final SimpleThread[] threads = new SimpleThread[10];
+    for (int i = 0; i < 10; i++) {
+      threads[i] = new SimpleThread(uuids, resevationMap);
+      threads[i].start();
+    }
+    // On attend la fin d'exécution de toutes les threads
+    for (int i = 0; i < 10; i++) {
+      threads[i].join();
+    }
+    // On vérifie qu'il y a eu 5 jobs de réservé, ni plus ni moins
+    Assert.assertEquals(5, resevationMap.size());
+  }
+
+  private class SimpleThread extends Thread {
+
+    Map<UUID, UUID> map;
+    UUID[] uuids;
+
+    public SimpleThread(final UUID[] uuids, final Map<UUID, UUID> reservationMap) {
+      super();
+      map = reservationMap;
+      this.uuids = uuids;
+    }
+
+    @Override
+    public void run() {
       for (int i = 0; i < 5; i++) {
-         uuids[i] = addJobForTest(i);
+        try {
+          jobQueueService.reserveJob(uuids[i], "hostname" + getId(),
+                                     new Date());
+        } catch (final JobDejaReserveException e) {
+          // rien
+        } catch (final JobInexistantException e) {
+          e.printStackTrace();
+          // On génère une erreur
+          map.put(UUID.randomUUID(), UUID.randomUUID());
+        } catch (final LockTimeoutException e) {
+          e.printStackTrace();
+          // On génère une erreur
+          map.put(UUID.randomUUID(), UUID.randomUUID());
+        }
+        map.put(uuids[i], uuids[i]);
       }
-      // On crée 10 threads
-      Map<UUID, UUID> resevationMap = new ConcurrentHashMap<UUID, UUID>();
-      SimpleThread[] threads = new SimpleThread[10];
-      for (int i = 0; i < 10; i++) {
-         threads[i] = new SimpleThread(uuids, resevationMap);
-         threads[i].start();
+    }
+  }
+
+  @Test
+  public void delete_success_en_attente() {
+
+    final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    // création d'un job en attente
+    createJob(idJob);
+
+    // suppression du job
+    jobQueueService.deleteJob(idJob);
+
+    // vérification
+
+    assertJobDelete(idJob);
+
+    // vérification de JobsQueues
+
+    final Iterator<JobQueue> jobQueuesEnAttente = jobLectureService
+        .getUnreservedJobRequestIterator();
+
+    JobQueue jobQueueEnAttente = null;
+    while (jobQueuesEnAttente.hasNext() && jobQueueEnAttente == null) {
+      final JobQueue jobQueueElement = jobQueuesEnAttente.next();
+      if (jobQueueElement.getIdJob().equals(idJob)) {
+        jobQueueEnAttente = jobQueueElement;
       }
-      // On attend la fin d'exécution de toutes les threads
-      for (int i = 0; i < 10; i++) {
-         threads[i].join();
+    }
+
+    Assert.assertNull("le job ne doit plus exister dans la file d'attente",
+                      jobQueueEnAttente);
+
+  }
+
+  @Test
+  public void delete_success_en_reservation() throws JobDejaReserveException,
+  JobInexistantException, LockTimeoutException {
+
+    final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    // création + réservation d'un job
+    createJob(idJob);
+    final String reservedBy = "hostname";
+    jobQueueService.reserveJob(idJob, reservedBy, new Date());
+
+    // suppression du job
+    jobQueueService.deleteJob(idJob);
+
+    // vérification
+
+    assertJobDelete(idJob);
+
+    // vérification de JobsQueues
+
+    final Iterator<JobQueue> jobQueues = jobLectureService
+        .getNonTerminatedSimpleJobs(reservedBy).iterator();
+
+    JobQueue jobQueue = null;
+    while (jobQueues.hasNext() && jobQueue == null) {
+      final JobQueue jobQueueElement = jobQueues.next();
+      if (jobQueueElement.getIdJob().equals(idJob)) {
+        jobQueue = jobQueueElement;
       }
-      // On vérifie qu'il y a eu 5 jobs de réservé, ni plus ni moins
-      Assert.assertEquals(5, resevationMap.size());
-   }
+    }
 
-   private class SimpleThread extends Thread {
+    Assert.assertNull(
+                      "le job ne doit plus exister dans la file d'execution de "
+                          + reservedBy, jobQueue);
+  }
 
-      Map<UUID, UUID> map;
-      UUID[] uuids;
+  private void assertJobDelete(final UUID idJob) {
 
-      public SimpleThread(UUID[] uuids, Map<UUID, UUID> reservationMap) {
-         super();
-         this.map = reservationMap;
-         this.uuids = uuids;
-      }
+    // vérification de JobRequest
 
-      @Override
-      public void run() {
-         for (int i = 0; i < 5; i++) {
-            try {
-               jobQueueService.reserveJob(uuids[i], "hostname" + this.getId(),
-                     new Date());
-            } catch (JobDejaReserveException e) {
-               // rien
-            } catch (JobInexistantException e) {
-               e.printStackTrace();
-               // On génère une erreur
-               map.put(UUID.randomUUID(), UUID.randomUUID());
-            } catch (LockTimeoutException e) {
-               e.printStackTrace();
-               // On génère une erreur
-               map.put(UUID.randomUUID(), UUID.randomUUID());
-            }
-            map.put(uuids[i], uuids[i]);
-         }
-      }
-   }
+    final JobRequest job = jobLectureService.getJobRequest(idJob);
+    Assert.assertNull("le job ne doit plus exister", job);
 
-   @Test
-   public void delete_success_en_attente() {
+    // vérification de JobHistory
+    final List<JobHistory> jobHistory = jobLectureService.getJobHistory(idJob);
 
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      // création d'un job en attente
-      createJob(idJob);
+    Assert.assertTrue("le job ne doit plus avoir d'historique", jobHistory
+                      .isEmpty());
 
-      // suppression du job
-      jobQueueService.deleteJob(idJob);
+  }
 
-      // vérification
+  private void createJob(final UUID idJob) {
 
-      assertJobDelete(idJob);
+    final Date dateCreation = new Date();
+    final Map<String,String> jobParam= new HashMap<>();
+    jobParam.put("parameters", "param");
 
-      // vérification de JobsQueues
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("ArchivageMasse");
+    job.setJobParameters(jobParam);
+    job.setClientHost("clientHost");
+    job.setDocCount(100);
+    job.setSaeHost("saeHost");
+    job.setCreationDate(dateCreation);
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
 
-      Iterator<JobQueue> jobQueuesEnAttente = jobLectureService
-            .getUnreservedJobRequestIterator();
+    jobQueueService.addJob(job);
+  }
 
-      JobQueue jobQueueEnAttente = null;
-      while (jobQueuesEnAttente.hasNext() && jobQueueEnAttente == null) {
-         JobQueue jobQueueElement = jobQueuesEnAttente.next();
-         if (jobQueueElement.getIdJob().equals(idJob)) {
-            jobQueueEnAttente = jobQueueElement;
-         }
-      }
+  /**
+   * Crée un job
+   * 
+   * @param index
+   *           Un n° permettant de différencier les différents jobs
+   * @return L'id du job créé
+   */
+  private UUID addJobForTest(final int index) {
+    final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      Assert.assertNull("le job ne doit plus exister dans la file d'attente",
-            jobQueueEnAttente);
+    final String parameters = "sommaire=ecde:/toto.toto.com/sommaire.xml&idTraitement="
+        + index;
+    final Map<String,String> jobParam= new HashMap<>();
+    jobParam.put("parameters", parameters);
 
-   }
+    final JobToCreate job = new JobToCreate();
+    job.setIdJob(idJob);
+    job.setType("ArchivageMasse");
+    job.setJobParameters(jobParam);
+    job.setCreationDate(new Date());
+    final String jobKey = new String("jobKey");
+    job.setJobKey(jobKey.getBytes());
 
-   @Test
-   public void delete_success_en_reservation() throws JobDejaReserveException,
-         JobInexistantException, LockTimeoutException {
-
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      // création + réservation d'un job
-      createJob(idJob);
-      String reservedBy = "hostname";
-      jobQueueService.reserveJob(idJob, reservedBy, new Date());
-
-      // suppression du job
-      jobQueueService.deleteJob(idJob);
-
-      // vérification
-
-      assertJobDelete(idJob);
-
-      // vérification de JobsQueues
-
-      Iterator<JobQueue> jobQueues = jobLectureService
-            .getNonTerminatedSimpleJobs(reservedBy).iterator();
-
-      JobQueue jobQueue = null;
-      while (jobQueues.hasNext() && jobQueue == null) {
-         JobQueue jobQueueElement = jobQueues.next();
-         if (jobQueueElement.getIdJob().equals(idJob)) {
-            jobQueue = jobQueueElement;
-         }
-      }
-
-      Assert.assertNull(
-            "le job ne doit plus exister dans la file d'execution de "
-                  + reservedBy, jobQueue);
-   }
-
-   private void assertJobDelete(UUID idJob) {
-
-      // vérification de JobRequest
-
-      JobRequest job = jobLectureService.getJobRequest(idJob);
-      Assert.assertNull("le job ne doit plus exister", job);
-
-      // vérification de JobHistory
-      List<JobHistory> jobHistory = jobLectureService.getJobHistory(idJob);
-
-      Assert.assertTrue("le job ne doit plus avoir d'historique", jobHistory
-            .isEmpty());
-
-   }
-
-   private void createJob(UUID idJob) {
-
-      Date dateCreation = new Date();
-      Map<String,String> jobParam= new HashMap<String, String>();
-      jobParam.put("parameters", "param");
-      
-      JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("ArchivageMasse");
-      job.setJobParameters(jobParam);
-      job.setClientHost("clientHost");
-      job.setDocCount(100);
-      job.setSaeHost("saeHost");
-      job.setCreationDate(dateCreation);
-      String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
-
-      jobQueueService.addJob(job);
-   }
-
-   /**
-    * Crée un job
-    * 
-    * @param index
-    *           Un n° permettant de différencier les différents jobs
-    * @return L'id du job créé
-    */
-   private UUID addJobForTest(int index) {
-      UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-
-      String parameters = "sommaire=ecde:/toto.toto.com/sommaire.xml&idTraitement="
-            + index;
-      Map<String,String> jobParam= new HashMap<String, String>();
-      jobParam.put("parameters", parameters);
-      
-      JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType("ArchivageMasse");
-      job.setJobParameters(jobParam);
-      job.setCreationDate(new Date());
-      String jobKey = new String("jobKey");
-      job.setJobKey(jobKey.getBytes());
-
-      jobQueueService.addJob(job);
-      return idJob;
-   }
+    jobQueueService.addJob(job);
+    return idJob;
+  }
 
 }
