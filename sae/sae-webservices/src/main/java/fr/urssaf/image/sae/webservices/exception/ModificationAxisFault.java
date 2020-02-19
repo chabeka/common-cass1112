@@ -30,6 +30,31 @@ public class ModificationAxisFault extends AxisFault {
     * @param cause
     *           exception levée qui génère la SOAPFault
     */
+   public ModificationAxisFault(Throwable cause) {
+
+      super("Une erreur interne à l'application est survenue lors de la modification.",
+              SoapFaultCodeFactory.createSoapFaultCode("urn:sae:faultcodes",
+                    "ErreurInterneModification", "sae"), cause);
+
+   }
+   
+   /**
+    * Instanciation de {@link AxisFault#AxisFault}
+    * 
+    * <code>faultCode</code>:
+    * <ul>
+    * <li><code>namespaceURI</code>: urn:sae:faultcodes</li>
+    * <li><code>localPart</code>:<code>localPart</code></li>
+    * <li><code>prefix</code>:sae</li>
+    * </ul>
+    * 
+    * @param localPart
+    *           localPart du code du SOAPFault
+    * @param message
+    *           message de l'exception
+    * @param cause
+    *           exception levée qui génère la SOAPFault
+    */
    public ModificationAxisFault(String localPart, String message, Throwable cause) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(

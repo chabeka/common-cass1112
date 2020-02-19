@@ -115,8 +115,7 @@ public class WSModificationServiceImpl implements WSModificationService {
                exception.getMessage(), exception);
 
       } catch (ModificationException exception) {
-         throw new ModificationAxisFault("ErreurInterneModification", exception
-               .getMessage(), exception);
+         throw new ModificationAxisFault(exception);
 
       } catch (ArchiveInexistanteEx exception) {
          throw new ModificationAxisFault("ModificationArchiveNonTrouvee",

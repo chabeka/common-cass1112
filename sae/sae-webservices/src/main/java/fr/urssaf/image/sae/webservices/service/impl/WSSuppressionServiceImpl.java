@@ -49,8 +49,7 @@ public class WSSuppressionServiceImpl implements WSSuppressionService {
          suppressionService.suppression(idArchive);
 
       } catch (SuppressionException exception) {
-         throw new SuppressionAxisFault("ErreurInterneSuppression", exception
-               .getMessage(), exception);
+         throw new SuppressionAxisFault(exception);
       } catch (ArchiveInexistanteEx exception) {
          throw new SuppressionAxisFault("SuppressionArchiveNonTrouvee",
                exception.getMessage(), exception);
