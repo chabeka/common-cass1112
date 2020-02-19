@@ -62,7 +62,7 @@ public class SaePagmaServiceDatasTest {
 
   @Before
   public void start() throws Exception {
-    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.HECTOR, cfName);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
 
   }
 

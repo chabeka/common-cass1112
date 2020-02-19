@@ -144,6 +144,7 @@ public class SaePrmdCqlServiceTest {
   @Test
   public void getPrmdTest() throws Exception {
     cassandraServer.resetData(true, MODE_API.DATASTAX);
+    modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
     final Prmd prmd = new Prmd();
 
     prmd.setCode("codePrmd");

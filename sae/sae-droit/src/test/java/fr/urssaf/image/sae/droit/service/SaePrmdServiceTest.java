@@ -114,8 +114,8 @@ public class SaePrmdServiceTest {
 
   @Test
   public void getPrmdTest() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.HECTOR);
     cassandraServer.resetData();
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
     final Prmd prmd = new Prmd();
 
     prmd.setCode("codePrmd");

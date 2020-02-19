@@ -59,10 +59,10 @@ public class PagmaSupportFacadeTest {
   }
 
   @Test(expected = ModeGestionAPIUnkownException.class)
-  public void testModeAPIInconnu() {
+  public void testModeAPIInconnu() throws InterruptedException {
     // On se met sur mode API inconnu
     modeApiSupport.updateModeApi("UNKNOWN", Constantes.CF_DROIT_PAGMA);
-
+    Thread.sleep(30000);
     supportFacade.find("TEST");
   }
 

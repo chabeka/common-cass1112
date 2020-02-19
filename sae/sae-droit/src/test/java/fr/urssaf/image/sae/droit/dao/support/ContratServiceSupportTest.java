@@ -122,7 +122,7 @@ public class ContratServiceSupportTest {
     if (cassandraServer.isCassandraStarted()) {
       try {
         cassandraServer.resetData();
-        modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+        modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
 
         createActionsUnitaires();
         createPagma();
