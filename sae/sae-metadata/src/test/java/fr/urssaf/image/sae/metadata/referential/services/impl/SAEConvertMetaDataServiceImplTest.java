@@ -7,12 +7,15 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.metadata.exceptions.LongCodeNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataService;
 
@@ -24,43 +27,51 @@ import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataServi
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 public class SAEConvertMetaDataServiceImplTest {
 
-   @Autowired
-   private SAEConvertMetadataService service;
+  @Autowired
+  private SAEConvertMetadataService service;
 
-   @Test
-   public void testConversion() throws LongCodeNotFoundException {
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
 
-      String[] tabLongCode = new String[] { "Siret" };
+  @Before
+  public void setUp() {
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+  }
 
-      Map<String, String> shortList = service.longCodeToShortCode(Arrays
-            .asList(tabLongCode));
+  @Test
+  public void testConversion() throws LongCodeNotFoundException {
 
-      Assert.assertNotNull("la map n'est pas nulle", shortList);
+    final String[] tabLongCode = new String[] { "Siret" };
 
-      Assert.assertTrue("un seul élément doit être retourné",
-            shortList.size() == 1);
+    final Map<String, String> shortList = service.longCodeToShortCode(Arrays
+                                                                      .asList(tabLongCode));
 
-      Assert.assertEquals("Le code court doit valoir srt pour Siret", shortList
-            .keySet().toArray()[0], "srt");
+    Assert.assertNotNull("la map n'est pas nulle", shortList);
 
-   }
+    Assert.assertTrue("un seul élément doit être retourné",
+                      shortList.size() == 1);
 
-   @Test
-   public void testConversionFailCodeNotExists() {
+    Assert.assertEquals("Le code court doit valoir srt pour Siret", shortList
+                        .keySet().toArray()[0], "srt");
 
-      String[] tabLongCode = new String[] { "codeInexistantEnBase" };
+  }
 
-      try {
-         service.longCodeToShortCode(Arrays.asList(tabLongCode));
-         Assert.fail("une exception doit être levée");
+  @Test
+  public void testConversionFailCodeNotExists() {
 
-      } catch (LongCodeNotFoundException e) {
-         Assert.assertNotNull(e.getListCode());
-         Assert.assertTrue("un élément dans la liste des éléments non trouvés",
-               e.getListCode().size() == 1);
-         Assert.assertEquals("L'élément doit être codeInexistantEnBase",
-               "codeInexistantEnBase", e.getListCode().get(0));
+    final String[] tabLongCode = new String[] { "codeInexistantEnBase" };
 
-      }
-   }
+    try {
+      service.longCodeToShortCode(Arrays.asList(tabLongCode));
+      Assert.fail("une exception doit être levée");
+
+    } catch (final LongCodeNotFoundException e) {
+      Assert.assertNotNull(e.getListCode());
+      Assert.assertTrue("un élément dans la liste des éléments non trouvés",
+                        e.getListCode().size() == 1);
+      Assert.assertEquals("L'élément doit être codeInexistantEnBase",
+                          "codeInexistantEnBase", e.getListCode().get(0));
+
+    }
+  }
 }

@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.metadata.referential.services.impl;
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
@@ -34,6 +36,13 @@ public class SaeMetadataServiceTest {
   @Autowired
   private CassandraServerBean server;
 
+  @Autowired
+  ModeApiCqlSupport modeApiCqlSupport;
+
+  @Before
+  public void setUp() {
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+  }
 
   @After
   public void after() throws Exception {

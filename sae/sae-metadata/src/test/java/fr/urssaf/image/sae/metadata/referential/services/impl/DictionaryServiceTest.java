@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
@@ -37,11 +39,18 @@ public class DictionaryServiceTest {
   @Autowired
   private DictionaryService service;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  @Before
+  public void start() throws Exception {
+    modeApiSupport.initTables(MODE_API.HECTOR);
+  }
+
   @After
   public void after() throws Exception {
     server.resetData(true, MODE_API.HECTOR);
   }
-
 
 
   /**
