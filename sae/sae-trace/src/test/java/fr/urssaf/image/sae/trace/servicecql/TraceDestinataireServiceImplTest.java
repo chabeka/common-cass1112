@@ -41,9 +41,6 @@ public class TraceDestinataireServiceImplTest {
   TraceDestinaireService tracedestinataireservice;
 
   @Autowired
-  TraceDestinataireCqlSupport traceDestinataireCqlSupport;
-
-  @Autowired
   TraceDestinataireCqlSupport tracesupportCql;
 
   @Autowired
@@ -61,7 +58,7 @@ public class TraceDestinataireServiceImplTest {
 
   @Before
   public void init() throws Exception {
-    server.resetData();
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT);
   }
 
   @Test
@@ -81,7 +78,7 @@ public class TraceDestinataireServiceImplTest {
     final List<String> str = tracedestinataireservice.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
     Assert.assertEquals(14, str.size());
 
-    final List<TraceDestinataire> dests = traceDestinataireCqlSupport.findAll();
+    final List<TraceDestinataire> dests = tracesupportCql.findAll();
     Assert.assertEquals(1, dests.size());
 
     Assert.assertEquals("TEST|CREATE", dests.get(0).getCodeEvt());
