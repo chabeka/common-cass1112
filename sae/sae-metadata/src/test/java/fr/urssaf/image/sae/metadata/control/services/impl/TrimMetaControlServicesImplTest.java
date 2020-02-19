@@ -55,7 +55,7 @@ public class TrimMetaControlServicesImplTest {
 
   @Before
   public void start() throws Exception {
-    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
 
   @Test

@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
@@ -29,6 +32,14 @@ public class TypeAndFormatControlServicesImplTest {
   @Autowired
   @Qualifier("metadataControlServices")
   protected MetadataControlServices controlService;
+
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  @Before
+  public void start() throws Exception {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+  }
 
   /**
    * Fournit des données pour valider la méthode

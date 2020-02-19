@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.metadata.referential.support.facade;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -55,6 +56,7 @@ public class SaeMetadataSupportFacadeTest {
     Assert.assertTrue(true);
   }
 
+  @Ignore
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws DictionaryNotFoundException {
     // On se met sur mode API inconnu
