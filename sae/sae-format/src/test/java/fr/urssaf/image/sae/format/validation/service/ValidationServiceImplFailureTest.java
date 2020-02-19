@@ -35,6 +35,7 @@ public class ValidationServiceImplFailureTest {
   @Autowired
   private ValidationServiceImpl validationService;
 
+
   private final File file = new File(
       "src/test/resources/validation/PdfaValide.pdf");
 
@@ -43,9 +44,10 @@ public class ValidationServiceImplFailureTest {
 
   @Autowired
   private ModeApiCqlSupport modeApiSupport;
+
   @Before
   public void setup() throws Exception {
-    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
 
   @Test

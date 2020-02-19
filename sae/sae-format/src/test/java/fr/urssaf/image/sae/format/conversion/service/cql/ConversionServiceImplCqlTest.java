@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConvertisseurInitialisationException;
 import fr.urssaf.image.sae.format.conversion.service.ConversionService;
@@ -37,6 +40,13 @@ public class ConversionServiceImplCqlTest extends AbstractReferentielFormatCqlTe
   @Autowired
   @Qualifier("referentielFormatSupportFacade")
   private ReferentielFormatSupportFacade refFormatSupport;
+
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+  @Before
+  public void start() {
+    modeApiSupport.initTables(MODE_API.DATASTAX);
+  }
 
 
   @Test

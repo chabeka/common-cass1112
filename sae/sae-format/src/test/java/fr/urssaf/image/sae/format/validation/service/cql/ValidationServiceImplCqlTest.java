@@ -32,6 +32,7 @@ public class ValidationServiceImplCqlTest extends AbstractReferentielFormatCqlTe
   @Autowired
   private ValidationServiceImpl validationService;
 
+
   /**
    * Cas de test : on demande la validation fmt/354 sur un fichier PDF/A1b
    * valide.<br>

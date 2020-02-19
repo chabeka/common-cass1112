@@ -29,6 +29,7 @@ public class IdentificationServiceImplCqlFailureTest extends AbstractReferentiel
   @Autowired
   private IdentificationServiceImpl identificationService;
 
+
   @Test
   public void identifyServiceFailureBeanIntrouvable()
       throws IdentificationRuntimeException, UnknownFormatException,
