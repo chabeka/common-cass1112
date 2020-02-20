@@ -76,13 +76,7 @@ public abstract class AbstractMetadataControlCqlTest {
 
   @Before
   public void setup() throws Exception {
-    /*
-     * final HashMap<String, String> modesApiTest = new HashMap<>();
-     * modesApiTest.put(Constantes.CF_METADATA, ModeGestionAPI.MODE_API.DATASTAX);
-     * modesApiTest.put("tracedestinataire", ModeGestionAPI.MODE_API.DATASTAX);
-     * modesApiTest.put("traceregtechnique", ModeGestionAPI.MODE_API.DATASTAX);
-     * ModeGestionAPI.setListeCfsModes(modesApiTest);
-     */
+
     if (server.getStartLocal()) {
       if (init) {
         server.clearTables();
@@ -91,7 +85,8 @@ public abstract class AbstractMetadataControlCqlTest {
         init = true;
       }
       modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
-
+      // On attends pour que le cache soit modifié pour le modeapi
+      Thread.sleep(1000);
       createAllMetadata();
       createAllTraceDestinataire();
 
