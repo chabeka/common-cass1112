@@ -125,18 +125,7 @@ public class MajRndServiceCqlTest {
 
   @Test
   public void testLancer() throws Exception {
-    // server.resetData();
-    /*
-     * server.resetData();
-     * logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-     * logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
-     * logger.addAppender(logAppender);
-     * final VersionRnd version = new VersionRnd();
-     * version.setDateMiseAJour(new Date());
-     * version.setVersionEnCours("11.4");
-     * saeBddCqlSupport.updateVersionRnd(version);
-     */
-    // server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
+
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
     logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
     logger.addAppender(logAppender);
