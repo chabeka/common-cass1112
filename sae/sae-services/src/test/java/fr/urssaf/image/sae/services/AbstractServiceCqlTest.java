@@ -62,6 +62,7 @@ public abstract class AbstractServiceCqlTest {
    * @throws InterruptedException
    * @throws Exception
    */
+  @SuppressWarnings("rawtypes")
   protected void initMetadata() throws InterruptedException, Exception {
     if (server.getStartLocal()) {
       // Si l'initialisation a eu lieu on supprime les données
@@ -72,8 +73,9 @@ public abstract class AbstractServiceCqlTest {
         server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
         init = true;
       }
+
       modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
-      Thread.sleep(20000);
+      Thread.sleep(1000);
       createAllMetadata();
       createReferentielFormat();
       createAllTraceDestinataire();
