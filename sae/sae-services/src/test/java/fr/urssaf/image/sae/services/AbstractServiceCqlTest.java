@@ -75,13 +75,13 @@ public abstract class AbstractServiceCqlTest {
       }
 
       modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+      // On attends pour que le cache soit modifié pour le modeapi
       Thread.sleep(1000);
       createAllMetadata();
       createReferentielFormat();
       createAllTraceDestinataire();
     }
   }
-
 
   /**
    * Création des données Metadata pour effectuer les tests des services en Cql
