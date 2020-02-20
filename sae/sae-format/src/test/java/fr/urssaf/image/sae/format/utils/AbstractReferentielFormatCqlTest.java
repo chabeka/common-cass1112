@@ -40,7 +40,6 @@ public class AbstractReferentielFormatCqlTest {
 
     modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
     if (server.getStartLocal()) {
-      // server.resetData(false, MODE_API.DATASTAX);
       createReferentielFormat();
     }
   }

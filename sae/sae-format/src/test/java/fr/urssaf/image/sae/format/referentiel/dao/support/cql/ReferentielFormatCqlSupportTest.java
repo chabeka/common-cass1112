@@ -60,7 +60,6 @@ public class ReferentielFormatCqlSupportTest {
   @Before
   public void before() throws Exception {
     if (server.getStartLocal()) {
-      // server.resetData(true, MODE_API.DATASTAX);
       // Création à partir du xml
       final URL url = this.getClass().getResource("/cassandra-local-datasets/cassandra-local-dataset-sae-format.xml");
       final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "ReferentielFormat");
@@ -81,7 +80,6 @@ public class ReferentielFormatCqlSupportTest {
       modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, Constantes.CF_REFERENTIEL_FORMAT);
 
     }
-    // Assert.assertEquals(listFormatFichier.size(), listFormatFichierBase.size());
   }
 
   @After
