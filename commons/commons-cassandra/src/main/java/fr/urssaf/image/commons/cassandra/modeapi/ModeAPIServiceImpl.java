@@ -30,18 +30,12 @@ public class ModeAPIServiceImpl implements ModeAPIService {
 
   private ModeApiCqlSupport modeApiSupport;
 
-  private static final int LIFE_REFRESH = 30000;
-
-
 
   @Autowired
-  public ModeAPIServiceImpl(final ModeApiCqlSupport modeApiSupport, @Value("${sae.modeapi.cache.refresh}") int valueRefresh
+  public ModeAPIServiceImpl(final ModeApiCqlSupport modeApiSupport, @Value("${sae.modeapi.cache.refresh:30000}") final int valueRefresh
       ) {
 
     this.modeApiSupport = modeApiSupport;
-    if (valueRefresh == 0) {
-      valueRefresh = LIFE_REFRESH;
-    }
 
     cacheModeAPI = CacheBuilder.newBuilder()
 
