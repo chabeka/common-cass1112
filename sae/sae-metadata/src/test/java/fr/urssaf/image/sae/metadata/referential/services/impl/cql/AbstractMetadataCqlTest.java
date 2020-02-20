@@ -67,7 +67,8 @@ public abstract class AbstractMetadataCqlTest {
         init = true;
       }
       modeApiSupport.updateModeApi(ModeGestionAPI.MODE_API.DATASTAX, cfName);
-
+      // On attends pour que le cache soit modifié pour le modeapi
+      Thread.sleep(1000);
       createAllMetadata();
     }
   }
