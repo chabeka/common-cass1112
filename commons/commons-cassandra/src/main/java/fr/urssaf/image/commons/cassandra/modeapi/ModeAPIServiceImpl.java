@@ -3,6 +3,7 @@ package fr.urssaf.image.commons.cassandra.modeapi;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.google.common.cache.CacheBuilder;
@@ -29,14 +30,23 @@ public class ModeAPIServiceImpl implements ModeAPIService {
 
   private ModeApiCqlSupport modeApiSupport;
 
-  private static final int LIFE_DURATION = 45;
+  private static final int LIFE_REFRESH = 30000;
+
+
 
   @Autowired
-  public ModeAPIServiceImpl(final ModeApiCqlSupport modeApiSupport) {
+  public ModeAPIServiceImpl(final ModeApiCqlSupport modeApiSupport, @Value("${sae.modeapi.cache.refresh}") int valueRefresh
+      ) {
+
     this.modeApiSupport = modeApiSupport;
+    if (valueRefresh == 0) {
+      valueRefresh = LIFE_REFRESH;
+    }
+
     cacheModeAPI = CacheBuilder.newBuilder()
-        .refreshAfterWrite(LIFE_DURATION,
-                           TimeUnit.SECONDS)
+
+        .refreshAfterWrite(valueRefresh,
+                           TimeUnit.MILLISECONDS)
         .build(new CacheLoader<String, ModeAPI>() {
 
           @Override
