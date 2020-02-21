@@ -68,22 +68,6 @@ public class DictionaryCqlSupport {
     }
   }
 
-  /**
-   * Supprime une entrée du dictionnaire
-   * 
-   * @param identifiant identifiant du dictionnaire
-   * @param value       Valeur de l'entrée à supprimer
-   */
-  public final void deleteElement(final String identifiant, final String value, final long clock) {
-    final Optional<Dictionary> dictionaryOpt = dictionaryDaoCql.findWithMapperById(identifiant);
-      if (dictionaryOpt.isPresent()) {
-        final Dictionary dictionaryFromBD = dictionaryOpt.get();
-      if (dictionaryFromBD.getEntries().remove(value)) {
-        dictionaryDaoCql.saveWithMapper(dictionaryFromBD);
-      }
-    }
-  }
-
 
   /**
    * Retourne un dictionary

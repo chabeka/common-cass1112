@@ -49,9 +49,7 @@ import fr.urssaf.image.sae.services.exception.format.validation.ValidationExcept
 import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSCopieService;
-import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @Service
 public class WSCopieServiceImpl implements WSCopieService {
 
@@ -62,12 +60,8 @@ public class WSCopieServiceImpl implements WSCopieService {
    @Qualifier("saeCopieService")
    private SAECopieService saeService;
 
-   @Autowired
-   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
-
-   @SuppressWarnings("unused")
    @Override
-   public CopieResponse copie(Copie request) throws CopieAxisFault,
+   public CopieResponse copie(final Copie request) throws CopieAxisFault,
          ArchiveInexistanteEx, SAEConsultationServiceException,
          SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
          ReferentialException, SAECopieServiceException,
@@ -80,16 +74,16 @@ public class WSCopieServiceImpl implements WSCopieService {
          ValidationExceptionInvalidFile, UnexpectedDomainException,
          InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
       // TODO Auto-generated method stub
-      String prefixeTrc = "copie()";
-      UUID uuid = UUID.fromString(request.getCopie().getIdGed().getUuidType());
+      final String prefixeTrc = "copie()";
+      final UUID uuid = UUID.fromString(request.getCopie().getIdGed().getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", "copie()",
             uuid);
       
       // Lecture des métadonnées depuis l'objet de requête de la couche ws
-      ListeMetadonneeType listeMeta = request.getCopie().getMetadonnees();
+      final ListeMetadonneeType listeMeta = request.getCopie().getMetadonnees();
 
       // Conversion de la liste des métadonnées d'un type vers un autre
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      List<UntypedMetadata> metadatas = new ArrayList<>();
       if (listeMeta.getMetadonnee() != null) {
          metadatas = convertListeMeta(listeMeta);
       } else {
@@ -97,7 +91,7 @@ public class WSCopieServiceImpl implements WSCopieService {
       }
 
       try {
-         UUID idCopie = saeService.copie(uuid, metadatas);
+         final UUID idCopie = saeService.copie(uuid, metadatas);
          if (idCopie == null)
          {
             LOG.debug(
@@ -108,8 +102,8 @@ public class WSCopieServiceImpl implements WSCopieService {
                         + uuid + "'");
          }
          LOG.debug("{} - UUID : \"{}\"", idCopie);
-         CopieResponse response = createCopieResponse();
-         CopieResponseType responseType = response.getCopieResponse();
+         final CopieResponse response = createCopieResponse();
+         final CopieResponseType responseType = response.getCopieResponse();
          responseType.setIdGed(ObjectTypeFactory.createUuidType(idCopie));
          if (response == null) {
             LOG.debug("{} - Valeur de retour : null", prefixeTrc);
@@ -121,80 +115,81 @@ public class WSCopieServiceImpl implements WSCopieService {
          // Fin des traces debug - sortie méthode
          return response;
 
-      } catch (SAEConsultationServiceException e) {
+      } catch (final SAEConsultationServiceException e) {
          throw new CopieAxisFault("ErreurInterneConsultation",
                e.getMessage(), e);
-      } catch (SAECaptureServiceEx e) {
+      } catch (final SAECaptureServiceEx e) {
          throw new CopieAxisFault("ErreurInterneCapture", e.getMessage(), e);
-      } catch (ReferentialRndException e) {
+      } catch (final ReferentialRndException e) {
          throw new CopieAxisFault("ErreurInterne", e.getMessage(), e);
-      } catch (UnknownCodeRndEx e) {
+      } catch (final UnknownCodeRndEx e) {
          throw new CopieAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
-      } catch (ReferentialException e) {
+      } catch (final ReferentialException e) {
          throw new CopieAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
-      } catch (SAECopieServiceException e) {
+      } catch (final SAECopieServiceException e) {
          throw new CopieAxisFault("CopieMetadonneInvalide", e.getMessage(), e);
-      } catch (UnknownDesiredMetadataEx e) {
+      } catch (final UnknownDesiredMetadataEx e) {
          throw new CopieAxisFault("ConsultationMetadonneesInconnues", e.getMessage(), e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
+      } catch (final MetaDataUnauthorizedToConsultEx e) {
          throw new CopieAxisFault("ConsultationMetadonneesInterdite",
                e.getMessage(), e);
-      } catch (RequiredStorageMetadataEx e) {
+      } catch (final RequiredStorageMetadataEx e) {
          throw new CopieAxisFault("ErreurInterneCapture", e.getMessage(), e);
-      } catch (InvalidValueTypeAndFormatMetadataEx e) {
+      } catch (final InvalidValueTypeAndFormatMetadataEx e) {
          throw new CopieAxisFault("CaptureMetadonneesFormatTypeNonValide",
                e.getMessage(), e);
-      } catch (UnknownMetadataEx e) {
+      } catch (final UnknownMetadataEx e) {
          throw new CopieAxisFault("CaptureMetadonneesInconnu", e.getMessage(), e);
-      } catch (DuplicatedMetadataEx e) {
+      } catch (final DuplicatedMetadataEx e) {
          throw new CopieAxisFault("CaptureMetadonneesDoublon", e.getMessage(), e);
-      } catch (NotSpecifiableMetadataEx e) {
+      } catch (final NotSpecifiableMetadataEx e) {
          throw new CopieAxisFault("CaptureMetadonneesInterdites", e.getMessage(), e);
-      } catch (EmptyDocumentEx e) {
+      } catch (final EmptyDocumentEx e) {
          throw new CopieAxisFault("CaptureFichierVide", e.getMessage(), e);
-      } catch (RequiredArchivableMetadataEx e) {
+      } catch (final RequiredArchivableMetadataEx e) {
          throw new CopieAxisFault("CaptureMetadonneesArchivageObligatoire", e.getMessage(),
                e);
-      } catch (NotArchivableMetadataEx e) {
+      } catch (final NotArchivableMetadataEx e) {
          throw new CopieAxisFault("ErreurInterneCapture", e.getMessage(), e);
-      } catch (UnknownHashCodeEx e) {
+      } catch (final UnknownHashCodeEx e) {
          throw new CopieAxisFault("CaptureHashErreur", e.getMessage(), e);
-      } catch (EmptyFileNameEx e) {
+      } catch (final EmptyFileNameEx e) {
          throw new CopieAxisFault("NomFichierVide", e.getMessage(), e);
-      } catch (MetadataValueNotInDictionaryEx e) {
+      } catch (final MetadataValueNotInDictionaryEx e) {
          throw new CopieAxisFault("CaptureMetadonneesValeurNonValide",
                e.getMessage(), e);
-      } catch (UnknownFormatException e) {
+      } catch (final UnknownFormatException e) {
          throw new CopieAxisFault("FormatFichierInconnu", e.getMessage(), e);
-      } catch (ValidationExceptionInvalidFile e) {
+      } catch (final ValidationExceptionInvalidFile e) {
          throw new CopieAxisFault("FormatFichierNonConforme",
                e.getMessage(), e);
-      } catch (UnexpectedDomainException e) {
+      } catch (final UnexpectedDomainException e) {
          throw new CopieAxisFault("CaptureMetadonneesInterdites", e.getMessage(), e);
-      } catch (InvalidPagmsCombinaisonException e) {
+      } catch (final InvalidPagmsCombinaisonException e) {
          throw new CopieAxisFault("PagmIncompatibles", e.getMessage(), e);
-      } catch (CaptureExistingUuuidException e) {
+      } catch (final CaptureExistingUuuidException e) {
          throw new CopieAxisFault("CaptureErreurIdGedExistant", e.getMessage(), e);
       }
    }
 
    private static CopieResponse createCopieResponse() {
 
-      CopieResponse response = new CopieResponse();
-      CopieResponseType responseType = new CopieResponseType();
+      final CopieResponse response = new CopieResponse();
+      final CopieResponseType responseType = new CopieResponseType();
       response.setCopieResponse(responseType);
 
       return response;
    }
 
-   private List<UntypedMetadata> convertListeMeta(ListeMetadonneeType listeMeta) {
+   private List<UntypedMetadata> convertListeMeta(final ListeMetadonneeType listeMeta) {
 
-      String prefixeTrc = "convertitListeMeta()";
+      final String prefixeTrc = "convertitListeMeta()";
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
-      for (MetadonneeType metadonnee : listeMeta.getMetadonnee()) {
-         if (metadonnee != null)
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
+      for (final MetadonneeType metadonnee : listeMeta.getMetadonnee()) {
+         if (metadonnee != null) {
             metadatas.add(createUntypedMetadata(metadonnee));
+         }
       }
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
             buildMessageFromList(metadatas));
@@ -203,16 +198,16 @@ public class WSCopieServiceImpl implements WSCopieService {
 
    }
 
-   private UntypedMetadata createUntypedMetadata(MetadonneeType metadonnee) {
+   private UntypedMetadata createUntypedMetadata(final MetadonneeType metadonnee) {
 
       return new UntypedMetadata(metadonnee.getCode().getMetadonneeCodeType(),
             metadonnee.getValeur().getMetadonneeValeurType());
    }
 
-   private <T> String buildMessageFromList(Collection<T> list) {
+   private <T> String buildMessageFromList(final Collection<T> list) {
       final ToStringBuilder toStrBuilder = new ToStringBuilder(this,
             ToStringStyle.SIMPLE_STYLE);
-      for (T o : Utils.nullSafeIterable(list)) {
+      for (final T o : Utils.nullSafeIterable(list)) {
          if (o != null) {
             toStrBuilder.append(o.toString());
          }

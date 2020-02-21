@@ -1,14 +1,10 @@
 package fr.urssaf.image.sae.vi.service.impl;
 
 import java.net.URI;
-import java.security.cert.CertificateEncodingException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import org.bouncycastle.asn1.x509.X509Name;
-import org.bouncycastle.jce.PrincipalUtil;
-import org.bouncycastle.jce.X509Principal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,9 +67,9 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
     * 
     */
    @Autowired
-   public WebServiceVIServiceImpl(SaeDroitService droitService,
-         WebServiceVIValidateService validateService,
-         ContratServiceSupport support) {
+   public WebServiceVIServiceImpl(final SaeDroitService droitService,
+         final WebServiceVIValidateService validateService,
+         final ContratServiceSupport support) {
       extractService = new SamlAssertionExtractionService();
 
       this.validateService = validateService;
@@ -84,25 +80,26 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
    /**
     * {@inheritDoc}
     */
-   public final VIContenuExtrait verifierVIdeServiceWeb(Element identification,
-         URI serviceVise, VISignVerifParams signVerifParams, boolean acceptOldWs)
+   @Override
+   public final VIContenuExtrait verifierVIdeServiceWeb(final Element identification,
+         final URI serviceVise, final VISignVerifParams signVerifParams, final boolean acceptOldWs)
          throws VIVerificationException {
 
       // vérification du jeton SAML
-      SignatureVerificationResult result = validateService.validate(
+      final SignatureVerificationResult result = validateService.validate(
             identification, signVerifParams);
 
       // extraction du jeton SAML
       SamlAssertionData data;
       try {
          data = extractService.extraitDonnees(identification);
-      } catch (SamlExtractionException exception) {
+      } catch (final SamlExtractionException exception) {
          throw new VIInvalideException(exception.getMessage(), exception);
       }
 
       String issuer = data.getAssertionParams().getCommonsParams().getIssuer();
 
-      boolean isOldRole = data.getAssertionParams().getCommonsParams()
+      final boolean isOldRole = data.getAssertionParams().getCommonsParams()
             .getPagm().size() == 1
             && data.getAssertionParams().getCommonsParams().getPagm().contains(
                   OLD_PAGM);
@@ -129,38 +126,38 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
       // vérification supplémentaires sur le jeton SAML
       validateService.validate(data, serviceVise, new Date());
 
-      List<String> pagms = data.getAssertionParams().getCommonsParams()
+      final List<String> pagms = data.getAssertionParams().getCommonsParams()
             .getPagm();
 
       // vérification que les certificats qui entrent en jeu sont ceux attendus
       ServiceContract contract;
       try {
-         contract = this.droitService.getServiceContract(issuer);
-      } catch (ContratServiceReferenceException exception1) {
+         contract = droitService.getServiceContract(issuer);
+      } catch (final ContratServiceReferenceException exception1) {
          throw new VIAppliClientException(issuer);
       }
       validateService.validateCertificates(contract, result);
 
       /*--------------- Gestion des Formats -----------------------*/
-      VIContenuExtrait viContenuExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viContenuExtrait = new VIContenuExtrait();
       try {
          //-----------------------------------------------
          //this.droitService.loadSaeDroits(issuer, pagms, viContenuExtrait);
-         SaeDroitsEtFormat saeDroitsEtFormat = this.droitService.loadSaeDroits(issuer, pagms);
+         final SaeDroitsEtFormat saeDroitsEtFormat = droitService.loadSaeDroits(issuer, pagms);
          viContenuExtrait.setSaeDroits(saeDroitsEtFormat.getSaeDroits());
          viContenuExtrait.setListControlProfil(saeDroitsEtFormat.getListFormatControlProfil());
          //--------------------------------------
 
-      } catch (FormatControlProfilNotFoundException except) {
+      } catch (final FormatControlProfilNotFoundException except) {
          throw new VIInvalideException(except.getMessage(), except);
       }
-      catch (ContratServiceNotFoundException exception) {
+      catch (final ContratServiceNotFoundException exception) {
          throw new VIAppliClientException(issuer);
 
-      } catch (PagmNotFoundException exception) {
+      } catch (final PagmNotFoundException exception) {
          throw new VIPagmIncorrectException(exception.getMessage(), exception);
 
-      } catch (RuntimeException exception) {
+      } catch (final RuntimeException exception) {
          throw new VIInvalideException(exception.getMessage(), exception);
       }
       // instanciation de la valeur retour

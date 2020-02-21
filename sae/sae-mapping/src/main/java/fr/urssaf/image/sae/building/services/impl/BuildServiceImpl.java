@@ -33,7 +33,6 @@ public class BuildServiceImpl implements BuildService {
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final LuceneCriteria buildStorageLuceneCriteria(
                                                           final String luceneQuery, final int limit,
                                                           final List<SAEMetadata> metadatas) {
@@ -65,7 +64,6 @@ public class BuildServiceImpl implements BuildService {
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final UUIDCriteria buildStorageUuidCriteria(final UUID uuid,
                                                       final List<SAEMetadata> metadatas) {
       final List<StorageMetadata> desiredMetadata = new ArrayList<>();
@@ -80,7 +78,6 @@ public class BuildServiceImpl implements BuildService {
     * {@inheritDoc}
     */
    @Override
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final UntypedDocument buildUntypedDocument(final DataHandler content,
                                                      final Map<String, String> metadatas) {
       final List<UntypedMetadata> uMetadatas = new ArrayList<>();

@@ -22,8 +22,6 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
-import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
-import fr.urssaf.image.sae.pile.travaux.service.OperationPileTravauxService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -44,15 +42,6 @@ public class WSRepriseServiceImpl implements WSRepriseService {
    private static final Logger LOG = LoggerFactory
          .getLogger(WSTransfertMasseServiceImpl.class);
 
-   @Autowired
-   private OperationPileTravauxService operationPileTravaux;
-
-   /**
-    * Service permettant de réaliser des objets sur les jobs
-    */
-   @Autowired
-   private JobQueueService jobQueueService;
-
    /**
     * Service permettant de réaliser les opérations de lecture sur les jobs
     */
@@ -63,22 +52,22 @@ public class WSRepriseServiceImpl implements WSRepriseService {
    private TraitementAsynchroneService traitementService;
 
    @Override
-   public RepriseResponse reprise(Reprise request, String callerIP)
+   public RepriseResponse reprise(final Reprise request, final String callerIP)
          throws RepriseAxisFault, JobInexistantException {
-      String prefixeTrc = "reprise()";
+      final String prefixeTrc = "reprise()";
       LOG.debug("{} - Début", prefixeTrc);
 
-      // Récuperer les paramètres du job à reprendre
-      UuidType uuid = request.getReprise().getUuid();
-      UUID uuidJobAReprendre = UUID.fromString(uuid.getUuidType());
+      // Récupération des paramètres du job à reprendre
+      final UuidType uuid = request.getReprise().getUuid();
+      final UUID uuidJobAReprendre = UUID.fromString(uuid.getUuidType());
       UUID uuidJobReprise = null;
       LOG.debug("{} - UUID du job à reprendre: {}", prefixeTrc, uuid);
 
       try {
-         // Récuperer le job
-         JobRequest jobRequest = jobLectureService
+         // Récupère le job
+         final JobRequest jobRequest = jobLectureService
                .getJobRequestNotNull(uuidJobAReprendre);
-         
+
          // Reprise impossible pour le job de reprise 
          if(jobRequest.getType().equals(TYPES_JOB.reprise_masse.name())){
             LOG.warn(
@@ -90,19 +79,19 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             LOG.debug(
                   "{} - ajout d'un traitement de reprise de masse du job: {}",
                   new Object[] { "ajouterJob()", uuid });
-            String hName = HostnameUtil.getHostname();
+            final String hName = HostnameUtil.getHostname();
             // Récupération de l'UUID du traitement
-            String contextLog = MDC.get(BuildOrClearMDCAspect.LOG_CONTEXTE);
+            final String contextLog = MDC.get(BuildOrClearMDCAspect.LOG_CONTEXTE);
             // Récupération de l'UUID du traitement
             uuidJobReprise = UUID.fromString(contextLog);
-            
-            VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
+
+            final VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
                   .getContext().getAuthentication().getPrincipal();
 
             // Vérification des droits pour le traitement reprise
-            List<String> pagmsReprise = extrait.getPagms();
-            List<String> pagmsJobAReprendre = jobRequest.getVi().getPagms();
-            
+            final List<String> pagmsReprise = extrait.getPagms();
+            final List<String> pagmsJobAReprendre = jobRequest.getVi().getPagms();
+
             // Contrôle CS du traitement de reprise
             boolean checkAccessRepriseCS = true;
             if (!jobRequest.getVi().getCodeAppli()
@@ -116,26 +105,26 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             }
             // Contrôle PAGM de reprise
             if (checkAccessRepriseCS) {
-               for (String pagmAReprendre : pagmsJobAReprendre) {
+               for (final String pagmAReprendre : pagmsJobAReprendre) {
                   if (!pagmsReprise.contains(pagmAReprendre)) {
                      LOG.warn(
                            "{} - Erreur PAGM de reprise: Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre",
-                          prefixeTrc);
+                           prefixeTrc);
                      throw new RepriseAxisFault("ErreurInterneReprise",
                            "Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre");
                   }
                }
             }
-            
+
             // Charger l'uuid du job à reprendre dans les paramètres de la
             // reprise
-            Map<String, String> jobParams = new HashMap<String, String>();
+            final Map<String, String> jobParams = new HashMap<>();
             jobParams.put(Constantes.ID_TRAITEMENT_A_REPRENDRE,
                   uuidJobAReprendre.toString());
             jobParams.put(Constantes.HEURE_REPRISE,
                   Long.toString(System.currentTimeMillis()));
 
-            TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            final TraitemetMasseParametres parametres = new TraitemetMasseParametres(
                   jobParams, uuidJobReprise, TYPES_JOB.reprise_masse, hName,
                   callerIP, null, extrait);
             traitementService.ajouterJobReprise(parametres);
@@ -146,13 +135,13 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             throw new RepriseAxisFault("ErreurInterneReprise",
                   "Erreur de reprise: le job ne peut pas être repris à cause de son état");
          }
-      } catch (JobInexistantException e) {
+      } catch (final JobInexistantException e) {
          LOG.warn("{} - échec de reprise du traitement {} - ce job n'existe plus en base",
                new Object[] { prefixeTrc, uuid });
          throw new RepriseAxisFault("ErreurInterneReprise", e.getMessage(), e);
-      } catch (AccessDeniedException e) {
+      } catch (final AccessDeniedException e) {
          throw new RepriseAxisFault("ErreurInterneReprise", e.getMessage(), e);
-      } catch (Exception e) {
+      } catch (final Exception e) {
          throw new RepriseAxisFault("ErreurInterneReprise", e.getMessage(), e);
       }
 

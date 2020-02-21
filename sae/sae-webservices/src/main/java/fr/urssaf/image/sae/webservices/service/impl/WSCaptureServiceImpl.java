@@ -53,7 +53,6 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
-import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectArchivageUnitaireFactory;
@@ -77,9 +76,6 @@ public class WSCaptureServiceImpl implements WSCaptureService {
    private SAEDocumentService documentService;
 
    @Autowired
-   private SAESuppressionService suppressionService;
-
-   @Autowired
    private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
    /**
@@ -88,32 +84,32 @@ public class WSCaptureServiceImpl implements WSCaptureService {
     */
    @Override
    public final ArchivageUnitaireResponse archivageUnitaire(
-         ArchivageUnitaire request) throws CaptureAxisFault {
+         final ArchivageUnitaire request) throws CaptureAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "archivageUnitaire()";
+      final String prefixeTrc = "archivageUnitaire()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       // Vérification que la liste des métadonnées n'est pas vide
-      ListeMetadonneeType listeMeta = request.getArchivageUnitaire()
+      final ListeMetadonneeType listeMeta = request.getArchivageUnitaire()
             .getMetadonnees();
       verifListeMetaNonVide(listeMeta);
 
       // Lecture de l'URL ECDE
-      URI ecdeURL = URI.create(request.getArchivageUnitaire().getEcdeUrl()
+      final URI ecdeURL = URI.create(request.getArchivageUnitaire().getEcdeUrl()
             .getEcdeUrlType().toString());
       LOG.debug("{} - URI ECDE: {}", prefixeTrc, ecdeURL);
 
       // Conversion de la liste des métadonnées d'un type vers un autre
-      List<UntypedMetadata> metadatas = convertListeMeta(listeMeta);
+      final List<UntypedMetadata> metadatas = convertListeMeta(listeMeta);
 
       // Appel de la couche service, et transtypage des exceptions en SoapFault
-      UUID uuid = capture(metadatas, ecdeURL);
+      final UUID uuid = capture(metadatas, ecdeURL);
       LOG.debug("{} - UUID : \"{}\"", prefixeTrc, uuid);
 
       // Construction de l'objet de réponse
-      ArchivageUnitaireResponse response = ObjectArchivageUnitaireFactory
+      final ArchivageUnitaireResponse response = ObjectArchivageUnitaireFactory
             .createArchivageUnitaireResponse(uuid);
       if (response == null) {
          LOG.debug("{} - Valeur de retour : null", prefixeTrc);
@@ -136,25 +132,25 @@ public class WSCaptureServiceImpl implements WSCaptureService {
     */
    @Override
    public final ArchivageUnitairePJResponse archivageUnitairePJ(
-         ArchivageUnitairePJ request) throws CaptureAxisFault {
+         final ArchivageUnitairePJ request) throws CaptureAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "archivageUnitairePJ()";
+      final String prefixeTrc = "archivageUnitairePJ()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       // Vérification que la liste des métadonnées n'est pas vide
-      ListeMetadonneeType listeMeta = request.getArchivageUnitairePJ()
+      final ListeMetadonneeType listeMeta = request.getArchivageUnitairePJ()
             .getMetadonnees();
       verifListeMetaNonVide(listeMeta);
 
       // Conversion de la liste des métadonnées d'un type vers un autre
-      List<UntypedMetadata> metadatas = convertListeMeta(listeMeta);
+      final List<UntypedMetadata> metadatas = convertListeMeta(listeMeta);
 
       // Est-ce l'application cliente nous a envoyé une URL ECDE ou
       // un contenu de fichier ?
       UUID uuid;
-      EcdeUrlType ecdeUrlType = request.getArchivageUnitairePJ()
+      final EcdeUrlType ecdeUrlType = request.getArchivageUnitairePJ()
             .getArchivageUnitairePJRequestTypeChoice_type0().getEcdeUrl();
       if (ecdeUrlType == null) {
 
@@ -163,7 +159,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                prefixeTrc);
 
          // Lecture du nom du fichier associé au contenu
-         String nomFichier = request.getArchivageUnitairePJ()
+         final String nomFichier = request.getArchivageUnitairePJ()
                .getArchivageUnitairePJRequestTypeChoice_type0().getDataFile()
                .getFileName();
          LOG.debug("{} - Nom fichier: {}", prefixeTrc, nomFichier);
@@ -176,7 +172,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          }
 
          // Récupération du contenu du document
-         DataHandler dataHandler = request.getArchivageUnitairePJ()
+         final DataHandler dataHandler = request.getArchivageUnitairePJ()
                .getArchivageUnitairePJRequestTypeChoice_type0().getDataFile()
                .getFile();
 
@@ -191,7 +187,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                prefixeTrc);
 
          // Extraction de l'URL ECDE depuis l'objet de la couche web service
-         URI ecdeURL = URI.create(ecdeUrlType.getEcdeUrlType().toString());
+         final URI ecdeURL = URI.create(ecdeUrlType.getEcdeUrlType().toString());
 
          // Appel de la couche service, et transtypage des exceptions en
          // SoapFault
@@ -203,7 +199,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       LOG.debug("{} - UUID : \"{}\"", prefixeTrc, uuid);
 
       // Construction de l'objet de réponse
-      ArchivageUnitairePJResponse response = ObjectArchivageUnitaireFactory
+      final ArchivageUnitairePJResponse response = ObjectArchivageUnitaireFactory
             .createArchivageUnitairePJResponse(uuid);
       if (response == null) {
          LOG.debug("{} - Valeur de retour : null", prefixeTrc);
@@ -220,9 +216,9 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
    }
 
-   private void verifListeMetaNonVide(ListeMetadonneeType listeMeta)
+   private void verifListeMetaNonVide(final ListeMetadonneeType listeMeta)
          throws CaptureAxisFault {
-      String prefixeTrc = "verifListeMetaNonVide()";
+      final String prefixeTrc = "verifListeMetaNonVide()";
       LOG.debug(
             "{} - Début de la vérification : La liste des métadonnées fournies par l'application n'est pas vide",
             prefixeTrc);
@@ -238,12 +234,12 @@ public class WSCaptureServiceImpl implements WSCaptureService {
             prefixeTrc);
    }
 
-   private List<UntypedMetadata> convertListeMeta(ListeMetadonneeType listeMeta) {
+   private List<UntypedMetadata> convertListeMeta(final ListeMetadonneeType listeMeta) {
 
-      String prefixeTrc = "convertitListeMeta()";
+      final String prefixeTrc = "convertitListeMeta()";
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
-      for (MetadonneeType metadonnee : listeMeta.getMetadonnee()) {
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
+      for (final MetadonneeType metadonnee : listeMeta.getMetadonnee()) {
          metadatas.add(createUntypedMetadata(metadonnee));
       }
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
@@ -253,133 +249,133 @@ public class WSCaptureServiceImpl implements WSCaptureService {
 
    }
 
-   private UntypedMetadata createUntypedMetadata(MetadonneeType metadonnee) {
+   private UntypedMetadata createUntypedMetadata(final MetadonneeType metadonnee) {
 
       return new UntypedMetadata(metadonnee.getCode().getMetadonneeCodeType(),
             metadonnee.getValeur().getMetadonneeValeurType());
    }
 
-   private UUID capture(List<UntypedMetadata> metadatas, URI ecdeURL)
+   private UUID capture(final List<UntypedMetadata> metadatas, final URI ecdeURL)
          throws CaptureAxisFault {
       try {
          return captureService.capture(metadatas, ecdeURL).getIdDoc();
-      } catch (RequiredStorageMetadataEx e) {
+      } catch (final RequiredStorageMetadataEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture", e.getMessage(), e);
-      } catch (InvalidValueTypeAndFormatMetadataEx e) {
+      } catch (final InvalidValueTypeAndFormatMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesFormatTypeNonValide",
                e.getMessage(), e);
-      } catch (UnknownMetadataEx e) {
+      } catch (final UnknownMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesInconnu",
                e.getMessage(), e);
-      } catch (DuplicatedMetadataEx e) {
+      } catch (final DuplicatedMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesDoublon",
                e.getMessage(), e);
-      } catch (NotSpecifiableMetadataEx e) {
+      } catch (final NotSpecifiableMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesInterdites",
                e.getMessage(), e);
-      } catch (EmptyDocumentEx e) {
+      } catch (final EmptyDocumentEx e) {
          throw new CaptureAxisFault("CaptureFichierVide", e.getMessage(), e);
-      } catch (RequiredArchivableMetadataEx e) {
+      } catch (final RequiredArchivableMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesArchivageObligatoire",
                e.getMessage(), e);
-      } catch (ReferentialRndException e) {
+      } catch (final ReferentialRndException e) {
          throw new CaptureAxisFault("ErreurInterne",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (UnknownCodeRndEx e) {
+      } catch (final UnknownCodeRndEx e) {
          throw new CaptureAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
-      } catch (UnknownHashCodeEx e) {
+      } catch (final UnknownHashCodeEx e) {
          throw new CaptureAxisFault("CaptureHashErreur", e.getMessage(), e);
-      } catch (CaptureBadEcdeUrlEx e) {
+      } catch (final CaptureBadEcdeUrlEx e) {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
                e);
-      } catch (CaptureEcdeUrlFileNotFoundEx e) {
+      } catch (final CaptureEcdeUrlFileNotFoundEx e) {
          throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
                e.getMessage(), e);
-      } catch (SAECaptureServiceEx e) {
+      } catch (final SAECaptureServiceEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (NotArchivableMetadataEx e) {
+      } catch (final NotArchivableMetadataEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (MetadataValueNotInDictionaryEx e) {
+      } catch (final MetadataValueNotInDictionaryEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide",
                e.getMessage(), e);
-      } catch (UnknownFormatException e) {
+      } catch (final UnknownFormatException e) {
          throw new CaptureAxisFault("FormatFichierInconnu", e.getMessage(), e);
-      } catch (ValidationExceptionInvalidFile e) {
+      } catch (final ValidationExceptionInvalidFile e) {
          throw new CaptureAxisFault("FormatFichierNonConforme", e.getMessage(),
                e);
-      } catch (UnexpectedDomainException e) {
+      } catch (final UnexpectedDomainException e) {
          throw new CaptureAxisFault("CaptureMetadonneesInterdites",
                e.getMessage(), e);
-      } catch (InvalidPagmsCombinaisonException e) {
+      } catch (final InvalidPagmsCombinaisonException e) {
          throw new CaptureAxisFault("PagmIncompatibles", e.getMessage(), e);
-      } catch (CaptureExistingUuuidException e) {
+      } catch (final CaptureExistingUuuidException e) {
          throw new CaptureAxisFault("CaptureErreurIdGedExistant",
                e.getMessage(), e);
       }
    }
 
-   private UUID capturePJ(List<UntypedMetadata> metadatas, String fileName,
-         DataHandler content) throws CaptureAxisFault {
+   private UUID capturePJ(final List<UntypedMetadata> metadatas, final String fileName,
+         final DataHandler content) throws CaptureAxisFault {
       try {
          return captureService.captureBinaire(metadatas, content, fileName)
                .getIdDoc();
-      } catch (RequiredStorageMetadataEx e) {
+      } catch (final RequiredStorageMetadataEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture", e.getMessage(), e);
-      } catch (InvalidValueTypeAndFormatMetadataEx e) {
+      } catch (final InvalidValueTypeAndFormatMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesFormatTypeNonValide",
                e.getMessage(), e);
-      } catch (UnknownMetadataEx e) {
+      } catch (final UnknownMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesInconnu",
                e.getMessage(), e);
-      } catch (DuplicatedMetadataEx e) {
+      } catch (final DuplicatedMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesDoublon",
                e.getMessage(), e);
-      } catch (NotSpecifiableMetadataEx e) {
+      } catch (final NotSpecifiableMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesInterdites",
                e.getMessage(), e);
-      } catch (EmptyDocumentEx e) {
+      } catch (final EmptyDocumentEx e) {
          throw new CaptureAxisFault("CaptureFichierVide", e.getMessage(), e);
-      } catch (RequiredArchivableMetadataEx e) {
+      } catch (final RequiredArchivableMetadataEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesArchivageObligatoire",
                e.getMessage(), e);
-      } catch (ReferentialRndException e) {
+      } catch (final ReferentialRndException e) {
          throw new CaptureAxisFault("ErreurInterne",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (UnknownCodeRndEx e) {
+      } catch (final UnknownCodeRndEx e) {
          throw new CaptureAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
-      } catch (UnknownHashCodeEx e) {
+      } catch (final UnknownHashCodeEx e) {
          throw new CaptureAxisFault("CaptureHashErreur", e.getMessage(), e);
-      } catch (SAECaptureServiceEx e) {
+      } catch (final SAECaptureServiceEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (NotArchivableMetadataEx e) {
+      } catch (final NotArchivableMetadataEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (EmptyFileNameEx e) {
+      } catch (final EmptyFileNameEx e) {
          throw new CaptureAxisFault("NomFichierVide",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (MetadataValueNotInDictionaryEx e) {
+      } catch (final MetadataValueNotInDictionaryEx e) {
          throw new CaptureAxisFault("CaptureMetadonneesValeurNonValide",
                e.getMessage());
-      } catch (UnknownFormatException e) {
+      } catch (final UnknownFormatException e) {
          throw new CaptureAxisFault("FormatFichierInconnu", e.getMessage(), e);
-      } catch (ValidationExceptionInvalidFile e) {
+      } catch (final ValidationExceptionInvalidFile e) {
          throw new CaptureAxisFault("FormatFichierNonConforme", e.getMessage());
-      } catch (UnexpectedDomainException e) {
+      } catch (final UnexpectedDomainException e) {
          throw new CaptureAxisFault("CaptureMetadonneesInterdites",
                e.getMessage(), e);
-      } catch (InvalidPagmsCombinaisonException e) {
+      } catch (final InvalidPagmsCombinaisonException e) {
          throw new CaptureAxisFault("PagmIncompatibles", e.getMessage(), e);
-      } catch (CaptureExistingUuuidException e) {
+      } catch (final CaptureExistingUuuidException e) {
          throw new CaptureAxisFault("CaptureErreurIdGedExistant",
                e.getMessage(), e);
       }
@@ -398,10 +394,10 @@ public class WSCaptureServiceImpl implements WSCaptureService {
     *           : liste des objets à afficher.
     * @return Une chaîne qui représente l'ensemble des objets à afficher.
     */
-   private <T> String buildMessageFromList(Collection<T> list) {
+   private <T> String buildMessageFromList(final Collection<T> list) {
       final ToStringBuilder toStrBuilder = new ToStringBuilder(this,
             ToStringStyle.SIMPLE_STYLE);
-      for (T o : Utils.nullSafeIterable(list)) {
+      for (final T o : Utils.nullSafeIterable(list)) {
          if (o != null) {
             toStrBuilder.append(o.toString());
          }
@@ -414,21 +410,21 @@ public class WSCaptureServiceImpl implements WSCaptureService {
     * 
     */
    @Override
-   public StockageUnitaireResponse stockageUnitaire(StockageUnitaire request)
+   public StockageUnitaireResponse stockageUnitaire(final StockageUnitaire request)
          throws CaptureAxisFault {
       // Traces debug - entrée méthode
-      String prefixeTrc = "stockageUnitaire()";
+      final String prefixeTrc = "stockageUnitaire()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       // Vérification que la liste des métadonnées n'est pas vide
-      ListeMetadonneeType listeMeta = request.getStockageUnitaire()
+      final ListeMetadonneeType listeMeta = request.getStockageUnitaire()
             .getMetadonnees();
 
       verifListeMetaNonVide(listeMeta);
 
       // Conversion de la liste des métadonnées d'un type vers un autre
-      List<UntypedMetadata> metadatas = convertListeMeta(listeMeta);
+      final List<UntypedMetadata> metadatas = convertListeMeta(listeMeta);
 
       LOG.debug("{} - Stockage du document", prefixeTrc);
 
@@ -436,7 +432,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       // Est-ce l'application cliente nous a envoyé une URL ECDE ou
       // un contenu de fichier ?
       UUID uuid;
-      EcdeUrlType ecdeUrlType = request.getStockageUnitaire()
+      final EcdeUrlType ecdeUrlType = request.getStockageUnitaire()
             .getStockageUnitaireRequestTypeChoice_type0().getUrlEcdeDoc();
 
       if (ecdeUrlType == null) {
@@ -446,7 +442,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                prefixeTrc);
 
          // Lecture du nom du fichier associé au contenu
-         String nomFichier = request.getStockageUnitaire()
+         final String nomFichier = request.getStockageUnitaire()
                .getStockageUnitaireRequestTypeChoice_type0().getDataFileDoc()
                .getFileName();
          LOG.debug("{} - Nom fichier: {}", prefixeTrc, nomFichier);
@@ -459,7 +455,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          }
 
          // Récupération du contenu du document
-         DataHandler dataHandler = request.getStockageUnitaire()
+         final DataHandler dataHandler = request.getStockageUnitaire()
                .getStockageUnitaireRequestTypeChoice_type0().getDataFileDoc()
                .getFile();
 
@@ -474,7 +470,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                prefixeTrc);
 
          // Extraction de l'URL ECDE depuis l'objet de la couche web service
-         URI ecdeURL = URI.create(ecdeUrlType.getEcdeUrlType().toString());
+         final URI ecdeURL = URI.create(ecdeUrlType.getEcdeUrlType().toString());
 
          // Appel de la couche service, et transtypage des exceptions en
          // SoapFault
@@ -492,7 +488,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          LOG.debug("{} - Stockage du document attaché", prefixeTrc);
          // Est-ce l'application cliente nous a envoyé une URL ECDE ou
          // un contenu de fichier ?
-         EcdeUrlType ecdeUrlDocOrigineType = request.getStockageUnitaire()
+         final EcdeUrlType ecdeUrlDocOrigineType = request.getStockageUnitaire()
                .getStockageUnitaireRequestTypeChoice_type1()
                .getUrlEcdeDocOrigine();
 
@@ -503,7 +499,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                   prefixeTrc);
 
             // Lecture du nom du fichier associé au contenu
-            String nomFichier = request.getStockageUnitaire()
+            final String nomFichier = request.getStockageUnitaire()
                   .getStockageUnitaireRequestTypeChoice_type1()
                   .getDataFileAttached().getFileName();
             LOG.debug("{} - Nom fichier: {}", prefixeTrc, nomFichier);
@@ -516,12 +512,12 @@ public class WSCaptureServiceImpl implements WSCaptureService {
             }
 
             // Récupération du contenu du document
-            DataHandler dataHandler = request.getStockageUnitaire()
+            final DataHandler dataHandler = request.getStockageUnitaire()
                   .getStockageUnitaireRequestTypeChoice_type1()
                   .getDataFileAttached().getFile();
 
-            String docName = FilenameUtils.getBaseName(nomFichier);
-            String extension = FilenameUtils.getExtension(nomFichier);
+            final String docName = FilenameUtils.getBaseName(nomFichier);
+            final String extension = FilenameUtils.getExtension(nomFichier);
 
             ajouterDocAttacherBinaireRollbackParent(uuid, docName, extension,
                   dataHandler);
@@ -533,7 +529,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
                   prefixeTrc);
 
             // Extraction de l'URL ECDE depuis l'objet de la couche web service
-            URI ecdeURL = URI.create(ecdeUrlDocOrigineType.getEcdeUrlType()
+            final URI ecdeURL = URI.create(ecdeUrlDocOrigineType.getEcdeUrlType()
                   .toString());
             LOG.debug("{} - URI ECDE : \"{}\"", prefixeTrc,
                   ecdeUrlDocOrigineType.toString());
@@ -545,7 +541,7 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       }
 
       // Construction de l'objet de réponse
-      StockageUnitaireResponse response = ObjectArchivageUnitaireFactory
+      final StockageUnitaireResponse response = ObjectArchivageUnitaireFactory
             .createStockageUnitaireResponse(uuid);
 
       if (response == null) {
@@ -562,47 +558,47 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       return response;
    }
 
-   private void ajouterDocAttacherBinaireRollbackParent(UUID docUuid,
-         String name, String extension, DataHandler contenu)
+   private void ajouterDocAttacherBinaireRollbackParent(final UUID docUuid,
+         final String name, final String extension, final DataHandler contenu)
          throws CaptureAxisFault {
 
       try {
          documentService.addDocumentAttachmentBinaireRollbackParent(docUuid,
                name, extension, contenu);
-      } catch (SAEDocumentAttachmentEx e) {
+      } catch (final SAEDocumentAttachmentEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (EmptyDocumentEx e) {
+      } catch (final EmptyDocumentEx e) {
          throw new CaptureAxisFault("CaptureFichierVide", e.getMessage(), e);
-      } catch (EmptyFileNameEx e) {
+      } catch (final EmptyFileNameEx e) {
          throw new CaptureAxisFault("NomFichierVide",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (ArchiveInexistanteEx e) {
+      } catch (final ArchiveInexistanteEx e) {
          throw new CaptureAxisFault("ArchiveNonTrouvee", e.getMessage(), e);
       }
    }
 
-   private void ajouterDocAttacherUrlRollbackParent(UUID docUuid, URI ecdeURL)
+   private void ajouterDocAttacherUrlRollbackParent(final UUID docUuid, final URI ecdeURL)
          throws CaptureAxisFault {
 
       try {
          documentService.addDocumentAttachmentUrlRollbackParent(docUuid,
                ecdeURL);
-      } catch (SAEDocumentAttachmentEx e) {
+      } catch (final SAEDocumentAttachmentEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
-      } catch (ArchiveInexistanteEx e) {
+      } catch (final ArchiveInexistanteEx e) {
          throw new CaptureAxisFault("ArchiveNonTrouvee", e.getMessage(), e);
-      } catch (CaptureBadEcdeUrlEx e) {
+      } catch (final CaptureBadEcdeUrlEx e) {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
                e);
-      } catch (CaptureEcdeUrlFileNotFoundEx e) {
+      } catch (final CaptureEcdeUrlFileNotFoundEx e) {
          throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
                e.getMessage(), e);
-      } catch (EmptyDocumentEx e) {
+      } catch (final EmptyDocumentEx e) {
          throw new CaptureAxisFault("CaptureFichierVide", e.getMessage(), e);
       }
 

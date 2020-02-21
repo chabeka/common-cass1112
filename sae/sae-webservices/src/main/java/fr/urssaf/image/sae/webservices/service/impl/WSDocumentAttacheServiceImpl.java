@@ -31,7 +31,6 @@ import fr.urssaf.image.sae.webservices.util.CollectionUtils;
  * L'implémentation est annotée par {@link Service}
  * 
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @Service
 public final class WSDocumentAttacheServiceImpl implements
       WSDocumentAttacheService {
@@ -45,15 +44,15 @@ public final class WSDocumentAttacheServiceImpl implements
 
    @Override
    public GetDocFormatOrigineResponse getDocFormatOrigine(
-         GetDocFormatOrigine request) throws GetDocFormatOrigineAxisFault {
+         final GetDocFormatOrigine request) throws GetDocFormatOrigineAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "getDocFormatOrigine()";
+      final String prefixeTrc = "getDocFormatOrigine()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       // Lecture de l'UUID depuis l'objet de requête de la couche ws
-      UUID docUuid = UUID.fromString(request.getGetDocFormatOrigine()
+      final UUID docUuid = UUID.fromString(request.getGetDocFormatOrigine()
             .getIdDoc().getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             docUuid);
@@ -79,10 +78,10 @@ public final class WSDocumentAttacheServiceImpl implements
             // Conversion de l'objet UntypedDocument en un objet de la couche
             // web
             // service
-            List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(uDocAtt
+            final List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(uDocAtt
                   .getUMetadatas());
             // Construction de l'objet de réponse
-            GetDocFormatOrigineResponse response = ObjectGetDocFormatOrigineFactory
+            final GetDocFormatOrigineResponse response = ObjectGetDocFormatOrigineFactory
                   .createGetDocFormatOrigineResponse(uDocAtt.getContent(),
                         metadatas);
             if (response == null) {
@@ -95,9 +94,9 @@ public final class WSDocumentAttacheServiceImpl implements
             return response;
          }
 
-      } catch (SAEDocumentAttachmentEx e) {
+      } catch (final SAEDocumentAttachmentEx e) {
          throw new GetDocFormatOrigineAxisFault(e);
-      } catch (ArchiveInexistanteEx e) {
+      } catch (final ArchiveInexistanteEx e) {
          throw new GetDocFormatOrigineAxisFault("ArchiveNonTrouvee",
                e.getMessage(), e);
       }
@@ -105,19 +104,19 @@ public final class WSDocumentAttacheServiceImpl implements
    }
 
    private List<MetadonneeType> convertListeMetasServiceToWebService(
-         List<UntypedMetadata> listeMetasService) {
+         final List<UntypedMetadata> listeMetasService) {
 
-      List<MetadonneeType> metadatas = new ArrayList<MetadonneeType>();
+      final List<MetadonneeType> metadatas = new ArrayList<>();
 
-      for (UntypedMetadata untypedMetadata : CollectionUtils
+      for (final UntypedMetadata untypedMetadata : CollectionUtils
             .loadListNotNull(listeMetasService)) {
 
-         String code = untypedMetadata.getLongCode();
+         final String code = untypedMetadata.getLongCode();
          String valeur = untypedMetadata.getValue();
          if (untypedMetadata.getValue() == null) {
             valeur = StringUtils.EMPTY;
          }
-         MetadonneeType metadonnee = ObjectTypeFactory.createMetadonneeType(
+         final MetadonneeType metadonnee = ObjectTypeFactory.createMetadonneeType(
                code, valeur);
 
          metadatas.add(metadonnee);

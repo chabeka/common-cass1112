@@ -35,7 +35,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
  * technique de stockage.
  */
 @Service
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class MappingDocumentServiceImpl implements MappingDocumentService {
 
   private MetadataReferenceDAO referenceDAO;
@@ -50,8 +49,6 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    * {@inheritDoc}
    */
   @Override
-  @SuppressWarnings({"PMD.AvoidInstantiatingObjectsInLoops",
-  "PMD.DataflowAnomalyAnalysis"})
   public StorageDocument saeDocumentToStorageDocument(final SAEDocument saeDoc)
       throws InvalidSAETypeException {
 
@@ -75,7 +72,6 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    * {@inheritDoc}
    */
   @Override
-  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public SAEDocument storageDocumentToSaeDocument(
                                                   final StorageDocument storageDoc)
                                                       throws InvalidSAETypeException,
@@ -109,7 +105,6 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    * {@inheritDoc}
    */
   @Override
-  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public UntypedDocument saeDocumentToUntypedDocument(final SAEDocument saeDoc)
       throws InvalidSAETypeException, MappingFromReferentialException {
     final List<UntypedMetadata> metadatas = new ArrayList<>();
@@ -140,7 +135,6 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    * {@inheritDoc}
    */
   @Override
-  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public SAEDocument untypedDocumentToSaeDocument(final UntypedDocument untyped)
       throws InvalidSAETypeException, MappingFromReferentialException {
     final List<SAEMetadata> metadatas = untypedMetadatasToSaeMetadatas(untyped
@@ -156,7 +150,6 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    * {@inheritDoc}
    */
   @Override
-  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
   public UntypedDocument storageDocumentToUntypedDocument(
                                                           final StorageDocument storage)
                                                               throws InvalidSAETypeException,

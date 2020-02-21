@@ -24,7 +24,6 @@ import fr.urssaf.image.sae.webservices.service.factory.ObjectNoteFactory;
  * L'implémentation est annotée par {@link Service}
  * 
  */
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @Service
 public final class WSNoteServiceImpl implements WSNoteService {
 
@@ -36,35 +35,35 @@ public final class WSNoteServiceImpl implements WSNoteService {
    private SAEDocumentService saeService;
 
    @Override
-   public AjoutNoteResponse ajoutNote(AjoutNote request)
+   public AjoutNoteResponse ajoutNote(final AjoutNote request)
          throws AjoutNoteAxisFault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "ajoutNote()";
+      final String prefixeTrc = "ajoutNote()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
-      UUID docUuid = UUID.fromString(request.getAjoutNote().getUuid()
+      final UUID docUuid = UUID.fromString(request.getAjoutNote().getUuid()
             .getUuidType());
-      String contenu = request.getAjoutNote().getNote().getNoteTxtType();
+      final String contenu = request.getAjoutNote().getNote().getNoteTxtType();
 
       // Récupération du login fourni dans l'appel du service
       String login = "";
       if (SecurityContextHolder.getContext().getAuthentication() != null) {
-         VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
+         final VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
                .getContext().getAuthentication().getPrincipal();
          login = extrait.getIdUtilisateur();
       }
 
       try {
          saeService.addDocumentNote(docUuid, contenu, login);
-      } catch (SAEDocumentNoteException e) {
+      } catch (final SAEDocumentNoteException e) {
          throw new AjoutNoteAxisFault(e);
-      } catch (ArchiveInexistanteEx e) {
+      } catch (final ArchiveInexistanteEx e) {
          throw new AjoutNoteAxisFault("ArchiveNonTrouvee", e.getMessage(), e);
       }
 
-      AjoutNoteResponse response = ObjectNoteFactory.createAjoutNoteResponse();
+      final AjoutNoteResponse response = ObjectNoteFactory.createAjoutNoteResponse();
 
       // Traces debug - sortie méthode
       LOG.debug("{} - Sortie", prefixeTrc);

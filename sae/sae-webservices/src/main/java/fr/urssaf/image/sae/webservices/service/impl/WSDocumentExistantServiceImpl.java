@@ -16,32 +16,30 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.webservices.exception.DocumentExistantAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSDocumentExistantService;
 
-@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @Service
 public class WSDocumentExistantServiceImpl implements WSDocumentExistantService{
-   
+
    private static final Logger LOG = LoggerFactory
          .getLogger(WSDocumentExistantServiceImpl.class);
-   
+
    @Autowired
    private SAEDocumentExistantService saeService;
 
-   @SuppressWarnings("unused")
    @Override
-   public DocumentExistantResponse documentExistant(DocumentExistant request)
+   public DocumentExistantResponse documentExistant(final DocumentExistant request)
          throws DocumentExistantAxisFault, SearchingServiceEx,
          ConnectionServiceEx {
 
-      String prefixeTrc = "copie()";
-      UUID uuid = UUID.fromString(request.getDocumentExistant().getIdGed()
+      final String prefixeTrc = "copie()";
+      final UUID uuid = UUID.fromString(request.getDocumentExistant().getIdGed()
             .getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", "copie()",
             uuid);
 
-      boolean res = saeService.documentExistant(uuid);
-      LOG.debug("{} - UUID : \"{}\"", res);
-      DocumentExistantResponse response = createDocumentExistantResponse();
-      DocumentExistantResponseType responseType = response
+      final boolean res = saeService.documentExistant(uuid);
+      LOG.debug("{} - UUID : \"{}\"", prefixeTrc, res);
+      final DocumentExistantResponse response = createDocumentExistantResponse();
+      final DocumentExistantResponseType responseType = response
             .getDocumentExistantResponse();
       responseType.setIsDocExist(res);
       if (response == null) {
@@ -54,11 +52,11 @@ public class WSDocumentExistantServiceImpl implements WSDocumentExistantService{
       // Fin des traces debug - sortie méthode
       return response;
    }
-   
+
    private static DocumentExistantResponse createDocumentExistantResponse() {
 
-      DocumentExistantResponse response = new DocumentExistantResponse();
-      DocumentExistantResponseType responseType = new DocumentExistantResponseType();
+      final DocumentExistantResponse response = new DocumentExistantResponse();
+      final DocumentExistantResponseType responseType = new DocumentExistantResponseType();
       response.setDocumentExistantResponse(responseType);
 
       return response;
