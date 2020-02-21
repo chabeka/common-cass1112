@@ -83,7 +83,7 @@ public class SAECommonCaptureServiceImplTest {
 
   @Before
   public void before() throws IOException {
-    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
   }
   /**
    * @return Le service saeCommonCaptureService

@@ -41,8 +41,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
-/*@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })*/
+
 public class SAEDocumentExistantServiceCqlTest extends AbstractServiceCqlTest {
 
   @Autowired
@@ -104,6 +103,9 @@ public class SAEDocumentExistantServiceCqlTest extends AbstractServiceCqlTest {
     // Paramétrage du RND
 
     server.resetData(true, MODE_API.DATASTAX);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+    // On attends pour que le cache soit modifié pour le modeapi
+    Thread.sleep(1000);
     parametersService.setVersionRndDateMaj(new Date());
     parametersService.setVersionRndNumero("11.2");
 

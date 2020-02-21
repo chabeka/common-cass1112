@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +43,19 @@ public class SAESearchServiceImplTest {
   @Autowired
   private ModeApiCqlSupport modeApiSupport;
 
-
+  @Before
+  public void start() throws InterruptedException {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+    // On attends pour que le cache soit modifié pour le modeapi
+    Thread.sleep(1000);
+  }
   @After
   public void end() {
     AuthenticationContext.setAuthenticationToken(null);
   }
 
   private void initDroits() {
-    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+
     final VIContenuExtrait viExtrait = new VIContenuExtrait();
     viExtrait.setCodeAppli("TESTS_UNITAIRES");
     viExtrait.setIdUtilisateur("UTILISATEUR TEST");
