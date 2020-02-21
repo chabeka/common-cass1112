@@ -26,7 +26,7 @@ INSERT INTO modeapi(cfname, mode) VALUES ('jobinstancesByname' , 'HECTOR');
 
 /*#PILE TRAVAUX*/
 INSERT INTO modeapi(cfname, mode) VALUES ('jobhistory' , 'HECTOR');
-INSERT INTO modeapi(cfname, mode) VALUES ('jobqueue' , 'HECTOR');
+INSERT INTO modeapi(cfname, mode) VALUES ('jobsqueue' , 'HECTOR');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobrequest' , 'HECTOR');
 
 /*#DROITS  */

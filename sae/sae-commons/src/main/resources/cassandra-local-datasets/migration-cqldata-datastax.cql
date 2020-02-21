@@ -28,7 +28,7 @@ INSERT INTO modeapi(cfname, mode) VALUES ('jobinstancesByname' , 'DATASTAX');
 
 /*#PILE TRAVAUX*/
 INSERT INTO modeapi(cfname, mode) VALUES ('jobhistory' , 'DATASTAX');
-INSERT INTO modeapi(cfname, mode) VALUES ('jobqueue' , 'DATASTAX');
+INSERT INTO modeapi(cfname, mode) VALUES ('jobsqueue' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobrequest' , 'DATASTAX');
 
 /*#DROITS  */
