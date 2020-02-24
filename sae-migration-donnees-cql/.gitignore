@@ -5,3 +5,4 @@
 /.toDelete
 /dependency-reduced-pom.xml
 /target
+@LOGS_PATH@
