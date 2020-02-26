@@ -1,8 +1,9 @@
-package fr.urssaf.image.sae.webservices.support;
+package fr.urssaf.image.sae.webservices.support.cql;
 
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -27,6 +28,7 @@ import org.apache.commons.lang.time.DateUtils;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,14 +82,17 @@ import fr.cirtil.www.saeservice.TransfertMasseRequestType;
 import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
+import fr.urssaf.image.sae.commons.utils.Row;
+import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
-import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
-import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
+import fr.urssaf.image.sae.trace.utils.TraceDestinataireCqlUtils;
 import fr.urssaf.image.sae.webservices.constantes.TracesConstantes;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSMetadataService;
@@ -96,8 +101,8 @@ import fr.urssaf.image.sae.webservices.skeleton.SaeServiceSkeletonInterface;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/applicationContext-service-test2.xml"})
-public class CodeEvenementEchecTest {
+@ContextConfiguration(locations = { "/applicationContext-service-test2.xml" })
+public class CodeEvenementEchecCqlTest {
 
 
   private static final Date DATE = new Date();
@@ -108,10 +113,10 @@ public class CodeEvenementEchecTest {
   private SaeServiceSkeletonInterface skeleton;
 
   @Autowired
-  private  TraceDestinataireSupport destSupport;
+  private TraceDestinataireCqlSupport destSupport;
 
   @Autowired
-  private TraceRegTechniqueSupport techSupport;
+  private TraceRegTechniqueCqlSupport techSupport;
 
   @Autowired
   private WSMetadataService wsMetadataService;
@@ -128,15 +133,19 @@ public class CodeEvenementEchecTest {
   @Autowired
   WSTransfertService wsTransfert;
 
-  private  List<String> codes = new ArrayList<>();
-  private  MessageContext ctx;
-
   @Autowired
   ModeApiCqlSupport modeApiCqlSupport;
 
+  @Autowired
+  TraceDestinataireCqlSupport traceDestinataireCqlSupport;
+
+  private  List<String> codes = new ArrayList<>();
+  private  MessageContext ctx;
+
   @Before
   public  void init(){
-    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
+    createAllTraceDestinataire();
     ctx = new MessageContext();
 
     if(codes.isEmpty()){
@@ -159,6 +168,7 @@ public class CodeEvenementEchecTest {
     }
   }
 
+  @Ignore
   @Test
   public void appel_web_service_avec_exception() throws Exception {
 
@@ -414,36 +424,41 @@ public class CodeEvenementEchecTest {
             || "archivageUnitairePJ".equals(opName)
             || "stockageUnitaire".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, false);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, false);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_ARCHIVAGE_UNITAIRE_KO);
         }
         else if("archivageMasse".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, false);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, false);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_ARCHIVAGE_MASSE_KO);
         }
         else if("archivageMasseAvecHash".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, false);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, false);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_ARCHIVAGE_MASSE_KO);
         }
         else if("suppressionMasse".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, false);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, false);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_SUPPRESSION_MASSE_KO);
         }
         else if("restoreMasse".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_RESTORE_MASSE_KO);
         }
@@ -451,8 +466,9 @@ public class CodeEvenementEchecTest {
             || "consultationMTOM".equals(opName)
             || "consultationAffichable".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_CONSULTATION_KO);
         }
@@ -460,92 +476,105 @@ public class CodeEvenementEchecTest {
             || "rechercheNbRes".equals(opName)
             || "rechercheParIterateur".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_RECHERCHE_KO);
         }
         else if("transfert".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_TRANSFERT_KO);
         }
         else if("suppression".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_SUPPRESSION_KO);
         }
         else if("modification".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_MODIFICATION_KO);
         }
         else if("recuperationMetadonnees".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_RECUPERATION_METAS_KO);
         }
         else if("ajoutNote".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_AJOUT_NOTE_KO);
         }
         else if("getDocFormatOrigine".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_GET_DOC_FORMAT_ORIGINE);
         }
         else if("etatTraitementsMasse".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_ETAT_TRAIT_MASSE);
         }
         else if("transfertMasse".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_TRANSFERT_MASSE_KO);
         }
         else if("modificationMasse".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_MODIFICATION_MASSE_KO);
         }
         else if("deblocage".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_DEBLOCAGE_KO);
         }
         else if("reprise".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_REPRISE_KO);
         }
         else if("copie".equals(opName)){	    		  
           //On verifie que une entrée a été ecrit dans le registre de surveillance technique
-          final List<TraceRegTechniqueIndex> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1), DateUtils
-                                                                                 .addHours(DATE, 1), MAX_COUNT, true);
+          final List<TraceRegTechniqueIndexCql> listeTReg = techSupport.findByDates(DateUtils.addHours(DATE, -1),
+                                                                                    DateUtils
+                                                                                    .addHours(DATE, 1), MAX_COUNT, true);
           Assert.assertTrue("La liste ne doit pas être vide", !listeTReg.isEmpty());
           checkOperationCodeName(opName, listeTReg, TracesConstantes.CODE_EVT_WS_COPIE_KO);
         }	  
@@ -575,9 +604,9 @@ public class CodeEvenementEchecTest {
    * verifie que le code de l'evenement d'erreur concernant l'operation
    * courante est bien dans la liste des données recupérer dans la base
    */
-  private void checkOperationCodeName(final String OpName, final List<TraceRegTechniqueIndex> listeTReg, final String codeName){
+  private void checkOperationCodeName(final String OpName, final List<TraceRegTechniqueIndexCql> listeTReg, final String codeName) {
     String code= "";
-    for(final TraceRegTechniqueIndex reg : listeTReg){
+    for (final TraceRegTechniqueIndexCql reg : listeTReg) {
       if(reg.getCodeEvt().equals(codeName)){
         code = reg.getCodeEvt();
       }
@@ -676,5 +705,17 @@ public class CodeEvenementEchecTest {
     }
 
     return operationList;
+  }
+
+  /**
+   * Création des données TraceDestinataire pour effectuer les tests des services en Cql
+   */
+  private void createAllTraceDestinataire() {
+    final URL url = this.getClass().getResource("/cassandra-local-all-dataset-sae2.xml");
+    final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "TraceDestinataire");
+    final List<TraceDestinataire> listTraceDestinataire = TraceDestinataireCqlUtils.convertRowsToTraceDestinataires(list);
+    for (final TraceDestinataire traceDestinataire : listTraceDestinataire) {
+      traceDestinataireCqlSupport.create(traceDestinataire, new Date().getTime());
+    }
   }
 }

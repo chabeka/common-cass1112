@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.webservices.support;
+package fr.urssaf.image.sae.webservices.support.cql;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
-import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.service.RegExploitationService;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
@@ -42,15 +42,16 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 import fr.urssaf.image.sae.webservices.constantes.TracesConstantes;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
+import fr.urssaf.image.sae.webservices.support.TracesWsSupport;
 import fr.urssaf.image.sae.webservices.util.HostnameUtil;
 import junit.framework.Assert;
 
 /**
- * Tests unitaires de la classe {@link TracesWsSupport}
+ * Tests unitaires de la classe {@link TracesWsSupportCqlTest}
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-traces-test.xml" })
-public class TracesWsSupportTest {
+public class TracesWsSupportCqlTest {
 
   @Autowired
   private TracesWsSupport tracesSupport;
@@ -59,7 +60,7 @@ public class TracesWsSupportTest {
   private CassandraServerBean server;
 
   @Autowired
-  private TraceDestinataireSupport destSupport;
+  private TraceDestinataireCqlSupport destSupport;
 
   @Autowired
   private RegTechniqueService regTechniqueService;
@@ -73,18 +74,19 @@ public class TracesWsSupportTest {
   @Autowired
   ModeApiCqlSupport modeApiCqlSupport;
 
+
+
   @After
   public void after() throws Exception {
 
-    server.resetData(true, MODE_API.HECTOR);
-
+    server.resetData(true, MODE_API.DATASTAX);
     AuthenticationContext.setAuthenticationToken(null);
 
   }
 
   @Before
   public void init() {
-    modeApiCqlSupport.initTables(MODE_API.HECTOR);
+    modeApiCqlSupport.initTables(MODE_API.DATASTAX);
     TraceDestinataire evenement = new TraceDestinataire();
     evenement.setCodeEvt(TracesConstantes.CODE_EVT_WS_RECHERCHE_KO);
     Map<String, List<String>> map = new HashMap<>();
@@ -405,9 +407,17 @@ public class TracesWsSupportTest {
                  saeServeurHostname, trace.getInfos().get("saeServeurHostname"));
     assertEquals("L'information supplémentaire saeServeurIP est incorrect",
                  saeServeurIP, trace.getInfos().get("saeServeurIP"));
-    assertEquals("L'information supplémentaire fichiers est incorrect",
-                 fichiers, trace.getInfos().get("fichiers"));
 
+    // Le tableau est enregistré sous forme de string
+    String fichiersInfos = String.valueOf(trace.getInfos().get("fichiers"));
+    fichiersInfos = fichiersInfos.substring(1, fichiersInfos.length() - 1);
+    fichiersInfos = fichiersInfos.replaceAll(" ", "");
+    final String[] tab = fichiersInfos.split(",");
+    final List<String> list = Arrays.asList(tab);
+
+    assertEquals("L'information supplémentaire fichiers est incorrect",
+                 fichiers,
+                 list);
   }
 
 }
