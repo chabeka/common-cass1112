@@ -767,9 +767,9 @@ SAESearchService {
          final long endTime = System.currentTimeMillis();
          final long diff = endTime - startTime;
          if (diff / 1000 >= dureeMaxRequete) {
-            LOG.warn("{} - Requête de recherche dure plus de {} secondes - Index utilisé : {} - Requête Lucene utilisée : {}",
+            LOG.warn("{} - Requête de recherche dure plus de {} secondes ({} secondes)- Index utilisé : {} - Requête Lucene utilisée : {}",
                   prefixeTrc,
-                  dureeMaxRequete,
+                  dureeMaxRequete, diff,
                   indexOrderPreferenceList,
                   requeteFinal);
          }
