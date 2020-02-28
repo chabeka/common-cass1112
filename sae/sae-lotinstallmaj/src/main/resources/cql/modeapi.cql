@@ -1,4 +1,4 @@
-CREATE TABLE modeapi (
+CREATE TABLE IF NOT EXISTS modeapi (
 	cfname text PRIMARY KEY, 
 	mode text
 );

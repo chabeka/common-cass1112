@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.webservices.support.cql;
 import static org.junit.Assert.assertEquals;
 
 import java.io.StringWriter;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -28,7 +27,6 @@ import org.apache.commons.lang.time.DateUtils;
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,17 +80,15 @@ import fr.cirtil.www.saeservice.TransfertMasseRequestType;
 import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
-import fr.urssaf.image.sae.commons.utils.Row;
-import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
+import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
-import fr.urssaf.image.sae.trace.utils.TraceDestinataireCqlUtils;
 import fr.urssaf.image.sae.webservices.constantes.TracesConstantes;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSMetadataService;
@@ -111,9 +107,6 @@ public class CodeEvenementEchecCqlTest {
 
   @Autowired
   private SaeServiceSkeletonInterface skeleton;
-
-  @Autowired
-  private TraceDestinataireCqlSupport destSupport;
 
   @Autowired
   private TraceRegTechniqueCqlSupport techSupport;
@@ -138,6 +131,9 @@ public class CodeEvenementEchecCqlTest {
 
   @Autowired
   TraceDestinataireCqlSupport traceDestinataireCqlSupport;
+
+  @Autowired
+  private TraceDestinataireSupport destSupport;
 
   private  List<String> codes = new ArrayList<>();
   private  MessageContext ctx;
@@ -168,7 +164,7 @@ public class CodeEvenementEchecCqlTest {
     }
   }
 
-  @Ignore
+
   @Test
   public void appel_web_service_avec_exception() throws Exception {
 
@@ -711,9 +707,8 @@ public class CodeEvenementEchecCqlTest {
    * Création des données TraceDestinataire pour effectuer les tests des services en Cql
    */
   private void createAllTraceDestinataire() {
-    final URL url = this.getClass().getResource("/cassandra-local-all-dataset-sae2.xml");
-    final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "TraceDestinataire");
-    final List<TraceDestinataire> listTraceDestinataire = TraceDestinataireCqlUtils.convertRowsToTraceDestinataires(list);
+
+    final List<TraceDestinataire> listTraceDestinataire = destSupport.findAll();
     for (final TraceDestinataire traceDestinataire : listTraceDestinataire) {
       traceDestinataireCqlSupport.create(traceDestinataire, new Date().getTime());
     }

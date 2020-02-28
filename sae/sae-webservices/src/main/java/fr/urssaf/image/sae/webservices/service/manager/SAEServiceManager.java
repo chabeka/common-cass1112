@@ -18,8 +18,6 @@ public final class SAEServiceManager {
   @Autowired
   private SAEServiceProvider provider;
 
-  // @Autowired
-  // CassandraApiGestionServiceImpl cassandraApiGestionServiceImpl;
   /**
    * 
    * @return l'ensemble des services du SAE
