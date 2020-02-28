@@ -15,61 +15,53 @@ import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException
 
 
 /**
- * Service de récupération des propriétés d'un type de document
- * 
- * 
+ * Service de récupération du mode (thrift ou CQL) des column families
  */
 @Service
 public class ModeAPIServiceImpl implements ModeAPIService {
 
-  /**
-   * Cache ModeApi
-   */
-  private final LoadingCache<String, ModeAPI> cacheModeAPI;
+   /**
+    * Cache ModeApi
+    */
+   private final LoadingCache<String, ModeAPI> cacheModeAPI;
 
 
-  private ModeApiCqlSupport modeApiSupport;
+   @Autowired
+   public ModeAPIServiceImpl(final ModeApiCqlSupport modeApiSupport, @Value("${sae.modeapi.cache.refresh:30000}") final int valueRefresh
+         ) {
 
+      cacheModeAPI = CacheBuilder.newBuilder()
 
-  @Autowired
-  public ModeAPIServiceImpl(final ModeApiCqlSupport modeApiSupport, @Value("${sae.modeapi.cache.refresh:30000}") final int valueRefresh
-      ) {
+            .refreshAfterWrite(valueRefresh,
+                  TimeUnit.MILLISECONDS)
+            .build(new CacheLoader<String, ModeAPI>() {
 
-    this.modeApiSupport = modeApiSupport;
+               @Override
+               public ModeAPI load(final String cfName) {
+                  return modeApiSupport.findById(cfName);
+               }
 
-    cacheModeAPI = CacheBuilder.newBuilder()
+            });
+   }
 
-        .refreshAfterWrite(valueRefresh,
-                           TimeUnit.MILLISECONDS)
-        .build(new CacheLoader<String, ModeAPI>() {
+   /**
+    * @param dureeCache
+    *          la durée du cache définie dans le fichier sae-config Construit
+    *          un objet de type {@link ModeAPIServiceImpl}
+    */
 
-          @Override
-          public ModeAPI load(final String cfName) {
-            return modeApiSupport.findById(cfName);
-          }
-
-        });
-  }
-
-  /**
-   * @param dureeCache
-   *          la durée du cache définie dans le fichier sae-config Construit
-   *          un objet de type {@link ModeAPIServiceImpl}
-   */
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  @SuppressWarnings("PMD.PreserveStackTrace")
-  public String getModeAPI(final String cfName) throws ModeGestionAPIUnkownException {
-    try {
-      final ModeAPI modeAPI = cacheModeAPI.getUnchecked(cfName);
-      return modeAPI.getMode();
-    } catch (final InvalidCacheLoadException e) {
-      throw new ModeGestionAPIUnkownException("Le modeAPI pour " + cfName
-                                              + " n'existe pas.");
-    }
-  }
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public String getModeAPI(final String cfName) throws ModeGestionAPIUnkownException {
+      try {
+         final ModeAPI modeAPI = cacheModeAPI.getUnchecked(cfName);
+         return modeAPI.getMode();
+      } catch (final InvalidCacheLoadException e) {
+         throw new ModeGestionAPIUnkownException("Le modeAPI pour " + cfName
+               + " n'existe pas.");
+      }
+   }
 
 }
