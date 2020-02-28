@@ -22,15 +22,9 @@ import fr.urssaf.image.commons.cassandra.utils.Constantes;
 @Component
 public class ModeApiCqlSupport {
 
-  private static final int LIFE_DURATION = 10;
-
   @Autowired
   IModeAPIDaoCql modeApiDaoCql;
 
-  /*
-   * @Autowired
-   * JobClockSupport clockSupport;
-   */
 
   final static String[] LIST_CF_NAME = {Constantes.CF_TRACE_DESTINATAIRE, Constantes.CF_TRACE_JOURNAL_EVT,
                                         Constantes.CF_TRACE_JOURNAL_EVT_INDEX, Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC,
@@ -50,23 +44,11 @@ public class ModeApiCqlSupport {
                                         Constantes.CF_PARAMETERS
   };
 
-  // private LoadingCache<String, ModeAPI> modeapis;
 
   public ModeApiCqlSupport(final IModeAPIDaoCql modeApiDaoCql) {
 
     this.modeApiDaoCql = modeApiDaoCql;
-    /*
-     * modeapis = CacheBuilder.newBuilder()
-     * .expireAfterWrite(LIFE_DURATION,
-     * TimeUnit.MINUTES)
-     * .build(
-     * new CacheLoader<String, ModeAPI>() {
-     * @Override
-     * public ModeAPI load(final String cfName) {
-     * return findById(cfName);
-     * }
-     * });
-     */
+
   }
 
   /**
@@ -91,24 +73,6 @@ public class ModeApiCqlSupport {
     modeApiDaoCql.deleteById(code);
 
   }
-
-  /* *//**
-   * Recherche et retourne l'enregistrement de modeAPI en
-   * fonction du code fourni
-   *
-   * @param code
-   *          code de l'modeAPI
-   * @return l'enregistrement de l'modeAPI correspondante
-   *//*
-   * public final ModeAPI find(final String code) {
-   * try {
-   * return modeapis.getUnchecked(code);
-   * }
-   * catch (final InvalidCacheLoadException exception) {
-   * throw new ModeAPIRuntimeException(exception);
-   * }
-   * }
-   */
 
   /**
    * * Recherche et retourne l'enregistrement de modeAPI en
