@@ -151,7 +151,7 @@ CREATE TABLE jobstepcql (
     writeskipcount		int,
 	PRIMARY KEY (jobstepexecutionid)
 );
-
+CREATE INDEX jobExecutionId_jobstepcql_idx ON jobstepcql (jobexecutionid);
 
 CREATE TABLE jobstepscql (
 	jobstepid		bigint,
@@ -159,7 +159,8 @@ CREATE TABLE jobstepscql (
     stepname 		text,
 	PRIMARY KEY (jobstepid)
 );
-
+CREATE INDEX jobname_jobstepscql_idx ON jobstepscql (jobname);
+CREATE INDEX stepname_jobstepscql_idx ON jobstepscql (stepname);
 
 CREATE TABLE jobexecutioncql (
 	jobexecutionid		bigint,
@@ -222,6 +223,7 @@ CREATE TABLE jobinstancecql (
 );
 CREATE INDEX jobInstKey_idx ON jobinstancecql (jobkey);
 CREATE INDEX jobReserveBy_idx ON jobinstancecql (reservedby);
+CREATE INDEX jobname_jobinstancecql_idx ON jobinstancecql (jobname);
 
 
 CREATE TABLE jobinstancesBynamecql (
