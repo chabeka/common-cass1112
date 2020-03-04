@@ -15,7 +15,7 @@ CREATE TABLE jobqueuecql (
 	jobparameters map<text, text>,
 	PRIMARY KEY (key,idjob)
 )WITH CLUSTERING ORDER BY (idjob DESC);
-CREATE INDEX job_idx ON jobqueuecql( idjob );
+CREATE INDEX job_jobqueuecql_idx ON jobqueuecql( idjob );
 
 
 CREATE TABLE jobrequestcql (
@@ -42,4 +42,4 @@ CREATE TABLE jobrequestcql (
 	
 	PRIMARY KEY (idjob)
 );
-CREATE INDEX jobRequestKey_idx ON jobrequestcql (jobkey);
+CREATE INDEX jobRequestKey_jobrequestcql_idx ON jobrequestcql (jobkey);
