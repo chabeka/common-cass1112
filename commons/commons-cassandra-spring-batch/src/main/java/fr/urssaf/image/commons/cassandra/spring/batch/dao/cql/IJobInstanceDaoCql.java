@@ -50,4 +50,9 @@ public interface IJobInstanceDaoCql extends IGenericDAO<JobInstanceCql, Long>, S
    * Retourne la liste des Job non reservé
    */
   public List<JobInstance> getUnreservedJobInstances();
+  
+  /**
+   * 
+   */
+  public List<JobInstanceCql> findJobInstanceByName(String jobname);
 }

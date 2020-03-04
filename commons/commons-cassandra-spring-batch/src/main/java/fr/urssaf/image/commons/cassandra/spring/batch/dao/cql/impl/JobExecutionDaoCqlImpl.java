@@ -4,6 +4,7 @@ package fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -373,7 +374,10 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       while (it.hasNext()) {
          jobExes.add(it.next());
       }
-
+      
+      JobExecutionComparator compare = new JobExecutionComparator();
+      Collections.sort(list, compare);
+      
       int i = 0;
       for (final JobExecutionsCql job : jobExes) {
          if (i >= start && list.size() < count) {
@@ -418,13 +422,7 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
             list.add(JobTranslateUtils.JobExecutionCqlToJobExecution(opt.get(), null));
          }
       }
-      /*
-       * final Iterator<JobExecutionCql> itJobExes = this.findAllWithMapper();
-       * while (itJobExes.hasNext()) {
-       * final JobExecutionCql job = itJobExes.next();
-       * list.add(JobTranslateUtils.JobExecutionCqlToJobExecution(job, null));
-       * }
-       */
+ 
       return list;
 
    }
@@ -497,4 +495,11 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       registry.register(codec);
     }
   }
+    
+    class JobExecutionComparator implements Comparator<JobExecution> {
+        @Override
+        public int compare(JobExecution job1, JobExecution job2) {
+            return job1.getId().compareTo(job2.getId());
+        }
+    }
 }

@@ -5,7 +5,8 @@ package fr.urssaf.image.commons.cassandra.spring.batch.dao.cql;
 
 import java.util.List;
 
-import fr.urssaf.image.commons.cassandra.cql.dao.IGenericIndexDAO;
+import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
+import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepsCql;
 
 /**
@@ -16,7 +17,6 @@ import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepsCql;
  * <b> Long</b>
  * le type d'Identifiant de l'objet
  */
-public interface IJobStepsDaoCql extends IGenericIndexDAO<JobStepsCql, Long> {
-	public List<JobStepsCql> getJobStepsCqlByJobName(String jobname);
-	public List<JobStepsCql> getJobStepsCqlByJobNameAndSetName(String jobname, String stepname);
+public interface IJobStepDaoCql extends IGenericDAO<JobStepCql, Long> {
+	public List<JobStepCql> findJobStepByJobExecutionId(Long jobExecutionId);
 }

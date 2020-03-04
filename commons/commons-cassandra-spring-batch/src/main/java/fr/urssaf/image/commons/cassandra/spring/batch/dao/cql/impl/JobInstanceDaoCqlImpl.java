@@ -229,37 +229,23 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    */
   @Override
   public List<JobInstance> getJobInstances(final String jobName, final int start, final int count) {
-
-    // TODO orde de recuperation des instances
-
-    // On se sert de JobInstancesByName, dont la clé est jobName, pour
-    // récupérer les id des jobInstances
-    final Iterator<JobInstancesByNameCql> it = jobIByNamedaocql.findAllWithMapperById(jobName);
-    final List<Long> jobIds = new ArrayList<>(count);
-    while (it.hasNext()) {
-      final JobInstancesByNameCql job = it.next();
-      jobIds.add(job.getJobInstanceId());
-    }
-
-    // recuperation des JobInstance correspondant au jobIds
-    final List<JobInstance> jobInstList = new ArrayList<>();
-    final Iterator<JobInstanceCql> itJobInst = findAllWithMapper();
+    
+    List<JobInstanceCql> listJobInstance = findJobInstanceByName(jobName);
+    Collections.sort(listJobInstance);
+    
     int compteur = 0;
-    while (itJobInst.hasNext()) {
-      // test sur le compte pour être sur que la liste
-      // de JobInstance renvoyé ne soit pas superieur à count
-      if (compteur >= start + count) {
-        break;
-      }
-      //
-      if (compteur >= start) {
-        final JobInstanceCql jobInst = itJobInst.next();
-        if (jobIds.contains(jobInst.getJobInstanceId())) {
-          jobInstList.add(JobTranslateUtils.getJobInstanceToJobInstanceCql(jobInst));
+    final List<JobInstance> jobInstList = new ArrayList<>();
+    
+    for (JobInstanceCql jobInst : listJobInstance) {
+        if (compteur >= start + count) {
+          break;
         }
+        //
+        if (compteur >= start) {
+            jobInstList.add(JobTranslateUtils.getJobInstanceToJobInstanceCql(jobInst));
+         }        
+        compteur++;
       }
-      compteur++;
-    }
     return jobInstList;
   }
 
@@ -371,4 +357,12 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
       registry.register(codec);
     }
   }
+
+@Override
+public List<JobInstanceCql> findJobInstanceByName(String jobname) {
+	final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
+    select.where(QueryBuilder.eq("jobname", jobname));
+    List<JobInstanceCql> list = getMapper().map(getSession().execute(select)).all();
+    return list;
+}
 }

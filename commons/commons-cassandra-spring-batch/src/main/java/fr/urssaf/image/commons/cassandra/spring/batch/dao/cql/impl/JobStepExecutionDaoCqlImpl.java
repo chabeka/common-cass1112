@@ -3,6 +3,7 @@ package fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -32,6 +33,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionToJob
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepsCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionToJobStepDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepsDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.helper.CassandraJobHelper;
@@ -60,6 +62,9 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
 
    @Autowired
    private IJobExecutionToJobStepDaoCql jobExeToStepDaoCql;
+   
+   @Autowired
+   private IJobStepDaoCql jobStepDaoCql;
 
    @Autowired
    IJobStepsDaoCql stepsDao;
@@ -93,21 +98,9 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
       Assert.notNull(jobExecution.getId(), "JobExecution Id cannot be null.");
       final long jobExecutionId = jobExecution.getId();
 
-      // Récupération des id des steps
-      final Iterator<JobExecutionToJobStepCql> it = jobExeToStepDaoCql.findAllWithMapperById(jobExecutionId);
-
-    final List<Long> stepIds = new ArrayList<>();
-      while (it.hasNext()) {
-         stepIds.add(it.next().getJobStepId());
-      }
-
-    final Iterator<JobStepCql> itJobSt = findAllWithMapper();
-
-    final List<StepExecution> list = new ArrayList<>(stepIds.size());
-      while (itJobSt.hasNext()) {
-         final JobStepCql jobcql = itJobSt.next();
-         // Charger les steps dans l'objet parent jobExecution
-         list.add(JobTranslateUtils.getStepExecutionFromStpeCql(jobExecution, jobcql));
+      List<JobStepCql> listJobStep =  jobStepDaoCql.findJobStepByJobExecutionId(jobExecutionId);
+      for(JobStepCql stepcql : listJobStep) {
+    	  JobTranslateUtils.getStepExecutionFromStpeCql(jobExecution, stepcql);
       }
 
    }
@@ -230,20 +223,8 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
    @SuppressWarnings("unchecked")
    public final int countStepExecutions(final String jobNamePattern, final String stepNamePattern) {
 
-      final Iterator<JobStepsCql> it = stepsDao.findAllWithMapper();
-
-      int compteur = 0;
-      while (it.hasNext()) {
-         final JobStepsCql step = it.next();
-
-         final String jobName = step.getJobName();
-         final String stepName = step.getStepName();
-         if (CassandraJobHelper.checkPattern(jobNamePattern, jobName)
-               && CassandraJobHelper.checkPattern(stepNamePattern, stepName)) {
-            compteur++;
-         }
-      }
-      return compteur;
+      final List<JobStepsCql> listJobStepsCql = stepsDao.getJobStepsCqlByJobNameAndSetName(jobNamePattern, stepNamePattern);
+      return listJobStepsCql.size();
    }
 
    @Override
@@ -252,26 +233,22 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
                                                              final String stepNamePattern, final int start, final int count) {
 
       // TODO par ordre décroissant d'ID
-    final Iterator<JobStepsCql> it = stepsDao.findAllWithMapper();
+    final List<JobStepsCql> listJobStepsCql = stepsDao.getJobStepsCqlByJobNameAndSetName(jobNamePattern, stepNamePattern);
 
+    Collections.sort(listJobStepsCql);
+    
       int compteur = 0;
       // recuperation des ids des steps
     final List<Long> stepIds = new ArrayList<>(count);
-      while (it.hasNext()) {
-         final JobStepsCql step = it.next();
-      final String jobName = step.getJobName();
-      final String stepName = step.getStepName();
-      if (CassandraJobHelper.checkPattern(jobNamePattern, jobName) &&
-          CassandraJobHelper.checkPattern(stepNamePattern, stepName)) {
+      for (JobStepsCql stepcql : listJobStepsCql) {
          compteur++;
          if (compteur >= start) {
-            stepIds.add(step.getJobStepId());
+            stepIds.add(stepcql.getJobStepId());
          }
          if (compteur == count + start) {
             break;
          }
 
-      }
     }
 
       // recuperation des steps en fonction de leurs ids
@@ -296,17 +273,14 @@ public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long>
    public final Collection<String> findStepNamesForJobExecution(final String jobName,
                                                                 final String excludesPattern) {
 
-      final Iterator<JobStepsCql> it = stepsDao.findAllWithMapper();
+	   // recherche de tous les steps du job de nom jobName
+	   // select * from JobStepsCql where jobname=jobName;
+      final List<JobStepsCql> listJobStepsCql = stepsDao.getJobStepsCqlByJobName(jobName);
 
       final Set<String> stepNames = new HashSet<String>();
-      while (it.hasNext()) {
-         final JobStepsCql step = it.next();
-         final String currentJobName = step.getJobName();
-         final String currentStepName = step.getStepName();
-         if (currentJobName.equals(jobName)
-               && !CassandraJobHelper.checkPattern(excludesPattern, currentStepName)) {
-            stepNames.add(currentStepName);
-         }
+      for(JobStepsCql stepscql : listJobStepsCql) {
+         final String currentStepName = stepscql.getStepName();
+         stepNames.add(currentStepName);
       }
       return stepNames;
    }
