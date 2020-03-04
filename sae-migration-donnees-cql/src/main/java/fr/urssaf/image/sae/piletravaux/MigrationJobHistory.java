@@ -158,8 +158,9 @@ public class MigrationJobHistory {
           for (final HColumn<UUID, byte[]> col : tHl) {
             column = col.getName();
             infoTrace = StringSerializer.get().fromBytes(col.getValue());
+            mapTrace.put(column, infoTrace);
           }
-          mapTrace.put(column, infoTrace);
+
 
           final JobHistoryCql jobH = new JobHistoryCql();
           jobH.setIdjob(currentKey);

@@ -2,10 +2,13 @@ package fr.urssaf.image.sae.jobspring;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.javers.core.Javers;
+import org.javers.core.diff.Diff;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.BatchStatus;
@@ -95,6 +98,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     Long key = null;
     JobExecutionCqlForMig jobExecutionCql = new JobExecutionCqlForMig();
 
+
     int nbRow = 0;
     while (it.hasNext()) {
       final Row row = (Row) it.next();
@@ -105,11 +109,15 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
         lastKey = key;
       }
 
+      // final String colName = StringSerializer.get().fromByteBuffer(row.getBytes("column1"));
+
       if (key != null && !key.equals(lastKey)) {
         // TODO supprimer log
-        LOGGER.info("Infos:{}",
-                    jobExecutionCql.getJobName() + "/" + jobExecutionCql.getJobExecutionId() + "/"
-                        + jobExecutionCql.getExecutionContext().capacity());
+        /*
+         * LOGGER.info("Infos:{}",
+         * jobExecutionCql.getJobName() + "/" + jobExecutionCql.getJobExecutionId() + "/"
+         * + jobExecutionCql.getExecutionContext().capacity());
+         */
         // sauvegarde de l'objet traité
         try {
           if (jobExecutionCql.getExecutionContext().capacity() < RowUtils.MAX_SIZE_COLUMN) {
@@ -130,6 +138,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
         // reinitialisation
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
+        getJobExecutionFromResult(row, jobExecutionCql);
         nbRow++;
         if (nbRow % 1000 == 0) {
           LOGGER.info(" Nb rows : " + nbRow);
@@ -143,6 +152,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     // ajout du dernier cas traité
     if (jobExecutionCql != null) {
       try {
+        System.out.println();
         jobdaocqlForMig.saveWithMapper(jobExecutionCql);
       }
       catch (final Exception e) {
@@ -213,6 +223,41 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     return isListEq;
   }
 
+  public Diff compareJobExecution(final Javers javers) {
+    // recuperer un iterateur sur la table cql
+    // Parcourir les elements et pour chaque element
+    // recuperer un ensemble de X elements dans la table thrift
+    // chercher l'element cql dans les X elements
+    // si trouvé, on passe à l'element suivant cql
+    // sinon on recupère les X element suivant dans la table thrift puis on fait une nouvelle recherche
+    // si on en recupère moins de X et qu'on ne trouve pas l'element cql alors == > echec de comparaison
+
+    // liste venant de la base thrift
+    final List<JobExecutionCqlForMig> listJobCql = getListJobExeThrift();
+
+    // liste venant de la base cql
+    final List<JobExecutionCqlForMig> listJobThrift = new ArrayList<>();
+    final Iterator<JobExecutionCql> it = jobdaocql.findAllWithMapper();
+    while (it.hasNext()) {
+      final JobExecutionCql cqlJob = it.next();
+      final JobExecutionCqlForMig jobExFMig = getJobExecutionJobExeCql(cqlJob);
+      listJobThrift.add(jobExFMig);
+    }
+    Collections.sort(listJobThrift);
+
+    Collections.sort(listJobCql);
+
+    final Diff diff = javers.compareCollections(listJobThrift, listJobCql, JobExecutionCqlForMig.class);
+    final boolean isListEq = CompareUtils.compareListsGeneric(listJobCql, listJobThrift);
+    if (!diff.hasChanges()) {
+      LOGGER.info("MIGRATION_JobExecution -- Les listes JobExecution sont identiques, nb=" + listJobThrift.size());
+    } else {
+      LOGGER.warn("MIGRATION_JobExecution -- ATTENTION: Les listes JobExecution sont différentes ");
+    }
+
+    return diff;
+  }
+
 
 
 
@@ -264,11 +309,6 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
       jobExecutionCql.setJobName(jobName);
     }
 
-    if(JE_CREATION_TIME_COLUMN.equals(colName)) {
-      final Date createTime = NullableDateSerializer.get().fromByteBuffer(row.getBytes("value"));
-      jobExecutionCql.setCreationTime(createTime);
-    }
-
     if(JE_EXECUTION_CONTEXT_COLUMN.equals(colName)) {
       final ByteBuffer executionContext = row.getBytes("value");
       jobExecutionCql.setExecutionContext(executionContext);
@@ -307,6 +347,11 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     if(JE_EXIT_MESSAGE_COLUMN.equals(colName)) {
       final String exitMessage = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
       jobExecutionCql.setExitMessage(exitMessage);
+    }
+
+    if (JE_CREATION_TIME_COLUMN.equals(colName)) {
+      final Date createTime = NullableDateSerializer.get().fromByteBuffer(row.getBytes("value"));
+      jobExecutionCql.setCreationTime(createTime);
     }
   }
 
@@ -374,6 +419,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
         // reinitialion
         lastKey = key;
         jobExecutionCql = new JobExecutionCqlForMig();
+        getJobExecutionFromResult(row, jobExecutionCql);
       } else {
         // construction de l'objet cql
         getJobExecutionFromResult(row, jobExecutionCql);
@@ -388,39 +434,5 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
     return listJob;
   }
 
-  /*
-   * ATTENTION POUR TEST
-   * A supprimer test executionContext
-   */
-  /*
-   * public void testExecutionContext() {
-   * final Map<String, JobParameter> mapJobParameters = new HashMap<>();
-   * mapJobParameters.put("testp1", new JobParameter("test1"));
-   * mapJobParameters.put("testp2", new JobParameter("test2"));
-   * mapJobParameters.put("testp3", new JobParameter("test3"));
-   * final JobParameters jobParameters = new JobParameters(mapJobParameters);
-   * final JobInstance jobInstance = jobInstanceDaoThrift.createJobInstance("TestContexte70000", jobParameters);
-   * final JobExecution jobExecution = new JobExecution(jobInstance, new Long(1));
-   * final Map<String, Object> mapContext = new HashMap<>();
-   * final StringBuilder sb = new StringBuilder();
-   * Contextes trop gros:11453,11452,11451,11455,11454,11457,11450 (CSPP)
-   * // 100000KO 50000OK 60000OK(13489049) 65000OK(14614049) 67500OK(15176549) 68750OK(15457799) 69375OK(15598424) 70000KO
-   * for (int i = 0; i < 70000; i++) {
-   * sb.append("Etre ou ne pas être, c'est là la question.Y a-t-il plus de noblesse d'âme à subir la fronde"
-   * + " et les flèches de la fortune outrageante, ou bien à s'armer contre une mer de douleurs et à "
-   * + "l'arrêter par une révolte ?" + i);
-   * }
-   * mapContext.put("contexteTest", sb.toString());
-   * mapContext.put("index", 1);
-   * final ExecutionContext executionContext = new ExecutionContext(mapContext);
-   * jobExecution.setStartTime(Calendar.getInstance().getTime());
-   * jobExecution.setEndTime(Calendar.getInstance().getTime());
-   * jobExecution.setStatus(BatchStatus.ABANDONED);
-   * jobExecution.setCreateTime(Calendar.getInstance().getTime());
-   * jobExecution.setLastUpdated(Calendar.getInstance().getTime());
-   * jobExecution.setVersion(1);
-   * jobExecution.setExecutionContext(executionContext);
-   * saveJobExecutionToCassandra(jobExecution);
-   * }
-   */
+
 }

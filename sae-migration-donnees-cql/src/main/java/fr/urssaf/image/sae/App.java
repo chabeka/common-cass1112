@@ -54,7 +54,7 @@ import fr.urssaf.image.sae.trace.MigrationTraceJournalEvt;
 import fr.urssaf.image.sae.trace.MigrationTraceRegExploitation;
 import fr.urssaf.image.sae.trace.MigrationTraceRegSecurite;
 import fr.urssaf.image.sae.trace.MigrationTraceRegTechnique;
-import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.trace.model.JobExecutionCqlForMig;
 
 /**
  * Classe permettant de faire les migration des colonnes famillies (CF) La
@@ -120,7 +120,6 @@ public class App {
         final ApplicationContext context = App.startContextSpring(cheminFicConfSae);
 
         //Build Javers instance avec algorithme simple
-
         final Javers javers = JaversBuilder
             .javers()
             .registerEntity(EntityDefinitionBuilder.entityDefinition(JobHistoryCql.class)
@@ -136,16 +135,22 @@ public class App {
                             .withTypeName("JobRequestCql")
 
                             .build())
-            .registerEntity(EntityDefinitionBuilder.entityDefinition(VIContenuExtrait.class)
-
-                            .withIdPropertyName("codeAppli")
-                            .withIdPropertyName("idUtilisateur")
-                            .withIgnoredProperties("saeDroits")
-                            .build())
+            /*
+             * .registerEntity(EntityDefinitionBuilder.entityDefinition(VIContenuExtrait.class)
+             * .withIdPropertyName("codeAppli")
+             * .withIdPropertyName("idUtilisateur")
+             * .withIgnoredProperties("saeDroits")
+             * .build())
+             */
             .registerEntity(EntityDefinitionBuilder.entityDefinition(FormatControlProfil.class)
                             .withIdPropertyName("formatCode")
                             .withIgnoredProperties("controlProfil")
                             .withTypeName("FormatControlProfil")
+                            .build())
+            .registerEntity(EntityDefinitionBuilder.entityDefinition(JobExecutionCqlForMig.class)
+                            .withIdPropertyName("jobExecutionId")
+                                                                                  // .withIgnoredProperties("executionContext")
+                            .withTypeName("JobExecutionCqlForMig")
                             .build())
             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
             .build();
@@ -230,6 +235,7 @@ public class App {
               nbTablesTraitees += 1;
               App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfNameTemp, javers);
             } else if (cfName.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC) && !isGNT) {
+
               App.LOG.info(" _________________________________________________________");
               App.LOG.info("|                                                         |");
               App.LOG.info("|                   Cas particulier GNS                   |");
@@ -246,6 +252,9 @@ public class App {
             App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfName, javers);
           } else {
             if (cfName.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC) && !isGNT) {
+              // On passe directement en CQL
+              modeApiCqlSupport.updateModeApi(MODE_API.DATASTAX, cfName);
+              App.logMode(cfName, MODE_API.DATASTAX);
               App.LOG.info(" _________________________________________________________");
               App.LOG.info("|                                                         |");
               App.LOG.info("|                   Cas particulier GNS                   |");
@@ -275,7 +284,6 @@ public class App {
         App.LOG.info("|  la Cf et le type GNS/GNT                               |");
         App.LOG.info("|_________________________________________________________|");
         // on sort du programme
-
       }
 
       App.finProgramme();
@@ -345,12 +353,7 @@ public class App {
    */
   private static void setModeApiCF(final ModeApiCqlSupport modeApiCqlSupport, final String cfName,
                                    final String modeAPI) {
-    /*
-     * App.LOG.info(" _____________________________________________");
-     * App.LOG.info("|                                             |");
-     * App.LOG.info("|          MODE {}       |", modeAPI);
-     * App.LOG.info("|_____________________________________________|");
-     */
+
     App.logMode(cfName, modeAPI);
     modeApiCqlSupport.updateModeApi(modeAPI, cfName);
   }
@@ -669,10 +672,9 @@ public class App {
       case Constantes.CF_JOBEXECUTION:
         final MigrationJobExecution migrationJobExecution = context.getBean(MigrationJobExecution.class);
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
-          // migrationJobExecution.testExecutionContext();
           migrationJobExecution.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobExecution.compareJobExecution());
+          diffM.setDiff(migrationJobExecution.compareJobExecution(javers));
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecution.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
