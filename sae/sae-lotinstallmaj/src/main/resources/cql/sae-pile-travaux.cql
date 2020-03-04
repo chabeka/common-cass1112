@@ -6,7 +6,7 @@ CREATE TABLE jobhistorycql (
 	idjob timeuuid,
 	trace map<timeuuid, text>,
 	PRIMARY KEY (idjob)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE jobqueuecql (
 	key text,
@@ -14,7 +14,7 @@ CREATE TABLE jobqueuecql (
 	type text,
 	jobparameters map<text, text>,
 	PRIMARY KEY (key,idjob)
-)WITH CLUSTERING ORDER BY (idjob DESC);
+)WITH CLUSTERING ORDER BY (idjob DESC) AND  gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};;
 CREATE INDEX job_jobqueuecql_idx ON jobqueuecql( idjob );
 
 
@@ -41,5 +41,5 @@ CREATE TABLE jobrequestcql (
 	jobkey blob,
 	
 	PRIMARY KEY (idjob)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 CREATE INDEX jobRequestKey_jobrequestcql_idx ON jobrequestcql (jobkey);

@@ -11,7 +11,7 @@ CREATE TABLE rndcql (
 	type text,
 	libelleEnd text,
 	PRIMARY KEY (code)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE  correspondancesrndcql (
 	codeTemporaire text,
@@ -21,4 +21,4 @@ CREATE TABLE  correspondancesrndcql (
 	dateDebutMaj timestamp,
 	dateFinMaj timestamp,
 	PRIMARY KEY ((codeTemporaire,versionCourante))
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};

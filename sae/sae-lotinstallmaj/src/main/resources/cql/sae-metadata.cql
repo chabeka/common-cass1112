@@ -7,7 +7,7 @@ CREATE TABLE dictionarycql (
 	identifiant text,
 	listEntries list<text>,
 	PRIMARY KEY (identifiant)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
  CREATE TABLE metadatacql ( 
           longCode text,
@@ -34,4 +34,4 @@ CREATE TABLE dictionarycql (
           transf boolean, 
 
           PRIMARY KEY (longCode)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};

@@ -24,7 +24,7 @@ CREATE TABLE jobstepcql (
     writecount			int,
     writeskipcount		int,
 	PRIMARY KEY (jobstepexecutionid)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE INDEX jobExecutionId_jobstepcql_idx ON jobstepcql (jobexecutionid);
 
@@ -33,7 +33,7 @@ CREATE TABLE jobstepscql (
     jobname 		text,
     stepname 		text,
 	PRIMARY KEY (jobstepid)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 CREATE INDEX jobname_jobstepscql_idx ON jobstepscql (jobname);
 CREATE INDEX stepname_jobstepscql_idx ON jobstepscql (stepname);
 
@@ -51,7 +51,7 @@ CREATE TABLE jobexecutioncql (
     exitmessage			text,
     lastupdated			timestamp,
 	PRIMARY KEY (jobexecutionid)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
 
@@ -60,7 +60,7 @@ CREATE TABLE jobexecutionscql (
 	jobexecutionid		bigint,
     value 				text,
 	PRIMARY KEY (jobname, jobexecutionid)
-) WITH CLUSTERING ORDER BY (jobexecutionid DESC);
+)WITH CLUSTERING ORDER BY (jobexecutionid DESC) AND gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 CREATE INDEX jobExIdKey_jobexecutionscql_idx ON jobexecutionscql (jobexecutionid);
 
 
@@ -69,14 +69,14 @@ CREATE TABLE jobexecutionsrunningcql (
 	jobexecutionid		bigint,
     value 				text,
 	PRIMARY KEY (jobname, jobexecutionid)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE jobinstancetojobexecutioncql (
 	jobinstanceid		bigint,
 	jobexecutionid		bigint,
     value 				text,
 	PRIMARY KEY (jobinstanceid, jobexecutionid)
-)WITH CLUSTERING ORDER BY (jobexecutionid DESC);
+)WITH CLUSTERING ORDER BY (jobexecutionid DESC) AND gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
 CREATE TABLE jobexecutiontojobstepcql (
@@ -84,7 +84,7 @@ CREATE TABLE jobexecutiontojobstepcql (
 	jobstepid		bigint,
     value 				text,
 	PRIMARY KEY (jobexecutionid, jobstepid)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
 CREATE TABLE jobinstancecql (
@@ -95,7 +95,7 @@ CREATE TABLE jobinstancecql (
 	version					int,
 	reservedby				text,
 	PRIMARY KEY (jobinstanceid)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 CREATE INDEX jobRKey_jobinstancecql_idx ON jobinstancecql (jobkey);
 CREATE INDEX jobReserveBy_jobinstancecql_idx ON jobinstancecql (reservedby);
 CREATE INDEX jobname_jobinstancecql_idx ON jobinstancecql (jobname);
@@ -105,10 +105,10 @@ CREATE TABLE jobinstancesBynamecql (
 	jobname text,
 	jobinstanceid bigint,
 	PRIMARY KEY (jobname, jobinstanceid)
-)WITH CLUSTERING ORDER BY (jobinstanceid DESC);
+)WITH CLUSTERING ORDER BY (jobinstanceid DESC) AND gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE sequencescql (
 	jobidname		text,
     value 			bigint,
 	PRIMARY KEY (jobidname)
-);
+)WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};

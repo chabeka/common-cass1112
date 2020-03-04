@@ -6,8 +6,7 @@ CREATE TABLE droitactionunitairecql (
 	code text,
 	description text,
 	PRIMARY KEY (code)
-);
-
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE  TYPE  controlprofil (
 	formatCode text,
@@ -15,20 +14,21 @@ CREATE  TYPE  controlprofil (
 	formatIdentification  boolean,
     formatValidation boolean,
     formatValidationMode text
-); 
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'}; 
 
 CREATE  TABLE  droitformatcontrolprofilcql (
 	formatCode text,
 	description  text,
     controlProfil frozen<controlprofil>,
 	PRIMARY KEY (formatCode)
-); 
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE droitpagmacql ( 
           code text, 
           actionUnitaires List<text>, 
           PRIMARY KEY (code)
-);
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
+
 
 CREATE TABLE droitpagmpcql (
 
@@ -36,7 +36,7 @@ CREATE TABLE droitpagmpcql (
 	description text,
 	prmd text,
 	PRIMARY KEY (code)
-);
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE droitprmdcql ( 
           code text, 
@@ -45,14 +45,14 @@ CREATE TABLE droitprmdcql (
           lucene text, 
           metadata map<text,frozen<list<text>>>, 
           PRIMARY KEY (code) 
-);
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE droitpagmfcql ( 
           codePagmf text, 
           description text, 
           codeFormatControlProfil text, 
           PRIMARY KEY (codePagmf) 
-);
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE droitpagmcql ( 
 		  idClient text,
@@ -65,7 +65,7 @@ CREATE TABLE droitpagmcql (
           compressionPdfActive boolean, 
           seuilCompressionPdf int, 
           PRIMARY KEY (idClient,code) 
-);
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 CREATE TABLE droitcontratservicecql (
 
@@ -77,4 +77,4 @@ CREATE TABLE droitcontratservicecql (
 	verifNommage boolean,
 	viDuree bigint,
 	PRIMARY KEY (codeClient)
-);
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};

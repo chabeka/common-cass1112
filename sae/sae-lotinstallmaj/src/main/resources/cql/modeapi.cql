@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS modeapi (
 	cfname text PRIMARY KEY, 
 	mode text
-);
+) WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 /*
 ########################  DONNEES ###########################
