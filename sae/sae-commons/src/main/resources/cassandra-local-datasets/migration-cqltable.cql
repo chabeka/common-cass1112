@@ -159,8 +159,7 @@ CREATE TABLE jobstepscql (
     stepname 		text,
 	PRIMARY KEY (jobstepid)
 );
-CREATE INDEX jobname_jobstepscql_idx ON jobstepscql (jobname);
-CREATE INDEX stepname_jobstepscql_idx ON jobstepscql (stepname);
+
 
 CREATE TABLE jobexecutioncql (
 	jobexecutionid		bigint,

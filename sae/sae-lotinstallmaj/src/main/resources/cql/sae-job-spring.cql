@@ -34,8 +34,7 @@ CREATE TABLE jobstepscql (
     stepname 		text,
 	PRIMARY KEY (jobstepid)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
-CREATE INDEX jobname_jobstepscql_idx ON jobstepscql (jobname);
-CREATE INDEX stepname_jobstepscql_idx ON jobstepscql (stepname);
+
 
 CREATE TABLE jobexecutioncql (
 	jobexecutionid		bigint,
