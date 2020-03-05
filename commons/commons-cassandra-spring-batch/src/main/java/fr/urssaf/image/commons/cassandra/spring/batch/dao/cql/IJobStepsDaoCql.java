@@ -17,6 +17,5 @@ import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepsCql;
  * le type d'Identifiant de l'objet
  */
 public interface IJobStepsDaoCql extends IGenericIndexDAO<JobStepsCql, Long> {
-	public List<JobStepsCql> getJobStepsCqlByJobName(String jobname);
-	public List<JobStepsCql> getJobStepsCqlByJobNameAndSetName(String jobname, String stepname);
+
 }
