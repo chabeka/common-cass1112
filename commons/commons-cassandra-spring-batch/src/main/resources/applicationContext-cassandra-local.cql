@@ -21,7 +21,7 @@ CREATE TABLE jobstepcql (
     writeskipcount		int,
 	PRIMARY KEY (jobstepexecutionid)
 );
-
+CREATE INDEX jobExecutionId_jobstepcql_idx ON jobstepcql (jobexecutionid);
 
 CREATE TABLE jobstepscql (
 	jobstepid		bigint,
@@ -92,14 +92,13 @@ CREATE TABLE jobinstancecql (
 );
 CREATE INDEX jobRKey_idx ON jobinstancecql (jobkey);
 CREATE INDEX jobReserveBy_idx ON jobinstancecql (reservedby);
-
+CREATE INDEX jobname_jobinstancecql_idx ON jobinstancecql (jobname);
 
 CREATE TABLE jobinstancesBynamecql (
 	jobname text,
 	jobinstanceid bigint,
 	PRIMARY KEY (jobname, jobinstanceid)
 )WITH CLUSTERING ORDER BY (jobinstanceid DESC);
-
 
 
 
@@ -113,8 +112,8 @@ CREATE TABLE modeapi (
 	cfname text PRIMARY KEY, 
 	mode text
 );
-INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutions' , 'DUAL_MODE');
-INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'DUAL_MODE');
+//INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutions' , 'DUAL_MODE');
+//INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'DUAL_MODE');
 
 CREATE TABLE sequencescql (
 	jobidname		text,

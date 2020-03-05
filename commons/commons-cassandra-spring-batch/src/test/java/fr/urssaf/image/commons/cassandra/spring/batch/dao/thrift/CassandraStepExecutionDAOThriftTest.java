@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.test.TestingServer;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +36,6 @@ import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.StepExecutionI
 import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
-import junit.framework.Assert;
 import me.prettyprint.hector.api.Keyspace;
 
 @RunWith(SpringJUnit4ClassRunner.class)
