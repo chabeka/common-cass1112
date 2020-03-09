@@ -27,39 +27,46 @@ import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
  */
 @Service
 public class WSSuppressionServiceImpl implements WSSuppressionService {
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(WSSuppressionServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(WSSuppressionServiceImpl.class);
 
-   @Autowired
-   private SAESuppressionService suppressionService;
+  @Autowired
+  private SAESuppressionService suppressionService;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public SuppressionResponse suppression(Suppression request)
-         throws SuppressionAxisFault {
-      String trcPrefix = "suppressionSecure";
-      LOGGER.debug("{} - début", trcPrefix);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public SuppressionResponse suppression(final Suppression request)
+      throws SuppressionAxisFault {
+    final String trcPrefix = "suppressionSecure";
+    LOGGER.debug("{} - début", trcPrefix);
 
-      String uuid = request.getSuppression().getUuid().getUuidType();
-      UUID idArchive = UUID.fromString(uuid);
+    final String uuid = request.getSuppression().getUuid().getUuidType();
+    final UUID idArchive = UUID.fromString(uuid);
 
-      try {
-         suppressionService.suppression(idArchive);
+    try {
+      suppressionService.suppression(idArchive);
 
-      } catch (SuppressionException exception) {
-         throw new SuppressionAxisFault(exception);
-      } catch (ArchiveInexistanteEx exception) {
-         throw new SuppressionAxisFault("SuppressionArchiveNonTrouvee",
-               exception.getMessage(), exception);
+    } catch (final SuppressionException exception) {
+      if (exception.getMessage() != null && exception.getMessage().contains("RetrievalServiceEx")) {
+        throw new SuppressionAxisFault(exception);
+      } else {
+        throw new SuppressionAxisFault("ErreurInterneSuppression",
+                                       exception
+                                       .getMessage(),
+                                       exception);
       }
+    } catch (final ArchiveInexistanteEx exception) {
+      throw new SuppressionAxisFault("SuppressionArchiveNonTrouvee",
+                                     exception.getMessage(), exception);
+    }
 
-      SuppressionResponseType responseType = new SuppressionResponseType();
-      SuppressionResponse response = new SuppressionResponse();
-      response.setSuppressionResponse(responseType);
+    final SuppressionResponseType responseType = new SuppressionResponseType();
+    final SuppressionResponse response = new SuppressionResponse();
+    response.setSuppressionResponse(responseType);
 
-      LOGGER.debug("{} - fin", trcPrefix);
-      return response;
-   }
+    LOGGER.debug("{} - fin", trcPrefix);
+    return response;
+  }
 }

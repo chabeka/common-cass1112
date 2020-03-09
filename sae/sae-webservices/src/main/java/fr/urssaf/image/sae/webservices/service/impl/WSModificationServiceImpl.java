@@ -44,132 +44,139 @@ import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
  */
 @Service
 public class WSModificationServiceImpl implements WSModificationService {
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(WSModificationServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(WSModificationServiceImpl.class);
 
-   @Autowired
-   private SAEModificationService modificationService;
+  @Autowired
+  private SAEModificationService modificationService;
 
-   @Autowired
-   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
+  @Autowired
+  private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public ModificationResponse modification(Modification request)
-         throws ModificationAxisFault {
-      String trcPrefix = "modification";
-      LOGGER.debug("{} - début", trcPrefix);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ModificationResponse modification(final Modification request)
+      throws ModificationAxisFault {
+    final String trcPrefix = "modification";
+    LOGGER.debug("{} - début", trcPrefix);
 
-      // Vérification que la liste des métadonnées n'est pas vide
-      ListeMetadonneeType listeMeta = request.getModification()
-            .getMetadonnees();
-      verifListeMetaNonVide(listeMeta);
+    // Vérification que la liste des métadonnées n'est pas vide
+    final ListeMetadonneeType listeMeta = request.getModification()
+        .getMetadonnees();
+    verifListeMetaNonVide(listeMeta);
 
-      List<UntypedMetadata> metas = convertListeMetasWebServiceToService(listeMeta);
+    final List<UntypedMetadata> metas = convertListeMetasWebServiceToService(listeMeta);
 
-      String uuid = request.getModification().getUuid().getUuidType();
-      UUID idArchive = UUID.fromString(uuid);
+    final String uuid = request.getModification().getUuid().getUuidType();
+    final UUID idArchive = UUID.fromString(uuid);
 
-      try {
-         modificationService.modification(idArchive, metas);
+    try {
+      modificationService.modification(idArchive, metas);
 
-      } catch (ReferentialRndException exception) {
-         throw new ModificationAxisFault("ErreurInterne",
-               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
-                     null), exception);
+    } catch (final ReferentialRndException exception) {
+      throw new ModificationAxisFault("ErreurInterne",
+                                      wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
+                                                                                null), exception);
 
-      } catch (UnknownCodeRndEx exception) {
+    } catch (final UnknownCodeRndEx exception) {
 
-         throw new ModificationAxisFault("ModificationCodeRndInterdit",
-               exception.getMessage(), exception);
+      throw new ModificationAxisFault("ModificationCodeRndInterdit",
+                                      exception.getMessage(), exception);
 
-      } catch (InvalidValueTypeAndFormatMetadataEx exception) {
-         throw new ModificationAxisFault(
-               "ModificationMetadonneeFormatTypeNonValide", exception
-                     .getMessage(), exception);
+    } catch (final InvalidValueTypeAndFormatMetadataEx exception) {
+      throw new ModificationAxisFault(
+                                      "ModificationMetadonneeFormatTypeNonValide", exception
+                                      .getMessage(), exception);
 
-      } catch (UnknownMetadataEx exception) {
-         throw new ModificationAxisFault("ModificationMetadonneeInconnue",
-               exception.getMessage(), exception);
+    } catch (final UnknownMetadataEx exception) {
+      throw new ModificationAxisFault("ModificationMetadonneeInconnue",
+                                      exception.getMessage(), exception);
 
-      } catch (DuplicatedMetadataEx exception) {
-         throw new ModificationAxisFault("ModificationMetadonneeDoublon",
-               exception.getMessage(), exception);
+    } catch (final DuplicatedMetadataEx exception) {
+      throw new ModificationAxisFault("ModificationMetadonneeDoublon",
+                                      exception.getMessage(), exception);
 
-      } catch (NotSpecifiableMetadataEx exception) {
-         throw new ModificationAxisFault("ModificationMetadonneeNonModifiable",
-               exception.getMessage(), exception);
+    } catch (final NotSpecifiableMetadataEx exception) {
+      throw new ModificationAxisFault("ModificationMetadonneeNonModifiable",
+                                      exception.getMessage(), exception);
 
-      } catch (RequiredArchivableMetadataEx exception) {
-         throw new ModificationAxisFault("ModificationMetadonneeObligatoire",
-               exception.getMessage(), exception);
+    } catch (final RequiredArchivableMetadataEx exception) {
+      throw new ModificationAxisFault("ModificationMetadonneeObligatoire",
+                                      exception.getMessage(), exception);
 
-      } catch (UnknownHashCodeEx exception) {
-         throw new ModificationAxisFault("CaptureHashErreur", exception
-               .getMessage(), exception);
+    } catch (final UnknownHashCodeEx exception) {
+      throw new ModificationAxisFault("CaptureHashErreur", exception
+                                      .getMessage(), exception);
 
-      } catch (NotModifiableMetadataEx exception) {
-         throw new ModificationAxisFault("ModificationMetadonneeNonModifiable",
-               exception.getMessage(), exception);
+    } catch (final NotModifiableMetadataEx exception) {
+      throw new ModificationAxisFault("ModificationMetadonneeNonModifiable",
+                                      exception.getMessage(), exception);
 
-      } catch (ModificationException exception) {
-         throw new ModificationAxisFault(exception);
-
-      } catch (ArchiveInexistanteEx exception) {
-         throw new ModificationAxisFault("ModificationArchiveNonTrouvee",
-               exception.getMessage(), exception);
-
-      } catch (MetadataValueNotInDictionaryEx exception) {
-         throw new ModificationAxisFault("ModificationMetadonneeDictionnaire",
-               exception.getMessage(), exception);
-         
-      } catch (ReferentialException e) {
-         throw new ModificationAxisFault("ModificationMetadonneeReferential",
-               e.getMessage(), e);
-      } catch (RetrievalServiceEx e) {
-         throw new ModificationAxisFault("ModificationMetadonneeReferential",
-               e.getMessage(), e);
-      }
-
-      ModificationResponse response = ObjectModificationFactory
-            .createModificationResponse();
-
-      LOGGER.debug("{} - fin", trcPrefix);
-
-      return response;
-   }
-
-   private List<UntypedMetadata> convertListeMetasWebServiceToService(
-         ListeMetadonneeType listeMetaWs) {
-
-      if (listeMetaWs == null) {
-         return null;
+    } catch (final ModificationException exception) {
+      if (exception.getMessage().contains("RetrievalServiceEx")) {
+        throw new ModificationAxisFault(exception);
       } else {
-         return ObjectTypeFactory.buildMetaFromWS(listeMetaWs);
+        throw new ModificationAxisFault("ErreurInterneModification",
+                                        exception
+                                        .getMessage(),
+                                        exception.getCause());
       }
 
-   }
+    } catch (final ArchiveInexistanteEx exception) {
+      throw new ModificationAxisFault("ModificationArchiveNonTrouvee",
+                                      exception.getMessage(), exception);
 
-   private void verifListeMetaNonVide(ListeMetadonneeType listeMeta)
-         throws ModificationAxisFault {
-      String prefixeTrc = "verifListeMetaNonVide()";
-      LOGGER
-            .debug(
-                  "{} - Début de la vérification : La liste des métadonnées fournies par l'application n'est pas vide",
-                  prefixeTrc);
-      if (listeMeta.getMetadonnee() == null) {
-         LOGGER.debug("{} - {}", prefixeTrc, wsMessageRessourcesUtils
-               .recupererMessage("ws.modification.metadata.is.empty", null));
-         throw new ModificationAxisFault("ModificationMetadonneesVide",
-               wsMessageRessourcesUtils.recupererMessage(
-                     "ws.modification.metadata.is.empty", null));
-      }
-      LOGGER
-            .debug(
-                  "{} - Fin de la vérification : La liste des métadonnées fournies par l'application n'est pas vide",
-                  prefixeTrc);
-   }
+    } catch (final MetadataValueNotInDictionaryEx exception) {
+      throw new ModificationAxisFault("ModificationMetadonneeDictionnaire",
+                                      exception.getMessage(), exception);
+
+    } catch (final ReferentialException e) {
+      throw new ModificationAxisFault("ModificationMetadonneeReferential",
+                                      e.getMessage(), e);
+    } catch (final RetrievalServiceEx e) {
+      throw new ModificationAxisFault("ModificationMetadonneeReferential",
+                                      e.getMessage(), e);
+    }
+
+    final ModificationResponse response = ObjectModificationFactory
+        .createModificationResponse();
+
+    LOGGER.debug("{} - fin", trcPrefix);
+
+    return response;
+  }
+
+  private List<UntypedMetadata> convertListeMetasWebServiceToService(
+                                                                     final ListeMetadonneeType listeMetaWs) {
+
+    if (listeMetaWs == null) {
+      return null;
+    } else {
+      return ObjectTypeFactory.buildMetaFromWS(listeMetaWs);
+    }
+
+  }
+
+  private void verifListeMetaNonVide(final ListeMetadonneeType listeMeta)
+      throws ModificationAxisFault {
+    final String prefixeTrc = "verifListeMetaNonVide()";
+    LOGGER
+    .debug(
+           "{} - Début de la vérification : La liste des métadonnées fournies par l'application n'est pas vide",
+           prefixeTrc);
+    if (listeMeta.getMetadonnee() == null) {
+      LOGGER.debug("{} - {}", prefixeTrc, wsMessageRessourcesUtils
+                   .recupererMessage("ws.modification.metadata.is.empty", null));
+      throw new ModificationAxisFault("ModificationMetadonneesVide",
+                                      wsMessageRessourcesUtils.recupererMessage(
+                                                                                "ws.modification.metadata.is.empty", null));
+    }
+    LOGGER
+    .debug(
+           "{} - Fin de la vérification : La liste des métadonnées fournies par l'application n'est pas vide",
+           prefixeTrc);
+  }
 
 }
