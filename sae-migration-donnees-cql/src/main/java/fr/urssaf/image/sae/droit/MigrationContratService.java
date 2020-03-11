@@ -44,8 +44,16 @@ public class MigrationContratService implements IMigrationR {
     MigrationContratService.LOGGER.info(" MIGRATION_CONTRAT_SERVICE - migrationFromThriftToCql- start ");
 
     final List<ServiceContract> contratsServicesThrift = contratServiceSupport.findAll();
-
     if (!contratsServicesThrift.isEmpty()) {
+      // On traite le cas du contrat de service CS_ANCIEN_SYSTEME qui n'a pas de ListPki
+      for (int i = 0; i < contratsServicesThrift.size(); i++) {
+        if (contratsServicesThrift.get(i).getCodeClient().equals("CS_ANCIEN_SYSTEME")) {
+          final List<String> listPki = new ArrayList<>();
+          listPki.add("CN=IGC/A");
+          contratsServicesThrift.get(i).setListPki(listPki);
+        }
+      }
+      // On sauvegarde tous les contrats de service sur la table cql
       contratServiceDaoCql.saveAll(contratsServicesThrift);
     }
     final List<ServiceContract> contratsServicesCql = new ArrayList<>();
