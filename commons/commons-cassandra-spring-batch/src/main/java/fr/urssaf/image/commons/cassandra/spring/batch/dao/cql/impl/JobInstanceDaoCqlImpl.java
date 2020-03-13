@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.impl;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.ProtocolVersion;
 import com.datastax.driver.core.TypeCodec;
 import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -34,7 +36,6 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstancesByNameCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionToJobStepDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstancesByNameDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
@@ -119,7 +120,7 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
 
   @Override
   public JobInstance createJobInstance(final String jobName, final JobParameters jobParameters) {
-	
+
     Assert.notNull(jobName, "Job name must not be null.");
     Assert.notNull(jobParameters, "JobParameters must not be null.");
 
@@ -182,7 +183,9 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
 
     final byte[] jobKey = CassandraJobHelper.createJobKey(jobName, jobParameters);
     final Select select = QueryBuilder.select().from(getTypeArgumentsName());
-    select.where(QueryBuilder.eq(JOBKEY, jobKey));
+    final ByteBuffer buf = ByteBuffer.wrap(jobKey);
+    TypeCodec.blob().serialize(buf, ProtocolVersion.V2);
+    select.where(QueryBuilder.eq(JOBKEY, TypeCodec.blob().serialize(buf, ProtocolVersion.V2)));
     final JobInstanceCql jobInstanceCql = getMapper().map(getSession().execute(select)).one();
     final JobInstance inst = JobTranslateUtils.getJobInstanceToJobInstanceCql(jobInstanceCql);
     /*
@@ -229,23 +232,24 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    */
   @Override
   public List<JobInstance> getJobInstances(final String jobName, final int start, final int count) {
-    
-    List<JobInstanceCql> listJobInstance = findJobInstanceByName(jobName);
+
+    final List<JobInstanceCql> listJobInstance = findJobInstanceByName(jobName);
     Collections.sort(listJobInstance);
-    
+    Collections.reverse(listJobInstance);
+
     int compteur = 0;
     final List<JobInstance> jobInstList = new ArrayList<>();
-    
-    for (JobInstanceCql jobInst : listJobInstance) {
-        if (compteur >= start + count) {
-          break;
-        }
-        //
-        if (compteur >= start) {
-            jobInstList.add(JobTranslateUtils.getJobInstanceToJobInstanceCql(jobInst));
-         }        
-        compteur++;
+
+    for (final JobInstanceCql jobInst : listJobInstance) {
+      if (compteur >= start + count) {
+        break;
       }
+      //
+      if (compteur >= start) {
+        jobInstList.add(JobTranslateUtils.getJobInstanceToJobInstanceCql(jobInst));
+      }        
+      compteur++;
+    }
     return jobInstList;
   }
 
@@ -340,15 +344,15 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
     }
     return listJobIThrift;
   }
-  
+
   /**
    * @return the logger
    */
   @Override
   public Logger getLogger() {
-     return LOGGER;
+    return LOGGER;
   }
-  
+
   private void registerCodecIfNotFound(final CodecRegistry registry, final TypeCodec<?> codec) {
     try {
       registry.codecFor(codec.getCqlType(), codec.getJavaType());
@@ -358,11 +362,11 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
     }
   }
 
-@Override
-public List<JobInstanceCql> findJobInstanceByName(String jobname) {
-	final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
+  @Override
+  public List<JobInstanceCql> findJobInstanceByName(final String jobname) {
+    final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
     select.where(QueryBuilder.eq("jobname", jobname));
-    List<JobInstanceCql> list = getMapper().map(getSession().execute(select)).all();
+    final List<JobInstanceCql> list = getMapper().map(getSession().execute(select)).all();
     return list;
-}
+  }
 }

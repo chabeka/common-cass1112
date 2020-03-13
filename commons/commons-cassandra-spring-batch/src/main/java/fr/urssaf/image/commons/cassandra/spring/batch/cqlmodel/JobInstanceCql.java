@@ -133,56 +133,68 @@ public class JobInstanceCql  implements Serializable, Comparable<JobInstanceCql>
     this.jobName = jobName;
   }
 
-	@Override
-	public int compareTo(JobInstanceCql job) {
-		return (""+this.jobInstanceId).compareTo(job.getJobInstanceId()+"");
-	}
+  @Override
+  public int compareTo(final JobInstanceCql job) {
+    return jobInstanceId.compareTo(job.getJobInstanceId());
+  }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((jobInstanceId == null) ? 0 : jobInstanceId.hashCode());
-		result = prime * result + Arrays.hashCode(jobKey);
-		result = prime * result + ((jobName == null) ? 0 : jobName.hashCode());
-		result = prime * result + ((jobparameters == null) ? 0 : jobparameters.hashCode());
-		result = prime * result + ((version == null) ? 0 : version.hashCode());
-		return result;
-	}
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + (jobInstanceId == null ? 0 : jobInstanceId.hashCode());
+    result = prime * result + Arrays.hashCode(jobKey);
+    result = prime * result + (jobName == null ? 0 : jobName.hashCode());
+    result = prime * result + (jobparameters == null ? 0 : jobparameters.hashCode());
+    result = prime * result + (version == null ? 0 : version.hashCode());
+    return result;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		JobInstanceCql other = (JobInstanceCql) obj;
-		if (jobInstanceId == null) {
-			if (other.jobInstanceId != null)
-				return false;
-		} else if (!jobInstanceId.equals(other.jobInstanceId))
-			return false;
-		if (!Arrays.equals(jobKey, other.jobKey))
-			return false;
-		if (jobName == null) {
-			if (other.jobName != null)
-				return false;
-		} else if (!jobName.equals(other.jobName))
-			return false;
-		if (jobparameters == null) {
-			if (other.jobparameters != null)
-				return false;
-		} else if (!jobparameters.equals(other.jobparameters))
-			return false;
-		if (version == null) {
-			if (other.version != null)
-				return false;
-		} else if (!version.equals(other.version))
-			return false;
-		return true;
-	}
+  @Override
+  public boolean equals(final Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final JobInstanceCql other = (JobInstanceCql) obj;
+    if (jobInstanceId == null) {
+      if (other.jobInstanceId != null) {
+        return false;
+      }
+    } else if (!jobInstanceId.equals(other.jobInstanceId)) {
+      return false;
+    }
+    if (!Arrays.equals(jobKey, other.jobKey)) {
+      return false;
+    }
+    if (jobName == null) {
+      if (other.jobName != null) {
+        return false;
+      }
+    } else if (!jobName.equals(other.jobName)) {
+      return false;
+    }
+    if (jobparameters == null) {
+      if (other.jobparameters != null) {
+        return false;
+      }
+    } else if (!jobparameters.equals(other.jobparameters)) {
+      return false;
+    }
+    if (version == null) {
+      if (other.version != null) {
+        return false;
+      }
+    } else if (!version.equals(other.version)) {
+      return false;
+    }
+    return true;
+  }
 
-	
+
 }
