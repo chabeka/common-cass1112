@@ -547,13 +547,15 @@ Met la base Cassandra du SAE en version 32 :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_200200
 
 // ------------------------------------------
-// 22) Lot 200400SAE
+// 22) Lot 200500SAE
 // ------------------------------------------
 
-22-1) Lot 200400SAE
+22-1) Lot 200500SAE
 Met la base Cassandra du SAE en version 33 :
 
 - Ajout des métadonnées NomContact et PrenomContact
+- Ajout de l'index composite DomaineCotisant-CodeOrganismeProprietaire-CodeProduitV2-CodeTraitementV2-DateArchivage
 
-sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_200400
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_200500
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNS_CASSANDRA_DFCE_200500
 

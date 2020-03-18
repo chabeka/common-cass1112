@@ -301,7 +301,11 @@ public class MainValidation {
       return;
     } 
 
-    if (MajLotServiceImpl.CASSANDRA_DFCE_200400
+    if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_200500
+                                                   .equalsIgnoreCase(nomOperation)) {
+      return;
+    }
+    if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_200500
         .equalsIgnoreCase(nomOperation)) {
       return;
     }
@@ -361,7 +365,7 @@ public class MainValidation {
       return;
     }
     if (OperationCQL.SAE_MIG_ALL.getNomOp()
-                                .equalsIgnoreCase(nomOperation)) {
+        .equalsIgnoreCase(nomOperation)) {
       return;
     }
 

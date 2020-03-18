@@ -112,7 +112,9 @@ public final class MajLotServiceImpl implements MajLotService {
 
   public static final String CASSANDRA_DFCE_200200 = "CASSANDRA_DFCE_200200";
 
-  public static final String CASSANDRA_DFCE_200400 = "CASSANDRA_DFCE_200400";
+  public static final String GNT_CASSANDRA_DFCE_200500 = "GNT_CASSANDRA_DFCE_200500";
+
+  public static final String GNS_CASSANDRA_DFCE_200500 = "GNS_CASSANDRA_DFCE_200500";
 
   public static final String META_SEPA = "META_SEPA";
 
@@ -378,9 +380,12 @@ public final class MajLotServiceImpl implements MajLotService {
     } else if (CASSANDRA_DFCE_200200.equalsIgnoreCase(nomOperation)) {
       // Update keyspace SAE
       updateCassandra200200();
-    } else if (CASSANDRA_DFCE_200400.equalsIgnoreCase(nomOperation)) {
+    } else if (GNT_CASSANDRA_DFCE_200500.equalsIgnoreCase(nomOperation)) {
       // Update keyspace SAE
-      updateCassandra200400();
+      updateCassandra200500();
+    } else if (GNS_CASSANDRA_DFCE_200500.equalsIgnoreCase(nomOperation)) {
+      // Update keyspace SAE
+      updateCassandra200500();
     }else {
       // Opération inconnue => log + exception runtime
       final String message = String.format("Erreur technique : L'opération %s est inconnue", nomOperation);
@@ -511,8 +516,8 @@ public final class MajLotServiceImpl implements MajLotService {
      * // CASSANDRA_DFCE_200200
      * updateMetaDfce("META_200200");
      */
-    // CASSANDRA_DFCE_200400
-    updateMetaDfce("META_200400");
+    // CASSANDRA_DFCE_200500
+    updateMetaDfce("META_200500");
 
 
     try {
@@ -941,8 +946,8 @@ public final class MajLotServiceImpl implements MajLotService {
     LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
   }
 
-  private void updateCassandra200400() {
-    LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 200400");
+  private void updateCassandra200500() {
+    LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 200500");
     // Récupération de la chaîne de connexion au cluster cassandra
     updater.updateToVersion33();
     LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
