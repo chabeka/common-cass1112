@@ -74,7 +74,6 @@ public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> im
       final Select query = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
       //query.where(eq(JOBKEY2, jobKey));
       final ByteBuffer buf = ByteBuffer.wrap(jobKey);
-      TypeCodec.blob().serialize(buf, ProtocolVersion.V2);
       query.where(QueryBuilder.eq(JOBKEY2, TypeCodec.blob().serialize(buf, ProtocolVersion.V2)));
       return Optional.ofNullable(getMapper().map(getSession().execute(query)).one());
    }
