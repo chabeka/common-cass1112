@@ -184,7 +184,6 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
     final byte[] jobKey = CassandraJobHelper.createJobKey(jobName, jobParameters);
     final Select select = QueryBuilder.select().from(getTypeArgumentsName());
     final ByteBuffer buf = ByteBuffer.wrap(jobKey);
-    TypeCodec.blob().serialize(buf, ProtocolVersion.V2);
     select.where(QueryBuilder.eq(JOBKEY, TypeCodec.blob().serialize(buf, ProtocolVersion.V2)));
     final JobInstanceCql jobInstanceCql = getMapper().map(getSession().execute(select)).one();
     final JobInstance inst = JobTranslateUtils.getJobInstanceToJobInstanceCql(jobInstanceCql);
