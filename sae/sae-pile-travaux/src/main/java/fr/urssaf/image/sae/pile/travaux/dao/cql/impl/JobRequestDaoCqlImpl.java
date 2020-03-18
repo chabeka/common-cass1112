@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.pile.travaux.dao.cql.impl;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.datastax.driver.core.CodecRegistry;
+import com.datastax.driver.core.ProtocolVersion;
 import com.datastax.driver.core.TypeCodec;
 import com.datastax.driver.core.exceptions.CodecNotFoundException;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -70,7 +72,10 @@ public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> im
    @Override
    public Optional<JobRequestCql> getJobRequestIdByJobKey(final byte[] jobKey) {
       final Select query = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
-      query.where(eq(JOBKEY2, jobKey));
+      //query.where(eq(JOBKEY2, jobKey));
+      final ByteBuffer buf = ByteBuffer.wrap(jobKey);
+      TypeCodec.blob().serialize(buf, ProtocolVersion.V2);
+      query.where(QueryBuilder.eq(JOBKEY2, TypeCodec.blob().serialize(buf, ProtocolVersion.V2)));
       return Optional.ofNullable(getMapper().map(getSession().execute(query)).one());
    }
 
