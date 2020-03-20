@@ -2,7 +2,7 @@
 /*
 ##################### RND #######################
 */
-CREATE TABLE rndcql (
+CREATE TABLE IF NOT EXISTS rndcql (
 	code text,
 	codeFonction text,
 	codeActivite text,
@@ -13,7 +13,7 @@ CREATE TABLE rndcql (
 	PRIMARY KEY (code)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE TABLE  correspondancesrndcql (
+CREATE TABLE IF NOT EXISTS correspondancesrndcql (
 	codeTemporaire text,
 	codeDefinitif text,
 	versionCourante text,

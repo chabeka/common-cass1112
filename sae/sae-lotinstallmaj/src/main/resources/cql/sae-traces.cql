@@ -2,13 +2,13 @@
 ##################### TRACES #######################
 */
 
-CREATE TABLE tracedestinatairecql (
+CREATE TABLE IF NOT EXISTS tracedestinatairecql (
     codeevt text PRIMARY KEY,
     destinataires map<text, frozen<list<text>>>
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
-CREATE TABLE tracejournalevtcql (
+CREATE TABLE IF NOT EXISTS tracejournalevtcql (
     identifiant timeuuid,
     timestamp timestamp,
     codeevt text,
@@ -21,7 +21,7 @@ CREATE TABLE tracejournalevtcql (
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
-CREATE TABLE tracejournalevtindexcql (
+CREATE TABLE IF NOT EXISTS tracejournalevtindexcql (
     identifiantindex text,
     timestamp timestamp,
     identifiant timeuuid,
@@ -33,7 +33,7 @@ CREATE TABLE tracejournalevtindexcql (
     PRIMARY KEY (identifiantindex, timestamp, identifiant)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE TABLE tracejournalevtindexdoccql (
+CREATE TABLE IF NOT EXISTS tracejournalevtindexdoccql (
 	identifiant timeuuid,
     timestamp timestamp,
     login text,
@@ -48,7 +48,7 @@ CREATE TABLE tracejournalevtindexdoccql (
     PRIMARY KEY (identifiantindex,timestamp, identifiant)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE TABLE traceregsecuritecql (
+CREATE TABLE IF NOT EXISTS traceregsecuritecql (
   identifiant timeuuid,
   timestamp timestamp,
   codeEvt text,
@@ -61,7 +61,7 @@ CREATE TABLE traceregsecuritecql (
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
-CREATE TABLE traceregtechniquecql (
+CREATE TABLE IF NOT EXISTS traceregtechniquecql (
     identifiant timeuuid PRIMARY KEY,
     codeevt text,
     contexte text,
@@ -73,7 +73,7 @@ CREATE TABLE traceregtechniquecql (
     stacktrace text
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE TABLE traceregexploitationcql (
+CREATE TABLE IF NOT EXISTS traceregexploitationcql (
   identifiant timeuuid PRIMARY KEY,
   timestamp timestamp,
   codeevt text,
@@ -85,7 +85,7 @@ CREATE TABLE traceregexploitationcql (
   infos map<text, text>,
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
   
-CREATE TABLE traceregexploitationindexcql (
+CREATE TABLE IF NOT EXISTS traceregexploitationindexcql (
     identifiant timeuuid,
     timestamp timestamp,
     login text,
@@ -98,7 +98,7 @@ CREATE TABLE traceregexploitationindexcql (
     PRIMARY KEY (identifiantindex, timestamp, identifiant)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE TABLE traceregtechniqueindexcql (
+CREATE TABLE IF NOT EXISTS traceregtechniqueindexcql (
     identifiant timeuuid,
     timestamp timestamp,
     login text,
@@ -112,7 +112,7 @@ CREATE TABLE traceregtechniqueindexcql (
     PRIMARY KEY (identifiantindex, timestamp, identifiant)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE TABLE traceregsecuriteindexcql (
+CREATE TABLE IF NOT EXISTS traceregsecuriteindexcql (
     identifiant timeuuid,
     timestamp timestamp,
     login text,

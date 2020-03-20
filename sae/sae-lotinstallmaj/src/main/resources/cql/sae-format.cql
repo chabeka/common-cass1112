@@ -2,7 +2,7 @@
 /*
 ##################### FORMAT #######################
 */
-CREATE TABLE referentielformatcql ( 
+CREATE TABLE IF NOT EXISTS referentielformatcql ( 
           idFormat  text,
           autoriseGED boolean, 
           convertisseur text, 

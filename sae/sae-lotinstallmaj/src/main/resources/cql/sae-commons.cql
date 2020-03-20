@@ -3,7 +3,7 @@
 ##################### PARAMETERS #######################
 */
 
-CREATE TABLE parameterscql (
+CREATE TABLE IF NOT EXISTS parameterscql (
 	typeParameters text,
 	name text,
     value blob,

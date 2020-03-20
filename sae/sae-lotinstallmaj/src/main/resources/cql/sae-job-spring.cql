@@ -3,7 +3,7 @@
 */
 
 
-CREATE TABLE jobstepcql (
+CREATE TABLE IF NOT EXISTS jobstepcql (
     jobstepexecutionid	bigint,
     commitcount			int,
     endtime			timestamp,
@@ -26,9 +26,9 @@ CREATE TABLE jobstepcql (
 	PRIMARY KEY (jobstepexecutionid)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE INDEX jobExecutionId_jobstepcql_idx ON jobstepcql (jobexecutionid);
+CREATE INDEX IF NOT EXISTS jobExecutionId_jobstepcql_idx ON jobstepcql (jobexecutionid);
 
-CREATE TABLE jobstepscql (
+CREATE TABLE IF NOT EXISTS jobstepscql (
 	jobstepid		bigint,
     jobname 		text,
     stepname 		text,
@@ -36,7 +36,7 @@ CREATE TABLE jobstepscql (
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
-CREATE TABLE jobexecutioncql (
+CREATE TABLE IF NOT EXISTS jobexecutioncql (
 	jobexecutionid		bigint,
 	jobinstanceid		bigint,
 	jobName				text,
@@ -54,23 +54,23 @@ CREATE TABLE jobexecutioncql (
 
 
 
-CREATE TABLE jobexecutionscql (
+CREATE TABLE IF NOT EXISTS jobexecutionscql (
 	jobname				text,
 	jobexecutionid		bigint,
     value 				text,
 	PRIMARY KEY (jobname, jobexecutionid)
 )WITH CLUSTERING ORDER BY (jobexecutionid DESC) AND gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
-CREATE INDEX jobExIdKey_jobexecutionscql_idx ON jobexecutionscql (jobexecutionid);
+CREATE INDEX IF NOT EXISTS jobExIdKey_jobexecutionscql_idx ON jobexecutionscql (jobexecutionid);
 
 
-CREATE TABLE jobexecutionsrunningcql (
+CREATE TABLE IF NOT EXISTS jobexecutionsrunningcql (
 	jobname				text,
 	jobexecutionid		bigint,
     value 				text,
 	PRIMARY KEY (jobname, jobexecutionid)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE TABLE jobinstancetojobexecutioncql (
+CREATE TABLE IF NOT EXISTS jobinstancetojobexecutioncql (
 	jobinstanceid		bigint,
 	jobexecutionid		bigint,
     value 				text,
@@ -78,7 +78,7 @@ CREATE TABLE jobinstancetojobexecutioncql (
 )WITH CLUSTERING ORDER BY (jobexecutionid DESC) AND gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
-CREATE TABLE jobexecutiontojobstepcql (
+CREATE TABLE IF NOT EXISTS jobexecutiontojobstepcql (
 	jobexecutionid		bigint,
 	jobstepid		bigint,
     value 				text,
@@ -86,7 +86,7 @@ CREATE TABLE jobexecutiontojobstepcql (
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
 
-CREATE TABLE jobinstancecql (
+CREATE TABLE IF NOT EXISTS jobinstancecql (
 	jobinstanceid			bigint,
 	jobname					text,
     jobparameters 			blob,
@@ -95,18 +95,18 @@ CREATE TABLE jobinstancecql (
 	reservedby				text,
 	PRIMARY KEY (jobinstanceid)
 )WITH gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
-CREATE INDEX jobRKey_jobinstancecql_idx ON jobinstancecql (jobkey);
-CREATE INDEX jobReserveBy_jobinstancecql_idx ON jobinstancecql (reservedby);
-CREATE INDEX jobname_jobinstancecql_idx ON jobinstancecql (jobname);
+CREATE INDEX IF NOT EXISTS jobRKey_jobinstancecql_idx ON jobinstancecql (jobkey);
+CREATE INDEX IF NOT EXISTS jobReserveBy_jobinstancecql_idx ON jobinstancecql (reservedby);
+CREATE INDEX IF NOT EXISTS jobname_jobinstancecql_idx ON jobinstancecql (jobname);
 
 
-CREATE TABLE jobinstancesBynamecql (
+CREATE TABLE IF NOT EXISTS jobinstancesBynamecql (
 	jobname text,
 	jobinstanceid bigint,
 	PRIMARY KEY (jobname, jobinstanceid)
 )WITH CLUSTERING ORDER BY (jobinstanceid DESC) AND gc_grace_seconds = 1728000 AND compaction = {'sstable_size_in_mb': '200', 'class': 'org.apache.cassandra.db.compaction.LeveledCompactionStrategy'};
 
-CREATE TABLE sequencescql (
+CREATE TABLE IF NOT EXISTS sequencescql (
 	jobidname		text,
     value 			bigint,
 	PRIMARY KEY (jobidname)
