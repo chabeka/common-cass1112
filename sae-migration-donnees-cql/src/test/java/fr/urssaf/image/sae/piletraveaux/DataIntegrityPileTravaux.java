@@ -28,10 +28,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.piletravaux.MigrationJobHistory;
@@ -77,15 +81,21 @@ public class DataIntegrityPileTravaux {
   @Autowired
   private CassandraServerBean cassandraServer;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiCqlSupport;
+
   List<UUID> idsJob = new ArrayList<>();
 
-  final static int NB_ROWS = 1000;
+  final static int NB_ROWS = 10;
+
+  Javers javers;
+
 
   @Before
   public void init() throws Exception {
 
     // cassandraServer.resetData(false, MODE_API.DATASTAX);
-
+    modeApiCqlSupport.initTables(MODE_API.HECTOR);
     final Keyspace keyspace = ccf.getKeyspace();
 
     sysout = new PrintStream(System.out, true, "UTF-8");
@@ -93,6 +103,27 @@ public class DataIntegrityPileTravaux {
     // Pour dumper sur un fichier plutôt que sur la sortie standard
     // sysout = new PrintStream("c:/temp/out.txt");
     dumper = new Dumper(keyspace, sysout);
+
+    // Build Javers instance avec algorithme simple
+    javers = JaversBuilder
+        .javers()
+        .registerEntity(EntityDefinitionBuilder.entityDefinition(JobHistoryCql.class)
+                        .withIdPropertyName("idjob")
+                        .withTypeName("JobHistoryCql")
+                        .build())
+        .registerEntity(EntityDefinitionBuilder.entityDefinition(JobQueueCql.class)
+                        .withIdPropertyName("idJob")
+                        .withTypeName("JobQueueCql")
+                        .build())
+        .registerEntity(EntityDefinitionBuilder.entityDefinition(JobRequestCql.class)
+                        .withIdPropertyName("idJob")
+                        .withTypeName("JobRequestCql")
+
+                        .build())
+
+        .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+        .build();
+
   }
 
   private void populateTableThrift() throws Exception {
@@ -129,13 +160,13 @@ public class DataIntegrityPileTravaux {
 
     try {
       final Javers javers = JaversBuilder
-                                         .javers()
-                                         .registerEntity(EntityDefinitionBuilder.entityDefinition(JobRequestCql.class)
-                                                                                .withIdPropertyName("idJob")
-                                                                                .withTypeName("JobRequestCql")
-                                                                                .build())
-                                         .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
-                                         .build();
+          .javers()
+          .registerEntity(EntityDefinitionBuilder.entityDefinition(JobRequestCql.class)
+                          .withIdPropertyName("idJob")
+                          .withTypeName("JobRequestCql")
+                          .build())
+          .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
+          .build();
       final Diff diff = migJobR.compareJobRequestCql(javers);
       // final boolean isEqBase = migJobR.compareJobRequestCql();
       Assert.assertTrue("Les données dans la base thrift et cql doivent être égales", !diff.hasChanges());
@@ -154,8 +185,10 @@ public class DataIntegrityPileTravaux {
     migJobH.migrationFromThriftToCql();
 
     try {
-      final boolean isEqBase = migJobH.compareJobHistoryCql();
-      Assert.assertTrue("Les données dans la base thrift et cql de la table JobHistory et JobHistoryCql doivent être égales", isEqBase);
+      // final boolean isEqBase = migJobH.compareJobHistoryCql();
+      final Diff diff = migJobH.compareJobHistoryCql(javers);
+      System.out.println(diff.prettyPrint());
+      Assert.assertTrue("Les données dans la base thrift et cql de la table JobHistory et JobHistoryCql doivent être égales", !diff.hasChanges());
     }
     catch (final Exception e) {
       fail("Les données dans la base thrift et cql de la table JobHistory et JobHistoryCql  doivent être égales");

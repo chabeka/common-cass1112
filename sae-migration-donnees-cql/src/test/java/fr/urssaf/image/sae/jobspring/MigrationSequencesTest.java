@@ -74,18 +74,18 @@ public class MigrationSequencesTest {
 
       populateTableThrift();
       migrationSequences.migrationFromThriftToCql();
-        final List<SequencesCql> listThrift = migrationSequences.findAllThrift(SEQUENCE_KEY);
-        migrationSequences.migrationFromThriftToCql();
-        final List<SequencesCql> listCql = new ArrayList<>();
-        final Iterator<SequencesCql> it = sequencesDaoCql.findAllWithMapper();
-        while (it.hasNext()) {
-          final SequencesCql sequenceCql = it.next();
-          listCql.add(sequenceCql);
-        }
-        Assert.assertEquals(listThrift.size(), listCode.length);
-        Assert.assertEquals(listThrift.size(), listCql.size());
-        Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
-       
+      final List<SequencesCql> listThrift = migrationSequences.findAllThrift(SEQUENCE_KEY);
+      migrationSequences.migrationFromThriftToCql();
+      final List<SequencesCql> listCql = new ArrayList<>();
+      final Iterator<SequencesCql> it = sequencesDaoCql.findAllWithMapper();
+      while (it.hasNext()) {
+        final SequencesCql sequenceCql = it.next();
+        listCql.add(sequenceCql);
+      }
+      Assert.assertEquals(listThrift.size(), listCode.length);
+      Assert.assertEquals(listThrift.size(), listCql.size());
+      Assert.assertTrue(CompareUtils.compareListsGeneric(listThrift, listCql));
+
     }
     catch (final Exception ex) {
       LOGGER.debug("exception=" + ex);
@@ -96,7 +96,7 @@ public class MigrationSequencesTest {
   private void populateTableThrift() {
 
     for (int i=0;i<listCode.length;i++) {
-    	migrationSequences.addSequence(listCode[i], listValues[i]);
+      migrationSequences.addSequence(listCode[i], listValues[i]);
     }
   }
 
@@ -107,12 +107,13 @@ public class MigrationSequencesTest {
   public void migrationFromCqlTothrift() {
 
     populateTableCql();
+    final Iterator<SequencesCql> it = sequencesDaoCql.findAllWithMapper();
+    final List<SequencesCql> listCql = new ArrayList<>();
+    it.forEachRemaining(listCql::add);
     migrationSequences.migrationFromCqlTothrift();
     final List<SequencesCql> listThrift = migrationSequences.findAllThrift(SEQUENCE_KEY);
 
-    final Iterator<SequencesCql> it=sequencesDaoCql.findAllWithMapper();
-    final List<SequencesCql> listCql=new ArrayList<>();
-    it.forEachRemaining(listCql::add);
+
     Assert.assertTrue(!listThrift.isEmpty());
     Assert.assertTrue(!listCql.isEmpty());
     Assert.assertEquals(listThrift.size(), listCql.size());
@@ -133,13 +134,13 @@ public class MigrationSequencesTest {
       i++;
     }
   }
-  
+
   @Test
   public void diffAddTest() {
 
     populateTableThrift();
     migrationSequences.migrationFromThriftToCql();
-  
+
 
     final SequencesCql sequenceCql = new SequencesCql();
     sequenceCql.setJobIdName("JOBADD");
@@ -170,20 +171,20 @@ public class MigrationSequencesTest {
     final Optional<SequencesCql> sequencesCqlOpt=sequencesDaoCql.findWithMapperById("jobExecutionId");
     if (sequencesCqlOpt.isPresent()) {
       final SequencesCql sequencesCql=new SequencesCql();
-    	sequencesCql.setJobIdName(sequencesCqlOpt.get().getJobIdName());
-    	sequencesCql.setValue(Long.valueOf("5000"));
-    	sequencesDaoCql.saveWithMapper(sequencesCql);
+      sequencesCql.setJobIdName(sequencesCqlOpt.get().getJobIdName());
+      sequencesCql.setValue(Long.valueOf("5000"));
+      sequencesDaoCql.saveWithMapper(sequencesCql);
     }
     final Javers javers = JaversBuilder
         .javers()
         .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
         .build();
     final Diff diff = migrationSequences.compareSequences(javers);
-    
+
     Assert.assertTrue(diff.hasChanges());
     final String changes = diff.getChanges().get(0).toString();
     Assert.assertTrue(changes.equals("ValueChange{ 'value' value changed from '1090' to '5000' }"));
 
   }
-  
+
 }

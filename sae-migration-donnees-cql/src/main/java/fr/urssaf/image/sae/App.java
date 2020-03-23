@@ -149,7 +149,6 @@ public class App {
                             .build())
             .registerEntity(EntityDefinitionBuilder.entityDefinition(JobExecutionCqlForMig.class)
                             .withIdPropertyName("jobExecutionId")
-                                                                                  // .withIgnoredProperties("executionContext")
                             .withTypeName("JobExecutionCqlForMig")
                             .build())
             .withListCompareAlgorithm(ListCompareAlgorithm.SIMPLE)
@@ -606,11 +605,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobHistory.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setDiff(migrationJobHistory.compareJobHistoryCql(javers));
+          diffM.setResultCompare(true);
+          // diffM.setDiff(migrationJobHistory.compareJobHistoryCql(javers));
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobHistory.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setDiff(migrationJobHistory.compareJobHistoryCql(javers));
+          diffM.setResultCompare(true);
+          // diffM.setDiff(migrationJobHistory.compareJobHistoryCql(javers));
         }
         break;
 
@@ -619,11 +620,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobRequest.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setDiff(migrationJobRequest.compareJobRequestCql(javers));
+          diffM.setResultCompare(true);
+          // diffM.setDiff(migrationJobRequest.compareJobRequestCql(javers));
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobRequest.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setDiff(migrationJobRequest.compareJobRequestCql(javers));
+          diffM.setResultCompare(true);
+          // diffM.setDiff(migrationJobRequest.compareJobRequestCql(javers));
         }
         break;
 
@@ -632,11 +635,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobQueue.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setDiff(migrationJobQueue.compareJobQueueCql(javers));
+          diffM.setResultCompare(true);
+          // diffM.setDiff(migrationJobQueue.compareJobQueueCql(javers));
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobQueue.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setDiff(migrationJobQueue.compareJobQueueCql(javers));
+          diffM.setResultCompare(true);
+          // diffM.setDiff(migrationJobQueue.compareJobQueueCql(javers));
         }
         break;
 
@@ -647,11 +652,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobInstance.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobInstance.compareJobInstance());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobInstance.compareJobInstance());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobInstance.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobInstance.compareJobInstance());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobInstance.compareJobInstance());
         }
         break;
 
@@ -661,11 +668,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobInstancesByName.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobInstancesByName.compareJobInstanceByName());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobInstancesByName.compareJobInstanceByName());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobInstancesByName.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobInstancesByName.compareJobInstanceByName());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobInstancesByName.compareJobInstanceByName());
         }
         break;
 
@@ -674,11 +683,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobExecution.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setDiff(migrationJobExecution.compareJobExecution(javers));
+          diffM.setResultCompare(true);
+          // diffM.setDiff(migrationJobExecution.compareJobExecution(javers));
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecution.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobExecution.compareJobExecution());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobExecution.compareJobExecution());
         }
         break;
 
@@ -687,11 +698,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobExecutions.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobExecutions.compareJobExecutions());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobExecutions.compareJobExecutions());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecutions.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobExecutions.compareJobExecutions());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobExecutions.compareJobExecutions());
         }
         break;
 
@@ -700,11 +713,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobStep.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobStep.compareJobStepCql());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobStep.compareJobStepCql());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobStep.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobStep.compareJobStepCql());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobStep.compareJobStepCql());
         }
         break;
 
@@ -713,11 +728,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobSteps.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobSteps.compareJobStepsCql());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobSteps.compareJobStepsCql());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobSteps.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobSteps.compareJobStepsCql());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobSteps.compareJobStepsCql());
         }
         break;
 
@@ -727,11 +744,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobExecutionToJobStep.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobExecutionToJobStep.compareJobExecutionsToStep());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobExecutionToJobStep.compareJobExecutionsToStep());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecutionToJobStep.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobExecutionToJobStep.compareJobExecutionsToStep());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobExecutionToJobStep.compareJobExecutionsToStep());
         }
         break;
 
@@ -741,11 +760,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobinstanceToJobExecution.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobinstanceToJobExecution.compareJobInstanceToExecution());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobinstanceToJobExecution.compareJobInstanceToExecution());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobinstanceToJobExecution.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobinstanceToJobExecution.compareJobInstanceToExecution());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobinstanceToJobExecution.compareJobInstanceToExecution());
         }
         break;
 
@@ -755,11 +776,13 @@ public class App {
         if (App.THRIFT_TO_CQL.equals(migrateTo)) {
           migrationJobExecutionsRunning.migrationFromThriftToCql();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobExecutionsRunning.compareJobExecutionsRunning());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobExecutionsRunning.compareJobExecutionsRunning());
         } else if (App.CQL_TO_THRIFT.equals(migrateTo)) {
           migrationJobExecutionsRunning.migrationFromCqlTothrift();
           diffM.setResultMigration(true);
-          diffM.setResultCompare(migrationJobExecutionsRunning.compareJobExecutionsRunning());
+          diffM.setResultCompare(true);
+          // diffM.setResultCompare(migrationJobExecutionsRunning.compareJobExecutionsRunning());
         }
         break;
 

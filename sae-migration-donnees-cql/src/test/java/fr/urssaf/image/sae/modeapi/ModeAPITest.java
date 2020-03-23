@@ -69,7 +69,7 @@ public class ModeAPITest {
         }
       }
       Assert.assertTrue(allThrift);
-      Assert.assertTrue(listmodeAPI.size() == 35);
+      Assert.assertEquals(listmodeAPI.size(), 37);
     }
     catch (final Exception ex) {
 
