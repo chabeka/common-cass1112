@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.docubase.dfce.exception.runtime.DFCERuntimeException;
+
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
@@ -104,13 +106,20 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener i
    @Override
    public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int docIndex) throws Exception {
       StorageDocument document = null;
+      
+      // Récupère l'id du traitement en cours
+      final String idJob = getStepExecution().getJobParameters().getString(Constantes.ID_TRAITEMENT);
+      
       try {
          document = updateDocument((StorageDocument) storageDocument);
       }
-      catch (final Exception except) {
+      catch (Exception except) {
          final String message = "Erreur lors du traitement du document " + storageDocument.getUuid() + " : "
                + except.getMessage();
          if (isModePartielBatch()) {
+        	 if(except.getMessage().isEmpty() && except instanceof DFCERuntimeException) {
+        		 except = new Exception("Erreur DFCE - identifiant archivage " + idJob + " :");
+        	 }
             sendExceptionInPartielMode(except, docIndex);
             LOGGER.warn(message, except);
          } else {
