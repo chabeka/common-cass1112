@@ -43,23 +43,23 @@
 
 
 		<!-- ========================================== commons-cassandra ========================================== -->
-		<commons.cassandra>2.1.0-SNAPSHOT</commons.cassandra>
+		<commons.cassandra>2.1.0</commons.cassandra>
 
 		<!-- ========================================== commons-cassandra-spring-batch 
 			========================================== -->
-		<commons.cassandra.spring.batch>2.1.0-SNAPSHOT</commons.cassandra.spring.batch>
+		<commons.cassandra.spring.batch>2.1.0</commons.cassandra.spring.batch>
 
 		<!-- ========================================== commons-dfce ========================================== -->
-		<commons.dfce>2.1.0-SNAPSHOT</commons.dfce>
+		<commons.dfce>2.1.0</commons.dfce>
 
 		<!-- ========================================== commons-pdfbox ========================================== -->
-		<commons-pdfbox>1.1.0-SNAPSHOT</commons-pdfbox>
+		<commons-pdfbox>1.1.1</commons-pdfbox>
 
 		<!-- ========================================== commons-droid ========================================== -->
-		<commons-droid>1.1.0-SNAPSHOT</commons-droid>
+		<commons-droid>1.1.1</commons-droid>
 
 		<!-- ========================================== commons-itext ========================================== -->
-		<commons-itext>1.1.0-SNAPSHOT</commons-itext>
+		<commons-itext>1.1.1</commons-itext>
 
 		<!-- ========================================================= Version 
 			des framework/dépendances ========================================================= -->
