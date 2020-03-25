@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-droid</artifactId>
-	<version>1.1.1-SNAPSHOT</version>
+	<version>1.1.1</version>
 
 	<name>commons-droid</name>
    
@@ -36,13 +36,13 @@
     <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-droid-1.1.1
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-droid-1.1.1
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-droid-1.1.1
       </connection>
 	</scm>
 
