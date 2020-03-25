@@ -25,7 +25,7 @@
 		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
       
       <!-- Version de commons-cassandra -->
-		<commons-cassandra.version>2.1.1</commons-cassandra.version>
+		<commons-cassandra.version>2.1.0</commons-cassandra.version>
       
       <!-- Version des framework -->
 		<junit.version>4.12</junit.version>
