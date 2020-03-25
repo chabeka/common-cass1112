@@ -234,7 +234,7 @@ public class App {
               nbTablesTraitees += 1;
               App.migrationCfName(context, migrateTo, modeApiCqlSupport, cfNameTemp, javers);
             } else if (cfName.equals(Constantes.CF_TRACE_JOURNAL_EVT_INDEX_DOC) && !isGNT) {
-
+              modeApiCqlSupport.updateModeApi(MODE_API.DATASTAX, cfName);
               App.LOG.info(" _________________________________________________________");
               App.LOG.info("|                                                         |");
               App.LOG.info("|                   Cas particulier GNS                   |");
