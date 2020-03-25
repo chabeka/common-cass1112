@@ -29,7 +29,7 @@
 		<jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
 		<log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
-		<droid.version>7.0</droid.version>
+		<droid.version>6.4</droid.version>
 
 	</properties>
    
@@ -209,15 +209,16 @@
 			<version>${spring.framework.version}</version>
 		</dependency>
          
-      <!-- Droid -->
+        <!-- Droid -->
 		<dependency>
-			<groupId>fr.urssaf.image.droid</groupId>
-         <!--
-         <artifactId>droid-container</artifactId>
-         -->
+			<groupId>uk.gov.nationalarchives</groupId>
 			<artifactId>droid-command-line</artifactId>
 			<version>${droid.version}</version>
 			<exclusions>
+				<exclusion>
+					<groupId>com.sun</groupId>
+					<artifactId>tools</artifactId>
+				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
