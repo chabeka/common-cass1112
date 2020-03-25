@@ -209,16 +209,15 @@
 			<version>${spring.framework.version}</version>
 		</dependency>
          
-        <!-- Droid -->
+      <!-- Droid -->
 		<dependency>
-			<groupId>uk.gov.nationalarchives</groupId>
+			<groupId>fr.urssaf.image.droid</groupId>
+         <!--
+         <artifactId>droid-container</artifactId>
+         -->
 			<artifactId>droid-command-line</artifactId>
 			<version>${droid.version}</version>
 			<exclusions>
-				<exclusion>
-					<groupId>com.sun</groupId>
-					<artifactId>tools</artifactId>
-				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
