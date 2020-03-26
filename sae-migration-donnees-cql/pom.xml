@@ -5,7 +5,7 @@
    <artifactId>sae-migration-donnees</artifactId>
    <name>sae-migration-donnees</name>
    <groupId>fr.urssaf.image.sae</groupId>
-   <version>${sae.version}</version>
+   <version>20.4.0-SNAPSHOT</version>
    <description>Scripts de migration des tables de thrift vers CQL</description>
 
    <parent>
