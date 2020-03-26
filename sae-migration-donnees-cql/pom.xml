@@ -17,9 +17,9 @@
    <properties>
       <junit.version>4.12</junit.version>
       <spring.framework.version>4.3.21.RELEASE</spring.framework.version>
-      <sae.version>20.04.0-SNAPSHOT</sae.version>
-      <commons.dfce>2.1.0-SNAPSHOT</commons.dfce>
-      <commons.cassandra>2.1.0-SNAPSHOT</commons.cassandra>
+      <sae.version>20.4.0</sae.version>
+      <commons.dfce>2.1.0</commons.dfce>
+      <commons.cassandra>2.1.0</commons.cassandra>
       <joda-time.version>2.0</joda-time.version>
       <aspectj.version>1.9.2</aspectj.version>
       <easymock.version>4.0.2</easymock.version>
