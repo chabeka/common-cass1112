@@ -3,7 +3,7 @@
    <artifactId>sae-migration-donnees</artifactId>
    <name>sae-migration-donnees</name>
    <groupId>fr.urssaf.image.sae</groupId>
-   <version>20.4.0</version>
+   <version>20.4.1-SNAPSHOT</version>
    <description>Scripts de migration des tables de thrift vers CQL</description>
 
    <parent>
@@ -36,13 +36,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-migration-donnees-20.4.0
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees-cql/
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-migration-donnees-20.4.0
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees-cql/
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-migration-donnees-20.4.0
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-migration-donnees-cql/
       </connection>
    </scm>
    
