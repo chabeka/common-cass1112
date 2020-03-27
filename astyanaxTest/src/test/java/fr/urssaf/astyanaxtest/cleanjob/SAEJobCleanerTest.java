@@ -44,13 +44,15 @@ public class SAEJobCleanerTest {
       // servers = "cer69-saeint3:9160";
       // servers = "cnp69pprodsaecas1:9160,cnp69pprodsaecas2:9160,cnp69pprodsaecas3:9160"; // Préprod
       // servers = "cnp6gnscvecas01.cve.recouv:9160,cnp3gnscvecas01.cve.recouv:9160,cnp7gnscvecas01.cve.recouv:9160"; // Charge
-      servers = "cnp6gntcvecas1.cve.recouv:9160,cnp3gntcvecas1.cve.recouv:9160,cnp7gntcvecas1.cve.recouv:9160"; // Charge GNT
+      // servers = "cnp6gntcvecas1.cve.recouv:9160,cnp3gntcvecas1.cve.recouv:9160,cnp7gntcvecas1.cve.recouv:9160"; // Charge GNT
       // servers = "cnp69gingntcas1.cer69.recouv:9160,cnp69gingntcas2.cer69.recouv:9160,cnp69gingntcas3.cer69.recouv:9160";
       // servers = "cnp69intgntc1cas1.gidn.recouv:9160,cnp69intgntc1cas2.gidn.recouv:9160,cnp69intgntc1cas3.gidn.recouv:9160";
       // servers = "cnp69intgntp1cas1.gidn.recouv:9160,cnp69intgntp1cas2.gidn.recouv:9160,cnp69intgntp1cas3.gidn.recouv:9160";
       // servers = "cnp69gingntc1cas1.cer69.recouv:9160,cnp69gingntc1cas2.cer69.recouv:9160,cnp69gingntc1cas3.cer69.recouv:9160";
       // servers = "cnp69gingntp1cas1.cer69.recouv:9160,cnp69gingntp1cas2.cer69.recouv:9160,cnp69gingntp1cas3.cer69.recouv:9160";
       // servers = "cnp69intgntc1cas1.gidn.recouv,cnp69intgntc1cas2.gidn.recouv";
+      // servers = "cnp69intgntcas1.gidn.recouv:9160";
+      servers = "hwi69intgnscas1.gidn.recouv:9160";
 
       final AuthenticationCredentials credentials = new SimpleAuthenticationCredentials(
             "root",
@@ -112,8 +114,8 @@ public class SAEJobCleanerTest {
    @Test
    public void purgeOldJobsTest() throws Exception {
       final SAEJobCleaner cleaner = new SAEJobCleaner();
-      final boolean simulationMode = true;
-      cleaner.purgeOldJobs(keyspace, 50, simulationMode);
+      final boolean simulationMode = false;
+      cleaner.purgeOldJobs(keyspace, 30, simulationMode);
    }
 
 }
