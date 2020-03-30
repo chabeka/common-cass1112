@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.docubase.dfce.exception.runtime.DFCERuntimeException;
+
 import fr.urssaf.image.sae.services.batch.capturemasse.support.compression.model.CompressedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.model.CaptureMasseControlResult;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
@@ -130,22 +132,29 @@ ItemWriter<StorageDocument> {
       catch (final TraitementRepriseAlreadyDoneException ex) {
          throw ex;
       }
-      catch (final Exception ex) {
+      catch (Exception ex) {
          if (isModePartielBatch()) {
-            synchronized (this) {
-               getCodesErreurListe().add(Constantes.ERR_BUL002);
-               getIndexErreurListe().add(docIndex);
-               getErrorMessageList().add(ex.getMessage());
-               LOGGER.warn("Une erreur est survenue lors de la persistance de document",
-                     ex);
-               return null;
-            }
+        	if(ex.getCause() != null && ex.getCause().getCause() instanceof DFCERuntimeException) {
+      		  // Récupère l'id du traitement en cours
+      	      final String idJob = getStepExecution().getJobParameters().getString(Constantes.ID_TRAITEMENT);
+      		  ex = new Exception("Erreur DFCE - identifiant archivage " + idJob + " :" + ex.getMessage());
+        	}
+           sendExceptionInPartielMode(ex, docIndex);
+           return null;
          } else {
             throw ex;
          }
       }
    }
 
+   private void sendExceptionInPartielMode(final Exception e, final int docIndex) {
+      synchronized (this) {
+         getCodesErreurListe().add(Constantes.ERR_BUL002);
+         getIndexErreurListe().add(docIndex);
+         getErrorMessageList().add(e.getMessage());
+      }
+      LOGGER.warn("Une erreur est survenue lors de la persistance de document", e);
+   }
    /**
     * Persistance du document
     *
@@ -176,7 +185,7 @@ ItemWriter<StorageDocument> {
 
          return retour;
       }
-      catch (final InsertionIdGedExistantEx except) {
+      catch (final InsertionIdGedExistantEx | FileNotFoundException | StorageDocAttachmentServiceEx except) {
 
          try {
             if (isRepriseActifBatch()
@@ -187,13 +196,6 @@ ItemWriter<StorageDocument> {
          catch (final RetrievalServiceEx e) {
             // Do nothing exception levé juste après
          }
-
-         throw new InsertionServiceEx("SAE-ST-INS001",
-               except.getMessage(),
-               except);
-
-      }
-      catch (final Exception except) {
 
          throw new InsertionServiceEx("SAE-ST-INS001",
                except.getMessage(),

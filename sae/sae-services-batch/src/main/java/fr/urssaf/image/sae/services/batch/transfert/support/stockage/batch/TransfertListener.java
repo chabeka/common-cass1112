@@ -235,7 +235,7 @@ public class TransfertListener extends AbstractListener {
 	      if (nbDocWithoutError > 0) {
 	    	  // code et message par default
 	          String mgsToAdd = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible : ";
-	    	  String codeError = Constantes.ERR_BUL002;
+	    	  String codeError = Constantes.ERR_BUL001;
 	          
 	    	  // index du dernier document traité
 	    	  List<Integer> listIndex = Lists.newArrayList(getIndexErreurListe().iterator());

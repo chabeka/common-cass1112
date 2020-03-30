@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import com.docubase.dfce.exception.runtime.DFCERuntimeException;
+
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
@@ -121,8 +123,13 @@ ItemWriter<StorageDocument> {
          }
 
       }
-      catch (final Exception except) {
+      catch (Exception except) {
          if (isModePartielBatch()) {
+        	 if(except.getMessage().isEmpty() && except instanceof DFCERuntimeException) {
+        		  // Récupère l'id du traitement en cours
+        	      final String idJob = getStepExecution().getJobParameters().getString(Constantes.ID_TRAITEMENT);
+        		  except = new Exception("Erreur DFCE - identifiant archivage " + idJob + " :" + except.getMessage());
+        	 }
             sendExceptionInPartielMode(except, docIndex);
             return null;
          } else {
