@@ -25,6 +25,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import com.itextpdf.text.pdf.codec.wmf.MetaFont;
+
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
@@ -831,9 +833,15 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         completeMetadatasForDeletion(documentGNT, idTraitementMasse);
       }
 
-      // Contrôle des droits de transfert
-      controleDroitTransfertMasse(documentGNT.getMetadatas());
+      if(isSuppression) {
 
+    	  documentGNT = genericCodeRNDProcessing(listeMetaClient, documentGNT);
+          
+      } else {
+          // Contrôle des droits de transfert
+          controleDroitTransfertMasse(documentGNT.getMetadatas());
+      }
+      
       if (!isSuppression) {
         // On ne garde que les métadonnées transférables
         filterTransfertableMetadatas(documentGNT.getMetadatas());
@@ -849,6 +857,65 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
     return documentGNT;
   }
+
+  /**
+   * Traitement du cas de la suppression dans un transfert de masse lorsque le code rnd du 
+   * document est générique. Dans ce cas le controle de la méta CodeRND se fait sur celui fournit
+   * dans le sommaire de la demande de suppression
+   * @param listeMetaClient liste des méta client fournie dans le sommaire
+   * @param documentGNT le document à supprimer provenant de la base et contenant le code générique
+   * @return
+   * @throws TransfertException
+   * @throws InvalidSAETypeException
+   * @throws MappingFromReferentialException
+   */
+	private StorageDocument genericCodeRNDProcessing(final List<UntypedMetadata> listeMetaClient, StorageDocument documentGNT)
+			throws TransfertException, InvalidSAETypeException, MappingFromReferentialException {
+		UntypedMetadata metaRND = null;
+		
+		  // backup codeRND initial
+		  String rndFromBase = "";
+		  
+		  // verifie que le codeRN est dans la liste de meta client
+		  if (!listeMetaClient.isEmpty()) {
+			  // recuperer le code rnd
+			  for (UntypedMetadata meta :listeMetaClient) {
+				  if(meta.getLongCode().equals(StorageTechnicalMetadatas.TYPE.getLongCode())) {
+					  metaRND = meta;
+				  }
+			  }
+			  // on fait le controle avec ce meta en le remplacant ds documentGNT
+			  if(metaRND != null) {
+				  // on le remplace dans le documentGNT le temps du check
+				  for(StorageMetadata storedata: documentGNT.getMetadatas()) {
+					  if(storedata.getShortCode().equals(StorageTechnicalMetadatas.TYPE.getShortCode())) {
+						  rndFromBase = (String) storedata.getValue();
+						  storedata.setValue(metaRND.getValue());
+						  
+					  }
+				  }
+			  }
+		  }
+		  
+		  // Contrôle des droits de transfert
+		  controleDroitTransfertMasse(documentGNT.getMetadatas());
+		  
+		  // Après le control, on remet l'ancienne valeur
+		  if(metaRND != null) {
+			  for(StorageMetadata storedata: documentGNT.getMetadatas()) {
+				  if(storedata.getShortCode().equals(StorageTechnicalMetadatas.TYPE.getShortCode())) {
+					  storedata.setValue(rndFromBase);
+				  }
+			  }
+			  // on verifie qu'on à bien mis l'ancienne valeur
+			  String codeRND = (String) getValueMetaByCode(StorageTechnicalMetadatas.TYPE.getShortCode(),documentGNT.getMetadatas());
+			  if(!codeRND.equals(rndFromBase)) {
+				  throw new TransfertException("Problème de prise en compte de la métadonnée codeRDN pour la suppression");
+			  }
+		  }
+
+		  return documentGNT;
+	}
 
   /**
    * Filtre la liste des métadonnées pour en garder que celles qui sont transférables et non vides
