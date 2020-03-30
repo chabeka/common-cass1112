@@ -107,8 +107,6 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener i
    public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int docIndex) throws Exception {
       StorageDocument document = null;
       
-      // Récupère l'id du traitement en cours
-      final String idJob = getStepExecution().getJobParameters().getString(Constantes.ID_TRAITEMENT);
       
       try {
          document = updateDocument((StorageDocument) storageDocument);
@@ -118,7 +116,9 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener i
                + except.getMessage();
          if (isModePartielBatch()) {
         	 if(except.getMessage().isEmpty() && except instanceof DFCERuntimeException) {
-        		 except = new Exception("Erreur DFCE - identifiant archivage " + idJob + " :");
+        		 // Récupère l'id du traitement en cours
+        	     final String idJob = getStepExecution().getJobParameters().getString(Constantes.ID_TRAITEMENT);
+        		 except = new Exception("Erreur DFCE - identifiant archivage " + idJob + " :" + except.getMessage());
         	 }
             sendExceptionInPartielMode(except, docIndex);
             LOGGER.warn(message, except);
