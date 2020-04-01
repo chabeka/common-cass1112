@@ -109,8 +109,8 @@ public class SAECopieServiceImpl implements SAECopieService {
          roles[index] = authory.getAuthority();
          index++;
       }
-      roles[index] = "archivage_unitaire";
-      roles[++index] = "consultation";
+      roles[index] = "ROLE_archivage_unitaire";
+      roles[++index] = "ROLE_consultation";
 
       AuthenticationToken authentication = AuthenticationFactory
             .createAuthentication(
