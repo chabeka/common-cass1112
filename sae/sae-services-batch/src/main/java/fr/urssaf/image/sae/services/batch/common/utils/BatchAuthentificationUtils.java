@@ -76,8 +76,8 @@ public final class BatchAuthentificationUtils {
       LOG.warn("impossible de créer un accès total");
     }
 
-    final List<SaePrmd> prmdList = saeDroits.get(ROLE_RECHERCHE);
-
+    final List<SaePrmd> prmdList = saeDroits.get("recherche");
+    
     if (viExtrait == null) {
       LOG.debug("{} - le Vi est null, on met toutes les autorisations",
                 trcPrefix);
@@ -106,8 +106,8 @@ public final class BatchAuthentificationUtils {
 
     final String[] roles = new String[lRoles.size()];
     lRoles.toArray(roles);
-    viExtrait.getSaeDroits().put(ROLE_RECHERCHE, prmdList);
-    viExtrait.getSaeDroits().put(ROLE_RECHERCHE_ITERATEUR, prmdList);
+    viExtrait.getSaeDroits().put("recherche", prmdList);
+    viExtrait.getSaeDroits().put("recherche_iterateur", prmdList);
 
     token = AuthenticationFactory.createAuthentication(viExtrait
                                                                 .getIdUtilisateur(),
