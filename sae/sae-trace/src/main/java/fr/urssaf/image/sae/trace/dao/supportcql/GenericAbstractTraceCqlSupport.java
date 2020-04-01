@@ -201,6 +201,35 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   }
 
   /**
+   * Recherche et retourne la liste des tracesIndex à une date donnée
+   *
+   * @param date
+   *          date à laquelle rechercher les traces
+   * @return la liste des traces techniques
+   */
+  public List<I> findByDateOrdered(final Date date, final Integer limite, final Boolean ordreInverse) {
+
+    List<I> list = null;
+    int count = 0;
+    final Iterator<I> iterator = getIterator(date, ordreInverse);
+
+    if (iterator.hasNext()) {
+      list = new ArrayList<>();
+    }
+
+    while (iterator.hasNext()) {
+      if (limite == null) {
+        list.add(iterator.next());
+      } else if (limite != null && count < limite) {
+        list.add(iterator.next());
+      }
+      count++;
+    }
+
+    return list;
+  }
+
+  /**
    * recherche et retourne la liste des traces pour un intervalle de dates
    * données
    *
@@ -236,6 +265,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
       final String dateStr = DateRegUtils.getJournee(currentDate);
 
       it = getIndexDao().IterableFindById(dateStr);
+
 
       while (it.hasNext() && list.size() < maxCount) {
         list.add(it.next());
@@ -284,6 +314,13 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return l'iterateur
    */
   public abstract Iterator<I> getIterator(Date id);
+
+  /**
+   * @param sliceQuery
+   *          la requête concernée
+   * @return l'iterateur
+   */
+  public abstract Iterator<I> getIterator(Date id, Boolean ordreInverse);
 
   /**
    * @return le dao utilisé pour les traces

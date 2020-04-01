@@ -252,7 +252,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      result = findEvtByDate(limite, countLeft, result, currentDate, startDate, endDate);
+      result = findEvtByDate(limite, countLeft, result, currentDate, startDate, endDate, false);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
@@ -278,12 +278,12 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    * @return
    */
   private List<TraceJournalEvtIndex> findEvtByDate(final int limite, final int countLeft, List<TraceJournalEvtIndex> result, final Date currentDate, final Date startDate,
-                                                   final Date endDate) {
+                                                   final Date endDate, final boolean ordreInverse) {
 
     final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
-      final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDate(currentDate, limite);
+      final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDateOrdered(currentDate, limite, ordreInverse);
       if (resultCql != null) {
         for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
           final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
@@ -314,7 +314,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      result = findEvtByDate(limite, countLeft, result, currentDate, startDate, endDate);
+      result = findEvtByDate(limite, countLeft, result, currentDate, startDate, endDate, true);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);

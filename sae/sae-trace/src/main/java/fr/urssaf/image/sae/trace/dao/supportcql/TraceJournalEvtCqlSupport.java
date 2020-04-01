@@ -215,4 +215,14 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
   public final long getWriteTime(final UUID idDoc, final String columnName) {
     return tracejdao.getColunmWriteTime(idDoc, columnName);
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Iterator<TraceJournalEvtIndexCql> getIterator(final Date date, final Boolean ordreInverse) {
+    final String journee = DateRegUtils.getJournee(date);
+    return indexjDao.IterableFindById(journee, ordreInverse);
+
+  }
 }

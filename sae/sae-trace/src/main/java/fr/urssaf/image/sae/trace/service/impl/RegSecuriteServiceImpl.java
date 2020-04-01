@@ -239,7 +239,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      result = findTraceRegSecuriteIndexByDate(limite, countLeft, result, currentDate, startDate, endDate);
+      result = findTraceRegSecuriteIndexByDate(limite, countLeft, result, currentDate, startDate, endDate, false);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
@@ -264,11 +264,12 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
    * @param endDate
    * @return
    */
-  private List<TraceRegSecuriteIndex> findTraceRegSecuriteIndexByDate(final int limite, final int countLeft, List<TraceRegSecuriteIndex> result, final Date currentDate,
-                                                                      final Date startDate, final Date endDate) {
+  private List<TraceRegSecuriteIndex> findTraceRegSecuriteIndexByDate(final int limite, final int countLeft, List<TraceRegSecuriteIndex> result,
+                                                                      final Date currentDate,
+                                                                      final Date startDate, final Date endDate, final boolean ordreInverse) {
     final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      final List<TraceRegSecuriteIndexCql> resultCql = regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
+      final List<TraceRegSecuriteIndexCql> resultCql = regSecuriteCqlService.getSupport().findByDateOrdered(currentDate, limite, ordreInverse);
       if (resultCql != null) {
         for (final TraceRegSecuriteIndexCql traceRegSecuIndexCql : resultCql) {
           final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceRegSecuIndexCql);
@@ -304,7 +305,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      result = findTraceRegSecuriteIndexByDate(limite, countLeft, result, currentDate, startDate, endDate);
+      result = findTraceRegSecuriteIndexByDate(limite, countLeft, result, currentDate, startDate, endDate, true);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);

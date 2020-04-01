@@ -240,7 +240,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      result = findTraceRegTechniqueIndexByDate(limite, countLeft, result, currentDate, startDate, endDate);
+      result = findTraceRegTechniqueIndexByDate(limite, countLeft, result, currentDate, startDate, endDate, false);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
@@ -266,11 +266,11 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
    * @return
    */
   private List<TraceRegTechniqueIndex> findTraceRegTechniqueIndexByDate(final int limite, final int countLeft, List<TraceRegTechniqueIndex> result, final Date currentDate,
-                                                                        final Date startDate, final Date endDate) {
+                                                                        final Date startDate, final Date endDate, final boolean ordreInverse) {
     final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
-      final List<TraceRegTechniqueIndexCql> resultCql = regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
+      final List<TraceRegTechniqueIndexCql> resultCql = regTechniqueServiceCql.getSupport().findByDateOrdered(currentDate, limite, ordreInverse);
       if (resultCql != null) {
         for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
           final TraceRegTechniqueIndex indexThrift = UtilsTraceMapper.createTraceRegTechniqueIndexFromCqlToThrift(traceJournalEvtIndexCql);
@@ -301,7 +301,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
       endDate = DateRegUtils.getEndDate(currentDate, dates
                                         .get(dates.size() - 1));
 
-      result = findTraceRegTechniqueIndexByDate(limite, countLeft, result, currentDate, startDate, endDate);
+      result = findTraceRegTechniqueIndexByDate(limite, countLeft, result, currentDate, startDate, endDate, true);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);

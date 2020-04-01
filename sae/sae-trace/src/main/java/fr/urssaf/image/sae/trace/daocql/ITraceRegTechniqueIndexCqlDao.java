@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.trace.daocql;
 
+import java.util.Iterator;
+
 import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
 
@@ -12,5 +14,6 @@ import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
  *          Le type d'Identifiant de l'objet
  */
 public interface ITraceRegTechniqueIndexCqlDao extends IGenericDAO<TraceRegTechniqueIndexCql, String> {
+  public Iterator<TraceRegTechniqueIndexCql> IterableFindById(final String journee, final boolean ordreInverse);
 
 }

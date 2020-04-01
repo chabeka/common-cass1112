@@ -119,17 +119,30 @@ public class RegSecuriteCqlServiceDatasTest extends AbstractServiceCqlTest {
                                                                dateEnd,
                                                                10,
                                                                true);
+
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         3,
                         result.size());
+    Assert.assertTrue("le premier enregistrement doit etre le plus récent",
+                      result.get(0).getContexte().contains("DATE_SUP"));
+    Assert.assertTrue("le deuxième enregistrement doit etre lintermédiaire",
+                      result.get(1).getContexte().contains("[DATE]"));
+    Assert.assertTrue("le troisième enregistrement doit etre le plus ancien",
+                      result.get(2).getContexte().contains("DATE_INF"));
 
-    Assert.assertTrue("le premier enregistrement doit etre le plus ancien",
-                      result.get(0).getContexte().contains("DATE_INF"));
-    Assert.assertTrue("le deuxième enregistrement doit etre le plus récent",
-                      result.get(1).getContexte().contains("DATE"));
-    Assert.assertTrue("le troisième enregistrement doit etre lintermédiaire",
-                      result.get(2).getContexte().contains("[DATE_SUP]"));
+    /*
+     * Assert.assertNotNull("il doit y avoir un résultat");
+     * Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
+     * 3,
+     * result.size());
+     * Assert.assertTrue("le premier enregistrement doit etre le plus ancien",
+     * result.get(0).getContexte().contains("DATE_INF"));
+     * Assert.assertTrue("le deuxième enregistrement doit etre le plus récent",
+     * result.get(1).getContexte().contains("DATE"));
+     * Assert.assertTrue("le troisième enregistrement doit etre lintermédiaire",
+     * result.get(2).getContexte().contains("[DATE_SUP]"));
+     */
 
   }
 
@@ -151,21 +164,47 @@ public class RegSecuriteCqlServiceDatasTest extends AbstractServiceCqlTest {
                              dateEnd,
                              10,
                              true);
+
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         5,
                         result.size());
     Assert.assertTrue("le premier enregistrement doit etre le plus récent",
                       result.get(0).getContexte().contains("DATE_JOUR_SUIVANT"));
-    Assert.assertTrue("le deuxieme enregistrement doit etre le plus ancien",
-                      result.get(1).getContexte().contains("DATE_INF"));
-    Assert.assertTrue("le troisième enregistrement doit etre le plus récent",
-                      result.get(2).getContexte().contains("DATE"));
-    Assert.assertTrue("le quatrième enregistrement doit etre lintermédiaire",
-                      result.get(3).getContexte().contains("[DATE_SUP]"));
     Assert.assertTrue(
-                      "le cinquième enregistrement doit etre le max du jour -2", result
-                      .get(4).getContexte().contains("[DATE_JOUR_PRECEDENT]"));
+                      "le deuxième enregistrement doit etre le max du jour précédent",
+                      result.get(1).getContexte().contains("[DATE_SUP]"));
+    Assert
+          .assertTrue(
+                      "le troisième enregistrement doit etre l'intermediaire du jour précédent",
+                      result.get(2).getContexte().contains("[DATE]"));
+    Assert.assertTrue(
+                      "le quatrieme enregistrement doit etre le min du jour précédent",
+                      result.get(3).getContexte().contains("[DATE_INF]"));
+    Assert.assertTrue(
+                      "le cinquième enregistrement doit etre le max du jour -2",
+                      result
+                            .get(4)
+                            .getContexte()
+                            .contains("[DATE_JOUR_PRECEDENT]"));
+
+    /*
+     * Assert.assertNotNull("il doit y avoir un résultat");
+     * Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
+     * 5,
+     * result.size());
+     * Assert.assertTrue("le premier enregistrement doit etre le plus récent",
+     * result.get(0).getContexte().contains("DATE_JOUR_SUIVANT"));
+     * Assert.assertTrue("le deuxieme enregistrement doit etre le plus ancien",
+     * result.get(1).getContexte().contains("DATE_INF"));
+     * Assert.assertTrue("le troisième enregistrement doit etre le plus récent",
+     * result.get(2).getContexte().contains("DATE"));
+     * Assert.assertTrue("le quatrième enregistrement doit etre lintermédiaire",
+     * result.get(3).getContexte().contains("[DATE_SUP]"));
+     * Assert.assertTrue(
+     * "le cinquième enregistrement doit etre le max du jour -2", result
+     * .get(4).getContexte().contains("[DATE_JOUR_PRECEDENT]"));
+     */
   }
 
   @Test

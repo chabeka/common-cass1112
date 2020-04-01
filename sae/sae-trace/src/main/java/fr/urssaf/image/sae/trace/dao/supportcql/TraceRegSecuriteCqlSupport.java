@@ -60,6 +60,15 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    * {@inheritDoc}
    */
   @Override
+  public Iterator<TraceRegSecuriteIndexCql> getIterator(final Date date, final Boolean ordreInverse) {
+    final String journee = DateRegUtils.getJournee(date);
+    return indexDao.IterableFindById(journee, ordreInverse);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public IGenericDAO<TraceRegSecuriteCql, UUID> getDao() {
     return dao;
   }
@@ -123,5 +132,7 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
   UUID getTraceId(final TraceRegSecuriteIndexCql trace) {
     return trace.getIdentifiant();
   }
+
+
 
 }
