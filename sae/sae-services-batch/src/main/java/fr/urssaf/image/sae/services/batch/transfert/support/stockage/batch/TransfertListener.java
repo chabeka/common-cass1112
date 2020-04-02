@@ -134,13 +134,20 @@ public class TransfertListener extends AbstractListener {
    @OnProcessError
    public final void logProcessError(final Object documentType,
          final Exception exception) {
+	  
+	   // Traitement du cas d'echec de reconnexion au DFCE après interruption survenu avant le traitement
+	  // du premier documment, ano:#443725
+	  String errorMsg = interruptionTraitementMasseSupport.getConnectionResultExceptionMessage();
+	  if(errorMsg.isEmpty()) {
+		  errorMsg = exception.getMessage();
+	  }
       getCodesErreurListe().add(Constantes.ERR_BUL002);
       getIndexErreurListe().add(
                                 getStepExecution().getExecutionContext()
                                 .getInt(
                   Constantes.CTRL_INDEX));
       LOGGER.warn("Erreur lors du transfert de document", exception);
-      getErrorMessageList().add(exception.getMessage());
+      getErrorMessageList().add(errorMsg);
    }
 
    /**
@@ -193,8 +200,6 @@ public class TransfertListener extends AbstractListener {
 
       executor.shutdown();
       executor.waitFinishInsertion();
-
-      addErrorMsgOnNonIntegratedDocument(jobExecution);
       
       final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
       jobExecution.getExecutionContext()
@@ -212,6 +217,9 @@ public class TransfertListener extends AbstractListener {
          status = gestionException(exception);
 
       }
+      
+      // ajout du message d'erreur sur les documents non traiité
+      addErrorMsgOnNonIntegratedDocument(jobExecution);
 
       return status;
    }

@@ -10,7 +10,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -19,7 +18,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.util.InterruptionTraitementUtils;
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
  *
@@ -36,8 +34,6 @@ InterruptionTraitementMasseSupport {
 
   private static final String CATCH = "AvoidCatchingThrowable";
 
-  private final StorageServiceProvider serviceProvider;
-
   private volatile boolean interrupted;
   
   private ConnectionResult connectionResult;
@@ -50,15 +46,11 @@ InterruptionTraitementMasseSupport {
    */
   @Autowired
   public InterruptionTraitementMasseSupportImpl(
-                                                final DFCEServices dfceServices,
-                                                final @Qualifier("storageServiceProvider") StorageServiceProvider serviceProvider) {
+                                                final DFCEServices dfceServices) {
 
     Assert.notNull(dfceServices, "'dfceServices' is required");
 
-    Assert.notNull(serviceProvider, "'serviceProvider' is required");
-
     this.dfceServices = dfceServices;
-    this.serviceProvider = serviceProvider;
 
   }
 
