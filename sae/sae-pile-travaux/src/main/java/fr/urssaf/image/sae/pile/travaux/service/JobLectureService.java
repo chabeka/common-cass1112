@@ -95,6 +95,14 @@ public interface JobLectureService {
    List<JobRequest> getJobsToDelete(Keyspace keyspace, Date dateMax);
 
    /**
+    * Récupère la liste des uuids de jobs en attentes dans JobsQueue faisant l'objet
+    * d'un semaphore dans la pile des travaux
+    * 
+    * @return retourne cette liste de jobs en attentes
+    */
+   List<UUID> getSemaphoredJobUuids();
+
+   /**
     * Teste si le job peut être réinitialisé (ie : si le job est à l'état
     * RESERVED ou STARTING)
     * 

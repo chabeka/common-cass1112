@@ -34,21 +34,21 @@ public class JobsQueueSupport {
     */
    private static final String JOBS_WAITING_KEY = "jobsWaiting";
 
-  @Autowired
-  private JobsQueueDao jobsQueueDao;
-  
-  public JobsQueueSupport(){
-	  
-  }
+   @Autowired
+   private JobsQueueDao jobsQueueDao;
+
+   public JobsQueueSupport(){
+
+   }
 
    /**
     * 
     * @param jobsQueueDao
     *           DAO de la colonne famille JobsQueue
     */
-  public JobsQueueSupport(JobsQueueDao jobsQueueDao) {
+   public JobsQueueSupport(final JobsQueueDao jobsQueueDao) {
 
-	  this.jobsQueueDao = jobsQueueDao;
+      this.jobsQueueDao = jobsQueueDao;
 
    }
 
@@ -64,24 +64,24 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de l'ajout du job en attente
     */
-   public final void ajouterJobDansJobQueuesEnWaiting(UUID idJob, String type,
-         String parameters, long clock) {
+   public final void ajouterJobDansJobQueuesEnWaiting(final UUID idJob, final String type,
+                                                      final String parameters, final long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<String, UUID> updaterJobQueues = this.jobsQueueDao
+      final ColumnFamilyUpdater<String, UUID> updaterJobQueues = jobsQueueDao
             .getJobsQueueTmpl().createUpdater(JOBS_WAITING_KEY);
 
       // Ecriture des colonnes
-      JobQueue jobQueue = new JobQueue();
+      final JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
       jobQueue.setParameters(parameters);
-      this.jobsQueueDao.ecritColonneJobQueue(updaterJobQueues, idJob, jobQueue,
-            clock);
+      jobsQueueDao.ecritColonneJobQueue(updaterJobQueues, idJob, jobQueue,
+                                        clock);
 
       // Ecrit en base
-      this.jobsQueueDao.getJobsQueueTmpl().update(updaterJobQueues);
+      jobsQueueDao.getJobsQueueTmpl().update(updaterJobQueues);
 
    }
 
@@ -97,24 +97,24 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de l'ajout du job en attente
     */
-   public final void ajouterJobDansJobQueuesEnWaiting(UUID idJob, String type,
-         Map<String, String> jobParameters, long clock) {
+   public final void ajouterJobDansJobQueuesEnWaiting(final UUID idJob, final String type,
+                                                      final Map<String, String> jobParameters, final long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<String, UUID> updaterJobQueues = this.jobsQueueDao
+      final ColumnFamilyUpdater<String, UUID> updaterJobQueues = jobsQueueDao
             .getJobsQueueTmpl().createUpdater(JOBS_WAITING_KEY);
 
       // Ecriture des colonnes
-      JobQueue jobQueue = new JobQueue();
+      final JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
       jobQueue.setJobParameters(jobParameters);
-      this.jobsQueueDao.ecritColonneJobQueue(updaterJobQueues, idJob, jobQueue,
-            clock);
+      jobsQueueDao.ecritColonneJobQueue(updaterJobQueues, idJob, jobQueue,
+                                        clock);
 
       // Ecrit en base
-      this.jobsQueueDao.getJobsQueueTmpl().update(updaterJobQueues);
+      jobsQueueDao.getJobsQueueTmpl().update(updaterJobQueues);
 
    }
 
@@ -133,8 +133,8 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de réservation du job
     */
-   public final void reserverJobDansJobQueues(UUID idJob, String reservedBy,
-         String type, String parameters, long clock) {
+   public final void reserverJobDansJobQueues(final UUID idJob, final String reservedBy,
+                                              final String type, final String parameters, final long clock) {
 
       // Dans la CF JobQueues, on "switch" le job entre :
       // - la clé "jobsWaiting" (suppression)
@@ -144,19 +144,19 @@ public class JobsQueueSupport {
       // deux opérations
 
       // Création du Mutator
-      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+      final Mutator<String> mutator = jobsQueueDao.createMutator();
 
       // Opération 1: Ajout du job pour le serveur qui l'a réservé
-      JobQueue jobQueue = new JobQueue();
+      final JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
       jobQueue.setParameters(parameters);
-      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator, reservedBy,
-            jobQueue, clock);
+      jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator, reservedBy,
+                                                   jobQueue, clock);
 
       // Opération 2: Suppression du job de la liste des jobs non réservé
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-            JOBS_WAITING_KEY, idJob, clock);
+      jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+                                                     JOBS_WAITING_KEY, idJob, clock);
 
       // Exécution des 2 opérations
       mutator.execute();
@@ -178,8 +178,8 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de réservation du job
     */
-   public final void reserverJobDansJobQueues(UUID idJob, String reservedBy,
-         String type, Map<String, String> jobParameters, long clock) {
+   public final void reserverJobDansJobQueues(final UUID idJob, final String reservedBy,
+                                              final String type, final Map<String, String> jobParameters, final long clock) {
 
       // Dans la CF JobQueues, on "switch" le job entre :
       // - la clé "jobsWaiting" (suppression)
@@ -189,19 +189,19 @@ public class JobsQueueSupport {
       // deux opérations
 
       // Création du Mutator
-      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+      final Mutator<String> mutator = jobsQueueDao.createMutator();
 
       // Opération 1: Ajout du job pour le serveur qui l'a réservé
-      JobQueue jobQueue = new JobQueue();
+      final JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
       jobQueue.setJobParameters(jobParameters);
-      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator, reservedBy,
-            jobQueue, clock);
+      jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator, reservedBy,
+                                                   jobQueue, clock);
 
       // Opération 2: Suppression du job de la liste des jobs non réservé
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-            JOBS_WAITING_KEY, idJob, clock);
+      jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+                                                     JOBS_WAITING_KEY, idJob, clock);
 
       // Exécution des 2 opérations
       mutator.execute();
@@ -218,19 +218,19 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de suppression du job de la file d'exécution/réservation
     */
-   public final void supprimerJobDeJobsQueues(UUID idJob, String reservedBy,
-         long clock) {
+   public final void supprimerJobDeJobsQueues(final UUID idJob, final String reservedBy,
+                                              final long clock) {
 
       // Création du Mutator
-      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+      final Mutator<String> mutator = jobsQueueDao.createMutator();
 
       // Opération 1: Suppression du job de la liste de la file d'attente
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, reservedBy,
-            idJob, clock);
+      jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, reservedBy,
+                                                     idJob, clock);
 
       // Opération 2: Suppression du job de la liste des jobs non réservé
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-            JOBS_WAITING_KEY, idJob, clock);
+      jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+                                                     JOBS_WAITING_KEY, idJob, clock);
 
       // Exécution de l'opération
       mutator.execute();
@@ -248,21 +248,21 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de suppression du job de la file d'exécution/réservation
     */
-   public final void supprimerJobDeJobsAllQueues(UUID idJob, String reservedBy,
-         long clock) {
+   public final void supprimerJobDeJobsAllQueues(final UUID idJob, final String reservedBy,
+                                                 final long clock) {
 
       // Création du Mutator
-      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+      final Mutator<String> mutator = jobsQueueDao.createMutator();
 
       // Opération 1: Suppression du job de la liste de la file d'attente
       if (StringUtils.isNotEmpty(reservedBy)) {
-         this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-               reservedBy, idJob, clock);
+         jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+                                                        reservedBy, idJob, clock);
       }
 
       // Opération 2: Suppression du job de la liste des jobs non réservé
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-            JOBS_WAITING_KEY, idJob, clock);
+      jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+                                                     JOBS_WAITING_KEY, idJob, clock);
 
       // Exécution de l'opération
       mutator.execute();
@@ -275,19 +275,19 @@ public class JobsQueueSupport {
     * @param reservedBy
     * @param clock
     */
-   public final void deleteJobFromJobsReserved(UUID idJob, String reservedBy,
-         long clock){
+   public final void deleteJobFromJobsReserved(final UUID idJob, final String reservedBy,
+                                               final long clock){
       // Création du Mutator
-      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+      final Mutator<String> mutator = jobsQueueDao.createMutator();
 
       // Opération 1: Suppression du job de la liste de la file d'attente
       if (StringUtils.isNotEmpty(reservedBy)) {
-         this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-               reservedBy, idJob, clock);
+         jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+                                                        reservedBy, idJob, clock);
       }
    }
-   
-   
+
+
    /**
     * Met à jour le travail afin qu’il soit à nouveau éligible au lancement par
     * l’ordonnanceur en le replaçant dans la liste des jobs en attente
@@ -303,24 +303,24 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de la réservation
     */
-   public final void unreservedJob(UUID idJob, String type, String parameters,
-         String hote, long clock) {
+   public final void unreservedJob(final UUID idJob, final String type, final String parameters,
+                                   final String hote, final long clock) {
 
       // Création du Mutator
-      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+      final Mutator<String> mutator = jobsQueueDao.createMutator();
 
-      JobQueue jobQueue = new JobQueue();
+      final JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
       jobQueue.setParameters(parameters);
 
       // On ajoute le job dans jobsWaiting
-      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator,
-            JOBS_WAITING_KEY, jobQueue, clock);
+      jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator,
+                                                   JOBS_WAITING_KEY, jobQueue, clock);
 
       // On supprime le job dans le reservedBy correspondant
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob,
-            clock);
+      jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob,
+                                                     clock);
 
       mutator.execute();
 
@@ -341,24 +341,24 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de déréservation
     */
-   public final void unreservedJob(UUID idJob, String type,
-         Map<String, String> jobParameters, String hote, long clock) {
+   public final void unreservedJob(final UUID idJob, final String type,
+                                   final Map<String, String> jobParameters, final String hote, final long clock) {
 
       // Création du Mutator
-      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+      final Mutator<String> mutator = jobsQueueDao.createMutator();
 
-      JobQueue jobQueue = new JobQueue();
+      final JobQueue jobQueue = new JobQueue();
       jobQueue.setIdJob(idJob);
       jobQueue.setType(type);
       jobQueue.setJobParameters(jobParameters);
 
       // On ajoute le job dans jobsWaiting
-      this.jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator,
-            JOBS_WAITING_KEY, jobQueue, clock);
+      jobsQueueDao.mutatorAjouterInsertionJobQueue(mutator,
+                                                   JOBS_WAITING_KEY, jobQueue, clock);
 
       // On supprime le job dans le reservedBy correspondant
-      this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob,
-            clock);
+      jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator, hote, idJob,
+                                                     clock);
 
       mutator.execute();
 
@@ -370,20 +370,20 @@ public class JobsQueueSupport {
     * @return List<String> liste des serveurs
     */
    public final List<String> getHosts() {
-      List<String> hosts = new ArrayList<String>();
-      
-      RangeSlicesQuery<String, UUID, String> query = this.jobsQueueDao.createRangeSlicesQuery();
+      final List<String> hosts = new ArrayList<>();
+
+      final RangeSlicesQuery<String, UUID, String> query = jobsQueueDao.createRangeSlicesQuery();
       query.setReturnKeysOnly();
-      
-      QueryResult<OrderedRows<String, UUID, String>> resultat = query.execute();
+
+      final QueryResult<OrderedRows<String, UUID, String>> resultat = query.execute();
       if (resultat.get() != null && resultat.get().getCount() > 0) {
-         for (Row<String, UUID, String> row : resultat.get().getList()) {
+         for (final Row<String, UUID, String> row : resultat.get().getList()) {
             if (!row.getKey().equals(JOBS_WAITING_KEY)) {
                hosts.add(row.getKey());
             }
          }
       }
-      
+
       return hosts;
    }
 
@@ -400,35 +400,42 @@ public class JobsQueueSupport {
     * @param clock
     *           horloge de suppression du job de la file d'exécution/réservation
     */
-   public void supprimerCodeTraitementDeJobsQueues(UUID idJob, boolean succes,
-         String codeTraitement, long clock) {
+   public void supprimerCodeTraitementDeJobsQueues(final UUID idJob, final boolean succes,
+                                                   final String codeTraitement, final long clock) {
       // Si le traitement du job est en succès, on supprime la colonne avec code traitement.
       // Si le traitement du job est en erreur, on laisse la colonne avec code traitement.
-      if (succes && (codeTraitement != null && !codeTraitement.isEmpty())) {
+      if (succes && codeTraitement != null && !codeTraitement.isEmpty()) {
          // Création du Mutator
-         Mutator<String> mutator = this.jobsQueueDao.createMutator();
+         final Mutator<String> mutator = jobsQueueDao.createMutator();
 
          // Opération 1 : Suppression du job de la liste de la file d'attente
-         this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-               Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement, idJob, clock);
+         jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+                                                        Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement, idJob, clock);
 
          // Exécution de l'opération
          mutator.execute();
       }
    }
 
-  /**
-   * @return
-   */
-  public SliceQuery<String, UUID, String> createSliceQuery() {
-    return jobsQueueDao.createSliceQuery();
-  }
+   /**
+    * @return
+    */
+   public SliceQuery<String, UUID, String> createSliceQuery() {
+      return jobsQueueDao.createSliceQuery();
+   }
 
-  /**
-   * @return
-   */
-  public ColumnFamilyTemplate<String, UUID> getJobsQueueTmpl() {
-    // TODO Auto-generated method stub
-    return jobsQueueDao.getJobsQueueTmpl();
-  }
+   /**
+    * @return
+    */
+   public RangeSlicesQuery<String, UUID, String> createRangeSlicesQuery() {
+      return jobsQueueDao.createRangeSlicesQuery();
+   }
+
+   /**
+    * @return
+    */
+   public ColumnFamilyTemplate<String, UUID> getJobsQueueTmpl() {
+      // TODO Auto-generated method stub
+      return jobsQueueDao.getJobsQueueTmpl();
+   }
 }

@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.pile.travaux.dao.cql.impl;
 
+import static com.datastax.driver.core.querybuilder.QueryBuilder.contains;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
 import java.lang.reflect.Field;
@@ -18,6 +19,7 @@ import com.datastax.driver.mapping.Mapper.Option;
 import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
@@ -28,15 +30,15 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> implements IJobsQueueDaoCql {
 
    /**
-   * @param ccf
-   */
-  public JobsQueueDaoCqlImpl(final CassandraCQLClientFactory ccf) {
-    super(ccf);
-  }
+    * @param ccf
+    */
+   public JobsQueueDaoCqlImpl(final CassandraCQLClientFactory ccf) {
+      super(ccf);
+   }
 
-  /**
-   * TODO (AC75095028) Description du champ
-   */
+   /**
+    * TODO (AC75095028) Description du champ
+    */
    private static final String JOB_ID = "idjob";
 
    private static final String JOBS_WAITING_KEY = "jobsWaiting";
@@ -72,14 +74,14 @@ public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> imp
     * {@inheritDoc}
     */
    @Override
-  public void deleteByIdAndIndexColumn(final UUID id, final String key, final long clock) {
+   public void deleteByIdAndIndexColumn(final UUID id, final String key, final long clock) {
       Assert.notNull(id, " id est requis");
       Assert.notNull(key, " key est requis");
 
-    final Optional<JobQueueCql> opt = findByIdAndIndexColumn(id, key);
-    if (opt.isPresent()) {
-      getMapper().delete(opt.get(), Option.timestamp(clock));
-    }
+      final Optional<JobQueueCql> opt = findByIdAndIndexColumn(id, key);
+      if (opt.isPresent()) {
+         getMapper().delete(opt.get(), Option.timestamp(clock));
+      }
 
    }
 
@@ -112,6 +114,21 @@ public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> imp
       query.where(eq(keyName, hostname));
       return getMapper().map(getSession().execute(query)).iterator();
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public Iterator<JobQueueCql> getSemaphoredJobs() {
+      final Select query = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
+
+      final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
+      Assert.notNull(keyField, "La clé de l'entité à supprimer ne peut être null");
+      final String keyName = keyField.getName();
+
+      query.where(contains(keyName, Constantes.PREFIXE_SEMAPHORE));
+      return getMapper().map(getSession().execute(query)).iterator();
    }
 
    /**

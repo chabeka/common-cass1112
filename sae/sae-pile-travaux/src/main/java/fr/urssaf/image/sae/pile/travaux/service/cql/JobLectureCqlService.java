@@ -142,20 +142,29 @@ public interface JobLectureCqlService {
     */
    UUID getJobRequestIdByJobKey(byte[] jobKey);
 
-  /**
-   * Recuperer le timestamp d'une colonne quelconque en fonction de l'identifiant
-   * et du nom de colonne. <br>
-   * <br>
-   * Cette methode s'applique à toutes les colonnes de la table sauf la colonne de la clé primaire.
-   * En cas d'appel sur la clé primaire on risque d'avoir une exception avec le message
-   * suivant:<br>
-   * <b>Cannot use selection function writeTime on PRIMARY KEY part first_name</b>
-   * 
-   * @param id
-   *          l'identifiant de la colonne
-   * @param columnName
-   *          le nom de la colonne
-   * @return
-   */
-  public long getJobRequestColunmWriteTime(final UUID id, final String columnName);
+   /**
+    * Recuperer le timestamp d'une colonne quelconque en fonction de l'identifiant
+    * et du nom de colonne. <br>
+    * <br>
+    * Cette methode s'applique à toutes les colonnes de la table sauf la colonne de la clé primaire.
+    * En cas d'appel sur la clé primaire on risque d'avoir une exception avec le message
+    * suivant:<br>
+    * <b>Cannot use selection function writeTime on PRIMARY KEY part first_name</b>
+    * 
+    * @param id
+    *          l'identifiant de la colonne
+    * @param columnName
+    *          le nom de la colonne
+    * @return
+    */
+   public long getJobRequestColunmWriteTime(final UUID id, final String columnName);
+
+   /**
+    * Récupère la liste des uuids de jobs en attentes dans JobsQueue faisant l'objet
+    * d'un semaphore dans la pile des travaux
+    * 
+    * @return retourne cette liste de jobs en attentes
+    */
+   List<UUID> getSemaphoredJobUuids();
+
 }

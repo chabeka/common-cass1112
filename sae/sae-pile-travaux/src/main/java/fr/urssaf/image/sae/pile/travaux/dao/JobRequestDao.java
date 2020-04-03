@@ -37,652 +37,653 @@ import me.prettyprint.hector.api.mutation.Mutator;
 @Repository
 public class JobRequestDao {
 
-   public static final String JOBREQUEST_CFNAME = "JobRequest";
-
-   /**
-    * Colonne {@value #JR_TYPE_COLUMN}
-    */
-   public static final String JR_TYPE_COLUMN = "type";
-
-   /**
-    * Colonne {@value #JR_PARAMETERS_COLUMN}
-    */
-   public static final String JR_PARAMETERS_COLUMN = "parameters";
-
-   /**
-    * Colonne {@value #JR_STATE_COLUMN}
-    */
-   public static final String JR_STATE_COLUMN = "state";
-
-   /**
-    * Colonne {@value #JR_RESERVED_BY_COLUMN}
-    */
-   public static final String JR_RESERVED_BY_COLUMN = "reservedBy";
-
-   /**
-    * Colonne {@value #JR_CREATION_DATE_COLUMN}
-    */
-   public static final String JR_CREATION_DATE_COLUMN = "creationDate";
-
-   /**
-    * Colonne {@value #JR_TYPE_COLUMN}
-    */
-   public static final String JR_RESERVATION_DATE_COLUMN = "reservationDate";
-
-   /**
-    * Colonne {@value #JR_STARTING_DATE_COLUMN}
-    */
-   public static final String JR_STARTING_DATE_COLUMN = "startingDate";
-
-   /**
-    * Colonne {@value #JR_ENDING_DATE_COLUMN}
-    */
-   public static final String JR_ENDING_DATE_COLUMN = "endingDate";
-
-   /**
-    * Colonne {@value #JR_MESSAGE}
-    */
-   public static final String JR_MESSAGE = "message";
-
-   /**
-    * Colonne {@value #JR_SAE_HOST}
-    */
-   public static final String JR_SAE_HOST = "saeHost";
-
-   /**
-    * Colonne {@value #JR_CLIENT_HOST}
-    */
-   public static final String JR_CLIENT_HOST = "clientHost";
-
-   /**
-    * Colonne {@value #JR_DOC_COUNT}
-    */
-   public static final String JR_DOC_COUNT = "docCount";
-
-   /**
-    * Colonne {@value #JR_DOC_COUNT_TRAITE}
-    */
-   public static final String JR_DOC_COUNT_TRAITE = "docCountTraite";
-
-   /**
-    * Colonne {@value #JR_PID}
-    */
-   public static final String JR_PID = "pid";
-
-   /**
-    * Colonne {@value #JR_TO_CHECK_FLAG}
-    */
-   public static final String JR_TO_CHECK_FLAG = "toCheckFlag";
-
-   /**
-    * Colonne {@value #JR_TO_CHECK_FLAG_RAISON}
-    */
-   public static final String JR_TO_CHECK_FLAG_RAISON = "toCheckFlagRaison";
-
-   /**
-    * Colonne {@value #JR_VI}
-    */
-   public static final String JR_VI = "vi";
-
-   /**
-    * Colonne {@value #JR_JOB_PARAM_COLUMN}
-    */
-   public static final String JR_JOB_PARAM_COLUMN = "jobParameters";
-
-   /**
-    * Colonne {@value #JR_JOB_KEY_COLUMN}
-    */
-   public static final String JR_JOB_KEY_COLUMN = "jobRKey";
-
-   private static final int MAX_JOB_ATTIBUTS = 100;
-
-   private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
-
-   private final ColumnFamilyTemplate<UUID, String> jobRequestTmpl;
-
-   private final Keyspace keyspace;
-
-   /**
-    * 
-    * @param keyspace
-    *           Keyspace utilisé par la pile des travaux
-    */
-   @Autowired
-   public JobRequestDao(Keyspace keyspace) {
-
-      this.keyspace = keyspace;
-
-      // Propriété de clé:
-      // - Type de la valeur : UUID
-      // - Serializer de la valeur : UUIDSerializer
-
-      jobRequestTmpl = new ThriftColumnFamilyTemplate<UUID, String>(keyspace,
-            JOBREQUEST_CFNAME, UUIDSerializer.get(), StringSerializer.get());
-
-      jobRequestTmpl.setCount(MAX_JOB_ATTIBUTS);
-
-   }
-
-   @SuppressWarnings("unchecked")
-   private void addColumn(ColumnFamilyUpdater<UUID, String> updater,
-         String colName, Object value, Serializer nameSerializer,
-         Serializer valueSerializer, long clock) {
-
-      HColumn<String, Object> column = HFactory.createColumn(colName, value,
-            nameSerializer, valueSerializer);
-
-      column.setClock(clock);
-      updater.setColumn(column);
-
-   }
-
-   /**
-    * 
-    * @return CassandraTemplate de <code>JobRequest</code>
-    */
-   public final ColumnFamilyTemplate<UUID, String> getJobRequestTmpl() {
-
-      return this.jobRequestTmpl;
-   }
-
-   /**
-    * 
-    * @return Mutator de <code>JobRequest</code>
-    */
-   public final Mutator<UUID> createMutator() {
-
-      Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
-            .get());
-
-      return mutator;
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_TYPE_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param valeur
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneType(
-         ColumnFamilyUpdater<UUID, String> updater, String valeur, long clock) {
-
-      addColumn(updater, JR_TYPE_COLUMN, valeur, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_PARAMETERS_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param valeur
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneParameters(
-         ColumnFamilyUpdater<UUID, String> updater, String valeur, long clock) {
-
-      addColumn(updater, JR_PARAMETERS_COLUMN, valeur, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_STATE_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param state
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneState(
-         ColumnFamilyUpdater<UUID, String> updater, String state, long clock) {
-
-      addColumn(updater, JR_STATE_COLUMN, state, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_RESERVED_BY_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param reservedBy
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneReservedBy(
-         ColumnFamilyUpdater<UUID, String> updater, String reservedBy,
-         long clock) {
-
-      addColumn(updater, JR_RESERVED_BY_COLUMN, reservedBy, StringSerializer
-            .get(), StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_CREATION_DATE_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param creationDate
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneCreationDate(
-         ColumnFamilyUpdater<UUID, String> updater, Date creationDate,
-         long clock) {
-
-      Serializer<Date> dSlz = NullableDateSerializer.get();
-      BytesArraySerializer bSlz = BytesArraySerializer.get();
-
-      addColumn(updater, JR_CREATION_DATE_COLUMN, dSlz.toBytes(creationDate),
-            StringSerializer.get(), bSlz, clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_RESERVATION_DATE_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param reservationDate
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneReservationDate(
-         ColumnFamilyUpdater<UUID, String> updater, Date reservationDate,
-         long clock) {
-
-      Serializer<Date> dSlz = NullableDateSerializer.get();
-      BytesArraySerializer bSlz = BytesArraySerializer.get();
-
-      addColumn(updater, JR_RESERVATION_DATE_COLUMN, dSlz
-            .toBytes(reservationDate), StringSerializer.get(), bSlz, clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_STARTING_DATE_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param startingDate
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneStartingDate(
-         ColumnFamilyUpdater<UUID, String> updater, Date startingDate,
-         long clock) {
-
-      Serializer<Date> dSlz = NullableDateSerializer.get();
-      BytesArraySerializer bSlz = BytesArraySerializer.get();
-
-      addColumn(updater, JR_STARTING_DATE_COLUMN, dSlz.toBytes(startingDate),
-            StringSerializer.get(), bSlz, clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_ENDING_DATE_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param endingDate
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneEndingDate(
-         ColumnFamilyUpdater<UUID, String> updater, Date endingDate, long clock) {
-
-      Serializer<Date> dSlz = NullableDateSerializer.get();
-      BytesArraySerializer bSlz = BytesArraySerializer.get();
-
-      addColumn(updater, JR_ENDING_DATE_COLUMN, dSlz.toBytes(endingDate),
-            StringSerializer.get(), bSlz, clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_MESSAGE}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param message
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneMessage(
-         ColumnFamilyUpdater<UUID, String> updater, String message, long clock) {
-
-      addColumn(updater, JR_MESSAGE, message, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_SAE_HOST}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param saeHost
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneSaeHost(
-         ColumnFamilyUpdater<UUID, String> updater, String saeHost, long clock) {
-
-      addColumn(updater, JR_SAE_HOST, saeHost, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_CLIENT_HOST}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param clientHost
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneClientHost(
-         ColumnFamilyUpdater<UUID, String> updater, String clientHost,
-         long clock) {
-
-      addColumn(updater, JR_CLIENT_HOST, clientHost, StringSerializer.get(),
-            StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_DOC_COUNT}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param docCount
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneDocCount(
-         ColumnFamilyUpdater<UUID, String> updater, Integer docCount, long clock) {
-
-      addColumn(updater, JR_DOC_COUNT, docCount, StringSerializer.get(),
-            IntegerSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_DOC_COUNT_TRAITE}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param docCountTraite
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneDocCountTraite(
-         ColumnFamilyUpdater<UUID, String> updater, Integer docCountTraite,
-         long clock) {
-
-      addColumn(updater, JR_DOC_COUNT_TRAITE, docCountTraite, StringSerializer.get(),
-            IntegerSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_PID}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param pid
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonnePid(ColumnFamilyUpdater<UUID, String> updater,
-         Integer pid, long clock) {
-
-      addColumn(updater, JR_PID, pid, StringSerializer.get(), IntegerSerializer
-            .get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_TO_CHECK_FLAG}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param toCheckFlag
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneToCheckFlag(
-         ColumnFamilyUpdater<UUID, String> updater, Boolean toCheckFlag,
-         long clock) {
-
-      addColumn(updater, JR_TO_CHECK_FLAG, toCheckFlag, StringSerializer.get(),
-            BooleanSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_TO_CHECK_FLAG_RAISON}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param toCheckFlagRaison
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneToCheckFlagRaison(
-         ColumnFamilyUpdater<UUID, String> updater, String toCheckFlagRaison,
-         long clock) {
-
-      addColumn(updater, JR_TO_CHECK_FLAG_RAISON, toCheckFlagRaison,
-            StringSerializer.get(), StringSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_VI}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param valeur
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneVi(ColumnFamilyUpdater<UUID, String> updater,
-         VIContenuExtrait valeur, long clock) {
-
-      addColumn(updater, JR_VI, valeur, StringSerializer.get(), VISerializer
-            .get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_JOB_PARAM_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param valeur
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritColonneJobParameters(
-         ColumnFamilyUpdater<UUID, String> updater, Map<String, String> valeur,
-         long clock) {
-
-      addColumn(updater, JR_JOB_PARAM_COLUMN, valeur, StringSerializer.get(),
-            MapSerializer.get(), clock);
-
-   }
-
-   /**
-    * Ajoute une colonne {@value #JR_JOB_KEY_COLUMN}
-    * 
-    * @param updater
-    *           Updater de <code>JobRequest</code>
-    * @param valeur
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public void ecritColonneJobKey(ColumnFamilyUpdater<UUID, String> updater,
-         byte[] valeur, long clock) {
-      addColumn(updater, JR_JOB_KEY_COLUMN, valeur, StringSerializer.get(),
-            BytesArraySerializer.get(), clock);
-
-   }
-
-   /**
-    * Suppression d'un JobRequest
-    * 
-    * @param mutator
-    *           Mutator de <code>JobRequest</code>
-    * @param idJob
-    *           nom de la ligne
-    * @param clock
-    *           horloge de la suppression
-    */
-   public final void mutatorSuppressionJobRequest(Mutator<UUID> mutator,
-         UUID idJob, long clock) {
-
-      mutator.addDeletion(idJob, JOBREQUEST_CFNAME, clock);
-
-   }
-
-   /**
-    * 
-    * @param result
-    *           données d'un job
-    * 
-    * @return instance de {@link JobRequest}
-    */
-   public final JobRequest createJobRequestFromResult(
-         ColumnFamilyResult<UUID, String> result) {
-      if (result == null || !result.hasResults()) {
-         return null;
-      }
-      Serializer<Date> dSlz = NullableDateSerializer.get();
-
-      JobRequest jobRequest = new JobRequest();
-
-      jobRequest.setIdJob(result.getKey());
-
-      jobRequest.setType(result.getString(JR_TYPE_COLUMN));
-
-      jobRequest.setParameters(result.getString(JR_PARAMETERS_COLUMN));
-
-      String state = result.getString(JR_STATE_COLUMN);
-      jobRequest.setState(JobState.valueOf(state));
-
-      jobRequest.setReservedBy(result.getString(JR_RESERVED_BY_COLUMN));
-
-      // Lève une exception runtime si la colonne JR_CREATION_DATE_COLUMN est
-      // vide. Cela est un cas anormal, car cette colonne devrait être
-      // renseignée lors de la création du job. Si elle est vide, et que l'on ne
-      // fait pas ce test, une NPE est levée et on ne peut pas préciser des
-      // informations dans l'exception sur le job qui pose problème.
-      if (result.getByteArray(JR_CREATION_DATE_COLUMN) == null) {
-         throw new PileTravauxRuntimeException(
-               String
-               .format(
-                     "Erreur technique : la colonne %s pour le job %s est vide ou absente (Column family %s)",
-                     JR_CREATION_DATE_COLUMN, jobRequest.getIdJob(),
-                     JOBREQUEST_CFNAME));
-      }
-      Date creationDate = dSlz.fromBytes(result
-            .getByteArray(JR_CREATION_DATE_COLUMN));
-      jobRequest.setCreationDate(creationDate);
-
-      if (result.getByteArray(JR_RESERVATION_DATE_COLUMN) != null) {
-         Date reservationDate = dSlz.fromBytes(result
-               .getByteArray(JR_RESERVATION_DATE_COLUMN));
-         jobRequest.setReservationDate(reservationDate);
-      }
-
-      if (result.getByteArray(JR_STARTING_DATE_COLUMN) != null) {
-         Date startingDate = dSlz.fromBytes(result
-               .getByteArray(JR_STARTING_DATE_COLUMN));
-         jobRequest.setStartingDate(startingDate);
-      }
-
-      if (result.getByteArray(JR_ENDING_DATE_COLUMN) != null) {
-         Date endingDate = dSlz.fromBytes(result
-               .getByteArray(JR_ENDING_DATE_COLUMN));
-         jobRequest.setEndingDate(endingDate);
-      }
-
-      jobRequest.setMessage(result.getString(JR_MESSAGE));
-
-      jobRequest.setSaeHost(result.getString(JR_SAE_HOST));
-
-      jobRequest.setClientHost(result.getString(JR_CLIENT_HOST));
-
-      jobRequest.setPid(result.getInteger(JR_PID));
-
-      jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
-
-      Integer nbDocTraite = result.getInteger(JR_DOC_COUNT_TRAITE);
-      if (nbDocTraite != null) {
-         jobRequest.setDocCountTraite(nbDocTraite);
-      }
-
-      jobRequest.setToCheckFlag(result.getBoolean(JR_TO_CHECK_FLAG));
-
-      jobRequest
-      .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
-
-      if (result.getByteArray(JR_VI) != null) {
-         VIContenuExtrait contenuExtrait = VISerializer.get().fromBytes(
-               result.getByteArray(JR_VI));
-         jobRequest.setVi(contenuExtrait);
-      }
-
-      if (result.getByteArray(JR_JOB_PARAM_COLUMN) != null) {
-         byte[] bMetadata = result.getByteArray(JR_JOB_PARAM_COLUMN);
-         jobRequest.setJobParameters(MapSerializer.get().fromBytes(bMetadata));
-      }
-
-      if (result.getByteArray(JR_JOB_KEY_COLUMN) != null) {
-         byte[] bMetadata = result.getByteArray(JR_JOB_KEY_COLUMN);
-         jobRequest.setJobKey(bMetadata);
-      }
-
-      return jobRequest;
-   }
-
-   /**
-    * @return the keyspace
-    */
-   public Keyspace getKeyspace() {
-      return keyspace;
-   }
+  public static final String JOBREQUEST_CFNAME = "JobRequest";
+
+  /**
+   * Colonne {@value #JR_TYPE_COLUMN}
+   */
+  public static final String JR_TYPE_COLUMN = "type";
+
+  /**
+   * Colonne {@value #JR_PARAMETERS_COLUMN}
+   */
+  public static final String JR_PARAMETERS_COLUMN = "parameters";
+
+  /**
+   * Colonne {@value #JR_STATE_COLUMN}
+   */
+  public static final String JR_STATE_COLUMN = "state";
+
+  /**
+   * Colonne {@value #JR_RESERVED_BY_COLUMN}
+   */
+  public static final String JR_RESERVED_BY_COLUMN = "reservedBy";
+
+  /**
+   * Colonne {@value #JR_CREATION_DATE_COLUMN}
+   */
+  public static final String JR_CREATION_DATE_COLUMN = "creationDate";
+
+  /**
+   * Colonne {@value #JR_TYPE_COLUMN}
+   */
+  public static final String JR_RESERVATION_DATE_COLUMN = "reservationDate";
+
+  /**
+   * Colonne {@value #JR_STARTING_DATE_COLUMN}
+   */
+  public static final String JR_STARTING_DATE_COLUMN = "startingDate";
+
+  /**
+   * Colonne {@value #JR_ENDING_DATE_COLUMN}
+   */
+  public static final String JR_ENDING_DATE_COLUMN = "endingDate";
+
+  /**
+   * Colonne {@value #JR_MESSAGE}
+   */
+  public static final String JR_MESSAGE = "message";
+
+  /**
+   * Colonne {@value #JR_SAE_HOST}
+   */
+  public static final String JR_SAE_HOST = "saeHost";
+
+  /**
+   * Colonne {@value #JR_CLIENT_HOST}
+   */
+  public static final String JR_CLIENT_HOST = "clientHost";
+
+  /**
+   * Colonne {@value #JR_DOC_COUNT}
+   */
+  public static final String JR_DOC_COUNT = "docCount";
+
+  /**
+   * Colonne {@value #JR_DOC_COUNT_TRAITE}
+   */
+  public static final String JR_DOC_COUNT_TRAITE = "docCountTraite";
+
+  /**
+   * Colonne {@value #JR_PID}
+   */
+  public static final String JR_PID = "pid";
+
+  /**
+   * Colonne {@value #JR_TO_CHECK_FLAG}
+   */
+  public static final String JR_TO_CHECK_FLAG = "toCheckFlag";
+
+  /**
+   * Colonne {@value #JR_TO_CHECK_FLAG_RAISON}
+   */
+  public static final String JR_TO_CHECK_FLAG_RAISON = "toCheckFlagRaison";
+
+  /**
+   * Colonne {@value #JR_VI}
+   */
+  public static final String JR_VI = "vi";
+
+  /**
+   * Colonne {@value #JR_JOB_PARAM_COLUMN}
+   */
+  public static final String JR_JOB_PARAM_COLUMN = "jobParameters";
+
+  /**
+   * Colonne {@value #JR_JOB_KEY_COLUMN}
+   */
+  public static final String JR_JOB_KEY_COLUMN = "jobRKey";
+
+  private static final int MAX_JOB_ATTIBUTS = 100;
+
+  private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
+
+  private final ColumnFamilyTemplate<UUID, String> jobRequestTmpl;
+
+  private final Keyspace keyspace;
+
+  /**
+   * 
+   * @param keyspace
+   *           Keyspace utilisé par la pile des travaux
+   */
+  @Autowired
+  public JobRequestDao(final Keyspace keyspace) {
+
+    this.keyspace = keyspace;
+
+    // Propriété de clé:
+    // - Type de la valeur : UUID
+    // - Serializer de la valeur : UUIDSerializer
+
+    jobRequestTmpl = new ThriftColumnFamilyTemplate<>(keyspace,
+        JOBREQUEST_CFNAME, UUIDSerializer.get(), StringSerializer.get());
+
+    jobRequestTmpl.setCount(MAX_JOB_ATTIBUTS);
+
+  }
+
+  @SuppressWarnings("unchecked")
+  private void addColumn(final ColumnFamilyUpdater<UUID, String> updater,
+                         final String colName, final Object value, final Serializer nameSerializer,
+                         final Serializer valueSerializer, final long clock) {
+
+    final HColumn<String, Object> column = HFactory.createColumn(colName, value,
+                                                                 nameSerializer, valueSerializer);
+
+    column.setClock(clock);
+    updater.setColumn(column);
+
+  }
+
+  /**
+   * 
+   * @return CassandraTemplate de <code>JobRequest</code>
+   */
+  public final ColumnFamilyTemplate<UUID, String> getJobRequestTmpl() {
+
+    return jobRequestTmpl;
+  }
+
+  /**
+   * 
+   * @return Mutator de <code>JobRequest</code>
+   */
+  public final Mutator<UUID> createMutator() {
+
+    final Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
+                                                         .get());
+
+    return mutator;
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_TYPE_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param valeur
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneType(
+                                     final ColumnFamilyUpdater<UUID, String> updater, final String valeur, final long clock) {
+
+    addColumn(updater, JR_TYPE_COLUMN, valeur, StringSerializer.get(),
+              StringSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_PARAMETERS_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param valeur
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneParameters(
+                                           final ColumnFamilyUpdater<UUID, String> updater, final String valeur, final long clock) {
+
+    addColumn(updater, JR_PARAMETERS_COLUMN, valeur, StringSerializer.get(),
+              StringSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_STATE_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param state
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneState(
+                                      final ColumnFamilyUpdater<UUID, String> updater, final String state, final long clock) {
+
+    addColumn(updater, JR_STATE_COLUMN, state, StringSerializer.get(),
+              StringSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_RESERVED_BY_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param reservedBy
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneReservedBy(
+                                           final ColumnFamilyUpdater<UUID, String> updater, final String reservedBy,
+                                           final long clock) {
+
+    addColumn(updater, JR_RESERVED_BY_COLUMN, reservedBy, StringSerializer
+              .get(), StringSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_CREATION_DATE_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param creationDate
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneCreationDate(
+                                             final ColumnFamilyUpdater<UUID, String> updater, final Date creationDate,
+                                             final long clock) {
+
+    final Serializer<Date> dSlz = NullableDateSerializer.get();
+    final BytesArraySerializer bSlz = BytesArraySerializer.get();
+
+    addColumn(updater, JR_CREATION_DATE_COLUMN, dSlz.toBytes(creationDate),
+              StringSerializer.get(), bSlz, clock);
+
+  }
+
+
+  /**
+   * Ajoute une colonne {@value #JR_RESERVATION_DATE_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param reservationDate
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneReservationDate(
+                                                final ColumnFamilyUpdater<UUID, String> updater, final Date reservationDate,
+                                                final long clock) {
+
+    final Serializer<Date> dSlz = NullableDateSerializer.get();
+    final BytesArraySerializer bSlz = BytesArraySerializer.get();
+
+    addColumn(updater, JR_RESERVATION_DATE_COLUMN, dSlz
+              .toBytes(reservationDate), StringSerializer.get(), bSlz, clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_STARTING_DATE_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param startingDate
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneStartingDate(
+                                             final ColumnFamilyUpdater<UUID, String> updater, final Date startingDate,
+                                             final long clock) {
+
+    final Serializer<Date> dSlz = NullableDateSerializer.get();
+    final BytesArraySerializer bSlz = BytesArraySerializer.get();
+
+    addColumn(updater, JR_STARTING_DATE_COLUMN, dSlz.toBytes(startingDate),
+              StringSerializer.get(), bSlz, clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_ENDING_DATE_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param endingDate
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneEndingDate(
+                                           final ColumnFamilyUpdater<UUID, String> updater, final Date endingDate, final long clock) {
+
+    final Serializer<Date> dSlz = NullableDateSerializer.get();
+    final BytesArraySerializer bSlz = BytesArraySerializer.get();
+
+    addColumn(updater, JR_ENDING_DATE_COLUMN, dSlz.toBytes(endingDate),
+              StringSerializer.get(), bSlz, clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_MESSAGE}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param message
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneMessage(
+                                        final ColumnFamilyUpdater<UUID, String> updater, final String message, final long clock) {
+
+    addColumn(updater, JR_MESSAGE, message, StringSerializer.get(),
+              StringSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_SAE_HOST}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param saeHost
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneSaeHost(
+                                        final ColumnFamilyUpdater<UUID, String> updater, final String saeHost, final long clock) {
+
+    addColumn(updater, JR_SAE_HOST, saeHost, StringSerializer.get(),
+              StringSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_CLIENT_HOST}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param clientHost
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneClientHost(
+                                           final ColumnFamilyUpdater<UUID, String> updater, final String clientHost,
+                                           final long clock) {
+
+    addColumn(updater, JR_CLIENT_HOST, clientHost, StringSerializer.get(),
+              StringSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_DOC_COUNT}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param docCount
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneDocCount(
+                                         final ColumnFamilyUpdater<UUID, String> updater, final Integer docCount, final long clock) {
+
+    addColumn(updater, JR_DOC_COUNT, docCount, StringSerializer.get(),
+              IntegerSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_DOC_COUNT_TRAITE}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param docCountTraite
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneDocCountTraite(
+                                               final ColumnFamilyUpdater<UUID, String> updater, final Integer docCountTraite,
+                                               final long clock) {
+
+    addColumn(updater, JR_DOC_COUNT_TRAITE, docCountTraite, StringSerializer.get(),
+              IntegerSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_PID}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param pid
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonnePid(final ColumnFamilyUpdater<UUID, String> updater,
+                                    final Integer pid, final long clock) {
+
+    addColumn(updater, JR_PID, pid, StringSerializer.get(), IntegerSerializer
+              .get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_TO_CHECK_FLAG}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param toCheckFlag
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneToCheckFlag(
+                                            final ColumnFamilyUpdater<UUID, String> updater, final Boolean toCheckFlag,
+                                            final long clock) {
+
+    addColumn(updater, JR_TO_CHECK_FLAG, toCheckFlag, StringSerializer.get(),
+              BooleanSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_TO_CHECK_FLAG_RAISON}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param toCheckFlagRaison
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneToCheckFlagRaison(
+                                                  final ColumnFamilyUpdater<UUID, String> updater, final String toCheckFlagRaison,
+                                                  final long clock) {
+
+    addColumn(updater, JR_TO_CHECK_FLAG_RAISON, toCheckFlagRaison,
+              StringSerializer.get(), StringSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_VI}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param valeur
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneVi(final ColumnFamilyUpdater<UUID, String> updater,
+                                   final VIContenuExtrait valeur, final long clock) {
+
+    addColumn(updater, JR_VI, valeur, StringSerializer.get(), VISerializer
+              .get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_JOB_PARAM_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param valeur
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritColonneJobParameters(
+                                              final ColumnFamilyUpdater<UUID, String> updater, final Map<String, String> valeur,
+                                              final long clock) {
+
+    addColumn(updater, JR_JOB_PARAM_COLUMN, valeur, StringSerializer.get(),
+              MapSerializer.get(), clock);
+
+  }
+
+  /**
+   * Ajoute une colonne {@value #JR_JOB_KEY_COLUMN}
+   * 
+   * @param updater
+   *           Updater de <code>JobRequest</code>
+   * @param valeur
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public void ecritColonneJobKey(final ColumnFamilyUpdater<UUID, String> updater,
+                                 final byte[] valeur, final long clock) {
+    addColumn(updater, JR_JOB_KEY_COLUMN, valeur, StringSerializer.get(),
+              BytesArraySerializer.get(), clock);
+
+  }
+
+  /**
+   * Suppression d'un JobRequest
+   * 
+   * @param mutator
+   *           Mutator de <code>JobRequest</code>
+   * @param idJob
+   *           nom de la ligne
+   * @param clock
+   *           horloge de la suppression
+   */
+  public final void mutatorSuppressionJobRequest(final Mutator<UUID> mutator,
+                                                 final UUID idJob, final long clock) {
+
+    mutator.addDeletion(idJob, JOBREQUEST_CFNAME, clock);
+
+  }
+
+  /**
+   * 
+   * @param result
+   *           données d'un job
+   * 
+   * @return instance de {@link JobRequest}
+   */
+  public final JobRequest createJobRequestFromResult(
+                                                     final ColumnFamilyResult<UUID, String> result) {
+    if (result == null || !result.hasResults()) {
+      return null;
+    }
+    final Serializer<Date> dSlz = NullableDateSerializer.get();
+
+    final JobRequest jobRequest = new JobRequest();
+
+    jobRequest.setIdJob(result.getKey());
+
+    jobRequest.setType(result.getString(JR_TYPE_COLUMN));
+
+    jobRequest.setParameters(result.getString(JR_PARAMETERS_COLUMN));
+
+    final String state = result.getString(JR_STATE_COLUMN);
+    jobRequest.setState(JobState.valueOf(state));
+
+    jobRequest.setReservedBy(result.getString(JR_RESERVED_BY_COLUMN));
+
+    // Lève une exception runtime si la colonne JR_CREATION_DATE_COLUMN est
+    // vide. Cela est un cas anormal, car cette colonne devrait être
+    // renseignée lors de la création du job. Si elle est vide, et que l'on ne
+    // fait pas ce test, une NPE est levée et on ne peut pas préciser des
+    // informations dans l'exception sur le job qui pose problème.
+    if (result.getByteArray(JR_CREATION_DATE_COLUMN) == null) {
+      throw new PileTravauxRuntimeException(
+                                            String
+                                            .format(
+                                                    "Erreur technique : la colonne %s pour le job %s est vide ou absente (Column family %s)",
+                                                    JR_CREATION_DATE_COLUMN, jobRequest.getIdJob(),
+                                                    JOBREQUEST_CFNAME));
+    }
+    final Date creationDate = dSlz.fromBytes(result
+                                             .getByteArray(JR_CREATION_DATE_COLUMN));
+    jobRequest.setCreationDate(creationDate);
+
+    if (result.getByteArray(JR_RESERVATION_DATE_COLUMN) != null) {
+      final Date reservationDate = dSlz.fromBytes(result
+                                                  .getByteArray(JR_RESERVATION_DATE_COLUMN));
+      jobRequest.setReservationDate(reservationDate);
+    }
+
+    if (result.getByteArray(JR_STARTING_DATE_COLUMN) != null) {
+      final Date startingDate = dSlz.fromBytes(result
+                                               .getByteArray(JR_STARTING_DATE_COLUMN));
+      jobRequest.setStartingDate(startingDate);
+    }
+
+    if (result.getByteArray(JR_ENDING_DATE_COLUMN) != null) {
+      final Date endingDate = dSlz.fromBytes(result
+                                             .getByteArray(JR_ENDING_DATE_COLUMN));
+      jobRequest.setEndingDate(endingDate);
+    }
+
+    jobRequest.setMessage(result.getString(JR_MESSAGE));
+
+    jobRequest.setSaeHost(result.getString(JR_SAE_HOST));
+
+    jobRequest.setClientHost(result.getString(JR_CLIENT_HOST));
+
+    jobRequest.setPid(result.getInteger(JR_PID));
+
+    jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
+
+    final Integer nbDocTraite = result.getInteger(JR_DOC_COUNT_TRAITE);
+    if (nbDocTraite != null) {
+      jobRequest.setDocCountTraite(nbDocTraite);
+    }
+
+    jobRequest.setToCheckFlag(result.getBoolean(JR_TO_CHECK_FLAG));
+
+    jobRequest
+    .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
+
+    if (result.getByteArray(JR_VI) != null) {
+      final VIContenuExtrait contenuExtrait = VISerializer.get().fromBytes(
+                                                                           result.getByteArray(JR_VI));
+      jobRequest.setVi(contenuExtrait);
+    }
+
+    if (result.getByteArray(JR_JOB_PARAM_COLUMN) != null) {
+      final byte[] bMetadata = result.getByteArray(JR_JOB_PARAM_COLUMN);
+      jobRequest.setJobParameters(MapSerializer.get().fromBytes(bMetadata));
+    }
+
+    if (result.getByteArray(JR_JOB_KEY_COLUMN) != null) {
+      final byte[] bMetadata = result.getByteArray(JR_JOB_KEY_COLUMN);
+      jobRequest.setJobKey(bMetadata);
+    }
+
+    return jobRequest;
+  }
+
+  /**
+   * @return the keyspace
+   */
+  public Keyspace getKeyspace() {
+    return keyspace;
+  }
 
 }

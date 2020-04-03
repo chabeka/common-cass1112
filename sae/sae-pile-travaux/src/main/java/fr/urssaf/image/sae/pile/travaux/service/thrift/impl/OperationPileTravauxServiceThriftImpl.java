@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.pile.travaux.service.thrift.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,49 +25,53 @@ import me.prettyprint.hector.api.Keyspace;
  */
 @Service
 public class OperationPileTravauxServiceThriftImpl implements
-                                                   OperationPileTravauxThriftService {
+OperationPileTravauxThriftService {
 
-  private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(OperationPileTravauxServiceThriftImpl.class);
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(OperationPileTravauxServiceThriftImpl.class);
 
-  /**
-   * Service permettant de réaliser des objets sur les jobs
-   */
-  @Autowired
-  private JobQueueService jobQueueService;
+   /**
+    * Service permettant de réaliser des objets sur les jobs
+    */
+   @Autowired
+   private JobQueueService jobQueueService;
 
-  /**
-   * Service permettant de réaliser les opérations de lecture sur les jobs
-   */
-  @Autowired
-  private JobLectureService jobLectureService;
+   /**
+    * Service permettant de réaliser les opérations de lecture sur les jobs
+    */
+   @Autowired
+   private JobLectureService jobLectureService;
 
-  /**
-   * Keyspace utilisé
-   */
-  @Autowired
-  private Keyspace keyspace;
+   /**
+    * Keyspace utilisé
+    */
+   @Autowired
+   private Keyspace keyspace;
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public final void purger(final Date dateMax) {
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void purger(final Date dateMax) {
 
-    if (dateMax == null) {
-      throw new IllegalArgumentException(
-                                         "La date maximum de suppression des jobs doit être renseignée");
-    }
+      if (dateMax == null) {
+         throw new IllegalArgumentException(
+               "La date maximum de suppression des jobs doit être renseignée");
+      }
 
-    final List<JobRequest> listeJobRequest = jobLectureService.getJobsToDelete(keyspace, dateMax);
+      final List<JobRequest> listeJobRequest = jobLectureService.getJobsToDelete(keyspace, dateMax);
+      final List<UUID> listSemaphoredJobUuids = jobLectureService.getSemaphoredJobUuids();
 
-    int nbJobSupprimes = 0;
-    for (final JobRequest jobRequest : listeJobRequest) {
-      jobQueueService.deleteJob(jobRequest.getIdJob());
-      nbJobSupprimes++;
-    }
-    LOGGER.info("Nombre de travaux supprimés : {}", nbJobSupprimes);
+      int nbJobSupprimes = 0;
+      for (final JobRequest jobRequest : listeJobRequest) {
+         // On verifie que le Job ne fait pas l'objet de sémaphore avant de le supprimer
+         if (!listSemaphoredJobUuids.contains(jobRequest.getIdJob())) {
+            jobQueueService.deleteJob(jobRequest.getIdJob());
+            nbJobSupprimes++;
+         }
+      }
+      LOGGER.info("Nombre de travaux supprimés : {}", nbJobSupprimes);
 
-  }
+   }
 
 }
