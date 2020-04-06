@@ -66,8 +66,7 @@ public class TransfertListener extends AbstractListener {
     */
    @BeforeProcess
    public final void beforeProcess(
-         final JAXBElement<UntypedDocument> untypedType) {
-
+                                   final JAXBElement<UntypedDocument> untypedType) {
       incrementCount();
    }
 
@@ -133,7 +132,7 @@ public class TransfertListener extends AbstractListener {
     */
    @OnProcessError
    public final void logProcessError(final Object documentType,
-         final Exception exception) {
+                                     final Exception exception) {
 	  
 	   // Traitement du cas d'echec de reconnexion au DFCE après interruption survenu avant le traitement
 	  // du premier documment, ano:#443725
@@ -145,7 +144,7 @@ public class TransfertListener extends AbstractListener {
       getIndexErreurListe().add(
                                 getStepExecution().getExecutionContext()
                                 .getInt(
-                  Constantes.CTRL_INDEX));
+                                        Constantes.CTRL_INDEX));
       LOGGER.warn("Erreur lors du transfert de document", exception);
       getErrorMessageList().add(errorMsg);
    }
@@ -204,7 +203,7 @@ public class TransfertListener extends AbstractListener {
       final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
       jobExecution.getExecutionContext()
       .put(Constantes.NB_INTEG_DOCS,
-            executor.getIntegratedDocuments().size());
+           executor.getIntegratedDocuments().size());
 
       jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
 
@@ -276,7 +275,7 @@ public class TransfertListener extends AbstractListener {
 	}
 
    private ExitStatus gestionException(
-         final AbstractInsertionMasseRuntimeException exception) {
+                                       final AbstractInsertionMasseRuntimeException exception) {
 
       final String trcPrefix = "gestionException()";
 
@@ -290,7 +289,7 @@ public class TransfertListener extends AbstractListener {
          throw exception.getCause();
       }
       catch (final InterruptionTraitementException e) {
-         
+
          final String messageError = "Le transfert de masse en mode 'Partiel' a été interrompu. "
                + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
          LOGGER.warn("{} - " + messageError, trcPrefix);
@@ -298,7 +297,7 @@ public class TransfertListener extends AbstractListener {
 
          getStepExecution().getJobExecution()
          .getExecutionContext()
-               .put(Constantes.FLAG_BUL003, Boolean.TRUE);
+         .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
          codes.add(Constantes.ERR_TR_BUL001);
          index.add(exception.getIndex());
@@ -319,7 +318,7 @@ public class TransfertListener extends AbstractListener {
          }
 
          LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
-         
+
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
          errorMessageList.add(message);

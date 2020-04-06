@@ -173,9 +173,9 @@ ItemWriter<StorageDocument> {
       }
       catch (final Exception except) {
          throw new SuppressionException(
-               "Erreur Suppression - identifiant archivage "
-                     + document.getUuid() + " : " + except.getMessage(),
-                     except);
+                                        "Erreur Suppression - identifiant archivage "
+                                              + document.getUuid() + " : " + except.getMessage(),
+                                              except);
       }
       return document;
    }
@@ -203,9 +203,10 @@ ItemWriter<StorageDocument> {
          // Si le document n'est pas en erreur ou dans la liste de document déjà
          // traité (Reprise), on traite, sinon on passe au suivant.
          if (isdocumentATraite) {
+
             command = new InsertionRunnable(docIndexInWriter,
-                  storageDocument,
-                  this);
+                                            storageDocument,
+                                            this);
 
             try {
                poolExecutor.execute(command);
@@ -220,16 +221,16 @@ ItemWriter<StorageDocument> {
             }
             if (LOGGER.isDebugEnabled()) {
                LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-                     TRC_INSERT,
-                     "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount()
-                     + " - Actifs : " + poolExecutor.getActiveCount());
+                            TRC_INSERT,
+                            "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount()
+                            + " - Actifs : " + poolExecutor.getActiveCount());
             }
          } else if (isDocumentDejaTraite(docIndexInWriter)) {
             poolExecutor.getIntegratedDocuments()
             .add(
-                  new TraitementMasseIntegratedDocument(storageDocument.getUuid(),
-                        null,
-                        docIndexInWriter));
+                 new TraitementMasseIntegratedDocument(storageDocument.getUuid(),
+                                                       null,
+                                                       docIndexInWriter));
          }
          docIndexInWriter++;
       }
@@ -250,8 +251,8 @@ ItemWriter<StorageDocument> {
       }
       catch (final Exception e) {
          getLogger().warn("{} - erreur d'ouverture des services de transfert",
-               trcPrefix,
-               e);
+                          trcPrefix,
+                          e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());
@@ -276,8 +277,8 @@ ItemWriter<StorageDocument> {
       }
       catch (final Exception e) {
          getLogger().warn("{} - erreur lors de la fermeture des services de transfert",
-               trcPrefix,
-               e);
+                          trcPrefix,
+                          e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());
