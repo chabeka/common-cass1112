@@ -46,29 +46,31 @@ public class CassandraHelper {
 
    private static final String CODE_TRAITEMENT = "UR666";
 
+   private String typeJob;
+
    public CassandraHelper(final Environment environment) {
       this.environment = environment;
       final String servers = environment.getCassandraServers();
       final AuthenticationCredentials credentials = new SimpleAuthenticationCredentials(
-            "root",
+                                                                                        "root",
             "regina4932");
 
       final AstyanaxContext<Keyspace> context = new AstyanaxContext.Builder()
             .forCluster("SAE")
             .forKeyspace("SAE")
             .withAstyanaxConfiguration(
-                  new AstyanaxConfigurationImpl()
-                  .setDiscoveryType(NodeDiscoveryType.NONE)
-                  .setDefaultReadConsistencyLevel(
-                        ConsistencyLevel.CL_QUORUM)
-                  .setDefaultWriteConsistencyLevel(
-                        ConsistencyLevel.CL_QUORUM))
+                                       new AstyanaxConfigurationImpl()
+                                       .setDiscoveryType(NodeDiscoveryType.NONE)
+                                       .setDefaultReadConsistencyLevel(
+                                                                       ConsistencyLevel.CL_QUORUM)
+                                       .setDefaultWriteConsistencyLevel(
+                                                                        ConsistencyLevel.CL_QUORUM))
             .withConnectionPoolConfiguration(
-                  new ConnectionPoolConfigurationImpl("MyConnectionPool")
-                  .setPort(9160)
-                  .setMaxConnsPerHost(1)
-                  .setSeeds(servers)
-                  .setAuthenticationCredentials(credentials))
+                                             new ConnectionPoolConfigurationImpl("MyConnectionPool")
+                                             .setPort(9160)
+                                             .setMaxConnsPerHost(1)
+                                             .setSeeds(servers)
+                                             .setAuthenticationCredentials(credentials))
             .withConnectionPoolMonitor(new CountingConnectionPoolMonitor())
             .buildKeyspace(ThriftFamilyFactory.getInstance());
 
@@ -93,6 +95,7 @@ public class CassandraHelper {
       json = json.replace("ID_JOB", jobId.toString());
       json = json.replace("SOMMAIRE_URL", sommaireURL);
       final String jobType = "capture_masse";
+      typeJob = jobType;
       writeJob(jobId, sommaireURL, sommaireHash, appliServer, json, jobType);
    }
 
@@ -114,6 +117,7 @@ public class CassandraHelper {
       json = json.replace("SOMMAIRE_URL", sommaireURL);
       json = json.replace("SOMMAIRE_HASH", sommaireHash);
       final String jobType = "transfert_masse";
+      typeJob = jobType;
       writeJob(jobId, sommaireURL, sommaireHash, appliServer, json, jobType);
    }
 
@@ -136,6 +140,7 @@ public class CassandraHelper {
       json = json.replace("CODE_TRAITEMENT", CODE_TRAITEMENT);
       json = json.replace("SOMMAIRE_HASH", sommaireHash);
       final String jobType = "modification_masse";
+      typeJob = jobType;
       writeJob(jobId, sommaireURL, sommaireHash, appliServer, json, jobType);
    }
 
@@ -156,14 +161,32 @@ public class CassandraHelper {
       json = json.replace("ID_JOB", jobId.toString());
       json = json.replace("DELETION_REQUEST", JSONValue.escape(deletionRequest));
       final String jobType = "suppression_masse";
+      typeJob = jobType;
       String jobParametersAsXML = "<?xml version='1.0' encoding='UTF-8'?><map><entry><string>requeteSuppression</string><string>DELETION_REQUEST</string></entry></map>";
       jobParametersAsXML = jobParametersAsXML.replace("DELETION_REQUEST", StringEscapeUtils.escapeXml(deletionRequest));
       writeJob(jobId, jobParametersAsXML, appliServer, json, jobType);
    }
 
+   public void writeRepriseJob(final UUID jobId, final String idJobAReprendre) throws Exception {
+      final String appliServer = environment.getAppliServer();
+      String json = "{\"idJob\":\"ID_JOB\",\"type\":\"reprise_masse\",\"parameters\":null,\"jobParameters\":{\"heureTraitementReprise\":\"HEURE_REPRISE\",\"uuidJobAReprendre\":\"ID_JOB_A_REPRENDRE\"}}";
+      json = json.replace("ID_JOB", jobId.toString());
+      final long currentDate = System.currentTimeMillis() / 1000L;
+      json = json.replace("HEURE_REPRISE", String.valueOf(currentDate));
+      json = json.replace("ID_JOB_A_REPRENDRE", idJobAReprendre);
+      final String jobType = "reprise_masse";
+      typeJob = jobType;
+      String jobParametersAsXML = "<?xml version='1.0' encoding='UTF-8'?><map><entry><string>heureTraitementReprise</string><string>HEURE_REPRISE</string></entry><entry><string>uuidJobAReprendre</string><string>ID_JOB_A_REPRENDRE</string></entry></map>";
+      jobParametersAsXML = jobParametersAsXML.replace("HEURE_REPRISE", String.valueOf(currentDate));
+      jobParametersAsXML = jobParametersAsXML.replace("ID_JOB_A_REPRENDRE", idJobAReprendre);
+      writeJob(jobId, jobParametersAsXML, appliServer, json, jobType);
+      LOGGER.info("Avant de lancer manuellement la reprise du job {}, veuillez à redémarrer les"
+            + "serveurs tomcat sur l'environnement {}", new Object[] {environment.getEnvCode(), jobId});
+   }
+
    private void writeJob(final UUID jobId, final String sommaireURL, final String sommaireHash, final String appliServer, final String json,
-         final String jobType)
-               throws ConnectionException {
+                         final String jobType)
+                               throws ConnectionException {
       String jobParametersAsXML = "<?xml version='1.0' encoding='UTF-8'?><map><entry><string>typeHash</string><string>SHA-1</string></entry><entry><string>ecdeUrl</string><string>SOMMAIRE_URL</string></entry>ADDITIONAL_ENTRY<entry><string>hash</string><string>SOMMAIRE_HASH</string></entry></map>";
       jobParametersAsXML = jobParametersAsXML.replace("SOMMAIRE_URL", sommaireURL);
       jobParametersAsXML = jobParametersAsXML.replace("SOMMAIRE_HASH", sommaireHash);
@@ -177,9 +200,10 @@ public class CassandraHelper {
    }
 
    private void writeJob(final UUID jobId, final String jobParametersAsXML, final String appliServer, final String json,
-         final String jobType)
-               throws ConnectionException {
-
+                         final String jobType)
+                               throws ConnectionException {
+      // appliServer = "semaphore_" + CODE_TRAITEMENT;
+      // final Long dateCreation = DateUtils.addDays(new Date(), -60).getTime();
       final MutationBatch batch = saeKeyspace.prepareMutationBatch();
       final long currentDate = System.currentTimeMillis() / 1000L;
       batch.withRow(JobRequestCF.get(), jobId)
@@ -222,6 +246,20 @@ public class CassandraHelper {
          final OperationResult<Void> result = batch.execute();
          LOGGER.info("Réservation du job {} dans cassandra en {} ms", jobId, result.getLatency(TimeUnit.MILLISECONDS));
       }
+   }
+
+   /**
+    * @return the typeJob
+    */
+   public String getTypeJob() {
+      return typeJob;
+   }
+
+   /**
+    * @param typeJob the typeJob to set
+    */
+   public void setTypeJob(final String typeJob) {
+      this.typeJob = typeJob;
    }
 
 }

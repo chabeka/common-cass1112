@@ -117,6 +117,13 @@ public class JobManager implements Closeable {
       launchRemoteJob();
    }
 
+   public void launchReprise(final String idJobAReprendre) throws Exception {
+      // Créer le job dans cassandra
+      cassandraHelper.writeRepriseJob(jobId, idJobAReprendre);
+      // Appel de l'exécutable du job
+      launchRemoteJob();
+   }
+
    private void launchRemoteJob() throws Exception {
       if (withLocalDebug) {
          LOGGER.info("Il faut lancer manuellement le process sae-services-executable en mode debug local");
@@ -126,7 +133,7 @@ public class JobManager implements Closeable {
 
       if (withRemoteDebug) {
          LOGGER.info("Process sae-services-executable lancé en mode remote debug. Il faut lancer un session de debug sur {}:8000",
-               environment.getAppliServer());
+                     environment.getAppliServer());
       }
       final String debugOptions = withRemoteDebug ? "-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000" : "";
       final String jobCommandPattern = "java " + debugOptions
@@ -141,17 +148,28 @@ public class JobManager implements Closeable {
     */
    private void waitEndOfJob() throws Exception {
       final String flagPath = getEcdePath() + "/fin_traitement.flag";
-      while(true) {
-         if (new File(flagPath).exists()) {
-            return;
+      int i = 120;
+      // Le fichier fin_traitement n'existe que dans le cadre
+      // d'une archivage_masse, transfert_masse, modification_masse
+      LOGGER.info("Attente de la fin du traitement...");
+      if (cassandraHelper.getTypeJob().equals("capture_masse") ||
+            cassandraHelper.getTypeJob().equals("modification_masse") ||
+            cassandraHelper.getTypeJob().equals("transfert_masse")) {
+         while (!new File(flagPath).exists()) {
+            Thread.sleep(1000);
          }
-         Thread.sleep(1000);
+      } else {
+         while (i > 0) {
+            Thread.sleep(1000);
+            i--;
+         }
       }
+      LOGGER.info("Fin de traitement.");
    }
 
    public String getJobLog() throws Exception {
       if (withLocalDebug) {
-         final String logPath = StringHelper.format("c:/hawai/logs/ged/sae_services_executable.{}-debug.log", jobId);
+         final String logPath = StringHelper.format("c:/hawai/logs/sae/sae_services_executable.{}-debug.log", jobId);
          return new String(Files.readAllBytes(Paths.get(logPath)));
       } else {
          final String command = StringHelper.format("cat /hawai/logs/ged/sae_services_executable.{}-debug.log", jobId);

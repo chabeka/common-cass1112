@@ -3,6 +3,7 @@ package sae.integration.auto.transfert.masse;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +33,8 @@ import sae.integration.xml.modele.ErreurType;
 import sae.integration.xml.modele.ResultatsType;
 
 /**
- * Test les traitements de transfert de masse
+ * Test les traitements de transfert de masse avec erreur sur la metadonnée Montant 2.
+ * Montant2 avec une valeur non numérique
  */
 public class TransfertMasseMontantKOTest {
 
@@ -50,8 +52,8 @@ public class TransfertMasseMontantKOTest {
     * @throws Exception
     */
    public void transfertWithMetaMontantStringKO() throws Exception {
-      final Environment environnementGNT = Environments.GNT_PIC;
-      final Environment environnementGNS = Environments.GNS_PIC;
+      final Environment environnementGNT = Environments.LOCAL_BATCH;
+      final Environment environnementGNS = Environments.GNS_INT_PAJE;
       final boolean withRemoteDebug = false;
       final SaeServicePortType gntService = SaeServiceStubFactory
             .getServiceForDevToutesActions(environnementGNT.getUrl());
@@ -87,6 +89,7 @@ public class TransfertMasseMontantKOTest {
       SoapBuilder.addMeta(modifiedMetas1, "Denomination", "AAAA");
       builder.addTransfert(uuids.get(1), modifiedMetas1);
       final int doublonErrorIndex = errorIndex++;
+      System.out.println(doublonErrorIndex);
 
       // Pour le doc 2 : on demande son transfert sans modification de méta
       final ListeMetadonneeType modifiedMetas2 = new ListeMetadonneeType();
@@ -139,7 +142,7 @@ public class TransfertMasseMontantKOTest {
 
          // On vérifie que le document 0 a bien été transféré, avec les bonnes
          // métadonnées
-         LOGGER.info("Test d'existence en GNT du document {} index 0", uuids.get(0));
+         LOGGER.info("Test d'existence en GNT et GNS du document {} index 0", uuids.get(0));
          boolean existsInGNT = ArchivageValidationUtils.docExists(gntService, uuids.get(0));
          Assert.assertEquals(false, existsInGNT);
          boolean existsInGNS = ArchivageValidationUtils.docExists(gnsService, uuids.get(0));
@@ -187,6 +190,8 @@ public class TransfertMasseMontantKOTest {
          // Récupération des erreurs du document 3
          LOGGER.info("Validation Des erreurs sur la métadonnée Montant2");
          final String montantErrorPartString = "mt2 criterion value is not a parsable";
+         final String rndErrorPartString = "La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND";
+         final String doublonMetaError = "La ou les métadonnées suivantes sont renseignées plusieurs fois : Denomination";
 
          LOGGER.info("Nombre de documents non intégrés est de : {}", resultat.getNonIntegratedDocuments().getNonIntegratedDocument().size());
 
@@ -194,7 +199,7 @@ public class TransfertMasseMontantKOTest {
          final List<ErreurType> doc1Errors = resultat.getNonIntegratedDocuments().getNonIntegratedDocument().get(doublonErrorIndex).getErreurs().getErreur();
          assertNotEquals(doc1Errors.size(), 0);
          final String erreurSurLeDoc1 = doc1Errors.get(0).getLibelle();
-         assertThat(erreurSurLeDoc1, containsString("La ou les métadonnées suivantes sont renseignées plusieurs fois : Denomination"));
+         assertThat(erreurSurLeDoc1, containsString(doublonMetaError));
 
          // On récupère l'erreur sur le 2ème document en erreur
          final List<ErreurType> doc2Errors = resultat.getNonIntegratedDocuments().getNonIntegratedDocument().get(montantErrorIndex1).getErreurs().getErreur();
@@ -206,7 +211,7 @@ public class TransfertMasseMontantKOTest {
          final List<ErreurType> doc3Errors = resultat.getNonIntegratedDocuments().getNonIntegratedDocument().get(codeRNDErrorIndex).getErreurs().getErreur();
          assertNotEquals(doc3Errors.size(), 0);
          final String erreurSurLeDoc3 = doc3Errors.get(0).getLibelle();
-         assertThat(erreurSurLeDoc3, containsString("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND"));
+         assertThat(erreurSurLeDoc3, containsString(rndErrorPartString));
 
          // On récupère l'erreur sur le 4ème document en erreur
          final List<ErreurType> doc4Errors = resultat.getNonIntegratedDocuments().getNonIntegratedDocument().get(montantErrorIndex2).getErreurs().getErreur();
@@ -218,7 +223,12 @@ public class TransfertMasseMontantKOTest {
          Assert.assertEquals(8, (int) resultat.getInitialDocumentsCount());
          Assert.assertEquals(4, (int) resultat.getIntegratedDocumentsCount());
          LOGGER.info("Fin Validation du fichier résultat!");
-      } finally {
+      }
+      catch (final Exception e) {
+         e.printStackTrace();
+         fail(e.getMessage());
+      }
+      finally {
          LOGGER.info("Suppression des documents");
          for (int i = 0; i < 8; i++) {
             CleanHelper.deleteOneDocument(gntService, uuids.get(i));
