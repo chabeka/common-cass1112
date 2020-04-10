@@ -254,6 +254,9 @@ public class FormatConversionServiceImpl implements FormatConversionService {
 
       if (numeroPage != null || nombrePages != null) {
          final PdfReader reader = new PdfReader(stream);
+         //Anomalie #459904: 
+         //https://stackoverflow.com/questions/17691013/pdfreader-not-opened-with-owner-password-error-in-itext
+         PdfReader.unethicalreading = true;
 
          // recupere le nombre de pages total
          final int nbPagesTotal = reader.getNumberOfPages();
