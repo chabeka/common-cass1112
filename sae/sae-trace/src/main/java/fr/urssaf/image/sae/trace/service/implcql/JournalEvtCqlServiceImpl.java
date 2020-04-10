@@ -173,17 +173,6 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
     return LOGGER;
   }
 
-  /**
-   * Récupération de la liste des traces par identifiant unique du document.
-   *
-   * @param idDoc
-   *           Identifiant du document
-   * @return Liste des traces
-   */
-  public final List<TraceJournalEvtIndexDocCql> getTraceJournalEvtByIdDoc(
-                                                                          final UUID idDoc) {
-    return supportcql.findByIdDoc(idDoc);
-  }
 
   @Override
   public TraceJournalEvtCql lecture(final UUID identifiant) {
@@ -191,8 +180,21 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
     return traceOpt.orElse(null);
   }
 
+  @Override
   public JobClockSupport getClockSupport() {
     return clockSupport;
+  }
+
+  /**
+   * Récupération de la liste des traces par identifiant unique du document.
+   *
+   * @param idDoc
+   *          Identifiant du document
+   * @return Liste des traces
+   */
+  @Override
+  public List<TraceJournalEvtIndexDocCql> getTraceJournalEvtByIdDoc(final UUID idDoc) {
+    return supportcql.findByIdDoc(idDoc);
   }
 
 }

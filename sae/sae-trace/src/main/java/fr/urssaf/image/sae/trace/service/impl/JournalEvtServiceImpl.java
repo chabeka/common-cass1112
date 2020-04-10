@@ -22,8 +22,10 @@ import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.service.JournalEvtServiceCql;
@@ -328,4 +330,26 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     return values;
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<TraceJournalEvtIndexDoc> getTraceJournalEvtByIdDoc(final UUID idDoc) {
+    final List<TraceJournalEvtIndexDoc> result = new ArrayList<>();
+    final String modeApi = modeApiService.getModeAPI(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
+      final List<TraceJournalEvtIndexDocCql> resultCql = journalEvtCqlService.getTraceJournalEvtByIdDoc(idDoc);
+      if (resultCql != null) {
+        for (final TraceJournalEvtIndexDocCql traceJournalEvtIndexDocCql : resultCql) {
+          final TraceJournalEvtIndexDoc indexThrift = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(traceJournalEvtIndexDocCql);
+          result.add(indexThrift);
+        }
+      }
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
+      // non traité
+    }  
+    return result;
+  }
 }
