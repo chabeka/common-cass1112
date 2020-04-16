@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,11 +84,7 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
    @Override
    public final VIContenuExtrait verifierVIdeServiceWeb(final Element identification,
          final URI serviceVise, final VISignVerifParams signVerifParams, final boolean acceptOldWs)
-         throws VIVerificationException {
-
-      // vérification du jeton SAML
-      final SignatureVerificationResult result = validateService.validate(
-            identification, signVerifParams);
+               throws VIVerificationException {
 
       // extraction du jeton SAML
       SamlAssertionData data;
@@ -97,6 +94,7 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
          throw new VIInvalideException(exception.getMessage(), exception);
       }
 
+      // Récupération de l'issuer : nom du contrat de service
       String issuer = data.getAssertionParams().getCommonsParams().getIssuer();
 
       final boolean isOldRole = data.getAssertionParams().getCommonsParams()
@@ -123,6 +121,26 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
          issuer = OLD_CS;
       }
 
+      // Vérification que le contrat de service est bien présent dans le jeton
+      if (StringUtils.isEmpty(issuer)) {
+         throw new VIInvalideException("Le jeton de sécurité est invalide : le contrat de service est vide");
+      }
+      // Récupération du paramétrage du contrat de service
+      ServiceContract contract;
+      try {
+         contract = droitService.getServiceContract(issuer);
+      }
+      catch (final ContratServiceReferenceException exception1) {
+         throw new VIAppliClientException(issuer);
+      }
+      final boolean shouldValidateCertificates = contract.isVerifNommage();
+
+      // vérification du jeton SAML
+      final SignatureVerificationResult result = validateService.validate(
+            identification,
+            signVerifParams,
+            shouldValidateCertificates);
+
       // vérification supplémentaires sur le jeton SAML
       validateService.validate(data, serviceVise, new Date());
 
@@ -130,19 +148,12 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
             .getPagm();
 
       // vérification que les certificats qui entrent en jeu sont ceux attendus
-      ServiceContract contract;
-      try {
-         contract = droitService.getServiceContract(issuer);
-      } catch (final ContratServiceReferenceException exception1) {
-         throw new VIAppliClientException(issuer);
-      }
       validateService.validateCertificates(contract, result);
 
       /*--------------- Gestion des Formats -----------------------*/
       final VIContenuExtrait viContenuExtrait = new VIContenuExtrait();
       try {
          //-----------------------------------------------
-         //this.droitService.loadSaeDroits(issuer, pagms, viContenuExtrait);
          final SaeDroitsEtFormat saeDroitsEtFormat = droitService.loadSaeDroits(issuer, pagms);
          viContenuExtrait.setSaeDroits(saeDroitsEtFormat.getSaeDroits());
          viContenuExtrait.setListControlProfil(saeDroitsEtFormat.getListFormatControlProfil());
@@ -170,28 +181,6 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
       // Renvoie du résultat
       return viContenuExtrait;
       /*--------------- Fin gestion des Formats -----------------------*/
-      
-      
-
-      // Extraction des PAGM du VI
-      // SaeDroits saeDroits;
-      // try {
-      // saeDroits = this.droitService.loadSaeDroits(issuer, pagms);
-      //
-      // } catch (ContratServiceNotFoundException exception) {
-      // throw new VIAppliClientException(issuer);
-      //
-      // } catch (RuntimeException exception) {
-      // throw new VIInvalideException(exception.getMessage(), exception);
-      // }
-      // instanciation de la valeur retour
-      // VIContenuExtrait extrait = new VIContenuExtrait();
-      // extrait.setSaeDroits(saeDroits);
-      // extrait.setIdUtilisateur(data.getAssertionParams().getSubjectId2());
-      // extrait.setCodeAppli(issuer);
-      // extrait.getPagms().addAll(data.getAssertionParams().getCommonsParams().getPagm());
-      // Renvoie du résultat
-      // return extrait;
 
    }
 }
