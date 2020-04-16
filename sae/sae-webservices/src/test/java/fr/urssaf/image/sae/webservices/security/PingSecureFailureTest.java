@@ -15,6 +15,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.cirtil.www.saeservice.PingSecureRequest;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.webservices.skeleton.SaeServiceSkeletonInterface;
 import fr.urssaf.image.sae.webservices.util.Axis2Utils;
 
@@ -33,10 +35,14 @@ public class PingSecureFailureTest {
 
    private MessageContext ctx;
 
+   @Autowired
+   ModeApiCqlSupport modeApiCqlSupport;
+
    @Before
    public void before() {
       ctx = new MessageContext();
       MessageContext.setCurrentMessageContext(ctx);
+      modeApiCqlSupport.initTables(MODE_API.DATASTAX);
    }
 
    @After
@@ -44,15 +50,15 @@ public class PingSecureFailureTest {
       SecurityContextHolder.getContext().setAuthentication(null);
    }
 
-   private static void assertAxisFault_noVI(AxisFault axisFault) {
+   private static void assertAxisFault_noVI(final AxisFault axisFault) {
 
       assertAxisFault(axisFault,
             "La référence au jeton de sécurité est introuvable",
             "SecurityTokenUnavailable", "wsse");
    }
 
-   private static void assertAxisFault(AxisFault axisFault, String expectedMsg,
-         String expectedType, String expectedPrefix) {
+   private static void assertAxisFault(final AxisFault axisFault, final String expectedMsg,
+         final String expectedType, final String expectedPrefix) {
 
       assertEquals(FAULT_CODE, expectedMsg, axisFault.getMessage());
       assertEquals(FAULT_CODE, expectedType, axisFault.getFaultCode()
@@ -61,11 +67,11 @@ public class PingSecureFailureTest {
             .getPrefix());
    }
 
-   private void pingSecure_failure(String soap) throws AxisFault {
+   private void pingSecure_failure(final String soap) throws AxisFault {
 
       Axis2Utils.initMessageContext(ctx, soap);
 
-      PingSecureRequest request = new PingSecureRequest();
+      final PingSecureRequest request = new PingSecureRequest();
 
       skeleton.pingSecure(request);
    }
@@ -74,11 +80,10 @@ public class PingSecureFailureTest {
    public void pingSecure_failure_noHeader() {
 
       try {
-         this
-               .pingSecure_failure("src/test/resources/request/pingsecure_failure_noHeader.xml");
+         pingSecure_failure("src/test/resources/request/pingsecure_failure_noHeader.xml");
 
          fail(FAIL_MSG);
-      } catch (AxisFault e) {
+      } catch (final AxisFault e) {
 
          assertAxisFault_noVI(e);
 
@@ -90,11 +95,10 @@ public class PingSecureFailureTest {
    public void pingSecure_failure_noWSsecurity() {
 
       try {
-         this
-               .pingSecure_failure("src/test/resources/request/pingsecure_failure_noWSsecurity.xml");
+         pingSecure_failure("src/test/resources/request/pingsecure_failure_noWSsecurity.xml");
 
          fail(FAIL_MSG);
-      } catch (AxisFault e) {
+      } catch (final AxisFault e) {
 
          assertAxisFault_noVI(e);
 
@@ -106,11 +110,10 @@ public class PingSecureFailureTest {
    public void pingSecure_failure_noVI() {
 
       try {
-         this
-               .pingSecure_failure("src/test/resources/request/pingsecure_failure_noVI.xml");
+         pingSecure_failure("src/test/resources/request/pingsecure_failure_noVI.xml");
 
          fail(FAIL_MSG);
-      } catch (AxisFault e) {
+      } catch (final AxisFault e) {
 
          assertAxisFault_noVI(e);
 
@@ -122,14 +125,14 @@ public class PingSecureFailureTest {
    public void pingSecure_failure_sign() {
 
       try {
-         this
-               .pingSecure_failure("src/test/resources/request/pingsecure_failure_sign.xml");
+         pingSecure_failure("src/test/resources/request/pingsecure_failure_sign.xml");
 
          fail(FAIL_MSG);
-      } catch (AxisFault e) {
-
-         assertAxisFault(e, "La signature ou le chiffrement n'est pas valide",
-               "FailedCheck", "wsse");
+      } catch (final AxisFault e) {
+         assertAxisFault(e,
+               "L'identifiant de l'organisme client présent dans le VI est invalide ou inconnu",
+               "InvalidIssuer",
+               "vi");
 
       }
 
