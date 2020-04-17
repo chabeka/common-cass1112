@@ -20,12 +20,12 @@ import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.matchers.JUnitMatchers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,418 +90,532 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })*/
 public class SAENoteServiceImplCqlTest extends AbstractServiceCqlTest {
 
-  private static final Logger LOG = LoggerFactory
-      .getLogger(SAECaptureServiceTest.class);
+   private static final Logger LOG = LoggerFactory
+         .getLogger(SAECaptureServiceTest.class);
 
-  @Autowired
-  @Qualifier("saeNoteService")
-  private SAENoteService noteService;
+   @Autowired
+   @Qualifier("saeNoteService")
+   private SAENoteService noteService;
 
-  @Autowired
-  @Qualifier("storageDocumentService")
-  private StorageDocumentService storageDocumentService;
+   @Autowired
+   @Qualifier("storageDocumentService")
+   private StorageDocumentService storageDocumentService;
 
-  private UUID uuid;
+   private UUID uuid;
 
-  private static String path;
+   private EcdeTestDocument ecde;
 
-  private EcdeTestDocument ecde;
+   @Autowired
+   private CassandraServerBean server;
 
-  @Autowired
-  private CassandraServerBean server;
+   @Autowired
+   private ParametersService parametersService;
 
-  @Autowired
-  private ParametersService parametersService;
-
-  @Autowired
-  private RndCqlSupport rndCqlSupport;
+   @Autowired
+   private RndCqlSupport rndCqlSupport;
 
 
 
-  @Autowired
-  @Qualifier("SAEServiceTestProvider")
-  private SAEServiceTestProvider testProvider;
+   @Autowired
+   @Qualifier("SAEServiceTestProvider")
+   private SAEServiceTestProvider testProvider;
 
-  @Autowired
-  private EcdeTestTools ecdeTestTools;
+   @Autowired
+   private EcdeTestTools ecdeTestTools;
 
-  @Autowired
-  private SAECaptureService captureService;
+   @Autowired
+   private SAECaptureService captureService;
 
-  @Autowired
-  @Qualifier("saeConsultationService")
-  private SAEConsultationService consultationService;
+   @Autowired
+   @Qualifier("saeConsultationService")
+   private SAEConsultationService consultationService;
 
-  @Autowired
-  private ModeApiCqlSupport modeApiSupport;
+   @Autowired
+   private ModeApiCqlSupport modeApiSupport;
 
-  @BeforeClass
-  public static void beforeClass() throws IOException {
-    init = false;
-    path = new ClassPathResource("doc/attestation_consultation.pdf")
-        .getFile().getAbsolutePath();
-  }
+   @BeforeClass
+   public static void beforeClass() throws IOException {
+      init = false;
+   }
 
-  @Before
-  public void before() throws Exception {
+   @Before
+   public void before() throws Exception {
 
-    initMetadata();
-    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
-    // initialisation de l'uuid de l'archive
-    uuid = null;
+      initMetadata();
+      modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+      // initialisation de l'uuid de l'archive
+      uuid = null;
 
-    // initialisation du contexte de sécurité
-    final VIContenuExtrait viExtrait = new VIContenuExtrait();
-    viExtrait.setCodeAppli("TESTS_UNITAIRES");
-    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+      // initialisation du contexte de sécurité
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-    final SaeDroits saeDroits = new SaeDroits();
-    final List<SaePrmd> saePrmds = new ArrayList<>();
-    final SaePrmd saePrmd = new SaePrmd();
-    saePrmd.setValues(new HashMap<String, String>());
-    final Prmd prmd = new Prmd();
-    prmd.setBean("permitAll");
-    prmd.setCode("default");
-    saePrmd.setPrmd(prmd);
-    final String[] roles = new String[] { "ROLE_archivage_unitaire", "ROLE_ajout_note",
-    "ROLE_consultation" };
-    saePrmds.add(saePrmd);
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<>();
+      final SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      final Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      final String[] roles = new String[] { "ROLE_archivage_unitaire", "ROLE_ajout_note",
+      "ROLE_consultation" };
+      saePrmds.add(saePrmd);
 
-    saeDroits.put("archivage_unitaire", saePrmds);
-    saeDroits.put("ajout_note", saePrmds);
-    saeDroits.put("consultation", saePrmds);
-    viExtrait.setSaeDroits(saeDroits);
-    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
-                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
-    AuthenticationContext.setAuthenticationToken(token);
+      saeDroits.put("archivage_unitaire", saePrmds);
+      saeDroits.put("ajout_note", saePrmds);
+      saeDroits.put("consultation", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      AuthenticationContext.setAuthenticationToken(token);
 
-    // Paramétrage du RND
+      // Paramétrage du RND
 
-    parametersService.setVersionRndDateMaj(new Date());
-    parametersService.setVersionRndNumero("11.2");
+      parametersService.setVersionRndDateMaj(new Date());
+      parametersService.setVersionRndNumero("11.2");
 
-    final TypeDocument typeDocCree = new TypeDocument();
-    typeDocCree.setCloture(false);
-    typeDocCree.setCode("2.3.1.1.12");
-    typeDocCree.setCodeActivite("3");
-    typeDocCree.setCodeFonction("2");
-    typeDocCree.setDureeConservation(1825);
-    typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
-    typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+      final TypeDocument typeDocCree = new TypeDocument();
+      typeDocCree.setCloture(false);
+      typeDocCree.setCode("2.3.1.1.12");
+      typeDocCree.setCodeActivite("3");
+      typeDocCree.setCodeFonction("2");
+      typeDocCree.setDureeConservation(1825);
+      typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
+      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
-    rndCqlSupport.ajouterRnd(typeDocCree);
-  }
+      rndCqlSupport.ajouterRnd(typeDocCree);
+   }
 
-  @After
-  public void after() throws Exception {
-    // suppression de l'insertion
-    if (uuid != null) {
-      testProvider.deleteDocument(uuid);
-    }
+   @After
+   public void after() throws Exception {
+      // suppression de l'insertion
+      if (uuid != null) {
+         testProvider.deleteDocument(uuid);
+      }
 
-    AuthenticationContext.setAuthenticationToken(null);
+      AuthenticationContext.setAuthenticationToken(null);
 
-    server.clearTables();
+      server.clearTables();
 
-    if (ecde != null) {
-      // supprime le repertoire ecde
-      ecdeTestTools.cleanEcdeTestDocument(ecde);
-    }
-  }
+      if (ecde != null) {
+         // supprime le repertoire ecde
+         ecdeTestTools.cleanEcdeTestDocument(ecde);
+      }
+   }
 
-  @Test
-  public void ajoutNoteTestSuccess() throws IOException, SAECaptureServiceEx,
-  ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-  InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-  DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-  RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-  UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-  MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-  UnknownFormatException, UnexpectedDomainException,
-  InvalidPagmsCombinaisonException, SAEDocumentNoteException,
-  SAEConsultationServiceException, UnknownDesiredMetadataEx,
-  MetaDataUnauthorizedToConsultEx, ArchiveInexistanteEx, CaptureExistingUuuidException {
+   @Test
+   public void ajoutNoteTestSuccess() throws IOException, SAECaptureServiceEx,
+   ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+   InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+   DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+   RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+   UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+   MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+   UnknownFormatException, UnexpectedDomainException,
+   InvalidPagmsCombinaisonException, SAEDocumentNoteException,
+   SAEConsultationServiceException, UnknownDesiredMetadataEx,
+   MetaDataUnauthorizedToConsultEx, ArchiveInexistanteEx, CaptureExistingUuuidException {
 
-    ecde = ecdeTestTools
-        .buildEcdeTestDocument("attestation_consultation.pdf");
+      ecde = ecdeTestTools
+            .buildEcdeTestDocument("attestation_consultation.pdf");
 
-    final File repertoireEcde = ecde.getRepEcdeDocuments();
-    final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
-    // copie le fichier attestation_consultation.pdf
-    // dans le repertoire de l'ecde
-    LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
-        + repertoireEcde.getAbsoluteFile());
-    final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-    final ClassPathResource resDoc = new ClassPathResource(
-        "doc/attestation_consultation.pdf");
-    final FileOutputStream fos = new FileOutputStream(fileDoc);
-    IOUtils.copy(resDoc.getInputStream(), fos);
-    resDoc.getInputStream().close();
-    fos.close();
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
+      LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
+            + repertoireEcde.getAbsoluteFile());
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
+            "doc/attestation_consultation.pdf");
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
 
-    final File srcFile = new File(
-        "src/test/resources/doc/attestation_consultation.pdf");
+      final File srcFile = new File(
+            "src/test/resources/doc/attestation_consultation.pdf");
 
-    final List<UntypedMetadata> metadatas = new ArrayList<>();
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
 
-    // liste des métadonnées obligatoires
-    metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
-    metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
-    metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-    metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
-    metadatas.add(new UntypedMetadata("NbPages", "2"));
-    metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
-    metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-    final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
-    metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
-    metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
-    metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+      // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
 
-    // liste des métadonnées non obligatoires
-    metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
-    metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+      // liste des métadonnées non obligatoires
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
-    uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
-    LOG.debug("document archivé dans DFCE:" + uuid);
+      uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
+      LOG.debug("document archivé dans DFCE:" + uuid);
 
-    noteService.addDocumentNote(uuid, "Contenu de la note", "login");
-    final List<String> listeMeta = new ArrayList<>();
-    listeMeta.add("Note");
-    final ConsultParams consultParams = new ConsultParams(uuid, listeMeta);
-    final UntypedDocument uDoc = consultationService.consultation(consultParams);
-
-    if (uDoc.getUMetadatas().size() > 0) {
-      // rq : login n'est pas remplacé, DFCE écrase par _ADMIN
-
-      final String noteContent = uDoc.getUMetadatas().get(0).getValue();
-      validateNoteContent(noteContent);
-
-    } else {
-      fail("Une note devrait être rattachée au document");
-    }
-
-    // supprime le fichier attestation_consultation.pdf sur le repertoire
-    // de
-    // l'ecde
-    fileDoc.delete();
-
-  }
-
-  /**
-   * Test qu'une exception est bien levée si le document auquel on souhaite
-   * ajouter une note n'existe pas
-   *
-   * @throws SAEDocumentNoteException
-   */
-  @Test
-  public void ajoutNoteTestDocUuidInexistant() throws IOException,
-  SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-  RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-  UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-  EmptyDocumentEx, RequiredArchivableMetadataEx,
-  NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-  CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-  ValidationExceptionInvalidFile, UnknownFormatException,
-  UnexpectedDomainException, InvalidPagmsCombinaisonException,
-  SAEConsultationServiceException, UnknownDesiredMetadataEx,
-  MetaDataUnauthorizedToConsultEx, SAEDocumentNoteException {
-
-    final UUID uuid = UUID.randomUUID();
-
-    try {
       noteService.addDocumentNote(uuid, "Contenu de la note", "login");
-      fail("Une exception devrait être renvoyée car le document n'existe pas");
-    } catch (final ArchiveInexistanteEx e) {
-      final String message = "Il n'existe aucun document pour l'identifiant d'archivage '"
-          + uuid + "'";
-      assertEquals("Erreur message attendu", message, e.getMessage());
-    }
+      final List<String> listeMeta = new ArrayList<>();
+      listeMeta.add("Note");
+      final ConsultParams consultParams = new ConsultParams(uuid, listeMeta);
+      final UntypedDocument uDoc = consultationService.consultation(consultParams);
 
-  }
+      if (uDoc.getUMetadatas().size() > 0) {
+         // rq : login n'est pas remplacé, DFCE écrase par _ADMIN
 
-  @Test
-  public void ajoutNoteContenuVide() throws IOException, SAECaptureServiceEx,
-  ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-  InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-  DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-  RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-  UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-  MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-  UnknownFormatException, UnexpectedDomainException,
-  InvalidPagmsCombinaisonException, SAEDocumentNoteException,
-  SAEConsultationServiceException, UnknownDesiredMetadataEx,
-  MetaDataUnauthorizedToConsultEx, ArchiveInexistanteEx, CaptureExistingUuuidException {
+         final String noteContent = uDoc.getUMetadatas().get(0).getValue();
+         validateNoteContent(noteContent);
 
-    ecde = ecdeTestTools
-        .buildEcdeTestDocument("attestation_consultation.pdf");
+      } else {
+         fail("Une note devrait être rattachée au document");
+      }
 
-    final File repertoireEcde = ecde.getRepEcdeDocuments();
-    final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      // supprime le fichier attestation_consultation.pdf sur le repertoire
+      // de
+      // l'ecde
+      fileDoc.delete();
 
-    // copie le fichier attestation_consultation.pdf
-    // dans le repertoire de l'ecde
-    LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
-        + repertoireEcde.getAbsoluteFile());
-    final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-    final ClassPathResource resDoc = new ClassPathResource(
-        "doc/attestation_consultation.pdf");
-    final FileOutputStream fos = new FileOutputStream(fileDoc);
-    IOUtils.copy(resDoc.getInputStream(), fos);
-    resDoc.getInputStream().close();
-    fos.close();
+   }
 
-    final File srcFile = new File(
-        "src/test/resources/doc/attestation_consultation.pdf");
+   /**
+    * Test qu'une exception est bien levée si le document auquel on souhaite
+    * ajouter une note n'existe pas
+    *
+    * @throws SAEDocumentNoteException
+    */
+   @Test
+   public void ajoutNoteTestDocUuidInexistant() throws IOException,
+   SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+   RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   EmptyDocumentEx, RequiredArchivableMetadataEx,
+   NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+   CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   SAEConsultationServiceException, UnknownDesiredMetadataEx,
+   MetaDataUnauthorizedToConsultEx, SAEDocumentNoteException {
 
-    final List<UntypedMetadata> metadatas = new ArrayList<>();
+      final UUID uuid = UUID.randomUUID();
 
-    // liste des métadonnées obligatoires
-    metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
-    metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
-    metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-    metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
-    metadatas.add(new UntypedMetadata("NbPages", "2"));
-    metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
-    metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-    final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
-    metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
-    metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
-    metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+      try {
+         noteService.addDocumentNote(uuid, "Contenu de la note", "login");
+         fail("Une exception devrait être renvoyée car le document n'existe pas");
+      } catch (final ArchiveInexistanteEx e) {
+         final String message = "Il n'existe aucun document pour l'identifiant d'archivage '"
+               + uuid + "'";
+         assertEquals("Erreur message attendu", message, e.getMessage());
+      }
 
-    // liste des métadonnées non obligatoires
-    metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
-    metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+   }
 
-    uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
-    LOG.debug("document archivé dans DFCE:" + uuid);
+   @Test
+   public void ajoutNoteContenuVide() throws IOException, SAECaptureServiceEx,
+   ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+   InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+   DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+   RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+   UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+   MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+   UnknownFormatException, UnexpectedDomainException,
+   InvalidPagmsCombinaisonException, SAEDocumentNoteException,
+   SAEConsultationServiceException, UnknownDesiredMetadataEx,
+   MetaDataUnauthorizedToConsultEx, ArchiveInexistanteEx, CaptureExistingUuuidException {
 
-    try {
-      noteService.addDocumentNote(uuid, "", "login");
-      fail("Une exception devrait être renvoyée car le contenu de la note ne doit pas être vide");
-    } catch (final IllegalArgumentException aExp) {
-      assert aExp.getMessage().contains("Le contenu de la note est null");
-    }
+      ecde = ecdeTestTools
+            .buildEcdeTestDocument("attestation_consultation.pdf");
 
-    try {
-      noteService.addDocumentNote(uuid, null, "login");
-      fail("Une exception devrait être renvoyée car le contenu de la note ne doit pas être null");
-    } catch (final IllegalArgumentException aExp) {
-      assert aExp.getMessage().contains("Le contenu de la note est null");
-    }
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
-    // supprime le fichier attestation_consultation.pdf sur le repertoire
-    // de
-    // l'ecde
-    fileDoc.delete();
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
+      LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
+            + repertoireEcde.getAbsoluteFile());
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
+            "doc/attestation_consultation.pdf");
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
 
-  }
+      final File srcFile = new File(
+            "src/test/resources/doc/attestation_consultation.pdf");
 
-  /**
-   * Test qu'une exception est bien levée si le document auquel on souhaite
-   * ajouter une note n'existe pas
-   *
-   * @throws SAEDocumentNoteException
-   * @throws ArchiveInexistanteEx
-   */
-  @Test
-  public void ajoutNoteUUIDNull() throws DocumentNoteServiceEx {
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
 
-    try {
-      // noteService.addDocumentNote(null, "Contenu de la note", "login");
-      // Dans la couche service, on est trop haut pour faire le test d'id
-      // null
-      // puisque dans cette couche, on va rechercher le document par id, et
-      // détecter
-      // que l'id est null. Dans ce cas, on remonte une erreur sur la
-      // recherche et non
-      // sur l'ajout de note
-      storageDocumentService.addDocumentNote(null,
-                                             "Contenu de la note", "login");
-      fail("Une exception devrait être renvoyée car l'UUID du document ne doit pas être null");
-    } catch (final IllegalArgumentException aExp) {
-      assert aExp.getMessage()
-      .contains("L'identifiant du document est null");
-    }
+      // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
 
-  }
+      // liste des métadonnées non obligatoires
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
-  @Test
-  public void ajoutPlusieurNotesTestSuccess() throws IOException,
-  SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-  RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-  UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-  EmptyDocumentEx, RequiredArchivableMetadataEx,
-  NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-  CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-  ValidationExceptionInvalidFile, UnknownFormatException,
-  UnexpectedDomainException, InvalidPagmsCombinaisonException,
-  SAEDocumentNoteException, SAEConsultationServiceException,
-  UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
-  ArchiveInexistanteEx, CaptureExistingUuuidException {
+      uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
+      LOG.debug("document archivé dans DFCE:" + uuid);
 
-    ecde = ecdeTestTools
-        .buildEcdeTestDocument("attestation_consultation.pdf");
+      try {
+         noteService.addDocumentNote(uuid, "", "login");
+         fail("Une exception devrait être renvoyée car le contenu de la note ne doit pas être vide");
+      } catch (final IllegalArgumentException aExp) {
+         assert aExp.getMessage().contains("Le contenu de la note est null");
+      }
 
-    final File repertoireEcde = ecde.getRepEcdeDocuments();
-    final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      try {
+         noteService.addDocumentNote(uuid, null, "login");
+         fail("Une exception devrait être renvoyée car le contenu de la note ne doit pas être null");
+      } catch (final IllegalArgumentException aExp) {
+         assert aExp.getMessage().contains("Le contenu de la note est null");
+      }
 
-    // copie le fichier attestation_consultation.pdf
-    // dans le repertoire de l'ecde
-    LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
-        + repertoireEcde.getAbsoluteFile());
-    final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-    final ClassPathResource resDoc = new ClassPathResource(
-        "doc/attestation_consultation.pdf");
-    final FileOutputStream fos = new FileOutputStream(fileDoc);
-    IOUtils.copy(resDoc.getInputStream(), fos);
-    resDoc.getInputStream().close();
-    fos.close();
+      // supprime le fichier attestation_consultation.pdf sur le repertoire
+      // de
+      // l'ecde
+      fileDoc.delete();
 
-    final File srcFile = new File(
-        "src/test/resources/doc/attestation_consultation.pdf");
+   }
 
-    final List<UntypedMetadata> metadatas = new ArrayList<>();
+   /**
+    * Test qu'une exception est bien levée si le document auquel on souhaite
+    * ajouter une note n'existe pas
+    *
+    * @throws SAEDocumentNoteException
+    * @throws ArchiveInexistanteEx
+    */
+   @Test
+   public void ajoutNoteUUIDNull() throws DocumentNoteServiceEx {
 
-    // liste des métadonnées obligatoires
-    metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
-    metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
-    metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-    metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
-    metadatas.add(new UntypedMetadata("NbPages", "2"));
-    metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
-    metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-    final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
-    metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
-    metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
-    metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+      try {
+         // noteService.addDocumentNote(null, "Contenu de la note", "login");
+         // Dans la couche service, on est trop haut pour faire le test d'id
+         // null
+         // puisque dans cette couche, on va rechercher le document par id, et
+         // détecter
+         // que l'id est null. Dans ce cas, on remonte une erreur sur la
+         // recherche et non
+         // sur l'ajout de note
+         storageDocumentService.addDocumentNote(null,
+               "Contenu de la note", "login");
+         fail("Une exception devrait être renvoyée car l'UUID du document ne doit pas être null");
+      } catch (final IllegalArgumentException aExp) {
+         assert aExp.getMessage()
+         .contains("L'identifiant du document est null");
+      }
 
-    // liste des métadonnées non obligatoires
-    metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
-    metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+   }
 
-    uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
-    LOG.debug("document archivé dans DFCE:" + uuid);
+   @Test
+   public void ajoutPlusieurNotesTestSuccess() throws IOException,
+   SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+   RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   EmptyDocumentEx, RequiredArchivableMetadataEx,
+   NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+   CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   SAEDocumentNoteException, SAEConsultationServiceException,
+   UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+   ArchiveInexistanteEx, CaptureExistingUuuidException {
 
-    noteService.addDocumentNote(uuid, "Contenu de la note 1", "login");
-    noteService.addDocumentNote(uuid, "Contenu de la note 2", "login");
+      ecde = ecdeTestTools
+            .buildEcdeTestDocument("attestation_consultation.pdf");
 
-    final List<String> listeMeta = new ArrayList<>();
-    listeMeta.add("Note");
-    final ConsultParams consultParams = new ConsultParams(uuid, listeMeta);
-    final UntypedDocument uDoc = consultationService.consultation(consultParams);
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
-    if (uDoc.getUMetadatas().size() > 0) {
-      /*
-       * assertEquals( "Contenu de la note invalide",
-       * "[{\"contenu\":\"Contenu de la note 1\",\"dateCreation\":\"" +
-       * dateString +
-       * "\",\"auteur\":\"_ADMIN\"},{\"contenu\":\"Contenu de la note 2\",\"dateCreation\":\""
-       * + dateString + "\",\"auteur\":\"_ADMIN\"}]", uDoc
-       * .getUMetadatas().get(0).getValue());
-       */
-      final String contenu = uDoc.getUMetadatas().get(0).getValue();
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
+      LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
+            + repertoireEcde.getAbsoluteFile());
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
+            "doc/attestation_consultation.pdf");
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
 
+      final File srcFile = new File(
+            "src/test/resources/doc/attestation_consultation.pdf");
+
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
+
+      // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+
+      // liste des métadonnées non obligatoires
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+
+      uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
+      LOG.debug("document archivé dans DFCE:" + uuid);
+
+      noteService.addDocumentNote(uuid, "Contenu de la note 1", "login");
+      noteService.addDocumentNote(uuid, "Contenu de la note 2", "login");
+
+      final List<String> listeMeta = new ArrayList<>();
+      listeMeta.add("Note");
+      final ConsultParams consultParams = new ConsultParams(uuid, listeMeta);
+      final UntypedDocument uDoc = consultationService.consultation(consultParams);
+
+      if (uDoc.getUMetadatas().size() > 0) {
+         /*
+          * assertEquals( "Contenu de la note invalide",
+          * "[{\"contenu\":\"Contenu de la note 1\",\"dateCreation\":\"" +
+          * dateString +
+          * "\",\"auteur\":\"_ADMIN\"},{\"contenu\":\"Contenu de la note 2\",\"dateCreation\":\""
+          * + dateString + "\",\"auteur\":\"_ADMIN\"}]", uDoc
+          * .getUMetadatas().get(0).getValue());
+          */
+         final String contenu = uDoc.getUMetadatas().get(0).getValue();
+
+         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+         final Date todayDate = new Date();
+         final String todayString= dateFormat.format(todayDate);
+         final Calendar c = Calendar.getInstance();
+         c.setTime(todayDate);
+         c.add(Calendar.DATE, 1);
+         final Date tomorowDate = c.getTime();
+         final String tomorowString = dateFormat.format(tomorowDate);
+
+         c.setTime(todayDate);
+         c.add(Calendar.DATE, -1);
+         final Date yesterdayDate = c.getTime();
+         final String yesterdayString = dateFormat.format(yesterdayDate);
+
+         Assert.assertThat(contenu, CoreMatchers.containsString("[{\"contenu\":\"Contenu de la note 1\""));
+         Assert.assertThat(contenu, CoreMatchers.containsString("\",\"auteur\":\"login\"},{\"contenu\":\"Contenu de la note 2\""));
+         Assert.assertThat(contenu,
+               CoreMatchers.either(CoreMatchers.containsString(todayString))
+                     .or(CoreMatchers.containsString(tomorowString))
+                     .or(CoreMatchers.containsString(yesterdayString)));
+      } else {
+         fail("Une note devrait être rattachée au document");
+      }
+
+      // supprime le fichier attestation_consultation.pdf sur le repertoire
+      // de
+      // l'ecde
+      fileDoc.delete();
+   }
+
+   @Test(expected = AccessDeniedException.class)
+   public void addDocumentNote_accessDenied() throws IOException,
+   SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+   RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   EmptyDocumentEx, RequiredArchivableMetadataEx,
+   NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+   CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   SAEDocumentNoteException, SAEConsultationServiceException,
+   UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+   ArchiveInexistanteEx, CaptureExistingUuuidException {
+
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<>();
+      final SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setValues(new HashMap<String, String>());
+      final Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("default");
+      saePrmd.setPrmd(prmd);
+      final String[] roles = new String[] { "ROLE_recherche" };
+      saePrmds.add(saePrmd);
+
+      saeDroits.put("recherche", saePrmds);
+      viExtrait.setSaeDroits(saeDroits);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      AuthenticationContext.setAuthenticationToken(token);
+
+      ecde = ecdeTestTools
+            .buildEcdeTestDocument("attestation_consultation.pdf");
+
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+
+      // copie le fichier attestation_consultation.pdf
+      // dans le repertoire de l'ecde
+      LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
+            + repertoireEcde.getAbsoluteFile());
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
+            "doc/attestation_consultation.pdf");
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
+      IOUtils.copy(resDoc.getInputStream(), fos);
+      resDoc.getInputStream().close();
+      fos.close();
+
+      final File srcFile = new File(
+            "src/test/resources/doc/attestation_consultation.pdf");
+
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
+
+      // liste des métadonnées obligatoires
+      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
+      metadatas.add(new UntypedMetadata("NbPages", "2"));
+      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+
+      // liste des métadonnées non obligatoires
+      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+
+      uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
+      LOG.debug("document archivé dans DFCE:" + uuid);
+
+      noteService.addDocumentNote(uuid, "Contenu de la note 1", "login");
+
+      Assert.fail("exception attendue");
+   }
+
+   /**
+    * Vérifie le contenu de la note
+    * @param noteContent : contenu de la note
+    */
+   private void validateNoteContent(final String contenu) {
       final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       final Date todayDate = new Date();
       final String todayString= dateFormat.format(todayDate);
@@ -511,120 +625,16 @@ public class SAENoteServiceImplCqlTest extends AbstractServiceCqlTest {
       final Date tomorowDate = c.getTime();
       final String tomorowString = dateFormat.format(tomorowDate);
 
-      Assert.assertThat(contenu, JUnitMatchers.containsString("[{\"contenu\":\"Contenu de la note 1\""));
-      Assert.assertThat(contenu, JUnitMatchers.containsString("\",\"auteur\":\"login\"},{\"contenu\":\"Contenu de la note 2\""));
-      Assert.assertThat(contenu, JUnitMatchers.either(JUnitMatchers.containsString(todayString))
-                        .or(JUnitMatchers.containsString(tomorowString)));
-    } else {
-      fail("Une note devrait être rattachée au document");
-    }
+      c.setTime(todayDate);
+      c.add(Calendar.DATE, -1);
+      final Date yesterdayDate = c.getTime();
+      final String yesterdayString = dateFormat.format(yesterdayDate);
 
-    // supprime le fichier attestation_consultation.pdf sur le repertoire
-    // de
-    // l'ecde
-    fileDoc.delete();
-  }
-
-  @Test(expected = AccessDeniedException.class)
-  public void addDocumentNote_accessDenied() throws IOException,
-  SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-  RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-  UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-  EmptyDocumentEx, RequiredArchivableMetadataEx,
-  NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-  CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-  ValidationExceptionInvalidFile, UnknownFormatException,
-  UnexpectedDomainException, InvalidPagmsCombinaisonException,
-  SAEDocumentNoteException, SAEConsultationServiceException,
-  UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
-  ArchiveInexistanteEx, CaptureExistingUuuidException {
-
-    final VIContenuExtrait viExtrait = new VIContenuExtrait();
-    viExtrait.setCodeAppli("TESTS_UNITAIRES");
-    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
-
-    final SaeDroits saeDroits = new SaeDroits();
-    final List<SaePrmd> saePrmds = new ArrayList<>();
-    final SaePrmd saePrmd = new SaePrmd();
-    saePrmd.setValues(new HashMap<String, String>());
-    final Prmd prmd = new Prmd();
-    prmd.setBean("permitAll");
-    prmd.setCode("default");
-    saePrmd.setPrmd(prmd);
-    final String[] roles = new String[] { "ROLE_recherche" };
-    saePrmds.add(saePrmd);
-
-    saeDroits.put("recherche", saePrmds);
-    viExtrait.setSaeDroits(saeDroits);
-    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
-                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
-    AuthenticationContext.setAuthenticationToken(token);
-
-    ecde = ecdeTestTools
-        .buildEcdeTestDocument("attestation_consultation.pdf");
-
-    final File repertoireEcde = ecde.getRepEcdeDocuments();
-    final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
-
-    // copie le fichier attestation_consultation.pdf
-    // dans le repertoire de l'ecde
-    LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
-        + repertoireEcde.getAbsoluteFile());
-    final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-    final ClassPathResource resDoc = new ClassPathResource(
-        "doc/attestation_consultation.pdf");
-    final FileOutputStream fos = new FileOutputStream(fileDoc);
-    IOUtils.copy(resDoc.getInputStream(), fos);
-    resDoc.getInputStream().close();
-    fos.close();
-
-    final File srcFile = new File(
-        "src/test/resources/doc/attestation_consultation.pdf");
-
-    final List<UntypedMetadata> metadatas = new ArrayList<>();
-
-    // liste des métadonnées obligatoires
-    metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
-    metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
-    metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-    metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
-    metadatas.add(new UntypedMetadata("NbPages", "2"));
-    metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
-    metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-    final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
-    metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
-    metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
-    metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
-
-    // liste des métadonnées non obligatoires
-    metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
-    metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
-
-    uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
-    LOG.debug("document archivé dans DFCE:" + uuid);
-
-    noteService.addDocumentNote(uuid, "Contenu de la note 1", "login");
-
-    Assert.fail("exception attendue");
-  }
-
-  /**
-   * Vérifie le contenu de la note
-   * @param noteContent : contenu de la note
-   */
-  private void validateNoteContent(final String contenu) {
-    final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    final Date todayDate = new Date();
-    final String todayString= dateFormat.format(todayDate);
-    final Calendar c = Calendar.getInstance();
-    c.setTime(todayDate);
-    c.add(Calendar.DATE, 1);
-    final Date tomorowDate = c.getTime();
-    final String tomorowString = dateFormat.format(tomorowDate);
-
-    Assert.assertThat(contenu, JUnitMatchers.containsString("[{\"contenu\":\"Contenu de la note\""));
-    Assert.assertThat(contenu, JUnitMatchers.either(JUnitMatchers.containsString(todayString))
-                      .or(JUnitMatchers.containsString(tomorowString)));
-    Assert.assertThat(contenu, JUnitMatchers.containsString("\"auteur\":\"login\"}]"));
-  }
+      Assert.assertThat(contenu, CoreMatchers.containsString("[{\"contenu\":\"Contenu de la note\""));
+      Assert.assertThat(contenu,
+            CoreMatchers.either(CoreMatchers.containsString(todayString))
+            .or(CoreMatchers.containsString(tomorowString))
+            .or(CoreMatchers.containsString(yesterdayString)));
+      Assert.assertThat(contenu, CoreMatchers.containsString("\"auteur\":\"login\"}]"));
+   }
 }
