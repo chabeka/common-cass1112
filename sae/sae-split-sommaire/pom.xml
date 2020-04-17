@@ -4,11 +4,11 @@
   <parent>
     <groupId>fr.urssaf.image.sae</groupId>
     <artifactId>sae</artifactId>
-    <version>20.4.2-SNAPSHOT</version>
+    <version>20.4.1</version>
   </parent>
   <groupId>fr.urssaf.image.sae</groupId>
   <artifactId>sae-split-sommaire</artifactId>
-  <version>20.4.2-SNAPSHOT</version>
+  <version>20.4.1</version>
   
   <name>sae-split-sommaire</name>
   <packaging>jar</packaging>
