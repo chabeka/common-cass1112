@@ -16,7 +16,7 @@
          </list>
       </property>
    </bean>
-   
+     
    <import resource="classpath*:/applicationContext-sae-format.xml" />   
 
 </beans>

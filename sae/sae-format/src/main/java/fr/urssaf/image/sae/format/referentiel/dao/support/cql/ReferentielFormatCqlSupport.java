@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeExcep
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
+
 /***
  * 
  * Classe support permettant d’exploiter le bean {@link FormatFichier} <br>
@@ -35,6 +36,7 @@ public class ReferentielFormatCqlSupport {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ReferentielFormatCqlSupport.class);
 
+  // private final SaeFormatSaeFormatMessageHandler SaeFormatMessageHandler;
   /**
    * Constructeur de la classe support
    * 
@@ -46,6 +48,7 @@ public class ReferentielFormatCqlSupport {
 
   public ReferentielFormatCqlSupport(final IReferentielFormatDaoCql referentielFormatDaoCql) {
     this.referentielFormatDaoCql = referentielFormatDaoCql;
+    // this.SaeFormatMessageHandler = SaeFormatMessageHandler;
   }
   /**
    * Ajoute un nouveau format de fichier {@link FormatFichier}.
@@ -161,7 +164,7 @@ public class ReferentielFormatCqlSupport {
   private void saveOrUpdate(final FormatFichier formatFichier) {
     Assert.notNull(formatFichier, "l'objet formatFichier ne peut etre null");
     Assert.notNull(formatFichier.getIdFormat(), "L'identifiant ne peut être null");
-        referentielFormatDaoCql.saveWithMapper(formatFichier);
+    referentielFormatDaoCql.saveWithMapper(formatFichier);
 
   }
 }

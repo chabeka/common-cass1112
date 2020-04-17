@@ -40,13 +40,13 @@ public class ReferentielFormatSupport {
 
   private final ReferentielFormatDao referentielFormatDao;
 
-  private final SaeFormatMessageHandler messageHandler;
 
   private static final String FIN_LOG = "{} - fin";
 
   private static final String DEBUT_LOG = "{} - début";
 
   private static final Logger LOGGER = LoggerFactory.getLogger(ReferentielFormatSupport.class);
+
 
   /**
    * Constructeur de la classe support
@@ -55,9 +55,9 @@ public class ReferentielFormatSupport {
    *          la dao
    */
   @Autowired
-  public ReferentielFormatSupport(final ReferentielFormatDao referentielFormatDao, final SaeFormatMessageHandler messageHandler) {
+  public ReferentielFormatSupport(final ReferentielFormatDao referentielFormatDao) {
     this.referentielFormatDao = referentielFormatDao;
-    this.messageHandler = messageHandler;
+    // messageHandler = messageHandler;
   }
 
   /**
@@ -125,17 +125,17 @@ public class ReferentielFormatSupport {
   public final void delete(final String idFormat, final Long clock) throws UnknownFormatException {
 
     if (idFormat == null) {
-      throw new IllegalArgumentException(messageHandler.getMessage("erreur.referentielformat.notnull"));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage("erreur.referentielformat.notnull"));
     }
 
     if (clock == null || clock <= 0) {
-      throw new IllegalArgumentException(messageHandler.getMessage("erreur.param"));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage("erreur.param"));
     }
 
     final FormatFichier refFormatExistant = find(idFormat);
 
     if (refFormatExistant == null) {
-      throw new UnknownFormatException(messageHandler.getMessage("erreur.format.delete", idFormat));
+      throw new UnknownFormatException(SaeFormatMessageHandler.getMessage("erreur.format.delete", idFormat));
     }
 
     try {
@@ -143,7 +143,7 @@ public class ReferentielFormatSupport {
       referentielFormatDao.mutatorSuppressionRefFormat(mutator, idFormat, clock);
       mutator.execute();
     } catch (final Exception except) {
-      throw new ReferentielRuntimeException(messageHandler.getMessage("erreur.impossible.delete.format"), except);
+      throw new ReferentielRuntimeException(SaeFormatMessageHandler.getMessage("erreur.impossible.delete.format"), except);
     }
   }
 
@@ -164,7 +164,7 @@ public class ReferentielFormatSupport {
   public final FormatFichier find(final String idFormat) {
 
     if (StringUtils.isBlank(idFormat)) {
-      throw new IllegalArgumentException(messageHandler.getMessage("erreur.param.obligatoire.null", idFormat));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage("erreur.param.obligatoire.null", idFormat));
     }
 
     final ColumnFamilyResult<String, String> result = referentielFormatDao.getCfTmpl().queryColumns(idFormat);
@@ -275,7 +275,7 @@ public class ReferentielFormatSupport {
 
       return list;
     } catch (final Exception except) {
-      throw new ReferentielRuntimeException(messageHandler.getMessage("erreur.impossible.recup.info"), except);
+      throw new ReferentielRuntimeException(SaeFormatMessageHandler.getMessage("erreur.impossible.recup.info"), except);
     }
   }
 

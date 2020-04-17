@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.format.referentiel.service.cql;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,7 @@ import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
 import fr.urssaf.image.sae.format.utils.AbstractReferentielFormatCqlTest;
 import fr.urssaf.image.sae.format.utils.Utils;
-import junit.framework.Assert;
+
 
 /**
  * 
@@ -277,6 +278,20 @@ public class ReferentielFormatServiceCqlTest extends AbstractReferentielFormatCq
 
     Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(fileName,
                                                                    idFormat));
+  }
+
+  @Test
+  public void formatNotExists() throws ReferentielRuntimeException {
+
+    final boolean trouve = refFormatService.exists("test");
+    Assert.assertFalse(trouve);
+  }
+
+  @Test
+  public void formatExists() throws ReferentielRuntimeException {
+
+    final boolean trouve = refFormatService.exists("fmt/353");
+    Assert.assertTrue(trouve);
   }
 
 }

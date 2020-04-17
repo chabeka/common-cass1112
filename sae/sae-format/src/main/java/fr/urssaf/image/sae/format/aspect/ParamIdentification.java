@@ -33,6 +33,7 @@ public class ParamIdentification {
   private static final String IDENTIFIER_IDENTIFYSTREAM = "execution(* fr.urssaf.image.sae.format.identification.identifiers.Identifier.identifyStream(*,*,*))"
       + "&& args(idFormat,stream,nomFichier)";
 
+
   /**
    * Vérification des paramètres de la méthode "identifyFile" de la classe
    * IdentifierService Vérification du String idFormat donné en paramètre<br>
@@ -111,7 +112,7 @@ public class ParamIdentification {
     }
     if (!param.isEmpty()) {
       throw new ReferentielRuntimeException(SaeFormatMessageHandler
-                                                                   .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
+                                            .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
     }
   }
 
@@ -131,7 +132,7 @@ public class ParamIdentification {
     }
     if (!param.isEmpty()) {
       throw new ReferentielRuntimeException(SaeFormatMessageHandler
-                                                                   .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
+                                            .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
     }
   }
 

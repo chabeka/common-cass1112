@@ -25,7 +25,6 @@ import fr.urssaf.image.sae.format.referentiel.dao.support.facade.ReferentielForm
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
-import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
 /**
  * Implémentation de l’interface décrivant les méthodes proposées par le service
@@ -48,6 +47,7 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ReferentielFormatServiceImpl.class);
+
 
   /**
    * Gestion du cache
@@ -80,7 +80,6 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
                                       @Value("${sae.referentiel.format.initCacheOnStartup}") final boolean initCacheOnStartup) {
 
     refFormatSupport = refFormSupport;
-
 
     // Mise en cache
     formats = CacheBuilder.newBuilder().refreshAfterWrite(value,
@@ -137,10 +136,10 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
       format = formats.getUnchecked(idFormat);
       return format;
     } catch (final InvalidCacheLoadException e) {
-      LOGGER.debug(SaeFormatMessageHandler.getMessage(
-                                                      "erreur.no.format.found", idFormat));
-      throw new UnknownFormatException(SaeFormatMessageHandler.getMessage(
-                                                                          "erreur.no.format.found", idFormat), e);
+      LOGGER.debug(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
+                                                                                               "erreur.no.format.found", idFormat));
+      throw new UnknownFormatException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
+                                                                                                                   "erreur.no.format.found", idFormat), e);
     } catch (final UncheckedExecutionException e) {
       throw new ReferentielRuntimeException(e);
     }
@@ -169,8 +168,8 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
       found = true;
 
     } catch (final InvalidCacheLoadException e) {
-      LOGGER.debug(SaeFormatMessageHandler.getMessage(
-                                                      "erreur.no.format.found", idFormat));
+      LOGGER.debug(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
+                                                                                               "erreur.no.format.found", idFormat));
 
     } catch (final UncheckedExecutionException e) {
       throw new ReferentielRuntimeException(e);
@@ -216,8 +215,8 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
       }
 
     } catch (final UnknownFormatException e) {
-      LOGGER.debug(SaeFormatMessageHandler.getMessage(
-                                                      "erreur.no.format.found", idFormat));
+      LOGGER.debug(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
+                                                                                               "erreur.no.format.found", idFormat));
 
     } catch (final UncheckedExecutionException e) {
       throw new ReferentielRuntimeException(e);

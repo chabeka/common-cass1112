@@ -16,6 +16,8 @@ import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 /**
  * Classe de validation des paramètres obligatoires.
  */
+// @Configurable(autowire = Autowire.BY_TYPE)
+// @Configurable
 @Aspect
 @Component
 public class ParamConversion {
@@ -31,6 +33,7 @@ public class ParamConversion {
 
   private static final String CONVERTISSEUR_CONVERTIRFICHIER_BYTE = "execution(* fr.urssaf.image.sae.format.conversion.convertisseurs.Convertisseur.convertirFichier(*,*,*))"
       + "&& args(fichier,numeroPage,nombrePages)";
+
 
   /**
    * Vérification des paramètres de la méthode "convertirFichier" de la classe
@@ -123,7 +126,7 @@ public class ParamConversion {
     }
     if (!param.isEmpty()) {
       throw new ReferentielRuntimeException(SaeFormatMessageHandler
-                                                                   .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
+                                            .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
     }
   }
 
@@ -140,7 +143,7 @@ public class ParamConversion {
     }
     if (!param.isEmpty()) {
       throw new ReferentielRuntimeException(SaeFormatMessageHandler
-                                                                   .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
+                                            .getMessage(Constantes.PARAM_OBLIGATOIRE, param.toString()));
     }
   }
 

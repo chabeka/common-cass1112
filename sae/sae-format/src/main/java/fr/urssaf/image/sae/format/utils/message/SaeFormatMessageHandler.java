@@ -2,30 +2,28 @@ package fr.urssaf.image.sae.format.utils.message;
 
 import java.util.Locale;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Component;
+import org.springframework.context.support.ResourceBundleMessageSource;
 
 /**
  * Permet de lire le fichier properites : sae_format_messages.properties.
  * Pour la gestion de messages simples et messages d'exception.
  */
-@Component
+
 public final class SaeFormatMessageHandler {
 
-  private static MessageSource MESSAGE_SOURCES;
-
-  /**
-   * Constructeur
-   * 
-   * @param messageSource
-   *          l'object d'accès aux messages
+  private static MessageSource messageSource;
+  /*
+   * On instancie le messageSource dans un bloc statique,
+   * ce bloc est exécuté une seule fois au moment
+   * du chargement de la classe
    */
-  @Autowired
-  public SaeFormatMessageHandler(@Qualifier("messageSource_sae_format") final MessageSource messageSource) {
-    // Récupération du contexte pour les fichiers properties
-    MESSAGE_SOURCES = messageSource;
+  static {
+
+    final ResourceBundleMessageSource resourceBundleMessageSource = new ResourceBundleMessageSource();
+    resourceBundleMessageSource.setBasename("i18n/sae_format_messages");
+    messageSource = resourceBundleMessageSource;
+
   }
 
   /**
@@ -35,10 +33,10 @@ public final class SaeFormatMessageHandler {
    *          La clé du message
    * @return Le message avec les valeurs substituées.
    */
-  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+
   public static String getMessage(final String messageKey) {
 
-    return MESSAGE_SOURCES.getMessage(messageKey, null, Locale.getDefault());
+    return messageSource.getMessage(messageKey, null, Locale.getDefault());
   }
 
   /**
@@ -50,9 +48,9 @@ public final class SaeFormatMessageHandler {
    *          La valeur de substitution
    * @return Le message avec les valeurs substituées.
    */
-  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+
   public static String getMessage(final String messageKey, final String valueKey) {
-    return MESSAGE_SOURCES.getMessage(messageKey, new Object[] {valueKey}, Locale.getDefault());
+    return messageSource.getMessage(messageKey, new Object[] {valueKey}, Locale.getDefault());
   }
 
   /**
@@ -66,8 +64,9 @@ public final class SaeFormatMessageHandler {
    *          La valeur de substitution
    * @return Le message avec les valeurs substituées.
    */
-  @SuppressWarnings("PMD.AvoidDuplicateLiterals")
+
   public static String getMessage(final String messageKey, final String firstValueKey, final Object secondValueKey) {
-    return MESSAGE_SOURCES.getMessage(messageKey, new Object[] {firstValueKey, secondValueKey}, Locale.getDefault());
+    return messageSource.getMessage(messageKey, new Object[] {firstValueKey, secondValueKey}, Locale.getDefault());
   }
+
 }

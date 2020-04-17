@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.utils.Constantes;
-import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
 /**
  * Classe de validation des paramètres obligatoires.
@@ -37,6 +36,8 @@ public class ParamValidation {
   private static final String VALIDATOR_VALIDATE_STREAM = "execution(* fr.urssaf.image.sae.format.validation.validators.Validator.validateStream(*))"
       + "&& args(stream)";
 
+
+
   /**
    * Vérification des paramètres de la méthode "validateFile" de la classe
    * Validator Vérification du fichier donné en paramètre<br>
@@ -52,13 +53,13 @@ public class ParamValidation {
       param.add(Constantes.FICHIER);
     }
     if (!param.isEmpty()) {
-      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
-                                                                            Constantes.PARAM_OBLIGATOIRE,
-                                                                            param.toString()));
+      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
+                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
+                                                                                                                     param.toString()));
     }
     if (!file.exists()) {
-      throw new IllegalArgumentException(SaeFormatMessageHandler
-                                                                .getMessage(Constantes.FILE_NOT_FOUND));
+      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+                                         .getMessage(Constantes.FILE_NOT_FOUND));
     }
   }
 
@@ -77,9 +78,9 @@ public class ParamValidation {
       param.add(Constantes.STREAM);
     }
     if (stream == null) {
-      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
-                                                                            Constantes.PARAM_OBLIGATOIRE,
-                                                                            param.toString()));
+      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
+                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
+                                                                                                                     param.toString()));
     }
   }
 
@@ -97,21 +98,21 @@ public class ParamValidation {
   @Before(VALIDATIONSERVICE_VALIDATE_FILE)
   public final void validateFileFromValidationService(final String idFormat,
                                                       final File file)
-      throws FileNotFoundException {
+                                                          throws FileNotFoundException {
 
     if (StringUtils.isBlank(idFormat)) {
-      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
-                                                                            Constantes.PARAM_OBLIGATOIRE,
-                                                                            Constantes.IDFORMAT));
+      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
+                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
+                                                                                                                     Constantes.IDFORMAT));
     }
     if (file == null) {
-      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
-                                                                            Constantes.PARAM_OBLIGATOIRE,
-                                                                            Constantes.FICHIER));
+      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
+                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
+                                                                                                                     Constantes.FICHIER));
     }
     if (!file.exists()) {
-      throw new IllegalArgumentException(SaeFormatMessageHandler
-                                                                .getMessage(Constantes.FILE_NOT_FOUND));
+      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+                                         .getMessage(Constantes.FILE_NOT_FOUND));
     }
   }
 
@@ -129,12 +130,12 @@ public class ParamValidation {
                                                         final InputStream stream) {
 
     if (StringUtils.isBlank(idFormat)) {
-      throw new ReferentielRuntimeException(SaeFormatMessageHandler
-                                                                   .getMessage(Constantes.PARAM_OBLIGATOIRE, Constantes.IDFORMAT));
+      throw new ReferentielRuntimeException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+                                            .getMessage(Constantes.PARAM_OBLIGATOIRE, Constantes.IDFORMAT));
     }
     if (stream == null) {
-      throw new ReferentielRuntimeException(SaeFormatMessageHandler
-                                                                   .getMessage(Constantes.PARAM_OBLIGATOIRE, Constantes.STREAM));
+      throw new ReferentielRuntimeException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+                                            .getMessage(Constantes.PARAM_OBLIGATOIRE, Constantes.STREAM));
     }
   }
 
