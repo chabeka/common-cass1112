@@ -211,13 +211,13 @@
 	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-20.05-fix/sae
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-20.05-fix/sae
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-20.05-fix/sae
       </connection>
 	</scm>
 
