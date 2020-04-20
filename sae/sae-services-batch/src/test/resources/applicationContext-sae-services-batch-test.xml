@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:security="http://www.springframework.org/schema/security"
+   xsi:schemaLocation="
+		http://www.springframework.org/schema/beans	
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+
+   <!-- Import des contextes principaux -->
+   <import resource="applicationContext-sae-storage-dfce.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
+
+   <!-- Import des contextes principaux -->
+   <import resource="applicationContext-sae-storage-dfce.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
+
+
+   <!-- Chargement des fichiers Properties de la partie test -->
+   <bean id="serviceBatchTestPlaceHolderConfig"
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="locations">
+         <list>
+            <value>config/test-sae-config.properties</value>
+            <value>config/test-sae-dfce-config.properties</value>
+            <value>config/test-sae-cassandra-config.properties</value>
+         </list>
+      </property>
+   </bean>
+
+   <!-- Chargement des fichiers de configuration SAE -->
+   <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
+      <constructor-arg value="config/test-sae-config.properties" />
+   </bean>
+   <bean class="java.io.File" id="fileSaeConfig">
+      <constructor-arg>
+         <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
+      </constructor-arg>
+   </bean>
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg>
+         <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
+      </constructor-arg>
+   </bean>
+
+   <!-- Création des beans d'accès à DFCE (utilise saeConfigResource) -->
+   <import resource="applicationContext-commons-dfce-connection.xml" />
+
+
+   <!-- Configuration des ECDE -->
+
+   <bean id="ecdeTestConfig" class="fr.urssaf.image.sae.ecde.util.test.EcdeTestConfig" />
+
+   <bean id="ecdeSources" factory-bean="ecdeTestConfig"
+      factory-method="load">
+   </bean>
+
+   <bean id="ecdeTestTools" class="fr.urssaf.image.sae.ecde.util.test.EcdeTestTools" />
+
+
+   <!-- Les beans pour SpringBatch sur Cassandra -->
+
+   <bean id="jobInstanceDao"
+      class="org.springframework.batch.core.repository.dao.MapJobInstanceDao">
+   </bean>
+
+   <bean id="jobExecutionDao"
+      class="org.springframework.batch.core.repository.dao.MapJobExecutionDao">
+   </bean>
+
+   <bean id="stepExecutionDao"
+      class="org.springframework.batch.core.repository.dao.MapStepExecutionDao">
+   </bean>
+
+   <bean id="executionContextDao"
+      class="org.springframework.batch.core.repository.dao.MapExecutionContextDao">
+   </bean>
+
+   <bean id="jobRepository"
+      class="org.springframework.batch.core.repository.support.SimpleJobRepository">
+      <constructor-arg ref="jobInstanceDao" />
+      <constructor-arg ref="stepExecutionDao" />
+      <constructor-arg ref="jobExecutionDao" />
+      <constructor-arg ref="executionContextDao" />
+   </bean>
+
+   <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.SimpleJobExplorer">
+     <constructor-arg ref="jobInstanceDao" />
+      <constructor-arg ref="jobExecutionDao" />
+      <constructor-arg ref="stepExecutionDao" />
+      <constructor-arg ref="executionContextDao" />
+   </bean>
+
+   <bean id="jobLauncher"
+      class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+      <property name="jobRepository" ref="jobRepository" />
+   </bean>
+
+   <bean id="transactionManager"
+      class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
+
+   <bean id="launcher" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="capture_masse" />
+   </bean>
+   
+    <bean id="launcherTransfert" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="transfert_masse" />
+   </bean>
+
+   <bean id="launcherReprise" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="reprise_masse" />
+   </bean>
+
+   <!-- Bean pour vérifier les traces -->
+   <bean id="traceAssertUtils"
+      class="fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils" />
+
+
+   <!-- Bean de factory pour les mocks (pour les autres fichiers applicationContext 
+      de test) -->
+   <bean id="mockFactory" class="fr.urssaf.image.sae.utils.MockFactoryBean" />
+
+   <!-- Configuration de l'interruption du traitement -->
+   <bean id="traitementMasseConfig"
+      class="fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
+      <qualifier value="interruption_traitement_masse" />
+      <property name="start" value="${sae.traitementmasse.interruption.heure}" />
+      <property name="delay" value="${sae.traitementmasse.interruption.delai}" />
+      <property name="tentatives"
+         value="${sae.traitementmasse.interruption.tentatives}" />
+   </bean>
+   
+   <!-- Reprise du fichier applicationContext de la partie main -->
+   <import resource="applicationContext-sae-services-capturemasse-main.xml" />
+   <import resource="applicationContext-sae-services-suppressionmasse-main.xml" />
+   <import resource="applicationContext-sae-services-restoremasse-main.xml" />
+   <import resource="applicationContext-sae-services-modificationmasse-main.xml" />
+   <import resource="applicationContext-sae-services-transfertmasse-main.xml" />
+   <import resource="applicationContext-sae-services-reprisemasse-main.xml" />
+
+</beans>

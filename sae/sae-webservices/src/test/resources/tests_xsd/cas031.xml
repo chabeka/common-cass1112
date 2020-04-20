@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 (http://www.altova.com) by USER USER (CIRTIL) -->
+<sae:archivageMasse xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
+	<sae:urlSommaire>ecde://ecde.cer69.recouvt/contrat_service/20110524/numTraitement/documents/monFichier.txt</sae:urlSommaire>
+	<sae:urlSommaire>ecde://ecde.cer69.recouvt/contrat_service/20110524/numTraitement/documents/monFichier.txt</sae:urlSommaire>
+</sae:archivageMasse>

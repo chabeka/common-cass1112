@@ -1,0 +1,218 @@
+/**
+ * 
+ */
+package fr.urssaf.image.sae.trace.service;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang.time.DateUtils;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
+import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
+import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
+import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
+import fr.urssaf.image.sae.trace.model.TraceToCreate;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class DispatcheurServiceEvtDatasTest {
+
+  private static final String CONTEXTE = "contexte";
+
+  private static final String CONTRAT_DE_SERVICE = "contrat de service";
+
+  private static final String IP = "ip";
+
+  private static final String IP_VALUE = "127.0.0.1";
+
+  private static final String MESSAGE = "message";
+
+  private static final String MESSAGE_VALUE = "le message est ici";
+
+  private static final String VI = "vi";
+
+  private static final String VI_VALUE = "<vi><valeur>La valeur du vi</valeur></vi>";
+
+  private static final Map<String, Object> INFOS = new HashMap<>();
+  static {
+    INFOS.put(IP, IP_VALUE);
+    INFOS.put(MESSAGE, MESSAGE_VALUE);
+    INFOS.put(VI, VI_VALUE);
+  }
+
+  private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_EVT_SAE";
+
+  private static final String MESSAGE_ERREUR = "l'argument ${0} est obligatoire dans le journal ${1}";
+
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(DispatcheurServiceEvtDatasTest.class);
+
+  private final String cfNameDestinataire = "tracedestinataire";
+
+  @Autowired
+  private DispatcheurService service;
+
+  @Autowired
+  private TraceDestinataireSupport destSupport;
+
+  @Autowired
+  private TraceDestinataireCqlSupport destCqlSupport;
+
+  @Autowired
+  private CassandraServerBean server;
+
+  @Autowired
+  private JournalEvtService evtService;
+
+  @Autowired
+  private ModeAPIService modeApiService;
+
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  @Before
+  public void start() throws Exception {
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+
+  }
+
+  @After
+  public void after() throws Exception {
+    server.resetDataOnly();
+  }
+
+  @Test
+  public void init() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
+
+    }
+    catch (final Exception e) {
+      LOGGER.error("Une erreur s'est produite lors du resetData de cassandra: {}", e.getMessage());
+    }
+  }
+  @Test
+  public void testCreationTraceSecuriteErreurContexteNonRenseigné() {
+    createDestinataireEvt();
+
+    final TraceToCreate traceToCreate = new TraceToCreate();
+    traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
+
+    try {
+      service.ajouterTrace(traceToCreate);
+      Assert.fail("une erreur IllegalArgumentException est attendue");
+
+    } catch (final IllegalArgumentException exception) {
+
+      final Map<String, String> map = new HashMap<>();
+      map.put("0", CONTEXTE);
+      map.put("1", "des événements SAE");
+      final String message = StrSubstitutor.replace(MESSAGE_ERREUR, map);
+
+      Assert.assertEquals("l'exception doit être correcte", message, exception.getMessage());
+
+    } catch (final Exception exception) {
+      Assert.fail("une erreur IllegalArgumentException est attendue");
+    }
+  }
+
+  @Test
+  public void testCreationTraceSecuriteSuccesContratNonRenseigne() {
+    createDestinataireEvt();
+
+    final TraceToCreate traceToCreate = new TraceToCreate();
+    traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
+    traceToCreate.setContexte(CONTEXTE);
+
+    service.ajouterTrace(traceToCreate);
+
+    // on vérifie qu'il y a un résultat
+
+    final List<TraceJournalEvtIndex> result = evtService.lecture(DateUtils.addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5), 1, false);
+    Assert.assertNotNull("une trace dans le journal des événements doit etre trouvé", result);
+    Assert.assertEquals("on ne doit avoir qu'une seule trace dans le journal des événements", 1, result.size());
+
+    // on vérifie la trace
+    final TraceJournalEvt trace = evtService.lecture(result.get(0).getIdentifiant());
+    Assert.assertTrue("Le contrat de service ne doit pas être renseigné", StringUtils.isEmpty(trace.getContratService()));
+
+  }
+
+  @Test
+  public void testCreationTraceSecuriteSucces() {
+    createDestinataireEvt();
+
+    final TraceToCreate traceToCreate = new TraceToCreate();
+    traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
+    traceToCreate.setContexte(CONTEXTE);
+    traceToCreate.setContrat(CONTRAT_DE_SERVICE);
+    traceToCreate.setInfos(INFOS);
+
+    service.ajouterTrace(traceToCreate);
+
+    // on vérifie qu'il y a un résultat
+    final Date dateDebut = DateUtils.addMinutes(new Date(), -5);
+    final Date dateFin = DateUtils.addMinutes(new Date(), 5);
+
+    final List<TraceJournalEvtIndex> result = evtService.lecture(dateDebut, dateFin, 1, false);
+    Assert.assertNotNull("une trace dans le journal des événements doit etre trouvé", result);
+    Assert.assertEquals("on ne doit avoir qu'une seule trace dans le journal des événements", 1, result.size());
+
+    // on vérifie les infos présentes dans les infos
+    final TraceJournalEvt trace = evtService.lecture(result.get(0).getIdentifiant());
+    Assert.assertNotNull("les infos doivent etre renseignées", trace.getInfos());
+    Assert.assertEquals("le nombre d'infos doit etre correct", 2, trace.getInfos().size());
+    Assert.assertTrue("le champ ip doit etre présent", trace.getInfos().containsKey(IP));
+    Assert.assertEquals("la valeur du champ ip doit etre correcte", IP_VALUE, trace.getInfos().get(IP));
+    Assert.assertTrue("le champ message doit etre présent", trace.getInfos().containsKey(MESSAGE));
+    Assert.assertEquals("la valeur du champ message doit etre correcte", MESSAGE_VALUE, trace.getInfos().get(MESSAGE));
+
+  }
+
+  private void createDestinataireEvt() {
+    final TraceDestinataire trace = new TraceDestinataire();
+    trace.setCodeEvt(ARCHIVAGE_UNITAIRE);
+    final Map<String, List<String>> map = new HashMap<>();
+    map.put(TraceDestinataireDao.COL_JOURN_EVT, Arrays.asList(IP, MESSAGE));
+    trace.setDestinataires(map);
+
+    final String modeApi = modeApiService.getModeAPI(cfNameDestinataire);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      destCqlSupport.create(trace, new Date().getTime());
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      destSupport.create(trace, new Date().getTime());
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
+      destSupport.create(trace, new Date().getTime());
+      destCqlSupport.create(trace, new Date().getTime());
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadatas>
+	
+	<metadata>
+		<longCode>IdTraitementMasse</longCode>
+		<shortCode>itm</shortCode>
+	</metadata>
+	<metadata>
+		<longCode>NumeroIntControle</longCode>
+		<shortCode>nic</shortCode>
+	</metadata>
+	<metadata>
+		<longCode>VersionNumber</longCode>
+		<shortCode>sm_version</shortCode>
+	</metadata>
+
+</metadatas>
