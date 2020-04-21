@@ -18,6 +18,11 @@ public class SamlSignatureVerifParams {
    private Map<String, List<String>> patternsIssuer;
 
    /**
+    * Faux pour désactiver la vérification des certificats
+    */
+   private boolean validateCertificates;
+
+   /**
     * Les certificats des AC racine
     * 
     * @return Les certificats des AC racine
@@ -34,7 +39,7 @@ public class SamlSignatureVerifParams {
    public final List<X509Certificate> getListeCertifsACRacine() {
       List<X509Certificate> certificates = null;
       if (certifsACRacine != null) {
-         certificates = new ArrayList<X509Certificate>(certifsACRacine.keySet());
+         certificates = new ArrayList<>(certifsACRacine.keySet());
       }
 
       return certificates;
@@ -47,7 +52,7 @@ public class SamlSignatureVerifParams {
     *           Les certificats des AC racine
     */
    public final void setCertifsACRacine(
-         Map<X509Certificate, String> certifsACRacine) {
+         final Map<X509Certificate, String> certifsACRacine) {
       this.certifsACRacine = certifsACRacine;
    }
 
@@ -70,7 +75,7 @@ public class SamlSignatureVerifParams {
     *           Les CRL de toutes les AC impliquées dans la délivrance des
     *           certificats de signature d'assertion SAML
     */
-   public final void setCrls(List<X509CRL> crls) {
+   public final void setCrls(final List<X509CRL> crls) {
       this.crls = crls;
    }
 
@@ -93,8 +98,25 @@ public class SamlSignatureVerifParams {
     * @param patternsIssuer
     *           les patterns
     */
-   public final void setPatternsIssuer(Map<String, List<String>> patternsIssuer) {
+   public final void setPatternsIssuer(final Map<String, List<String>> patternsIssuer) {
       this.patternsIssuer = patternsIssuer;
+   }
+
+   /**
+    * Renvoie vrai s'il faut valider la validité des certificats, et faux dans le cas contraire
+    * 
+    * @return
+    */
+   public final boolean shouldValidateCerticates() {
+      return validateCertificates;
+   }
+
+   /**
+    * Indique s'il faut valider la validité des certificats.
+    * Permet de désactiver la vérification de la validité des certificats dans le cas où un client utilise encore des certificats périmés
+    */
+   public final void setValidateCerticates(final boolean shouldValidateCertificates) {
+      validateCertificates = shouldValidateCertificates;
    }
 
 }

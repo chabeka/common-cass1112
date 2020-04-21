@@ -14,9 +14,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
-import fr.urssaf.image.sae.vi.exception.VIFormatTechniqueException;
 import fr.urssaf.image.sae.vi.exception.VIInvalideException;
-import fr.urssaf.image.sae.vi.exception.VISignatureException;
 import fr.urssaf.image.sae.vi.exception.VIVerificationException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.modele.VISignVerifParams;
@@ -25,7 +23,7 @@ import fr.urssaf.image.sae.vi.testutils.TuUtils;
 import fr.urssaf.image.sae.vi.util.XMLUtils;
 
 @SuppressWarnings( { "PMD.MethodNamingConventions", "PMD.TooManyMethods",
-      "PMD.ExcessiveImports" })
+"PMD.ExcessiveImports" })
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-vi-full-test.xml" })
 public class WebServiceVIServiceTest {
@@ -37,29 +35,29 @@ public class WebServiceVIServiceTest {
    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
    @Ignore("Désactivation du test dans l'attente d'un processus de mise à jour des CRL")
    public void verifierVIdeServiceWeb_success() throws IOException,
-         SAXException, VIVerificationException {
+   SAXException, VIVerificationException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_success.xml");
 
-      VIContenuExtrait extrait = service.verifierVIdeServiceWeb(identification,
+      final VIContenuExtrait extrait = service.verifierVIdeServiceWeb(identification,
             TuGenererVi.SERVICE_VISE, TuUtils.buildSignVerifParamsOK(), true);
 
       assertEquals(TuGenererVi.ID_UTILISATEUR, extrait.getIdUtilisateur());
       assertEquals("les actions unitaires ne sont pas toutes présentes", 4,
             extrait.getSaeDroits().keySet());
 
-      
+
 
       assertEquals("Portail Image", extrait.getCodeAppli());
 
    }
 
-   @Test(expected = VIFormatTechniqueException.class)
+   @Test(expected = VIInvalideException.class)
    public void verifierVIdeServiceWeb_failure_format() throws IOException,
-         SAXException, VIVerificationException {
+   SAXException, VIVerificationException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_format.xml");
 
       service.verifierVIdeServiceWeb(identification, TuGenererVi.SERVICE_VISE,
@@ -67,11 +65,11 @@ public class WebServiceVIServiceTest {
 
    }
 
-   @Test(expected = VISignatureException.class)
+   @Test(expected = VIInvalideException.class)
    public void verifierVIdeServiceWeb_failure_sign() throws IOException,
-         SAXException, VIVerificationException {
+   SAXException, VIVerificationException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_sign.xml");
 
       service.verifierVIdeServiceWeb(identification, TuGenererVi.SERVICE_VISE,
@@ -82,21 +80,21 @@ public class WebServiceVIServiceTest {
    @Test
    @Ignore("Désactivation du test dans l'attente d'un processus de mise à jour des CRL")
    public void verifierVIdeServiceWeb_failure_id_1() throws IOException,
-         SAXException, VIVerificationException {
+   SAXException, VIVerificationException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_id_1.xml");
 
       try {
 
          service
-               .verifierVIdeServiceWeb(identification,
-                     TuGenererVi.SERVICE_VISE,
-                     TuUtils.buildSignVerifParamsOK(), true);
+         .verifierVIdeServiceWeb(identification,
+               TuGenererVi.SERVICE_VISE,
+               TuUtils.buildSignVerifParamsOK(), true);
 
          fail("Une exception de type VIInvalideException était attendue");
 
-      } catch (VIInvalideException ex) {
+      } catch (final VIInvalideException ex) {
 
          assertEquals(
                "Vérification du message de l'exception",
@@ -110,21 +108,21 @@ public class WebServiceVIServiceTest {
    @Test
    @Ignore("Désactivation du test dans l'attente d'un processus de mise à jour des CRL")
    public void verifierVIdeServiceWeb_failure_id_2() throws IOException,
-         SAXException, VIVerificationException {
+   SAXException, VIVerificationException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_id_2.xml");
 
       try {
 
          service
-               .verifierVIdeServiceWeb(identification,
-                     TuGenererVi.SERVICE_VISE,
-                     TuUtils.buildSignVerifParamsOK(), true);
+         .verifierVIdeServiceWeb(identification,
+               TuGenererVi.SERVICE_VISE,
+               TuUtils.buildSignVerifParamsOK(), true);
 
          fail("Une exception de type VIInvalideException était attendue");
 
-      } catch (VIInvalideException ex) {
+      } catch (final VIInvalideException ex) {
 
          assertEquals(
                "Vérification du message de l'exception",

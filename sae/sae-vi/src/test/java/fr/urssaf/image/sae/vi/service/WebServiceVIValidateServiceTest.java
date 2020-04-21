@@ -34,7 +34,7 @@ import fr.urssaf.image.sae.vi.testutils.TuUtils;
 import fr.urssaf.image.sae.vi.util.XMLUtils;
 
 @SuppressWarnings( { "PMD.TooManyMethods", "PMD.MethodNamingConventions",
-      "PMD.VariableNamingConventions", "PMD.AvoidDuplicateLiterals" })
+   "PMD.VariableNamingConventions", "PMD.AvoidDuplicateLiterals" })
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-vi-test.xml" })
 public class WebServiceVIValidateServiceTest {
@@ -56,13 +56,13 @@ public class WebServiceVIValidateServiceTest {
       try {
          system_date = DateUtils.parseDate("12/12/1999 01:00:00",
                new String[] { "dd/MM/yyyy HH:mm:ss" });
-      } catch (ParseException e) {
+      } catch (final ParseException e) {
          throw new IllegalStateException(e);
       }
    }
 
-   private void assertVIVerificationException_wsse(String faultCode,
-         String faultMessage, VIVerificationException exception) {
+   private void assertVIVerificationException_wsse(final String faultCode,
+         final String faultMessage, final VIVerificationException exception) {
 
       assertVIVerificationException(
             "wsse",
@@ -70,8 +70,8 @@ public class WebServiceVIValidateServiceTest {
             faultCode, faultMessage, exception);
    }
 
-   private void assertVIVerificationException_vi(String faultCode,
-         String faultMessage, VIVerificationException exception) {
+   private void assertVIVerificationException_vi(final String faultCode,
+         final String faultMessage, final VIVerificationException exception) {
 
       assertVIVerificationException("vi", "urn:iops:vi:faultcodes", faultCode,
             faultMessage, exception);
@@ -79,9 +79,9 @@ public class WebServiceVIValidateServiceTest {
    }
 
    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
-   private void assertVIVerificationException(String prefix, String namespace,
-         String faultCode, String faultMessage,
-         VIVerificationException exception) {
+   private void assertVIVerificationException(final String prefix, final String namespace,
+         final String faultCode, final String faultMessage,
+         final VIVerificationException exception) {
 
       assertEquals(prefix, exception.getSoapFaultCode().getPrefix());
       assertEquals(namespace, exception.getSoapFaultCode().getNamespaceURI());
@@ -96,16 +96,16 @@ public class WebServiceVIValidateServiceTest {
          VIPagmIncorrectException, IOException, VIServiceIncorrectException,
          SAXException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_datebefore.xml");
-      SamlAssertionData data = extraction.extraitDonnees(identification);
+      final SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
 
          service.validate(data, TuGenererVi.SERVICE_VISE, system_date);
 
          fail(FAIL_MESSAGE);
-      } catch (VIInvalideException exception) {
+      } catch (final VIInvalideException exception) {
          assertEquals(
                "L'assertion n'est pas encore valable: elle ne sera active qu'à partir de 31/12/1999 02:00:00 alors que nous sommes le 12/12/1999 01:00:00",
                exception.getMessage());
@@ -123,9 +123,9 @@ public class WebServiceVIValidateServiceTest {
          VIPagmIncorrectException, IOException, VIServiceIncorrectException,
          SAXException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_dateafter.xml");
-      SamlAssertionData data = extraction.extraitDonnees(identification);
+      final SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
 
@@ -133,7 +133,7 @@ public class WebServiceVIValidateServiceTest {
 
          fail(FAIL_MESSAGE);
 
-      } catch (VIInvalideException exception) {
+      } catch (final VIInvalideException exception) {
          assertEquals(
                "L'assertion a expirée : elle n'était valable que jusqu’au 01/12/1999 02:00:00, hors nous sommes le 12/12/1999 01:00:00",
                exception.getMessage());
@@ -151,9 +151,9 @@ public class WebServiceVIValidateServiceTest {
          VIPagmIncorrectException, IOException, VIInvalideException,
          SAXException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_servicevise.xml");
-      SamlAssertionData data = extraction.extraitDonnees(identification);
+      final SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
 
@@ -161,12 +161,12 @@ public class WebServiceVIValidateServiceTest {
 
          fail(FAIL_MESSAGE);
 
-      } catch (VIServiceIncorrectException exception) {
+      } catch (final VIServiceIncorrectException exception) {
          assertEquals(
                "Le service visé '"
                      + TuGenererVi.SERVICE_VISE
                      + "' ne correspond pas à celui indiqué dans le VI 'http://service_test.fr'",
-               exception.getMessage());
+                     exception.getMessage());
 
          assertVIVerificationException_vi("InvalidService",
                "Le service visé par le VI n'existe pas ou est invalide",
@@ -182,9 +182,9 @@ public class WebServiceVIValidateServiceTest {
          throws VINivAuthException, VIPagmIncorrectException, IOException,
          VIInvalideException, VIServiceIncorrectException, SAXException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_idapplication.xml");
-      SamlAssertionData data = extraction.extraitDonnees(identification);
+      final SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
 
@@ -192,7 +192,7 @@ public class WebServiceVIValidateServiceTest {
 
          fail(FAIL_MESSAGE);
 
-      } catch (VIAppliClientException exception) {
+      } catch (final VIAppliClientException exception) {
          assertEquals(
                "L'identifiant de l'organisme client présent dans le VI (service_failure) est invalide ou inconnu",
                exception.getMessage());
@@ -211,9 +211,9 @@ public class WebServiceVIValidateServiceTest {
          throws VIPagmIncorrectException, IOException, VIInvalideException,
          VIAppliClientException, VIServiceIncorrectException, SAXException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_methodauthn.xml");
-      SamlAssertionData data = extraction.extraitDonnees(identification);
+      final SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
 
@@ -221,7 +221,7 @@ public class WebServiceVIValidateServiceTest {
 
          fail(FAIL_MESSAGE);
 
-      } catch (VINivAuthException exception) {
+      } catch (final VINivAuthException exception) {
          assertEquals(
                "Le niveau d'authentification 'method_failure' est incorrect",
                exception.getMessage());
@@ -239,9 +239,9 @@ public class WebServiceVIValidateServiceTest {
          throws VIPagmIncorrectException, IOException, VIInvalideException,
          VIAppliClientException, VIServiceIncorrectException, SAXException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_methodauthn_vide.xml");
-      SamlAssertionData data = extraction.extraitDonnees(identification);
+      final SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
 
@@ -249,10 +249,10 @@ public class WebServiceVIValidateServiceTest {
 
          fail(FAIL_MESSAGE);
 
-      } catch (VINivAuthException exception) {
+      } catch (final VINivAuthException exception) {
          assertEquals("Vérification du message de l'exception",
                "Le niveau d'authentification n'est pas renseigné", exception
-                     .getMessage());
+               .getMessage());
 
          assertVIVerificationException_vi(
                "InvalidAuthLevel",
@@ -265,12 +265,12 @@ public class WebServiceVIValidateServiceTest {
    @Test
    @SuppressWarnings("PMD.JUnitAssertionsShouldIncludeMessage")
    public void verifierVIdeServiceWeb_failure_pagm() throws IOException,
-         VIInvalideException, VIAppliClientException, VINivAuthException,
-         VIServiceIncorrectException, SAXException {
+   VIInvalideException, VIAppliClientException, VINivAuthException,
+   VIServiceIncorrectException, SAXException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_pagm.xml");
-      SamlAssertionData data = extraction.extraitDonnees(identification);
+      final SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
 
@@ -278,7 +278,7 @@ public class WebServiceVIValidateServiceTest {
 
          fail(FAIL_MESSAGE);
 
-      } catch (VIPagmIncorrectException exception) {
+      } catch (final VIPagmIncorrectException exception) {
          assertVIVerificationException_vi("InvalidPagm",
                "Le ou les PAGM présents dans le VI sont invalides", exception);
       }
@@ -293,10 +293,10 @@ public class WebServiceVIValidateServiceTest {
          VISignatureException, VIInvalideException, VINivAuthException,
          VIServiceIncorrectException, VIPagmIncorrectException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_success.xml");
 
-      SamlAssertionData data = extraction.extraitDonnees(identification);
+      final SamlAssertionData data = extraction.extraitDonnees(identification);
 
       try {
 
@@ -304,7 +304,7 @@ public class WebServiceVIValidateServiceTest {
 
          fail(FAIL_MESSAGE);
 
-      } catch (VIAppliClientException exception) {
+      } catch (final VIAppliClientException exception) {
          assertVIVerificationException_vi(
                "InvalidIssuer",
                "L'identifiant de l'organisme client présent dans le VI est invalide ou inconnu",
@@ -317,12 +317,13 @@ public class WebServiceVIValidateServiceTest {
    @SuppressWarnings("PMD.JUnitTestsShouldIncludeAssert")
    @Ignore("Désactivation du test dans l'attente d'un processus de mise à jour des CRL")
    public void verifierVIdeServiceWeb_success() throws IOException,
-         SAXException, VIFormatTechniqueException, VISignatureException {
+   SAXException, VIFormatTechniqueException, VISignatureException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_success.xml");
 
-      service.validate(identification, TuUtils.buildSignVerifParamsOK());
+      final boolean shouldValidateCertificates = true;
+      service.validate(identification, TuUtils.buildSignVerifParamsOK(), shouldValidateCertificates);
 
       // Résultat attendu : aucune exception levée
 
@@ -330,15 +331,16 @@ public class WebServiceVIValidateServiceTest {
 
    @Test
    public void verifierVIdeServiceWeb_failure_format() throws IOException,
-         SAXException, VISignatureException {
+   SAXException, VISignatureException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_format.xml");
 
       try {
-         service.validate(identification, new VISignVerifParams());
+         final boolean shouldValidateCertificates = true;
+         service.validate(identification, new VISignVerifParams(), shouldValidateCertificates);
          fail(FAIL_MESSAGE);
-      } catch (VIFormatTechniqueException e) {
+      } catch (final VIFormatTechniqueException e) {
 
          assertVIVerificationException_wsse("InvalidSecurityToken",
                "Le jeton de sécurité fourni est invalide", e);
@@ -348,15 +350,16 @@ public class WebServiceVIValidateServiceTest {
 
    @Test
    public void verifierVIdeServiceWeb_failure_sign() throws IOException,
-         SAXException, VIFormatTechniqueException {
+   SAXException, VIFormatTechniqueException {
 
-      Element identification = XMLUtils
+      final Element identification = XMLUtils
             .parse("src/test/resources/webservice/vi_failure_sign.xml");
 
       try {
-         service.validate(identification, new VISignVerifParams());
+         final boolean shouldValidateCertificates = true;
+         service.validate(identification, new VISignVerifParams(), shouldValidateCertificates);
          fail(FAIL_MESSAGE);
-      } catch (VISignatureException exception) {
+      } catch (final VISignatureException exception) {
 
          assertVIVerificationException_wsse("FailedCheck",
                "La signature ou le chiffrement n'est pas valide", exception);

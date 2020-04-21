@@ -28,7 +28,6 @@ import fr.urssaf.image.sae.vi.modele.VISignVerifParams;
 public interface WebServiceVIValidateService {
 
    /**
-    * 
     * Validation de la structure XML de l'assertion et de sa signature
     * électronique du jeton SAML
     * 
@@ -36,16 +35,18 @@ public interface WebServiceVIValidateService {
     *           jeton SAML
     * @param signVerifParams
     *           les informations permettant de vérifier la signature du VI
+    * @param shouldValidateCerticates
+    *           indique s'il faut vérifier la validité des certificats du signataire
     * @return l'objet contenant les certificats clients et de la PKUI
-    *         intervenants dans la vérification de la signature
+    *         intervenant dans la vérification de la signature
     * @throws VIFormatTechniqueException
     *            Une erreur technique sur le format du VI a été détectée
     * @throws VISignatureException
     *            La signature électronique du VI est incorrecte
     */
    SignatureVerificationResult validate(Element identification,
-         VISignVerifParams signVerifParams) throws VIFormatTechniqueException,
-         VISignatureException;
+         VISignVerifParams signVerifParams, boolean shouldValidateCerticates) throws VIFormatTechniqueException,
+   VISignatureException;
 
    /**
     * Validation supplémentaires des informations extraites du jeton SAML
@@ -81,8 +82,8 @@ public interface WebServiceVIValidateService {
     */
    void validate(SamlAssertionData data, URI serviceVise,
          Date systemDate) throws VIInvalideException, VIAppliClientException,
-         VINivAuthException, VIPagmIncorrectException,
-         VIServiceIncorrectException;
+   VINivAuthException, VIPagmIncorrectException,
+   VIServiceIncorrectException;
 
    /**
     * Vérification que les certificats client et de la PKI mis en jeu pour la

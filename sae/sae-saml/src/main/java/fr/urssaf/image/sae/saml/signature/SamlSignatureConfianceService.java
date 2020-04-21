@@ -62,9 +62,9 @@ public final class SamlSignatureConfianceService {
     * 
     */
    public static X509Certificate verifierConfiance(
-         SamlSignatureVerifParams signVerifParams,
-         List<java.security.cert.X509Certificate> chaineCertif)
-         throws SamlSignatureValidateException {
+         final SamlSignatureVerifParams signVerifParams,
+         final List<java.security.cert.X509Certificate> chaineCertif)
+               throws SamlSignatureValidateException {
 
       // Vérifications des paramètres d'entrée
       if (signVerifParams == null) {
@@ -78,27 +78,25 @@ public final class SamlSignatureConfianceService {
       try {
 
          // Instantiation d'une Factory de fonctions sur les certificats X509
-         CertificateFactory certifFactory = CertificateFactory
+         final CertificateFactory certifFactory = CertificateFactory
                .getInstance("X.509");
-
-         // Collections.reverse(chaineCertif);
 
          // Construction de la chaîne de certification au format attendue par
          // la méthode de validation de la signature
-         CertPath certPath = certifFactory.generateCertPath(chaineCertif);
+         final CertPath certPath = certifFactory.generateCertPath(chaineCertif);
 
          // Création de l'objet validateur de la chaîne de certification
          // Cette validation se fera selon la définition de la PKIX (cf. RFC
          // 2380)
-         CertPathValidator cpv = CertPathValidator.getInstance("PKIX");
+         final CertPathValidator cpv = CertPathValidator.getInstance("PKIX");
 
          // Construction de la liste des certificats de confiance
          // Il s'agit des certificats des AC racine
-         Set<TrustAnchor> trustAnchors = buildTrustAnchors(signVerifParams);
+         final Set<TrustAnchor> trustAnchors = buildTrustAnchors(signVerifParams);
 
          // Création de l'objet contenant les paramètres de la validation PKIX
          // Cet objet est initialisé avec la liste des certificats de confiance
-         PKIXParameters parameters = new PKIXParameters(trustAnchors);
+         final PKIXParameters parameters = new PKIXParameters(trustAnchors);
 
          // Active la vérification des CRL, et ajouter les CRL fournies à la
          // méthode
@@ -108,39 +106,48 @@ public final class SamlSignatureConfianceService {
 
          // Lance la validation de la chaîne de certification
          // Si la validation échoue, une exception est levée
-         try {
+         return doVerifierConfiance(signVerifParams, chaineCertif, certPath, cpv, parameters);
 
-            PKIXCertPathValidatorResult result = (PKIXCertPathValidatorResult) cpv
-                  .validate(certPath, parameters);
-            TrustAnchor anchor = result.getTrustAnchor();
-            X509Certificate certificate = anchor.getTrustedCert();
-
-            return certificate;
-
-         } catch (CertPathValidatorException e) {
-
-            throw new SamlSignatureValidateException(e);
-
-         }
-
-      } catch (CertificateException e) {
-         throw new SamlSignatureValidateException(e);
-      } catch (NoSuchAlgorithmException e) {
-         throw new SamlSignatureValidateException(e);
-      } catch (InvalidAlgorithmParameterException e) {
+      }
+      catch (final CertificateException | NoSuchAlgorithmException | InvalidAlgorithmParameterException e) {
          throw new SamlSignatureValidateException(e);
       }
 
    }
 
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+   private static X509Certificate doVerifierConfiance(final SamlSignatureVerifParams signVerifParams,
+         final List<java.security.cert.X509Certificate> chaineCertif,
+         final CertPath certPath, final CertPathValidator cpv,
+         final PKIXParameters parameters)
+               throws InvalidAlgorithmParameterException, SamlSignatureValidateException {
+
+      if (signVerifParams.shouldValidateCerticates()) {
+         try {
+
+            final PKIXCertPathValidatorResult result = (PKIXCertPathValidatorResult) cpv
+                  .validate(certPath, parameters);
+            final TrustAnchor anchor = result.getTrustAnchor();
+            final X509Certificate certificate = anchor.getTrustedCert();
+
+            return certificate;
+
+         }
+         catch (final CertPathValidatorException e) {
+            throw new SamlSignatureValidateException(e);
+         }
+      }
+      else {
+         return chaineCertif.get(0);
+      }
+   }
+
    private static Set<TrustAnchor> buildTrustAnchors(
-         SamlSignatureVerifParams signVerifParams) {
+         final SamlSignatureVerifParams signVerifParams) {
 
-      Set<TrustAnchor> trustAnchors = new HashSet<TrustAnchor>();
+      final Set<TrustAnchor> trustAnchors = new HashSet<>();
 
-      for (X509Certificate cert : signVerifParams.getListeCertifsACRacine()) {
-         TrustAnchor anchor = new TrustAnchor(cert, null);
+      for (final X509Certificate cert : signVerifParams.getListeCertifsACRacine()) {
+         final TrustAnchor anchor = new TrustAnchor(cert, null);
          trustAnchors.add(anchor);
       }
 
@@ -148,13 +155,13 @@ public final class SamlSignatureConfianceService {
 
    }
 
-   private static void addCRL(SamlSignatureVerifParams signVerifParams,
-         PKIXParameters parameters) throws InvalidAlgorithmParameterException,
-         NoSuchAlgorithmException {
+   private static void addCRL(final SamlSignatureVerifParams signVerifParams,
+         final PKIXParameters parameters) throws InvalidAlgorithmParameterException,
+   NoSuchAlgorithmException {
 
-      CollectionCertStoreParameters ccsp = new CollectionCertStoreParameters(
+      final CollectionCertStoreParameters ccsp = new CollectionCertStoreParameters(
             signVerifParams.getCrls());
-      CertStore store = CertStore.getInstance("Collection", ccsp);
+      final CertStore store = CertStore.getInstance("Collection", ccsp);
       parameters.addCertStore(store);
 
    }
