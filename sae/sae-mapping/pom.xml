@@ -8,9 +8,7 @@
       <version>20.4.5-SNAPSHOT</version>
    </parent>
 
-   <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-mapping</artifactId>
-   <version>20.4.5-SNAPSHOT</version>
    <name>sae-mapping</name>
 
 
