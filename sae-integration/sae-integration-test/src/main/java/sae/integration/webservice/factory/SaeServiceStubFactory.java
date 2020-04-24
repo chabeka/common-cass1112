@@ -21,11 +21,11 @@ public class SaeServiceStubFactory {
 
    static final String VI_LOGIN = "SAE_INTEGRATION_TEST";
 
-   static final String RECHERCHE_DOCUMENTAIRE_PASS = "y0TvbCdu9YJn";
+   static final String RECHERCHE_DOCUMENTAIRE_PASS = "KOPSZshkPv";
 
    static final String WATT_PASS = "x454AbFt5pUg";
 
-   static final String CIME_PASS = "fIgMbK0ifknz";
+   static final String CIME_PASS = "ZpD6ELFtPj6R";
 
    static final String SATURNE_PASS = "8F7MFQEWS9Me";
 
