@@ -18,9 +18,12 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
+import fr.urssaf.image.sae.trace.model.TraceToCreate;
+import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.webservices.exception.DeblocageAxisFault;
 import fr.urssaf.image.sae.webservices.impl.factory.ObjectStorageResponseFactory;
 import fr.urssaf.image.sae.webservices.service.WSDeblocageService;
+import fr.urssaf.image.sae.webservices.util.HostnameUtil;
 
 /**
  * Classe d'implémentation de l'interface {@link WSDeblocageService}. Cette
@@ -30,106 +33,146 @@ import fr.urssaf.image.sae.webservices.service.WSDeblocageService;
 @Service
 public class WSDeblocageServiceImpl implements WSDeblocageService {
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(WSTransfertMasseServiceImpl.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(WSTransfertMasseServiceImpl.class);
 
-   /**
-    * Service permettant de réaliser des objets sur les jobs
-    */
-   @Autowired
-   private JobQueueService jobQueueService;
+  /**
+   * Service permettant de réaliser des objets sur les jobs
+   */
+  @Autowired
+  private JobQueueService jobQueueService;
 
-   /**
-    * Service permettant de réaliser les opérations de lecture sur les jobs
-    */
-   @Autowired
-   private JobLectureService jobLectureService;
+  /**
+   * Service permettant de réaliser les opérations de lecture sur les jobs
+   */
+  @Autowired
+  private JobLectureService jobLectureService;
 
-   /**
-    * {@inheritDoc}
-    * 
-    * @throws JobInexistantException
-    */
-   @Override
-   public DeblocageResponse deblocage(final Deblocage request, final String callerIP)
-         throws DeblocageAxisFault, JobInexistantException {
-      final String prefixeTrc = "deblocage()";
-      LOG.debug("{} - Début", prefixeTrc);
+  /*
+   * Service pour ajouter la trace
+   */
+  @Autowired
+  private DispatcheurService dispatcheurService;
 
-      // Récupérer les paramètres du job à débloquer
-      final UuidType uuid = request.getDeblocage().getUuid();
-      final UUID uuidJob = UUID.fromString(uuid.getUuidType());
-      String etatJob = StringUtils.EMPTY;
-      LOG.debug("{} - UUID du job: {}", prefixeTrc, uuid);
+  /**
+   * {@inheritDoc}
+   * 
+   * @throws JobInexistantException
+   */
+  @Override
+  public DeblocageResponse deblocage(final Deblocage request, final String callerIP)
+      throws DeblocageAxisFault, JobInexistantException {
+    final String prefixeTrc = "deblocage()";
+    LOG.debug("{} - Début", prefixeTrc);
 
-      try {
-         // Récupérer le job
-         final JobRequest jobRequest = jobLectureService
-               .getJobRequestNotNull(uuidJob);
+    // Récupérer les paramètres du job à débloquer
+    final UuidType uuid = request.getDeblocage().getUuid();
+    final UUID uuidJob = UUID.fromString(uuid.getUuidType());
+    String etatJob = StringUtils.EMPTY;
+    LOG.debug("{} - UUID du job: {}", prefixeTrc, uuid);
 
-         // Si code traitement existant dans les paramètres du job
-         String codeTraitement = StringUtils.EMPTY;
-         if (jobRequest.getJobParameters() != null
-               && !jobRequest.getJobParameters().isEmpty()) {
-            codeTraitement = jobRequest.getJobParameters()
-                  .get(
-                        Constantes.CODE_TRAITEMENT);
-         }
+    try {
+      // Récupérer le job
+      final JobRequest jobRequest = jobLectureService
+          .getJobRequestNotNull(uuidJob);
 
-         if (JobState.FAILURE.name().equals(jobRequest.getState().toString())) {
-            // Si déblocage modification de masse
-            if (StringUtils.isNotBlank(codeTraitement)) {
-               jobQueueService.deleteJobAndSemaphoreFromJobsQueues(uuidJob,
-                     codeTraitement);
-               // Récupérer la date effective de fin du traitement
-               final Date endingDate = jobRequest.getEndingDate();
-               // Passer le job à l'état ABORT
-               jobQueueService.changerEtatJobRequest(uuidJob,
-                     JobState.ABORT.name(),
-                     endingDate,
-                     null);
-            } else {
-               LOG.warn("{} - échec de déblocage du job {} - ce job ne correspond pas à un traitement de modification de masse", prefixeTrc, uuid);
-               throw new DeblocageAxisFault("ErreurInterneDeblocage",
-                     "Le job ne correspond pas à un traitement de modification de masse");
-            }
-         } else if (JobState.RESERVED.name()
-               .equals(
-                     jobRequest.getState().toString())
-               || JobState.STARTING.name()
-               .equals(
-                     jobRequest.getState().toString())) {
-            jobQueueService.deleteJobFromJobsQueues(uuidJob);
-            // Passer le job à l'état FAILURE
-            final Date dateFailure = new Date();
-            jobQueueService.changerEtatJobRequest(uuidJob,
-                  JobState.FAILURE.name(),
-                  dateFailure,
-                  null);
-         } else {
-            LOG.warn("{} - échec de déblocage du job {} - ce job ne peut pas être débloqué à cause de son état", prefixeTrc, uuid);
-            throw new DeblocageAxisFault("ErreurInterneDeblocage",
-                  "Le job ne peut pas être débloqué à cause de son état");
-         }
-         // Récupérer l'état du job après déblocage
-         final JobRequest job = jobLectureService.getJobRequest(uuidJob);
-         etatJob = job.getState().toString();
-      }
-      catch (final JobInexistantException e) {
-         LOG.warn("{} - échec de déblocage du job {} - ce job n'existe plus", prefixeTrc, uuid);
-         throw new DeblocageAxisFault("ErreurInterneDeblocage",
-               e.getMessage(),
-               e);
-      }
-      catch (final Exception e) {
-         throw new DeblocageAxisFault("ErreurInterneDeblocage",
-               e.getMessage(),
-               e);
+      // Si code traitement existant dans les paramètres du job
+      String codeTraitement = StringUtils.EMPTY;
+      if (jobRequest.getJobParameters() != null
+          && !jobRequest.getJobParameters().isEmpty()) {
+        codeTraitement = jobRequest.getJobParameters()
+            .get(
+                 Constantes.CODE_TRAITEMENT);
       }
 
-      return ObjectStorageResponseFactory.createDeblocageResponse(
-            uuid.getUuidType(),
-            etatJob);
-   }
+      if (JobState.FAILURE.name().equals(jobRequest.getState().toString())) {
+        // Si déblocage modification de masse
+        if (StringUtils.isNotBlank(codeTraitement)) {
+          jobQueueService.deleteJobAndSemaphoreFromJobsQueues(uuidJob,
+                                                              codeTraitement);
+          // Récupérer la date effective de fin du traitement
+          final Date endingDate = jobRequest.getEndingDate();
+          // Passer le job à l'état ABORT
+          jobQueueService.changerEtatJobRequest(uuidJob,
+                                                JobState.ABORT.name(),
+                                                endingDate,
+                                                null);
+          // Ajouter une trace DEBLOCAGE|OK en mettant l'id du traitement de masse dans les infos
+          ajouterTraceDeblocage(uuidJob, endingDate);
+        } else {
+          LOG.warn("{} - échec de déblocage du job {} - ce job ne correspond pas à un traitement de modification de masse", prefixeTrc, uuid);
+          throw new DeblocageAxisFault("ErreurInterneDeblocage",
+              "Le job ne correspond pas à un traitement de modification de masse");
+        }
+      } else if (JobState.RESERVED.name()
+          .equals(
+                  jobRequest.getState().toString())
+          || JobState.STARTING.name()
+          .equals(
+                  jobRequest.getState().toString())) {
+        jobQueueService.deleteJobFromJobsQueues(uuidJob);
+        // Passer le job à l'état FAILURE
+        final Date dateFailure = new Date();
+        jobQueueService.changerEtatJobRequest(uuidJob,
+                                              JobState.FAILURE.name(),
+                                              dateFailure,
+                                              null);
+      } else {
+        LOG.warn("{} - échec de déblocage du job {} - ce job ne peut pas être débloqué à cause de son état", prefixeTrc, uuid);
+        throw new DeblocageAxisFault("ErreurInterneDeblocage",
+            "Le job ne peut pas être débloqué à cause de son état");
+      }
+      // Récupérer l'état du job après déblocage
+      final JobRequest job = jobLectureService.getJobRequest(uuidJob);
+      etatJob = job.getState().toString();
+    }
+    catch (final JobInexistantException e) {
+      LOG.warn("{} - échec de déblocage du job {} - ce job n'existe plus", prefixeTrc, uuid);
+      throw new DeblocageAxisFault("ErreurInterneDeblocage",
+                                   e.getMessage(),
+                                   e);
+    }
+    catch (final Exception e) {
+      throw new DeblocageAxisFault("ErreurInterneDeblocage",
+                                   e.getMessage(),
+                                   e);
+    }
+
+    return ObjectStorageResponseFactory.createDeblocageResponse(
+                                                                uuid.getUuidType(),
+                                                                etatJob);
+  }
+
+  /**
+   * @param uuidJob
+   * @param name
+   * @param endingDate
+   */
+  private void ajouterTraceDeblocage(final UUID uuidJob, final Date endingDate) {
+    // Instantiation de l'objet TraceToCreate
+    final TraceToCreate traceToCreate = new TraceToCreate();
+
+    // Code de l'événement
+    traceToCreate.setCodeEvt("WS_DEBLOCAGE|OK");
+
+    // Contexte
+    traceToCreate.setContexte("Deblocage");
+
+    // Info supplémentaire : Hostname et IP du serveur sur lequel tourne ce
+    // code
+    traceToCreate.getInfos()
+    .put("uuidJob",
+         uuidJob);
+    traceToCreate.getInfos()
+    .put("endingDate",
+         endingDate);
+    traceToCreate.getInfos().put("saeServeurHostname",
+                                 HostnameUtil.getHostname());
+    traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
+
+    // Appel du dispatcheur
+    dispatcheurService.ajouterTrace(traceToCreate);
+
+  }
 
 }
