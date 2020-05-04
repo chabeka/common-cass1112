@@ -2,6 +2,10 @@ package fr.urssaf.image.sae.vi.service.impl;
 
 import java.net.URI;
 import java.security.cert.X509Certificate;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -55,8 +59,11 @@ WebServiceVIValidateService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(WebServiceVIValidateServiceImpl.class);
 
+   private static final Logger LOG_VALIDITY = LoggerFactory.getLogger("certificates_validity");
+
    private final SamlAssertionVerificationService checkService = new SamlAssertionVerificationService();
 
+   private final List<String> listClientCS = new ArrayList<>();
    /**
     * {@inheritDoc}
     */
@@ -290,4 +297,26 @@ WebServiceVIValidateService {
       }
 
    }
+
+  @Override
+  public void checkCertificateValidityDays(final SignatureVerificationResult result, final ServiceContract contract, final int validityMinDays) {
+    // Surveillance fin de validité des certificats
+
+    final X509Certificate cert = result.getCertificat();
+    final Date notOnOrAfter = cert.getNotAfter();
+    final LocalDate localDateNotOnBefore = notOnOrAfter.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+    final String csCodeClient = contract.getCodeClient();
+    final Long days = ChronoUnit.DAYS.between(LocalDate.now(), localDateNotOnBefore);
+
+    if (!listClientCS.contains(csCodeClient)) {
+      listClientCS.add(csCodeClient);
+
+      if (days.intValue() < 0) {
+        LOG_VALIDITY.warn("Le certificat du client {} est périmé depuis {} jours", new Object[] {csCodeClient, Math.abs(days)});
+      } else if (days.intValue() < validityMinDays) {
+        LOG_VALIDITY.warn("Le certificat du client {} est périmé dans {} jours", new Object[] {csCodeClient, days});
+      }
+    }
+
+  }
 }

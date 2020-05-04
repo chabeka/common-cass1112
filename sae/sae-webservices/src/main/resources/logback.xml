@@ -35,22 +35,40 @@
  
    <property name="LOGS_FOLDER" value="@LOGS_PATH@" />
 
-<!-- <property name="LOGS_FOLDER" value="/hawai/logs/tomcat/ged" />  -->
+	<!--<property name="LOGS_FOLDER" value="c:/hawai/logs/tomcat/ged" />-->
 
    <property name="LOGS_FILENAME_PREFIXE" value="sae_webservices" />
    
    <timestamp key="byDay" datePattern="yyyyMMdd" />
-   
+    
+   <property name="LOGS_FILENAME_PREFIXE_CERTIFICAT" value="sae_certificate_validity_info" />
    
    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
       <encoder>
          <pattern>%d{yyyy-MM-dd HH:mm:ss.SSSk} %-5level %logger
-[%X{log_contexte_uuid}] - %msg%n</pattern>
+			[%X{log_contexte_uuid}] - %msg%n</pattern>
       </encoder>
    </appender>
 
-
-
+	<!-- 
+		Permet d'afficher des logs pour un certificat dont le nombre de jours de validité
+		est inferieure à 180 jours. Utilisé dans la classe: 
+		fr.urssaf.image.sae.vi.service.impl.WebServiceVIValidateServiceImpl
+	-->
+   	<appender name="validity-of-certificates" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        
+        <file>${LOGS_FOLDER}/${LOGS_FILENAME_PREFIXE_CERTIFICAT}.log</file>
+        
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+         <fileNamePattern>${LOGS_FOLDER}/${LOGS_FILENAME_PREFIXE_CERTIFICAT}.%d{yyyyMMdd}.log</fileNamePattern>
+         <maxHistory>7</maxHistory>
+      	</rollingPolicy>
+      	
+        <encoder>
+         <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level - %msg%n</pattern>
+      	</encoder>
+    </appender>
+    
    <!--
    L'appender fichier pour les traces de niveaux WARN et ERROR
    -->
@@ -179,6 +197,11 @@
    </logger>
    -->
    
+    <!-- additivity=false ensures analytics data only goes to the analytics log -->
+    <logger name="certificates_validity" level="WARN" additivity="false">
+        <appender-ref ref="validity-of-certificates"/>
+    </logger>
+    
    <!-- Niveau general pour l'application -->
    <root level="WARN">
       <appender-ref ref="log-file" />

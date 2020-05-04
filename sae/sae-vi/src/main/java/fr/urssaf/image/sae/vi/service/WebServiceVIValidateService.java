@@ -100,4 +100,10 @@ public interface WebServiceVIValidateService {
    void validateCertificates(ServiceContract contract, SignatureVerificationResult result)
          throws VICertificatException;
 
+   /**
+    * 
+    * @param data
+    * @param systemDate
+    */
+  void checkCertificateValidityDays(SignatureVerificationResult result, ServiceContract contract, int minDays);
 }

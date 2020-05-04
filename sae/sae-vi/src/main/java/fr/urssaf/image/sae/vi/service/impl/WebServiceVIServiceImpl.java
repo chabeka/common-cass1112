@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Element;
 
@@ -56,6 +57,8 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
 
    private final SaeDroitService droitService;
 
+  private final int validityMinDays;
+
    /**
     * instanciation de {@link SamlAssertionCreationService}<br>
     * instanciation de {@link SamlAssertionExtractionService}<br>
@@ -70,12 +73,14 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
    @Autowired
    public WebServiceVIServiceImpl(final SaeDroitService droitService,
          final WebServiceVIValidateService validateService,
-         final ContratServiceSupport support) {
+                                 final ContratServiceSupport support, @Value("${sae.certificate.validity.min.days}") final int validityMinDays) {
       extractService = new SamlAssertionExtractionService();
 
       this.validateService = validateService;
 
       this.droitService = droitService;
+
+      this.validityMinDays = validityMinDays;
    }
 
    /**
@@ -149,6 +154,9 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
 
       // vérification que les certificats qui entrent en jeu sont ceux attendus
       validateService.validateCertificates(contract, result);
+
+      // verifier la date minimum de validité des certificats et logger
+    validateService.checkCertificateValidityDays(result, contract, validityMinDays);
 
       /*--------------- Gestion des Formats -----------------------*/
       final VIContenuExtrait viContenuExtrait = new VIContenuExtrait();
