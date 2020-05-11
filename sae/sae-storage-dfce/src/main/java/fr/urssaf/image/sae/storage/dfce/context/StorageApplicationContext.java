@@ -37,7 +37,7 @@ public final class StorageApplicationContext {
       setContext(context);
    }
 
-   private static void setContext(final ApplicationContext context) {
+  public static void setContext(final ApplicationContext context) {
       ctx = context;
    }
 
