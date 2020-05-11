@@ -117,6 +117,8 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
                                               JobState.FAILURE.name(),
                                               dateFailure,
                                               null);
+        // Ajouter une trace DEBLOCAGE|OK en mettant l'id du traitement de masse dans les infos
+        ajouterTraceDeblocage(uuidJob, dateFailure);
       } else {
         LOG.warn("{} - échec de déblocage du job {} - ce job ne peut pas être débloqué à cause de son état", prefixeTrc, uuid);
         throw new DeblocageAxisFault("ErreurInterneDeblocage",
