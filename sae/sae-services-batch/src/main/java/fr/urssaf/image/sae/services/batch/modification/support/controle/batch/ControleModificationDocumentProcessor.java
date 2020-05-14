@@ -66,6 +66,12 @@ public class ControleModificationDocumentProcessor extends AbstractDfceListener
       getErrorMessageList().add(UUIDNullException);
       LOGGER.warn(UUIDNullException,
                   new TransfertException(UUIDNullException));
+
+      // Si le document est en erreur, on le créer avec les informations
+      // minimums pour son traitement dans le writer.
+      if (isModePartielBatch()) {
+        document = new StorageDocument();
+      }
     } else {
       // Récuperer l'id du traitement en cours
       final String idJob = getStepExecution().getJobParameters()
