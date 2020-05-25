@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Retour d'uuid multiples : c'est interdit !-->
-<sae:archivageUnitaireResponse xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
-	<sae:idArchive>a1b1ff04-230a-26ff-0033-23490abcfcbb</sae:idArchive>
-	<sae:idArchive>a1b1ff04-230a-26ff-0033-23490abcfcbc</sae:idArchive>
-</sae:archivageUnitaireResponse>
