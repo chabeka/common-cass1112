@@ -229,6 +229,28 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     return list;
   }
 
+  public List<I> findByDateOrderedWithDates(final Date date, final Integer limite, final Boolean ordreInverse, final Date dateDebut, final Date dateFin) {
+
+    List<I> list = null;
+    int count = 0;
+    final Iterator<I> iterator = getIterator(date, ordreInverse, dateDebut, dateFin, limite);
+
+    if (iterator.hasNext()) {
+      list = new ArrayList<>();
+    }
+
+    while (iterator.hasNext()) {
+      if (limite == null) {
+        list.add(iterator.next());
+      } else if (limite != null && count < limite) {
+        list.add(iterator.next());
+      }
+      count++;
+    }
+
+    return list;
+  }
+
   /**
    * recherche et retourne la liste des traces pour un intervalle de dates
    * données
@@ -323,6 +345,20 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   public abstract Iterator<I> getIterator(Date id, Boolean ordreInverse);
 
   /**
+   * @param sliceQuery
+   *          la requête concernée
+   * @return l'iterateur
+   */
+  // public abstract Iterator<I> getIterator(Date id, Boolean ordreInverse, Date dateDebut, Date dateFin);
+
+  /**
+   * @param sliceQuery
+   *          la requête concernée
+   * @return l'iterateur
+   */
+  public abstract Iterator<I> getIterator(Date id, Boolean ordreInverse, Date dateDebut, Date dateFin, int limite);
+
+  /**
    * @return le dao utilisé pour les traces
    */
   public abstract IGenericDAO getDao();
@@ -387,4 +423,6 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     getDao().saveWithMapper(entity);
     return entity;
   }
+
+
 }

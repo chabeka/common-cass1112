@@ -270,7 +270,12 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
-      final List<TraceRegTechniqueIndexCql> resultCql = regTechniqueServiceCql.getSupport().findByDateOrdered(currentDate, limite, ordreInverse);
+      final List<TraceRegTechniqueIndexCql> resultCql = regTechniqueServiceCql.getSupport()
+          .findByDateOrderedWithDates(currentDate,
+                                      countLeft,
+                                      ordreInverse,
+                                      startDate,
+                                      endDate);
       if (resultCql != null) {
         for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
           final TraceRegTechniqueIndex indexThrift = UtilsTraceMapper.createTraceRegTechniqueIndexFromCqlToThrift(traceJournalEvtIndexCql);

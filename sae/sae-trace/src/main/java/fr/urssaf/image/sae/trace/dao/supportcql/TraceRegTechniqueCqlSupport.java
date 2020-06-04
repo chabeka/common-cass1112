@@ -59,6 +59,13 @@ public class TraceRegTechniqueCqlSupport extends GenericAbstractTraceCqlSupport<
   }
 
   @Override
+  public Iterator<TraceRegTechniqueIndexCql> getIterator(final Date date, final Boolean ordreInverse, final Date dateDebut, final Date dateFin,
+                                                         final int limite) {
+    final String journee = DateRegUtils.getJournee(date);
+    return indexDao.IterableFindById(journee, ordreInverse, dateDebut, dateFin, limite);
+  }
+
+  @Override
   public IGenericDAO<TraceRegTechniqueCql, UUID> getDao() {
     return dao;
   }
@@ -104,6 +111,8 @@ public class TraceRegTechniqueCqlSupport extends GenericAbstractTraceCqlSupport<
   UUID getTraceId(final TraceRegTechniqueIndexCql trace) {
     return trace.getIdentifiant();
   }
+
+
 
 
 }

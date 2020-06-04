@@ -225,4 +225,14 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
     return indexjDao.IterableFindById(journee, ordreInverse);
 
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Iterator<TraceJournalEvtIndexCql> getIterator(final Date id, final Boolean ordreInverse, final Date dateDebut, final Date dateFin, final int limite) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

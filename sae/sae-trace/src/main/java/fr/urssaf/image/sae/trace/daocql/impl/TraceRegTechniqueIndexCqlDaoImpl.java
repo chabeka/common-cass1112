@@ -1,8 +1,12 @@
 package fr.urssaf.image.sae.trace.daocql.impl;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.gte;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.lte;
 
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +57,39 @@ public class TraceRegTechniqueIndexCqlDaoImpl extends GenericDAOImpl<TraceRegTec
     } else {
       select.orderBy(QueryBuilder.asc("timestamp"));
     }
+    final ResultSet result = getSession().execute(select);
+    return getMapper().map(result).iterator();
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @throws ParseException
+   */
+  @Override
+  public Iterator<TraceRegTechniqueIndexCql> IterableFindById(final String journee, final boolean ordreInverse, final Date dateDebut, final Date dateFin,
+                                                              final int limit)
+  {
+    Assert.notNull(journee, "L'identifiant ne peut être null");
+    final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
+    final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
+    Assert.notNull(keyField, "La clé de l'entité à chercher ne peut être null");
+
+    final String keyName = keyField.getName();
+    select.where(eq(keyName, journee));
+    // Condition pour filtrer après le timestamp
+    select.where(gte("timestamp", dateDebut));
+    // Condition pour filtrer avant le timestamp
+    select.where(lte("timestamp", dateFin));
+    // Tri sur timestamp par date croissante ou décroissante (ordreInverse)
+    if (ordreInverse) {
+      select.orderBy(QueryBuilder.desc("timestamp"));
+    } else {
+      select.orderBy(QueryBuilder.asc("timestamp"));
+    }
+    // Clause pour permettre le filtre des timestamp
+    select.allowFiltering();
+    select.limit(limit);
     final ResultSet result = getSession().execute(select);
     return getMapper().map(result).iterator();
   }

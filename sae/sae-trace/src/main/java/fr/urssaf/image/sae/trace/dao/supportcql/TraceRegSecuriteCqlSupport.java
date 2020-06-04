@@ -133,6 +133,15 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
     return trace.getIdentifiant();
   }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Iterator<TraceRegSecuriteIndexCql> getIterator(final Date id, final Boolean ordreInverse, final Date dateDebut, final Date dateFin, final int limite) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 
 
 }
