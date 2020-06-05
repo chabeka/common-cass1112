@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.servicecql;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -111,9 +112,10 @@ public class RegTechniqueCqlServiceDatasTest extends AbstractServiceCqlTest {
 
     createTraces();
 
-    final Date dateStart = DATE;
+    final Date dateStart = DATE_INF;
     final Date dateEnd = DATE_SUP;
-
+    final List<TraceRegTechniqueCql> allTraces = new ArrayList<>();
+    support.findAll().forEachRemaining(allTraces::add);
     final List<TraceRegTechniqueIndex> result = service.lecture(dateStart,
                                                                 dateEnd,
                                                                 10,
@@ -154,18 +156,18 @@ public class RegTechniqueCqlServiceDatasTest extends AbstractServiceCqlTest {
                       "le deuxième enregistrement doit etre le max du jour précédent",
                       result.get(1).getContexte().contains("[DATE_SUP]"));
     Assert
-          .assertTrue(
-                      "le troisième enregistrement doit etre l'intermediaire du jour précédent",
-                      result.get(2).getContexte().contains("[DATE]"));
+    .assertTrue(
+                "le troisième enregistrement doit etre l'intermediaire du jour précédent",
+                result.get(2).getContexte().contains("[DATE]"));
     Assert.assertTrue(
                       "le quatrieme enregistrement doit etre le min du jour précédent",
                       result.get(3).getContexte().contains("[DATE_INF]"));
     Assert.assertTrue(
                       "le cinquième enregistrement doit etre le max du jour -2",
                       result
-                            .get(4)
-                            .getContexte()
-                            .contains("[DATE_JOUR_PRECEDENT]"));
+                      .get(4)
+                      .getContexte()
+                      .contains("[DATE_JOUR_PRECEDENT]"));
   }
 
   @Test
