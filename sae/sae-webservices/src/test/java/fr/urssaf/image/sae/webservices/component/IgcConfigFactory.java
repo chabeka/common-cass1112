@@ -20,89 +20,89 @@ import fr.urssaf.image.sae.igc.service.IgcDownloadService;
  */
 public final class IgcConfigFactory {
 
-   public static final String DOWNLOAD_URL = "http://cer69idxpkival1.cer69.recouv/";
+  public static final String DOWNLOAD_URL = "http://cer69idxpkival1.cer69.recouv/";
 
-   private IgcConfigFactory() {
-   }
+  private IgcConfigFactory() {
+  }
 
-   @Autowired
-   private IgcDownloadService igcDownloadService;
+  @Autowired
+  private IgcDownloadService igcDownloadService;
 
-   public static final File DIRECTORY;
+  public static final File DIRECTORY;
 
-   public static final File CRL;
+  public static final File CRL;
 
-   public static final File AC_RACINE;
+  public static final File AC_RACINE;
 
-   public static final URL CRL_DOWNLOAD;
+  public static final URL CRL_DOWNLOAD;
 
-   public static final URL CERTIFICAT;
+  public static final URL CERTIFICAT;
 
-   public static final String ID_PKI = "PKI_TEST";
+  public static final String ID_PKI = "PKI_TEST";
 
-   static {
+  static {
 
-      DIRECTORY = IgcConfigUtils
-            .createTempRepertory("sae_webservices/PKI_TEST");
+    DIRECTORY = IgcConfigUtils
+        .createTempRepertory("sae_webservices/PKI_TEST");
 
-      CRL = new File(DIRECTORY + "/CRL/");
-      AC_RACINE = new File(DIRECTORY + "/ACRacine/");
+    CRL = new File(DIRECTORY + "/CRL/");
+    AC_RACINE = new File(DIRECTORY + "/ACRacine/");
 
-      IgcConfigUtils.createRepertory(DIRECTORY);
-      IgcConfigUtils.createRepertory(CRL);
-      IgcConfigUtils.createRepertory(AC_RACINE);
+    IgcConfigUtils.createRepertory(DIRECTORY);
+    IgcConfigUtils.createRepertory(CRL);
+    IgcConfigUtils.createRepertory(AC_RACINE);
 
-      // CRL_DOWNLOAD = IgcConfigUtils.createURL("http://cer69idxpkival1.cer69.recouv/*.crl");
-      CRL_DOWNLOAD = IgcConfigUtils.createURL("http://cnp69imagedev:8080/*.crl");
+    CRL_DOWNLOAD = IgcConfigUtils.createURL("http://cer69idxpkival1.cer69.recouv/*.crl");
+    // CRL_DOWNLOAD = IgcConfigUtils.createURL("http://cnp69imagedev:8080/*.crl");
 
-      // CERTIFICAT = IgcConfigUtils.createURL("http://cer69idxpkival1.cer69.recouv/pseudo_IGCA.crt");
-      CERTIFICAT = IgcConfigUtils.createURL("http://cnp69imagedev:8080/pseudo_IGCA.crt");
+    CERTIFICAT = IgcConfigUtils.createURL("http://cer69idxpkival1.cer69.recouv/pseudo_IGCA.crt");
+    // CERTIFICAT = IgcConfigUtils.createURL("http://cnp69imagedev:8080/pseudo_IGCA.crt");
 
-   }
+  }
 
-   /**
-    * 
-    * 
-    * 
-    * @return instance de {@link IgcConfig}
-    * @throws IgcDownloadException
-    *            exception lors du tÃ©lÃ©chargement des crl
-    */
-   // public static IgcConfigs createIgcConfig() throws IgcDownloadException {
-   public IgcConfigs createIgcConfig() throws IgcDownloadException {
+  /**
+   * 
+   * 
+   * 
+   * @return instance de {@link IgcConfig}
+   * @throws IgcDownloadException
+   *            exception lors du tÃ©lÃ©chargement des crl
+   */
+  // public static IgcConfigs createIgcConfig() throws IgcDownloadException {
+  public IgcConfigs createIgcConfig() throws IgcDownloadException {
 
-      final IgcConfigs igcConfigs = new IgcConfigs();
+    final IgcConfigs igcConfigs = new IgcConfigs();
 
-      final IgcConfig igcConfig = new IgcConfig();
+    final IgcConfig igcConfig = new IgcConfig();
 
-      final IssuerList issuerList = new IssuerList();
-      issuerList
-      .setIssuers(Arrays
-            .asList(new String[] { "CN=AC Applications,O=ACOSS,L=Paris,ST=France,C=FR" }));
-      igcConfig.setIssuerList(issuerList);
+    final IssuerList issuerList = new IssuerList();
+    issuerList
+    .setIssuers(Arrays
+                .asList(new String[] { "CN=AC Applications,O=ACOSS,L=Paris,ST=France,C=FR" }));
+    igcConfig.setIssuerList(issuerList);
 
-      igcConfig.setPkiIdent(ID_PKI);
+    igcConfig.setPkiIdent(ID_PKI);
 
-      igcConfig.setAcRacine(AC_RACINE.getAbsolutePath() + File.separator
-            + CERTIFICAT.getFile());
-      igcConfig.setCrlsRep(CRL.getAbsolutePath());
+    igcConfig.setAcRacine(AC_RACINE.getAbsolutePath() + File.separator
+                          + CERTIFICAT.getFile());
+    igcConfig.setCrlsRep(CRL.getAbsolutePath());
 
-      final URLList urlList = new URLList();
-      urlList.setUrls(Arrays.asList(new URL[] { CRL_DOWNLOAD }));
+    final URLList urlList = new URLList();
+    urlList.setUrls(Arrays.asList(new URL[] { CRL_DOWNLOAD }));
 
-      igcConfig.setUrlList(urlList);
+    igcConfig.setUrlList(urlList);
 
-      // téléchargement d'une AC racine
-      IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE.getAbsolutePath()
-            + "/" + CERTIFICAT.getFile()));
+    // téléchargement d'une AC racine
+    IgcConfigUtils.download(CERTIFICAT, new File(AC_RACINE.getAbsolutePath()
+                                                 + "/" + CERTIFICAT.getFile()));
 
-      igcConfigs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
+    igcConfigs.setIgcConfigs(Arrays.asList(new IgcConfig[] { igcConfig }));
 
-      // téléchargement des CRL
-      // IgcDownloadService downaloadService = new IgcDownloadServiceImpl();
-      igcDownloadService.telechargeCRLs(igcConfigs);
+    // téléchargement des CRL
+    // IgcDownloadService downaloadService = new IgcDownloadServiceImpl();
+    igcDownloadService.telechargeCRLs(igcConfigs);
 
-      return igcConfigs;
+    return igcConfigs;
 
-   }
+  }
 }
