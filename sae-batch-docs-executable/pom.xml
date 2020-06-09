@@ -17,7 +17,7 @@
 	<properties>
 		<junit.version>4.12</junit.version>
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
-		<sae.version>20.4.4</sae.version>
+		<sae.version>20.4.5-SNAPSHOT</sae.version>
 		<commons.dfce.version>2.1.0</commons.dfce.version>
 		<aspectj.version>1.9.2</aspectj.version>
 		<easymock.version>4.0.2</easymock.version>
