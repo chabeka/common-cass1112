@@ -17,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.querybuilder.update.Assignment;
 import com.datastax.oss.driver.api.querybuilder.update.Update;
 
@@ -44,7 +46,7 @@ public class CleanJobTest {
       // servers = "cnp69imagedev.gidn.recouv";
       // servers = "cnp69saecas1,cnp69saecas2,cnp69saecas3";
       // servers = "cnp69saecas4.cer69.recouv, cnp69saecas5.cer69.recouv, cnp69saecas6.cer69.recouv";
-      servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
+      servers = "cnp69gntcas1,cnp69gntcas2";
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cnp69pregntcas1, cnp69pregntcas2";
       // servers = "cnp69givngntcas1, cnp69givngntcas2";
@@ -100,7 +102,7 @@ public class CleanJobTest {
    @Test
    public void getJobInstanceInfoTest() throws Exception {
       final JobCleaner cleaner = new JobCleaner();
-      final long jobInstanceId = 11970;
+      final long jobInstanceId = 12118;
       final JobInstanceInfo infos = cleaner.getJobInstanceInfo(session, jobInstanceId);
       System.out.println("JobName=" + infos.jobName);
       System.out.println("JobKey=" + infos.jobKey);
@@ -110,14 +112,17 @@ public class CleanJobTest {
    @Test
    public void deleteOneJobInstanceTest() throws Exception {
       final JobCleaner cleaner = new JobCleaner();
-      cleaner.deleteOneJobInstance(session, 11999);
+      cleaner.deleteOneJobInstance(session, 12415);
    }
 
    @Test
    public void setAsNotRunningTest() throws Exception {
-      // final String jobKey = "MANAGE_RANGE_INDEX_JOB|SAE-PROD|cot&cop&djc&";
-      // final String jobKey = "SYSTEM_EVENTS_PURGE_JOB";
-      final String jobKey = "MANAGE_RANGE_INDEX_JOB|GNT-PROD|sm_modification_date";
+      // setAsNotRunning("MANAGE_RANGE_INDEX_JOB|SAE-PROD|cot&cop&nst&");
+      // setAsNotRunning("DOCUMENT_EVENTS_PURGE_JOB");
+      setAsNotRunning("SYSTEM_EVENTS_PURGE_JOB");
+   }
+
+   private void setAsNotRunning(final String jobKey) {
       final Update query = update("dfce", "job")
             .set(Assignment.setColumn("running", literal(false)))
             .whereColumn("job_key")
@@ -138,6 +143,16 @@ public class CleanJobTest {
       final String indexName = "SM_MODIFICATION_DATE";
       final String rangeToSplit = "[min_lower_bound TO max_upper_bound]";
       final Long jobInstance = cleaner.findSplitJobInstanceId(session, indexName, rangeToSplit, 1000000, "600000", "EQUI_DISTRIBUTED", baseId);
+      System.out.println("jobInstance = " + jobInstance);
+   }
+
+   @Test
+   public void findJobInstanceByJobExecution() throws Exception {
+      final long executionId = 12347;
+      final SimpleStatement query = SimpleStatement.newInstance("select * from dfce.job_execution_by_id where id=?",
+            executionId);
+      final Row row = session.execute(query).one();
+      final long jobInstance = row.getLong("job_instance_id");
       System.out.println("jobInstance = " + jobInstance);
    }
 }

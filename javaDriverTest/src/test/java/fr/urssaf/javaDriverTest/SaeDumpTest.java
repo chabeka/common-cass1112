@@ -40,7 +40,7 @@ public class SaeDumpTest {
       // servers = "cnp69pprodsaecas6"; //Préprod
       // servers = "cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv"; // Vrai préprod
       // servers = "10.213.82.56";
-      servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
+      // servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
       // servers = "cnp31miggntcas3.cer31.recouv,cnp31miggntcas4.cer31.recouv"; // Migration cql
       // servers = "cnp3gntcvecas1.cve.recouv,cnp6gntcvecas1.cve.recouv,cnp7gntcvecas1.cve.recouv"; // Charge GNT
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
@@ -56,13 +56,13 @@ public class SaeDumpTest {
       // servers = "cnp69miggntcas1.gidn.recouv,cnp69miggntcas2.gidn.recouv"; // Migration cassandra V2
       // servers = "cnp69dev2gntcas1.gidn.recouv";
       // servers = "cnp69devgntcas1.gidn.recouv,cnp69devgntcas2.gidn.recouv";
-      // servers = "hwi69intgnscas1.gidn.recouv,hwi69intgnscas2.gidn.recouv";
+      servers = "hwi69intgnscas1.gidn.recouv,hwi69intgnscas2.gidn.recouv";
       // servers = "cnp31devpicgntcas1.gidn.recouv,cnp31devpicgntcas2.gidn.recouv";
       // servers = "cnp69gincleagntcas1.cer69.recouv,cnp69gincleagntcas2.cer69.recouv";
       // servers = "hwi69progednatgnspaj1bocas1,hwi69progednatgnspaj1bocas2";
 
-      // final String cassandraLocalDC = "DC1";
-      final String cassandraLocalDC = "LYON_SP";
+      final String cassandraLocalDC = "DC1";
+      // final String cassandraLocalDC = "LYON_SP";
       session = CassandraSessionFactory.getSession(servers, "root", "regina4932", cassandraLocalDC);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
@@ -792,6 +792,12 @@ public class SaeDumpTest {
    @Test
    public void testDump_dictionarycqlTest() throws Exception {
       final ResultSet rs = session.execute("select * from \"SAE\".dictionarycql limit 100");
+      dumper.dumpRows(rs);
+   }
+
+   @Test
+   public void testDump_tracejournalevtindexcqlTest() throws Exception {
+      final ResultSet rs = session.execute("select * from \"SAE\".tracejournalevtindexcql limit 5000");
       dumper.dumpRows(rs);
    }
 
