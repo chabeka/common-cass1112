@@ -226,13 +226,15 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
 
   }
 
+
   /**
    * {@inheritDoc}
    */
   @Override
-  public Iterator<TraceJournalEvtIndexCql> getIterator(final Date id, final Boolean ordreInverse, final Date dateDebut, final Date dateFin, final int limite) {
-    // TODO Auto-generated method stub
-    return null;
+  public Iterator<TraceJournalEvtIndexCql> getIterator(final Date date, final Boolean ordreInverse, final Date dateDebut, final Date dateFin,
+                                                       final int limite) {
+    final String journee = DateRegUtils.getJournee(date);
+    return indexjDao.IterableFindById(journee, ordreInverse, dateDebut, dateFin, limite);
   }
 
 }

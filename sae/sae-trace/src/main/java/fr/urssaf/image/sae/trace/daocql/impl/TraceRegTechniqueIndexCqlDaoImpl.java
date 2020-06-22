@@ -23,6 +23,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
 import fr.urssaf.image.sae.trace.daocql.ITraceRegTechniqueIndexCqlDao;
+import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
 /**
  * Implementation de l'inerface DAO {@link ITraceRegTechniqueIndexCqlDao} de la famille de colonnes {@link TraceRegTechniqueIndexCql}
@@ -68,8 +69,7 @@ public class TraceRegTechniqueIndexCqlDaoImpl extends GenericDAOImpl<TraceRegTec
    */
   @Override
   public Iterator<TraceRegTechniqueIndexCql> IterableFindById(final String journee, final boolean ordreInverse, final Date dateDebut, final Date dateFin,
-                                                              final int limit)
-  {
+                                                              final int limit) {
     Assert.notNull(journee, "L'identifiant ne peut être null");
     final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
     final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
@@ -77,18 +77,24 @@ public class TraceRegTechniqueIndexCqlDaoImpl extends GenericDAOImpl<TraceRegTec
 
     final String keyName = keyField.getName();
     select.where(eq(keyName, journee));
-    // Condition pour filtrer après le timestamp
-    select.where(gte("timestamp", dateDebut));
-    // Condition pour filtrer avant le timestamp
-    select.where(lte("timestamp", dateFin));
+    // Si les heures et minutes ne sont pas celles par défaut Condition pour filtrer après le timestamp
+    if (!DateRegUtils.dateDebutDefaut(dateDebut)) {
+      select.where(gte("timestamp", dateDebut));
+    }
+    // Si les heures et minutes ne sont pas celles par défaut Condition pour filtrer avant le timestamp
+    if (!DateRegUtils.dateFinDefaut(dateFin)) {
+      select.where(lte("timestamp", dateFin));
+    }
     // Tri sur timestamp par date croissante ou décroissante (ordreInverse)
     if (ordreInverse) {
       select.orderBy(QueryBuilder.desc("timestamp"));
     } else {
       select.orderBy(QueryBuilder.asc("timestamp"));
     }
-    // Clause pour permettre le filtre des timestamp
-    select.allowFiltering();
+    // Si les heures et minutes ne sont pas celles par défaut clause pour permettre le filtre des timestamp
+    if (!DateRegUtils.dateDebutDefaut(dateDebut) || !DateRegUtils.dateFinDefaut(dateFin)) {
+      select.allowFiltering();
+    }
     select.limit(limit);
     final ResultSet result = getSession().execute(select);
     return getMapper().map(result).iterator();

@@ -285,7 +285,8 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     final String modeApi = modeApiService.getModeAPI(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
-      final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDateOrdered(currentDate, limite, ordreInverse);
+      final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport()
+                                                                          .findByDateOrderedWithDates(currentDate, limite, ordreInverse, startDate, endDate);
       if (resultCql != null) {
         for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
           final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);

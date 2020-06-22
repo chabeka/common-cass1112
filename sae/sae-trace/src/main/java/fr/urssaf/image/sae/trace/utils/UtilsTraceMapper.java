@@ -158,7 +158,11 @@ public class UtilsTraceMapper {
     final Map<String, String> infos = new HashMap<>();
     if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
-        infos.put(entry.getKey(), entry.getValue().toString());
+        if (entry.getValue() != null) {
+          infos.put(entry.getKey(), entry.getValue().toString());
+        } else {
+          infos.put(entry.getKey(), "");
+        }
       }
     }
     if (!infos.isEmpty()) {
