@@ -1,15 +1,20 @@
 package fr.urssaf.image.sae.services.batch.suppression.support.stockage.batch;
 
 import java.util.Date;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -31,6 +36,7 @@ ItemProcessor<StorageDocument, StorageDocument> {
     * Identifiant de traitement de suppression de masse.
     */
    private String uuid;
+   private StepExecution stepExecution;
 
    /**
     * initialisation avant le début du Step
@@ -40,6 +46,7 @@ ItemProcessor<StorageDocument, StorageDocument> {
     */
    @BeforeStep
    public final void init(final StepExecution stepExecution) {
+     this.stepExecution = stepExecution;
       // recupere l'identifiant de suppression de masse
       uuid = stepExecution.getJobParameters().getString(
                                                         Constantes.ID_TRAITEMENT_SUPPRESSION);
@@ -82,8 +89,21 @@ ItemProcessor<StorageDocument, StorageDocument> {
          item.setProcessId(uuid);
       } else {
          LOGGER.debug("Le document {} a été ignoré car il est gelé", item.getUuid().toString());
+         String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+         frozenDocMsgException = StringUtils.replace(frozenDocMsgException, "{0}", item.getUuid().toString());
+         getExceptionErreurListe().add(new SuppressionException(frozenDocMsgException));
       }
 
       return retour;
    }
+
+  /**
+   * @return la liste des exceptions des erreurs stockée dans le contexte
+   *         d'execution du job
+   */
+  @SuppressWarnings("unchecked")
+  protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+    final ExecutionContext jobExecution = stepExecution.getJobExecution().getExecutionContext();
+    return (ConcurrentLinkedQueue<Exception>) jobExecution.get(Constantes.SUPPRESSION_EXCEPTION);
+  }
 }
