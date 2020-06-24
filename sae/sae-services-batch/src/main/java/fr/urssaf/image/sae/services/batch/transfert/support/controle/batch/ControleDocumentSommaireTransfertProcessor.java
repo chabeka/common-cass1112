@@ -22,6 +22,7 @@ import fr.urssaf.image.sae.services.batch.restore.support.stockage.batch.Storage
 import fr.urssaf.image.sae.services.batch.transfert.support.controle.TransfertMasseControleSupport;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
+import fr.urssaf.image.sae.services.exception.transfert.TransfertMasseRuntimeException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -171,6 +172,9 @@ ItemProcessor<UntypedDocument, StorageDocument> {
       catch (final TraitementRepriseAlreadyDoneException e) {
          getIndexRepriseDoneListe().add(getIndexOfCurrentDocument());
          return getEmptyDocumentFromItem(item);
+      }
+      catch ( TransfertMasseRuntimeException e) {
+         return sendException(item, e.getMessage(), e);
       }
       catch (final Exception e) {
          return sendException(item, "Une erreur est survenue lors du contrôle des documents", e);
