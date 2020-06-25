@@ -59,7 +59,7 @@ public class PagmCqlSupport {
    */
   public void delete(final PagmCql pagmCql) {
     Assert.notNull(pagmCql, "le code ne peut etre null");
-    pagmdaocql.delete(pagmCql);
+    pagmdaocql.deleteWithMapper(pagmCql);
 
   }
 
@@ -108,7 +108,7 @@ public class PagmCqlSupport {
     Assert.notNull(pagmCql.getIdClient(), "le code client ne peut etre null");
 
 
-        pagmdaocql.saveWithMapper(pagmCql);
+    pagmdaocql.saveWithMapper(pagmCql);
 
 
   }
@@ -127,5 +127,21 @@ public class PagmCqlSupport {
 
     }
     return list;
+  }
+
+  /**
+   * Methode qui permet la suppression spécifique d'un pagm
+   * 
+   * @param idClient
+   * @param codePagm
+   */
+  public void delete(final String idClient, final String codePagm) {
+    final List<Pagm> list = findByIdClient(idClient);
+    for (final Pagm pagm : list) {
+      if (pagm.getCode().equals(codePagm)) {
+        final PagmCql pagmCql = PagmUtils.convertPagmToPagmCql(idClient, pagm);
+        delete(pagmCql);
+      }
+    }
   }
 }

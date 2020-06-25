@@ -24,7 +24,7 @@ public class PagmCqlDaoImpl extends GenericDAOImpl<PagmCql, String> implements I
   @Autowired
   public PagmCqlDaoImpl(final CassandraCQLClientFactory ccf) {
     super(ccf);
-    // TODO Auto-generated constructor stub
   }
 
 }
+
