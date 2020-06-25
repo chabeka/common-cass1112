@@ -59,7 +59,7 @@ public class PagmCqlSupport {
    */
   public void delete(final PagmCql pagmCql) {
     Assert.notNull(pagmCql, "le code ne peut etre null");
-    pagmdaocql.delete(pagmCql);
+    pagmdaocql.deleteWithMapper(pagmCql);
 
   }
 
