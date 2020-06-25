@@ -118,13 +118,13 @@ public class PagmSupportFacade {
       break;
 
     case MODE_API.DATASTAX:
-      pagmCqlSupport.delete(idClient, clockSupport.currentCLock());
+      pagmCqlSupport.delete(idClient, codePagm);
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       pagmSupport.delete(idClient,codePagm, clockSupport.currentCLock());
-      pagmCqlSupport.delete(idClient, clockSupport.currentCLock());
+      pagmCqlSupport.delete(idClient, codePagm);
       break;
 
     default:
@@ -173,18 +173,21 @@ public class PagmSupportFacade {
       break;
 
     case MODE_API.DATASTAX:
-      pagmCqlSupport.delete(idClient, clockSupport.currentCLock());
+
+      pagmCqlSupport.delete(idClient, codePagm);
+
       break;
 
     case MODE_API.DUAL_MODE_READ_THRIFT:
     case MODE_API.DUAL_MODE_READ_CQL:
       pagmSupport.delete(idClient, codePagm, clockSupport.currentCLock(), mutator);
-      pagmCqlSupport.delete(idClient, clockSupport.currentCLock());
-      break;
+      pagmCqlSupport.delete(idClient, codePagm);
 
     default:
-      pagmSupport.delete(idClient, codePagm, clockSupport.currentCLock(), mutator);
+      throw new ModeGestionAPIUnkownException("PagmSupportFacade/delete/Mode API inconnu");
     }
   }
+
+
 
 }

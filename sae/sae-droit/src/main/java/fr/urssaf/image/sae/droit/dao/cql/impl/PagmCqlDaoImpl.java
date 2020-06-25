@@ -24,7 +24,18 @@ public class PagmCqlDaoImpl extends GenericDAOImpl<PagmCql, String> implements I
   @Autowired
   public PagmCqlDaoImpl(final CassandraCQLClientFactory ccf) {
     super(ccf);
-    // TODO Auto-generated constructor stub
+  }
+
+  /*
+   * Redéfinition de la méthode delete
+   * pour une entité spécifique dans le cas de PagmCql
+   * car le delete de la classe mère ne tient compte que de la key
+   * et tous les éléments qui ont le même idClient
+   */
+  @Override
+  public void delete(final PagmCql pagmCql) {
+    getMapper().delete(pagmCql);
   }
 
 }
+
