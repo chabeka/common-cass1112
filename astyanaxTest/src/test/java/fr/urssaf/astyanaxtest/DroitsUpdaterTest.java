@@ -15,6 +15,7 @@ import com.netflix.astyanax.impl.AstyanaxConfigurationImpl;
 import com.netflix.astyanax.model.ConsistencyLevel;
 import com.netflix.astyanax.thrift.ThriftFamilyFactory;
 
+import fr.urssaf.astyanaxtest.dao.sae.DroitContratServiceCF;
 import fr.urssaf.astyanaxtest.dao.sae.DroitPagmaCF;
 import fr.urssaf.astyanaxtest.dao.sae.DroitPagmpCF;
 
@@ -31,10 +32,12 @@ public class DroitsUpdaterTest {
       // servers =
       // "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
       // //GIVN
+      // servers = "cnp69givngntcas1.cer69.recouv:9160,cnp69givngntcas2.cer69.recouv:9160";
+      servers = "cnp69devgntcas1.gidn.recouv:9160,cnp69devgntcas2.gidn.recouv:9160";
       // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160";
       // servers = "hwi69gincleasaecas1.cer69.recouv:9160";
       // servers = "cnp69gntcas1:9160, cnp69gntcas2:9160, cnp69gntcas3:9160";
-      servers = "cnp69gincleagntcas1:9160, cnp69gincleagntcas2:9160";
+      // servers = "cnp69gincleagntcas1:9160, cnp69gincleagntcas2:9160";
       // // Production
       // servers = "hwi54saecas1.cve.recouv:9160"; // CNH
       // servers = "cer69imageint9.cer69.recouv:9160";
@@ -54,27 +57,27 @@ public class DroitsUpdaterTest {
       // servers = "cnp69gingntp1cas1.cer69.recouv:9160,cnp69gingntp1cas2.cer69.recouv:9160,cnp69gingntp1cas3.cer69.recouv:9160";
 
       final AuthenticationCredentials credentials = new SimpleAuthenticationCredentials(
-                                                                                        "root",
-                                                                                        "regina4932");
+            "root",
+            "regina4932");
 
       final AstyanaxContext<Keyspace> context = new AstyanaxContext.Builder()
-                                                                             .forCluster("SAE")
-                                                                             .forKeyspace("SAE")
-                                                                             .withAstyanaxConfiguration(
-                                                                                                        new AstyanaxConfigurationImpl()
-                                                                                                                                       .setDiscoveryType(NodeDiscoveryType.NONE)
-                                                                                                                                       .setDefaultReadConsistencyLevel(
-                                                                                                                                                                       ConsistencyLevel.CL_ONE)
-                                                                                                                                       .setDefaultWriteConsistencyLevel(
-                                                                                                                                                                        ConsistencyLevel.CL_QUORUM))
-                                                                             .withConnectionPoolConfiguration(
-                                                                                                              new ConnectionPoolConfigurationImpl("MyConnectionPool")
-                                                                                                                                                                     .setPort(9160)
-                                                                                                                                                                     .setMaxConnsPerHost(1)
-                                                                                                                                                                     .setSeeds(servers)
-                                                                                                                                                                     .setAuthenticationCredentials(credentials))
-                                                                             .withConnectionPoolMonitor(new CountingConnectionPoolMonitor())
-                                                                             .buildKeyspace(ThriftFamilyFactory.getInstance());
+            .forCluster("SAE")
+            .forKeyspace("SAE")
+            .withAstyanaxConfiguration(
+                  new AstyanaxConfigurationImpl()
+                  .setDiscoveryType(NodeDiscoveryType.NONE)
+                  .setDefaultReadConsistencyLevel(
+                        ConsistencyLevel.CL_ONE)
+                  .setDefaultWriteConsistencyLevel(
+                        ConsistencyLevel.CL_QUORUM))
+            .withConnectionPoolConfiguration(
+                  new ConnectionPoolConfigurationImpl("MyConnectionPool")
+                  .setPort(9160)
+                  .setMaxConnsPerHost(1)
+                  .setSeeds(servers)
+                  .setAuthenticationCredentials(credentials))
+            .withConnectionPoolMonitor(new CountingConnectionPoolMonitor())
+            .buildKeyspace(ThriftFamilyFactory.getInstance());
 
       context.start();
       keyspace = context.getClient();
@@ -97,6 +100,23 @@ public class DroitsUpdaterTest {
       final MutationBatch batch = keyspace.prepareMutationBatch();
       batch.withRow(DroitPagmpCF.get(), key).putColumn("description", "CLEA - Fiche de synthèse - Documents du domaine cotisant", null);
       batch.withRow(DroitPagmpCF.get(), key).putColumn("prmd", "PRMD_COTISANT", null);
+      batch.execute();
+   }
+
+   @Test
+   public void DroitContratServiceUpdaterTest() throws Exception {
+      final String key = "CS_CIME";
+      final MutationBatch batch = keyspace.prepareMutationBatch();
+      batch.withRow(DroitContratServiceCF.get(), key).putColumn("verifNommage", (byte) 1);
+      batch.execute();
+   }
+
+   @Test
+   public void DroitContratServiceUpdaterTest2() throws Exception {
+      final String key = "CS_RECHERCHE_DOCUMENTAIRE";
+      final MutationBatch batch = keyspace.prepareMutationBatch();
+      batch.withRow(DroitContratServiceCF.get(), key)
+      .putColumn("listPki", "<?xml version='1.0' encoding='UTF-8'?><list><string>CN=ACOSS_Reseau_des_URSSAF</string><string>CN=IGC/A</string></list>");
       batch.execute();
    }
 
