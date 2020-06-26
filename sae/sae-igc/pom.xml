@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>20.4.6-SNAPSHOT</version>
+      <version>20.4.6</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-igc</artifactId>
-   <version>20.4.6-SNAPSHOT</version>
+   <version>20.4.6</version>
    <name>sae-igc</name>
 
    <description>Bibliothèque de manipulation des éléments liés à l'IGC (configuration, téléchargement des CRL)</description>
@@ -31,13 +31,13 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>20.4.6-SNAPSHOT</version>
+         <version>20.4.6</version>
       </dependency>
       <!-- SAE - storage-dfce -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage-dfce</artifactId>
-         <version>20.4.6-SNAPSHOT</version>
+         <version>20.4.6</version>
       </dependency>
 
       <!-- APACHE COMMONS -->
