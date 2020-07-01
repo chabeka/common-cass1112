@@ -132,6 +132,83 @@ class Test1 {
     this.identifiant = identifiant;
   }
 
+  /**
+   * @return the timestamp
+   */
+  public Date getTimestamp() {
+    return timestamp;
+  }
+
+  /**
+   * @param timestamp the timestamp to set
+   */
+  public void setTimestamp(Date timestamp) {
+    this.timestamp = timestamp;
+  }
+
+  /**
+   * @return the codeEvt
+   */
+  public String getCodeEvt() {
+    return codeEvt;
+  }
+
+  /**
+   * @param codeEvt the codeEvt to set
+   */
+  public void setCodeEvt(String codeEvt) {
+    this.codeEvt = codeEvt;
+  }
+
+  /**
+   * @return the login
+   */
+  public String getLogin() {
+    return login;
+  }
+
+  /**
+   * @param login the login to set
+   */
+  public void setLogin(String login) {
+    this.login = login;
+  }
+
+  /**
+   * @return the contratService
+   */
+  public String getContratService() {
+    return contratService;
+  }
+
+  /**
+   * @param contratService the contratService to set
+   */
+  public void setContratService(String contratService) {
+    this.contratService = contratService;
+  }
+
+  /**
+   * @return the pagms
+   */
+  public List<String> getPagms() {
+    return pagms;
+  }
+
+  /**
+   * @return the infos
+   */
+  public Map<String, Object> getInfos() {
+    return infos;
+  }
+
+  /**
+   * @param infos the infos to set
+   */
+  public void setInfos(Map<String, Object> infos) {
+    this.infos = infos;
+  }
+
 }
 
 @Table(name = "test2")
@@ -140,6 +217,34 @@ class Test2 extends Test1 {
   private String contexte;
 
   private String action;
+
+  /**
+   * @return the contexte
+   */
+  public String getContexte() {
+    return contexte;
+  }
+
+  /**
+   * @param contexte the contexte to set
+   */
+  public void setContexte(String contexte) {
+    this.contexte = contexte;
+  }
+
+  /**
+   * @return the action
+   */
+  public String getAction() {
+    return action;
+  }
+
+  /**
+   * @param action the action to set
+   */
+  public void setAction(String action) {
+    this.action = action;
+  }
 }
 
 @Table(name = "TestAvecCompsiteKey")
@@ -189,6 +294,69 @@ class TestAvecCompsiteKey {
    */
   public void setIdentifiant1(final String identifiant1) {
     this.identifiant1 = identifiant1;
+  }
+
+  /**
+   * @return the codeEvt
+   */
+  public String getCodeEvt() {
+    return codeEvt;
+  }
+
+  /**
+   * @param codeEvt the codeEvt to set
+   */
+  public void setCodeEvt(String codeEvt) {
+    this.codeEvt = codeEvt;
+  }
+
+  /**
+   * @return the login
+   */
+  public String getLogin() {
+    return login;
+  }
+
+  /**
+   * @param login the login to set
+   */
+  public void setLogin(String login) {
+    this.login = login;
+  }
+
+  /**
+   * @return the contratService
+   */
+  public String getContratService() {
+    return contratService;
+  }
+
+  /**
+   * @param contratService the contratService to set
+   */
+  public void setContratService(String contratService) {
+    this.contratService = contratService;
+  }
+
+  /**
+   * @return the pagms
+   */
+  public List<String> getPagms() {
+    return pagms;
+  }
+
+  /**
+   * @return the infos
+   */
+  public Map<String, Object> getInfos() {
+    return infos;
+  }
+
+  /**
+   * @param infos the infos to set
+   */
+  public void setInfos(Map<String, Object> infos) {
+    this.infos = infos;
   }
 
 }
