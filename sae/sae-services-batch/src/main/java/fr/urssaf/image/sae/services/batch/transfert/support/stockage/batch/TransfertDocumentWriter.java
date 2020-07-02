@@ -126,9 +126,7 @@ ItemWriter<StorageDocument> {
       catch (Exception except) {
          if (isModePartielBatch()) {
         	 if(except.getMessage().isEmpty() && except instanceof DFCERuntimeException) {
-        		  // Récupère l'id du traitement en cours
-        	      final String idJob = getStepExecution().getJobParameters().getString(Constantes.ID_TRAITEMENT);
-        		  except = new Exception("Erreur DFCE - identifiant archivage " + idJob + " :" + except.getMessage());
+        	      except = new Exception("Erreur DFCE");
         	 }
             sendExceptionInPartielMode(except, docIndex);
             return null;
