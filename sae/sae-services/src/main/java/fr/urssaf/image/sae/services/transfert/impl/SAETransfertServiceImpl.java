@@ -25,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import com.itextpdf.text.pdf.codec.wmf.MetaFont;
-
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.modeapi.ModeAPIService;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
@@ -485,8 +483,11 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         }
       }
     }
-    catch (InvalidSAETypeException | MappingFromReferentialException | RequiredStorageMetadataEx e) {
+    catch (InvalidSAETypeException | MappingFromReferentialException e) {
       throw new TransfertException(e);
+    }
+    catch (final RequiredStorageMetadataEx e) {
+      throw new TransfertException(e.getMessage());
     }
 
     return document;
@@ -869,7 +870,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    * @throws InvalidSAETypeException
    * @throws MappingFromReferentialException
    */
-	private StorageDocument genericCodeRNDProcessing(final List<UntypedMetadata> listeMetaClient, StorageDocument documentGNT)
+	private StorageDocument genericCodeRNDProcessing(final List<UntypedMetadata> listeMetaClient, final StorageDocument documentGNT)
 			throws TransfertException, InvalidSAETypeException, MappingFromReferentialException {
 		UntypedMetadata metaRND = null;
 		
@@ -879,7 +880,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 		  // verifie que le codeRN est dans la liste de meta client
 		  if (!listeMetaClient.isEmpty()) {
 			  // recuperer le code rnd
-			  for (UntypedMetadata meta :listeMetaClient) {
+			  for (final UntypedMetadata meta :listeMetaClient) {
 				  if(meta.getLongCode().equals(StorageTechnicalMetadatas.TYPE.getLongCode())) {
 					  metaRND = meta;
 				  }
@@ -887,7 +888,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 			  // on fait le controle avec ce meta en le remplacant ds documentGNT
 			  if(metaRND != null) {
 				  // on le remplace dans le documentGNT le temps du check
-				  for(StorageMetadata storedata: documentGNT.getMetadatas()) {
+				  for(final StorageMetadata storedata: documentGNT.getMetadatas()) {
 					  if(storedata.getShortCode().equals(StorageTechnicalMetadatas.TYPE.getShortCode())) {
 						  rndFromBase = (String) storedata.getValue();
 						  storedata.setValue(metaRND.getValue());
@@ -902,13 +903,13 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 		  
 		  // Après le control, on remet l'ancienne valeur
 		  if(metaRND != null) {
-			  for(StorageMetadata storedata: documentGNT.getMetadatas()) {
+			  for(final StorageMetadata storedata: documentGNT.getMetadatas()) {
 				  if(storedata.getShortCode().equals(StorageTechnicalMetadatas.TYPE.getShortCode())) {
 					  storedata.setValue(rndFromBase);
 				  }
 			  }
 			  // on verifie qu'on à bien mis l'ancienne valeur
-			  String codeRND = (String) getValueMetaByCode(StorageTechnicalMetadatas.TYPE.getShortCode(),documentGNT.getMetadatas());
+			  final String codeRND = (String) getValueMetaByCode(StorageTechnicalMetadatas.TYPE.getShortCode(),documentGNT.getMetadatas());
 			  if(!codeRND.equals(rndFromBase)) {
 				  throw new TransfertException("Problème de prise en compte de la métadonnée codeRDN pour la suppression");
 			  }
@@ -963,7 +964,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	   boolean isNotIdTraitementMasseDocGNS = false;
 	   for (final StorageMetadata storageMetadata : Utils.nullSafeIterable(documentGNS.getMetadatas())) {
          if (Constantes.ID_TRAITEMENT_MASSE_INTERNE.equals(storageMetadata.getShortCode())) {
-        	 String value = storageMetadata.getValue().toString();
+        	 final String value = storageMetadata.getValue().toString();
         	 if(value.isEmpty()) {
         		 isNotIdTraitementMasseDocGNS = true;
         	 }
