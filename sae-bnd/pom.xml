@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>fr.urssaf.image</groupId>
+	<artifactId>parser-opencsv</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<!-- <packaging>jar</packaging> -->
+
+	<name>parser-opencsv</name>
+
+	<!-- Utilisation du fichier POM parent ALTAIR -->
+	<parent>
+		<groupId>fr.pnr.altair</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.1.3</version>
+	</parent>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven.jar.version>3.2.0</maven.jar.version>
+		<slf4j.version>1.6.6</slf4j.version>
+		<logback.version>1.0.7</logback.version>
+		<sae.version>20.04.0-SNAPSHOT</sae.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
+		<skipTests>false</skipTests>
+		<sshj.version>0.27.0</sshj.version>
+		<cxf.version>3.3.2</cxf.version>
+		<maven-replacer-plugin.version>1.3.6</maven-replacer-plugin.version>
+		<sae-client-vi.version>1.0.7</sae-client-vi.version>
+		<org.apache.poi.version>4.1.0</org.apache.poi.version>
+		<org.apache.pdfbox.version>1.8.1.1</org.apache.pdfbox.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-releasetrain</artifactId>
+				<version>Moore-SR6</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>5.2.5.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>4.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2.5-b10</version>
+		</dependency>
+
+		<!-- SAE Dependency -->
+		<dependency>
+			<groupId>fr.urssaf.image.sae</groupId>
+			<artifactId>sae-commons</artifactId>
+			<version>${sae.version}</version>
+			<exclusions>
+				<!-- <exclusion> <groupId>fr.urssaf.image.commons</groupId> <artifactId>commons-cassandra</artifactId> 
+					</exclusion> -->
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-context</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.javers</groupId>
+					<artifactId>javers-core</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.maven.wagon</groupId>
+					<artifactId>wagon-file</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>fr.urssaf.image.commons</groupId>
+			<artifactId>commons-dfce</artifactId>
+			<version>2.1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.urssaf.image.sae</groupId>
+			<artifactId>sae-storage-dfce</artifactId>
+			<version>${sae.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.urssaf.image.sae</groupId>
+			<artifactId>sae-ecde</artifactId>
+			<version>${sae.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.urssaf.image</groupId>
+			<artifactId>sae-client-vi</artifactId>
+			<version>${sae-client-vi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.urssaf.image.sae</groupId>
+			<artifactId>sae-format</artifactId>
+			<version>${sae.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fr.urssaf.image.sae</groupId>
+			<artifactId>sae-metadata</artifactId>
+			<version>${sae.version}</version>
+		</dependency>
+
+		<!-- Spring framework dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-jpa</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.hierynomus</groupId>
+			<artifactId>sshj</artifactId>
+			<version>${sshj.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.14</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jcabi</groupId>
+			<artifactId>jcabi-xml</artifactId>
+			<version>0.22.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>5.4.2.Final</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.2.11</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- CXF -->
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-frontend-jaxws</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-transports-http</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-rt-rs-client</artifactId>
+			<version>${cxf.version}</version>
+		</dependency>
+
+		<!-- PDF - WORD processing dependencies -->
+		<dependency>
+			<artifactId>preflight</artifactId>
+			<groupId>org.apache.pdfbox</groupId>
+			<version>${org.apache.pdfbox.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.media</groupId>
+			<artifactId>jai-codec</artifactId>
+			<version>1.1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${org.apache.poi.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-scratchpad</artifactId>
+			<version>${org.apache.poi.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>javax.persistence-api</artifactId>
+			<version>2.2</version>
+		</dependency>
+
+
+		<!-- Conversion RTF to word -->
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-api</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-util-conversion</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-transformer</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-util-all</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-local</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.8.0-beta2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.8.0-beta2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-util-standalone</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-transformer-msoffice-word</artifactId>
+			<version>1.0.3</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>23.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- On spécifie la version du JDK et l'encodage de caractères des sources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<id>xjc</id>
+						<goals>
+							<goal>xjc</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<xjbSources>
+						<xjbSource>src/main/xsd/global.xjb</xjbSource>
+					</xjbSources>
+					<sources>
+						<source>src/main/xsd/sommaire.xsd</source>
+					</sources>
+					<!-- <packageName>fr.urssaf.image.parser_opencsv.jaxb.model</packageName> 
+						<outputDirectory>src/main/java</outputDirectory> -->
+				</configuration>
+			</plugin>
+			<!-- Plugin permet de prendre en compte les dependances maven les copier 
+				dans un repertoire lib -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>false</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Build an executable JAR -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>fr.urssaf.image.parser_opencsv.application.Launcher</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>lib/</classpathPrefix>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<!-- Plugin for Tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>genererCodeClientSaeService</id>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.cxf</groupId>
+						<artifactId>cxf-codegen-plugin</artifactId>
+						<version>${cxf.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>wsdl2java</goal>
+								</goals>
+								<configuration>
+									<sourceRoot>${basedir}/src/main/java</sourceRoot>
+									<wsdlOptions>
+										<wsdlOption>
+											<wsdl>${basedir}/src/main/resources/SaeService_WSDL/SaeService.wsdl</wsdl>
+											<bindingFiles>
+												<bindingFile>${basedir}/src/main/resources/bindings.xml</bindingFile>
+											</bindingFiles>
+											<extraargs>
+												<extraarg>-verbose</extraarg>
+												<extraarg>-p</extraarg>
+												<extraarg>fr.urssaf.image.parser_opencsv.webservice.model</extraarg>
+											</extraargs>
+										</wsdlOption>
+									</wsdlOptions>
+
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+		<profile>
+			<id>genererCodeClientSaeServiceAxis</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.axis2</groupId>
+						<artifactId>axis2-wsdl2code-maven-plugin</artifactId>
+						<version>${axis2.version}</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>wsdl2code</goal>
+								</goals>
+								<configuration>
+									<wsdlFile>${basedir}/src/main/resources/SaeService_WSDL/SaeService.wsdl</wsdlFile>
+									<packageName>fr.urssaf.image.parser_opencsv.webservice.axis2.model</packageName>
+									<wsdlVersion>1.1</wsdlVersion>
+									<outputDirectory>src</outputDirectory>
+									<databindingName>adb</databindingName>
+									<targetSourceFolderLocation>main/java</targetSourceFolderLocation>
+									<skipBuildXML>true</skipBuildXML>
+									<overWrite>true</overWrite>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+
+	</profiles>
+</project>
