@@ -185,7 +185,7 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+    if (!infos.isEmpty()) {
       tr.setInfos(infos);
     }
     return tr;
@@ -204,7 +204,7 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    if (!infos.isEmpty()) { // EC 20190918
+    if (!infos.isEmpty()) {
       tr.setInfos(infos);
     }
     return tr;
