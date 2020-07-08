@@ -120,8 +120,8 @@ public class CycleVieSupport {
   }
 
   private List<DfceTraceDoc> getDocEventLogsByDatesAdaptatif(Date dateDebut, Date dateFin, final int limit, final boolean reversed) {
-    // Recherche adaptative
-    final List<DfceTraceDoc> values = new ArrayList<>();
+    // Initialisation
+    List<DfceTraceDoc> values = null;
     ListIterator<RMDocEvent> iterator;
     int tailleTemp = 0;
     long deltaMinuteTemp = 1;
@@ -139,21 +139,39 @@ public class CycleVieSupport {
     int increment = 2;
     int incrementPrecedent = 1;
     int etape = 0;
-    // Gestion des secondes
+    // Création du premier intervalle d'une minute
+    if (reversed) {
+      c1.setTime(dateFin);
+      c1.set(Calendar.SECOND, 0);
+      c2.setTime(dateFin);
+      c2.set(Calendar.SECOND, 59);
 
-    initDates(dateDebut, dateFin, reversed, c1, c2);
+    } else {
+      c1.setTime(dateDebut);
+      c1.set(Calendar.SECOND, 0);
+      c2.setTime(dateDebut);
+      c2.set(Calendar.SECOND, 59);
+
+    }
     date1 = c1.getTime();
     date2 = c2.getTime();
-    final long deltaMinute = 59 + (dateFin.getTime() - dateDebut.getTime()) / 1000;
+    // On calcule l'intervalle total en secondes
+    final long deltaSeconde = 59 + (dateFin.getTime() - dateDebut.getTime()) / 1000;
+    // Suivant le sens (reversed ou non) on démarre l'iterator du début ou de la fin
     if (reversed) {
       final int size = dfceServices.getDocumentEventLogsByDates(c1.getTime(), c2.getTime()).size();
       iterator = dfceServices.getDocumentEventLogsByDates(c1.getTime(), c2.getTime()).listIterator(size);
     } else {
       iterator = dfceServices.getDocumentEventLogsByDates(c1.getTime(), c2.getTime()).listIterator();
     }
-
-    while (tailleTemp < limit && deltaMinuteTemp <= deltaMinute) {
+    // Itération de recherche sur les intervalles construits dynamiquement
+    // On sort de la boucle si on est arrivé à la fin de l'intervalle ou si on a atteint la limite demandée
+    while (tailleTemp < limit && deltaMinuteTemp <= deltaSeconde) {
+      // On ajoute la trace si on a un suivant ou un précédent (cas reversed)
       if (reversed && iterator.hasPrevious() || !reversed && iterator.hasNext()) {
+        if (values == null) {
+          values = new ArrayList<>();
+        }
         if (reversed && iterator.hasPrevious()) {
           values.add(createDfceTraceDoc(iterator.previous()));
         }
@@ -162,28 +180,32 @@ public class CycleVieSupport {
         }
         tailleTemp += 1;
       } else {
-        if (deltaMinuteTemp != deltaMinute) {
+        if (deltaMinuteTemp != deltaSeconde) {
           deltaMinuteTemp += increment * 60;
-          deltaMinuteTemp = buildRangeDate(dateDebut, dateFin, reversed, deltaMinuteTemp, c1, c2, increment, incrementPrecedent, deltaMinute);
+          date1 = c1.getTime();
+          date2 = c2.getTime();
+          if (reversed) {
+            c1.add(Calendar.MINUTE, -increment);
+            c2.add(Calendar.MINUTE, -incrementPrecedent);
+          } else {
+            c1.add(Calendar.MINUTE, incrementPrecedent);
+            c2.add(Calendar.MINUTE, increment);
+          }
+          date1 = c1.getTime();
+          if (date1.before(dateDebut)) {
+            c1.setTime(dateDebut);
+            deltaMinuteTemp = deltaSeconde;
+          }
+          date2 = c2.getTime();
+          if (date2.after(dateFin)) {
+            c2.setTime(dateFin);
+            deltaMinuteTemp = deltaSeconde;
+          }
           final int size = dfceServices.getDocumentEventLogsByDates(c1.getTime(), c2.getTime()).size();
           incrementPrecedent = increment;
-          int facteur = 2;
-          if (size == 0 || limit / size > 500) {
-            facteur = 10;
-          } else {
-            facteur = 2;
-          }
-
-          if (size < limit) {
-            increment = increment * facteur;
-          } else {
-            if (increment >= facteur) {
-              increment = increment / facteur;
-            }
-          }
+          final int facteur = calculeFacteur(limit, size);
+          increment = updateIncrement(limit, increment, size, facteur);
           etape += 1;
-          System.out.println("ETAPE" + etape + "/INC=" + increment + "/FACT=" + facteur);
-
           if (reversed) {
             iterator = dfceServices.getDocumentEventLogsByDates(c1.getTime(), c2.getTime()).listIterator(size);
           } else {
@@ -199,65 +221,39 @@ public class CycleVieSupport {
   }
 
   /**
-   * @param dateDebut
-   * @param dateFin
-   * @param reversed
-   * @param c1
-   * @param c2
+   * @param limit
+   * @param increment
+   * @param size
+   * @param facteur
+   * @return
    */
-  private void initDates(Date dateDebut, Date dateFin, final boolean reversed, final Calendar c1, final Calendar c2) {
-    if (reversed) {
-      c1.setTime(dateFin);
-      c1.set(Calendar.SECOND, 0);
-      c2.setTime(dateFin);
-      c2.set(Calendar.SECOND, 59);
-      // c2.set(Calendar.MILLISECOND, 999);
+  private int updateIncrement(final int limit, int increment, final int size, final int facteur) {
+    if (size < limit) {
+      increment = increment * facteur;
     } else {
-      c1.setTime(dateDebut);
-      c1.set(Calendar.SECOND, 0);
-      c2.setTime(dateDebut);
-      c2.set(Calendar.SECOND, 59);
-      // c2.set(Calendar.MILLISECOND, 999);
+      if (increment >= facteur) {
+        increment = increment / facteur;
+      }
     }
+    return increment;
   }
 
   /**
-   * @param dateDebut
-   * @param dateFin
-   * @param reversed
-   * @param deltaMinuteTemp
-   * @param c1
-   * @param c2
-   * @param increment
-   * @param incrementPrecedent
-   * @param deltaMinute
+   * @param limit
+   * @param size
    * @return
    */
-  private long buildRangeDate(Date dateDebut, Date dateFin, final boolean reversed, long deltaMinuteTemp, final Calendar c1, final Calendar c2, int increment,
-                              int incrementPrecedent, final long deltaMinute) {
-    Date date1;
-    Date date2;
-    date1 = c1.getTime();
-    date2 = c2.getTime();
-    if (reversed) {
-      c1.add(Calendar.MINUTE, -increment);
-      c2.add(Calendar.MINUTE, -incrementPrecedent);
+  private int calculeFacteur(final int limit, final int size) {
+    int facteur = 2;
+    if (size == 0 || limit / size > 500) {
+      facteur = 10;
     } else {
-      c1.add(Calendar.MINUTE, incrementPrecedent);
-      c2.add(Calendar.MINUTE, increment);
+      facteur = 2;
     }
-    date1 = c1.getTime();
-    if (date1.before(dateDebut)) {
-      c1.setTime(dateDebut);
-      deltaMinuteTemp = deltaMinute;
-    }
-    date2 = c2.getTime();
-    if (date2.after(dateFin)) {
-      c2.setTime(dateFin);
-      deltaMinuteTemp = deltaMinute;
-    }
-    return deltaMinuteTemp;
+    return facteur;
   }
+
+
 
   /**
    * Recherche de toutes les traces du cycle de vie des archives pour un
