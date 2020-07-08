@@ -288,10 +288,9 @@ public class SAETransfertMasseServiceCqlTest extends AbstractServiceCqlTest {
       Assert.fail("Une exception de type TransfertException est attendue");
     }
     catch (final TransfertException e) {
-      Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
+
       Assert.assertTrue("Attendu : La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre",
-                        e.getCause()
-                        .getMessage()
+                        e.getMessage()
                         .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre"));
     }
   }
@@ -315,10 +314,8 @@ public class SAETransfertMasseServiceCqlTest extends AbstractServiceCqlTest {
       Assert.fail("Une exception de type TransfertException est attendue");
     }
     catch (final TransfertException e) {
-      Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
       Assert.assertTrue("Attendu : La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND",
-                        e.getCause()
-                        .getMessage()
+                        e.getMessage()
                         .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND"));
     }
   }
