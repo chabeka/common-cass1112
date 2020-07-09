@@ -16,23 +16,42 @@ import sae.integration.webservice.modele.SaeServicePortType;
 
 public class PingSecureTest {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(PingSecureTest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(PingSecureTest.class);
 
-   @Test
-   public void pingSecureSaturneTest() throws Exception {
-      final SaeServicePortType service = SaeServiceStubFactory
-            .getServiceForSaturneGNT("http://hwi69progednatgntcot1boweb1.cer69.recouv/ged/services/SaeService/");
+  @Test
+  public void pingSecureSaturneTest() throws Exception {
+    final SaeServicePortType service = SaeServiceStubFactory
+        .getServiceForSaturneGNT("http://hwi69progednatgntcot1boweb1.cer69.recouv/ged/services/SaeService/");
 
-      final PingSecureRequest request = new PingSecureRequest();
+    final PingSecureRequest request = new PingSecureRequest();
 
-      try {
-         LOGGER.info("Lancement du pring");
-         final PingSecureResponse response = service.pingSecure(request);
-         LOGGER.info("Résultat : {}", response.getPingString());
-      }
-      catch (final SOAPFaultException e) {
-         LOGGER.info("Détail de l'exception : {}", SoapHelper.getSoapFaultDetail(e));
-         throw e;
-      }
-   }
+    try {
+      LOGGER.info("Lancement du pring");
+      final PingSecureResponse response = service.pingSecure(request);
+      LOGGER.info("Résultat : {}", response.getPingString());
+    }
+    catch (final SOAPFaultException e) {
+      LOGGER.info("Détail de l'exception : {}", SoapHelper.getSoapFaultDetail(e));
+      throw e;
+    }
+  }
+
+  @Test
+  public void pingSecureInjecteurTest() throws Exception {
+    final SaeServicePortType service = SaeServiceStubFactory
+        .getServiceForInjecteur("http://gnspajeint1v6.gidn.recouv/ged/services/SaeService");
+
+    final PingSecureRequest request = new PingSecureRequest();
+
+    try {
+      LOGGER.info("Lancement du pring");
+      final PingSecureResponse response = service.pingSecure(request);
+      LOGGER.info("Résultat : {}", response.getPingString());
+    }
+    catch (final SOAPFaultException e) {
+      LOGGER.info("Détail de l'exception : {}", SoapHelper.getSoapFaultDetail(e));
+      throw e;
+    }
+  }
+
 }

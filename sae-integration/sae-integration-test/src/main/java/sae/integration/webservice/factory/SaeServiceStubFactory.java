@@ -28,6 +28,8 @@ public class SaeServiceStubFactory {
    static final String CIME_PASS = "ZpD6ELFtPj6R";
 
    static final String SATURNE_PASS = "8F7MFQEWS9Me";
+   
+   static final String INJECTEUR_PASS = "SjjcfbE18quN";
 
    static final int TIMEOUT_IN_MS = 10 * 60 * 1000;
 
@@ -84,7 +86,17 @@ public class SaeServiceStubFactory {
             VI_LOGIN);
       return getSaeService(url, handler);
    }
-
+   
+   
+  public static SaeServicePortType getServiceForInjecteur(final String url) {
+    final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("INJECTEUR.p12",
+                                                                              INJECTEUR_PASS,
+                                                                              Arrays.asList("PAGM_INJECTEUR_GNS_COTISANT"),
+                                                                              "CS_INJECTEUR",
+                                                                              VI_LOGIN);
+    return getSaeService(url, handler);
+  }
+  
    public static SaeServicePortType getServiceForDevToutesActions(final String url) {
       final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("RECHERCHE-DOCUMENTAIRE.p12",
             RECHERCHE_DOCUMENTAIRE_PASS,
