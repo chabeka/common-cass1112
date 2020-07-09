@@ -257,7 +257,14 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       result = findEvtByDate(limite, countLeft, result, currentDate, startDate, endDate, false);
 
       if (CollectionUtils.isNotEmpty(result)) {
-        values.addAll(result);
+        final int delta = countLeft - result.size();
+        if (delta >= 0) {
+          values.addAll(result);
+        } else {
+          // Correction pour ne pas dépasser la limite demandée
+          values.addAll(result.subList(0, countLeft));
+        }
+
         countLeft = limite - values.size();
         result.clear();
       }
@@ -286,7 +293,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
         || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport()
-                                                                          .findByDateOrderedWithDates(currentDate, limite, ordreInverse, startDate, endDate);
+          .findByDateOrderedWithDates(currentDate, limite, ordreInverse, startDate, endDate);
       if (resultCql != null) {
         for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
           final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
@@ -320,13 +327,20 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       result = findEvtByDate(limite, countLeft, result, currentDate, startDate, endDate, true);
 
       if (CollectionUtils.isNotEmpty(result)) {
-        values.addAll(result);
+        final int delta = countLeft - result.size();
+        if (delta >= 0) {
+          values.addAll(result);
+        } else {
+          // Correction pour ne pas dépasser la limite demandée
+          values.addAll(result.subList(0, countLeft));
+        }
         countLeft = limite - values.size();
         result.clear();
       }
       index--;
     } while (index >= 0 && countLeft > 0
         && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+
 
     return values;
   }

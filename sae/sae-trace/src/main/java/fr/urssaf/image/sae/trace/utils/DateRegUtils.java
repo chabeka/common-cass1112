@@ -150,10 +150,10 @@ public final class DateRegUtils {
     final Calendar calendar = Calendar.getInstance();
     calendar.setTime(dateFin);
     final int hFin = calendar.get(Calendar.HOUR_OF_DAY);
-    final int minFin = calendar.get(Calendar.MINUTE);
-    final int secFin = calendar.get(Calendar.SECOND);
+    final int mFin = calendar.get(Calendar.MINUTE);
+    final int sFin = calendar.get(Calendar.SECOND);
 
-    return hFin == 23 && minFin == 59 && secFin == 0;
+    return hFin == 23 && mFin == 59 && sFin == 59 || hFin == 0 && mFin == 0 && sFin == 0;
   }
 
 }

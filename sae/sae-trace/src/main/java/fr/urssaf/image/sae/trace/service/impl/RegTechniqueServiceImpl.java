@@ -243,7 +243,13 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
       result = findTraceRegTechniqueIndexByDate(limite, countLeft, result, currentDate, startDate, endDate, false);
 
       if (CollectionUtils.isNotEmpty(result)) {
-        values.addAll(result);
+        final int delta = countLeft - result.size();
+        if (delta >= 0) {
+          values.addAll(result);
+        } else {
+          // Correction pour ne pas dépasser la limite demandée
+          values.addAll(result.subList(0, countLeft));
+        }
         countLeft = limite - values.size();
         result.clear();
       }
@@ -309,7 +315,13 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
       result = findTraceRegTechniqueIndexByDate(limite, countLeft, result, currentDate, startDate, endDate, true);
 
       if (CollectionUtils.isNotEmpty(result)) {
-        values.addAll(result);
+        final int delta = countLeft - result.size();
+        if (delta >= 0) {
+          values.addAll(result);
+        } else {
+          // Correction pour ne pas dépasser la limite demandée
+          values.addAll(result.subList(0, countLeft));
+        }
         countLeft = limite - values.size();
         result.clear();
       }
