@@ -70,13 +70,13 @@ public class QueryUtilsTest {
   public void get_all_fields_of_entity() {
     final List<Field> fields = Utils.getEntityFileds(Test1.class);
     for (final Field field : fields) {
-      LOGGER.info("Champ de Test1 : {}", field.getName());
+      System.out.println("Champ de Test1 : " + field.getName());
     }
     Assert.assertEquals(7, fields.size());
     //
     final List<Field> fields2 = Utils.getEntityFileds(Test2.class);
     for (final Field field : fields) {
-      LOGGER.info("Champ de Test2 : {}", field.getName());
+      System.out.println("Champ de Test2 : " + field.getName());
     }
     Assert.assertEquals(9, fields2.size());
   }
