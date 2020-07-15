@@ -21,18 +21,20 @@ public class Utils {
    * @param entity
    * @return
    */
-  public static List<Field> getEntityFileds(final Class entity) {
-    final List<Field> fields = new LinkedList<>();
-    for (final Field field : entity.getDeclaredFields()) {
-      if (!field.isSynthetic()) {
-        fields.add(field);
-      }
-    }
-    if (!listFieldsFromSuperClass(entity).isEmpty()) {
-      fields.addAll(listFieldsFromSuperClass(entity));
-    }
-    return fields;
-  }
+  /*
+   * public static List<Field> getEntityFileds(final Class entity) {
+   * final List<Field> fields = new LinkedList<>();
+   * for (final Field field : entity.getDeclaredFields()) {
+   * if (!field.isSynthetic()) {
+   * fields.add(field);
+   * }
+   * }
+   * if (!listFieldsFromSuperClass(entity).isEmpty()) {
+   * fields.addAll(listFieldsFromSuperClass(entity));
+   * }
+   * return fields;
+   * }
+   */
 
   /**
    * Get bean fields from super class

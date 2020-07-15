@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.Mapper;
@@ -27,7 +26,6 @@ import com.datastax.driver.mapping.Mapper.Option;
 import fr.urssaf.image.commons.cassandra.cql.dao.IGenericCompositeDAO;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
-import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
 
 /**
  * Implementation de l'Interface {@link IGenericCompositeDAO }
@@ -180,9 +178,10 @@ public class GenericDAOCompositeImpl<T, ID, CK> implements IGenericCompositeDAO<
   @Override
   public void delete(final T entity) {
     Assert.notNull(entity, " l'entity est requis");
-    final Delete delete = QueryBuilder.delete().from(ccf.getKeyspace(), getTypeArgumentsName());
-    QueryUtils.createDeleteQuery(daoType, delete, entity);
-    getSession().execute(delete);
+    // final Delete delete = QueryBuilder.delete().from(ccf.getKeyspace(), getTypeArgumentsName());
+    deleteWithMapper(entity);
+    // QueryUtils.createDeleteQuery(daoType, delete, entity);
+    // getSession().execute(delete);
   }
 
   /**
