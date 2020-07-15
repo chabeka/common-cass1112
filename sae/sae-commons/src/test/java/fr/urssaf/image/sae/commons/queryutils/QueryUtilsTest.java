@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +65,7 @@ public class QueryUtilsTest {
     Assert.assertEquals("test2", columnFamilly);
   }
 
-  @Ignore
+  // @Ignore
   @Test
   public void get_all_fields_of_entity() {
     final List<Field> fields = Utils.getEntityFileds(Test1.class);
@@ -76,6 +75,9 @@ public class QueryUtilsTest {
     Assert.assertEquals(7, fields.size());
     //
     final List<Field> fields2 = Utils.getEntityFileds(Test2.class);
+    for (final Field field : fields) {
+      LOGGER.info("Champ de Test2 : {}", field.getName());
+    }
     Assert.assertEquals(9, fields2.size());
   }
 
