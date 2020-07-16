@@ -11,17 +11,11 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import com.datastax.driver.core.querybuilder.Delete;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
-import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
-import fr.urssaf.image.commons.cassandra.utils.Utils;
 
 
 /**
@@ -29,7 +23,6 @@ import fr.urssaf.image.commons.cassandra.utils.Utils;
  */
 public class QueryUtilsTest {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(QueryUtilsTest.class);
 
   @Test
   public void get_simple_key_field_name() {
@@ -63,43 +56,6 @@ public class QueryUtilsTest {
   public void get_column_family_name() {
     final String columnFamilly = ColumnUtil.getColumnFamily(Test2.class);
     Assert.assertEquals("test2", columnFamilly);
-  }
-
-  // @Ignore
-  @Test
-  public void get_all_fields_of_entity() {
-    final List<Field> fields = Utils.getEntityFileds(Test1.class);
-    for (final Field field : fields) {
-      System.out.println("Champ de Test1 : " + field.getName());
-    }
-    Assert.assertEquals(7, fields.size());
-    //
-    final List<Field> fields2 = Utils.getEntityFileds(Test2.class);
-    for (final Field field : fields) {
-      System.out.println("Champ de Test2 : " + field.getName());
-    }
-    Assert.assertEquals(9, fields2.size());
-  }
-
-  @Test
-  public void createDeleteQuerywithSimpleKeyTest() {
-    final String query = "DELETE FROM keyspace_tu.test1 WHERE identifiant='test1';";
-    final Test1 test1 = new Test1();
-    test1.setIdentifiant("test1");
-    final Delete delete = QueryBuilder.delete().from("keyspace_tu", "test1");
-    QueryUtils.createDeleteQuery(Test1.class, delete, test1);
-    Assert.assertEquals(query, delete.toString());
-  }
-
-  @Test
-  public void createDeleteQuerywithComsiteKeyTest() {
-    final String query = "DELETE FROM keyspace_tu.TestAvecCompsiteKey WHERE identifiant0='test1' AND identifiant1='test2';";
-    final TestAvecCompsiteKey test2 = new TestAvecCompsiteKey();
-    test2.setIdentifiant0("test1");
-    test2.setIdentifiant1("test2");
-    final Delete delete = QueryBuilder.delete().from("keyspace_tu", "TestAvecCompsiteKey");
-    QueryUtils.createDeleteQuery(TestAvecCompsiteKey.class, delete, test2);
-    Assert.assertEquals(query, delete.toString());
   }
 }
 
