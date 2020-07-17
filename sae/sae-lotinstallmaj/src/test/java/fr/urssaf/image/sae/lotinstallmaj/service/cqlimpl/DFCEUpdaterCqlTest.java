@@ -19,8 +19,8 @@ import com.datastax.driver.core.ResultSet;
 
 import fr.urssaf.image.sae.lotinstallmaj.cql.UtilsCassandraUnitStartHelper;
 import fr.urssaf.image.sae.lotinstallmaj.cql.UtilsColunmFalmilly;
-import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.DFCECassandraUpdaterCQL;
 import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.DFCEKeyspaceConnecter;
+import fr.urssaf.image.sae.lotinstallmaj.service.impl.DFCECassandraUpdaterThriftImpl;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -34,7 +34,7 @@ public class DFCEUpdaterCqlTest {
 	DFCEKeyspaceConnecter dcf;
 
 	@Autowired
-	DFCECassandraUpdaterCQL dfceUpd;
+	DFCECassandraUpdaterThriftImpl dfceUpd;
 	
     @Before
     public void init() throws Exception, IOException,

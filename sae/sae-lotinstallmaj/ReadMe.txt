@@ -554,7 +554,7 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 Met la base Cassandra du SAE en version 33 :
 
 - Ajout des métadonnées NomContact et PrenomContact
-- Ajout de l'index composite DomaineCotisant-CodeOrganismeProprietaire-CodeProduitV2-CodeTraitementV2-DateArchivage
+- Ajout de l'index composite DomaineCotisant-CodeOrganismeProprietaire-CodeProduitV2-CodeTraitementV2-DateArchivage (cot:cop:cpr:ctr:SM_ARCHIVAGE_DATE)
 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_200500
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNS_CASSANDRA_DFCE_200500

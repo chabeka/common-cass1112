@@ -20,6 +20,7 @@ import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
 import me.prettyprint.hector.api.ddl.KeyspaceDefinition;
 import me.prettyprint.hector.api.factory.HFactory;
@@ -55,16 +56,16 @@ public class SAECassandraDao {
     *           paramètres de connexion CASSANDRA
     */
    @Autowired
-   public SAECassandraDao(CassandraConfig config) {
+   public SAECassandraDao(final CassandraConfig config) {
       this.config = config;
-      credentials = new HashMap<String, String>();
+      credentials = new HashMap<>();
       credentials.put("username", config.getLogin());
       credentials.put("password", config.getPassword());
-      CassandraHostConfigurator chc = new CassandraHostConfigurator(config
-            .getHosts());
-      this.cluster = HFactory
+      final CassandraHostConfigurator chc = new CassandraHostConfigurator(config
+                                                                          .getHosts());
+      cluster = HFactory
             .getOrCreateCluster("SAECluster", chc, credentials);
-      this.keySpaceName = config.getKeyspaceName();
+      keySpaceName = config.getKeyspaceName();
    }
 
    /**
@@ -104,13 +105,14 @@ public class SAECassandraDao {
     */
    public final void connectToKeySpace() {
 
-      if (keyspace != null)
+      if (keyspace != null) {
          return;
-      ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
+      }
+      final ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
       ccl.setDefaultReadConsistencyLevel(HConsistencyLevel.QUORUM);
       ccl.setDefaultWriteConsistencyLevel(HConsistencyLevel.QUORUM);
       keyspace = HFactory.createKeyspace(keySpaceName, cluster, ccl,
-            FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
+                                         FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
 
    }
 
@@ -124,8 +126,8 @@ public class SAECassandraDao {
     *           boolean permettant de dire si on attend la réponse du/des
     *           serveur/s
     */
-   public final void createColumnFamily(ColumnFamilyDefinition colDef,
-         boolean blockUntilComplete) {
+   public final void createColumnFamily(final ColumnFamilyDefinition colDef,
+                                        final boolean blockUntilComplete) {
       // ajout des attributs par défauts
       addDefaultCFAttributs(colDef);
       // creattion de la column familly
@@ -138,10 +140,10 @@ public class SAECassandraDao {
     * @param version
     *           : n° de la version
     */
-   public final void setDatabaseVersion(long version) {
-      ColumnFamilyTemplate<String, String> template = getParametersTemplate();
-      String key = "parameters";
-      ColumnFamilyUpdater<String, String> updater = template.createUpdater(key);
+   public final void setDatabaseVersion(final long version) {
+      final ColumnFamilyTemplate<String, String> template = getParametersTemplate();
+      final String key = "parameters";
+      final ColumnFamilyUpdater<String, String> updater = template.createUpdater(key);
       updater.setLong("versionBDD", version);
       template.update(updater);
    }
@@ -154,21 +156,77 @@ public class SAECassandraDao {
     */
    public final long getDatabaseVersion() {
 
-      List<ColumnFamilyDefinition> listCFD = getColumnFamilyDefintion();
-      if (!containColumnFamily(listCFD, "Parameters"))
+      final List<ColumnFamilyDefinition> listCFD = getColumnFamilyDefintion();
+      if (!containColumnFamily(listCFD, "Parameters")) {
          return 0;
+      }
 
       // On lit la version dans la base de données
       connectToKeySpace();
-      ColumnFamilyTemplate<String, String> template = getParametersTemplate();
-      String key = "parameters";
+      final ColumnFamilyTemplate<String, String> template = getParametersTemplate();
+      final String key = "parameters";
       return template
             .querySingleColumn(key, "versionBDD", LongSerializer.get())
             .getValue();
    }
 
+   /**
+    * Renvoie le n° de version de la base de données qui est stockée dans
+    * cassandra
+    * 
+    * @return n° de version
+    */
+   public final long getDatabaseVersionDFCE() {
+
+      final List<ColumnFamilyDefinition> listCFD = getColumnFamilyDefintion();
+      if (!containColumnFamily(listCFD, "Parameters")) {
+         return 0;
+      }
+
+      // On lit la version dans la base de données
+      connectToKeySpace();
+      final ColumnFamilyTemplate<String, String> template = getParametersTemplate();
+      final String key = "parameters";
+
+      final HColumn<String, Long> dfceVersionColumn = template.querySingleColumn(key, "versionDFCE", LongSerializer.get());
+      if (dfceVersionColumn == null) {
+
+         return 0;
+      }
+
+      return dfceVersionColumn.getValue();
+   }
+
+   /**
+    * Enregistre le n° de version de la base de données DFCE
+    * 
+    * @param version
+    *           : n° de la version
+    */
+   public final void setDatabaseVersionDFCE(final long version) {
+      connectToKeySpace();
+      final ColumnFamilyTemplate<String, String> template = getParametersTemplate();
+      final String key = "parameters";
+      final ColumnFamilyUpdater<String, String> updater = template.createUpdater(key);
+      updater.setLong("versionDFCE", version);
+      template.update(updater);
+   }
+
+   /**
+    * Supprimer la colonne versionDFCE
+    * 
+    * @param version
+    */
+   public final void deleteDatabaseVersionDFCE() {
+      final ColumnFamilyTemplate<String, String> template = getParametersTemplate();
+      final String key = "parameters";
+      final ColumnFamilyUpdater<String, String> updater = template.createUpdater(key);
+      updater.deleteColumn("versionDFCE");
+      template.update(updater);
+   }
+
    private ColumnFamilyTemplate<String, String> getParametersTemplate() {
-      return new ThriftColumnFamilyTemplate<String, String>(keyspace,
+      return new ThriftColumnFamilyTemplate<>(keyspace,
             "Parameters", StringSerializer.get(), StringSerializer.get());
    }
 
@@ -176,8 +234,8 @@ public class SAECassandraDao {
     * @return la définition de la famille de colonnes
     */
    public final List<ColumnFamilyDefinition> getColumnFamilyDefintion() {
-      KeyspaceDefinition ksDef = this.cluster.describeKeyspace(keySpaceName);
-      List<ColumnFamilyDefinition> returnList = new ArrayList<ColumnFamilyDefinition>();
+      final KeyspaceDefinition ksDef = cluster.describeKeyspace(keySpaceName);
+      List<ColumnFamilyDefinition> returnList = new ArrayList<>();
       if (ksDef != null) {
          returnList = ksDef.getCfDefs();
       }
@@ -195,9 +253,9 @@ public class SAECassandraDao {
     * @return boolean : true si on a trouvé la columnFamily, false sinon
     */
    public final boolean containColumnFamily(
-         final List<ColumnFamilyDefinition> columnsFamilyDef, final String columnFamilyName) {
+                                            final List<ColumnFamilyDefinition> columnsFamilyDef, final String columnFamilyName) {
       boolean columnFamilyPresent = false;
-      for (ColumnFamilyDefinition columnFamilyDef : columnsFamilyDef) {
+      for (final ColumnFamilyDefinition columnFamilyDef : columnsFamilyDef) {
          if (columnFamilyDef.getName().equals(columnFamilyName)) {
             columnFamilyPresent = true;
             break;
@@ -211,8 +269,8 @@ public class SAECassandraDao {
     *           : le cluster cassandra
     * @return le facteur de réplication du keyspace dfce
     */
-   public final int getDocubaseReplicationFactor(Cluster cluster) {
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace("dfce");
+   public final int getDocubaseReplicationFactor(final Cluster cluster) {
+      final KeyspaceDefinition keyspaceDef = cluster.describeKeyspace("dfce");
       if (keyspaceDef != null) {
          return keyspaceDef.getReplicationFactor();
       }
@@ -229,8 +287,8 @@ public class SAECassandraDao {
     *           boolean indiquant si le reste est bloqué en attendant la fin de
     *           ce traitement
     */
-   public final void createNewKeySpace(KeyspaceDefinition ksDef,
-         boolean blockUntilComplete) {
+   public final void createNewKeySpace(final KeyspaceDefinition ksDef,
+                                       final boolean blockUntilComplete) {
       cluster.addKeyspace(ksDef, blockUntilComplete);
    }
 
@@ -246,7 +304,7 @@ public class SAECassandraDao {
     * @param config
     *           la configuration CASSANDRA
     */
-   public final void setConfig(CassandraConfig config) {
+   public final void setConfig(final CassandraConfig config) {
       this.config = config;
    }
 
@@ -256,16 +314,16 @@ public class SAECassandraDao {
     * @param cfDef
     *           : définition de la CF
     */
-   private void addDefaultCFAttributs(ColumnFamilyDefinition cfDef) {
+   private void addDefaultCFAttributs(final ColumnFamilyDefinition cfDef) {
       // GCgrace fixé à 20 jours.
       cfDef.setGcGraceSeconds(DEFAULT_GCGRACE);
 
       // Snappy compression
-      Map<String, String> compressOptions = new HashMap<String, String>();
+      final Map<String, String> compressOptions = new HashMap<>();
       compressOptions.put("sstable_compression", "SnappyCompressor");
       cfDef.setCompressionOptions(compressOptions);
       // FIXME FBON - A Vérifier
-      Map<String, String> compactionOptions = new HashMap<String, String>();
+      final Map<String, String> compactionOptions = new HashMap<>();
       compactionOptions.put("sstable_size_in_mb", "200");
 
       // Leveled compaction.
@@ -280,7 +338,7 @@ public class SAECassandraDao {
     * @param cfDef
     *           colonne family
     */
-   public void updateColumnFamily(ColumnFamilyDefinition cfDef) {
+   public void updateColumnFamily(final ColumnFamilyDefinition cfDef) {
       // ajout des attributs par défauts
       addDefaultCFAttributs(cfDef);
       // modification de la column familly

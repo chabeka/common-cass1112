@@ -5,9 +5,9 @@ package fr.urssaf.image.sae.lotinstallmaj.exception;
  *
  */
 public final class MajLotGeneralException extends Exception {
-   
+
    private static final long serialVersionUID = 1L;
-   
+
    /**
     * Construit une nouvelle {@link MajLotGeneralException} avec un message et
     * une cause données.
@@ -20,7 +20,7 @@ public final class MajLotGeneralException extends Exception {
    public MajLotGeneralException(final String message, final Throwable cause) {
       super(message, cause);
    }
-   
+
    /**
     * Construit une nouvelle {@link MajLotGeneralException} avec un message.
     * 
