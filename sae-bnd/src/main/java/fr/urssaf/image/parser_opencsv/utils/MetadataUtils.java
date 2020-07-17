@@ -162,9 +162,14 @@ public class MetadataUtils {
       titre.setValeur(csvLigne[15]);
 
       // Meta CodeRND avec CodeObjet
+      final String codeObjet = csvLigne[14];
       final MetadonneeType codeRND = new MetadonneeType();
       codeRND.setCode("CodeRND");
-      codeRND.setValeur(csvLigne[14]);
+      codeRND.setValeur(codeObjet);
+      // Ajout de la meta CodeDocument
+      final MetadonneeType metaCodeObjet = new MetadonneeType();
+      metaCodeObjet.setCode("CodeDocument");
+      metaCodeObjet.setValeur(codeObjet);
 
       // Meta UUID
       final MetadonneeType idGED = new MetadonneeType();
@@ -197,7 +202,7 @@ public class MetadataUtils {
       String metaValue = nom;
       final String prenom = csvLigne[3];
       if (!prenom.trim().isEmpty()) {
-         metaValue = metaValue + "/" + prenom;
+         metaValue = metaValue + " " + prenom;
       }
       final String raisonSocial = csvLigne[6];
       final MetadonneeType denomination = new MetadonneeType();
@@ -245,7 +250,7 @@ public class MetadataUtils {
       applicationProductrice.setValeur(source);
 
       // Meta ApplicationTraitement && ApplicationMetier
-      final String applicationTraitementValue = "BND_SSTI";
+      final String applicationTraitementValue = "BND SSTI";
       final MetadonneeType applicationTraitement = new MetadonneeType();
       applicationTraitement.setCode("ApplicationTraitement");
       applicationTraitement.setValeur(applicationTraitementValue);
@@ -268,6 +273,7 @@ public class MetadataUtils {
       metadonnees.getMetadonnee().add(codeOrgaProp);
       if (!codeRND.getValeur().trim().isEmpty()) {
          metadonnees.getMetadonnee().add(codeRND);
+         metadonnees.getMetadonnee().add(metaCodeObjet);
       }
       metadonnees.getMetadonnee().add(dateCreation);
       metadonnees.getMetadonnee().add(applicationProductrice);

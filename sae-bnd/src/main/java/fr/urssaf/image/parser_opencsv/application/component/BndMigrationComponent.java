@@ -164,6 +164,7 @@ public class BndMigrationComponent {
                   countIntegrated++;
                } else {
                   messageError = "Le binaire du document est manquant!";
+                  LOGGER.error(messageError);
                }
             } else {
                messageError = "Certaines métadonnées requises au stockage sont manquantes";

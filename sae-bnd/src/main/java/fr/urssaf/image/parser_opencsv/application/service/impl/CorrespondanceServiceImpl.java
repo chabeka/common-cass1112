@@ -43,7 +43,8 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
    private final Map<String, CorrespondanceMetaObject> mapCorrespondancesCaisses;
 
    @Autowired
-   public CorrespondanceServiceImpl(final ICorrespondanceTableSSTIGedDao matcher, final ReferentielFormatService referentielFormatService) {
+   public CorrespondanceServiceImpl(final ICorrespondanceTableSSTIGedDao matcher,
+                                    final ReferentielFormatService referentielFormatService) {
       super();
       this.referentielFormatService = referentielFormatService;
       this.matcher = matcher;
@@ -144,7 +145,9 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
          final FormatFichier formatFichier2 = mapFormats.get(formatFichier);
          final String extensionListString = formatFichier2.getExtension();
          final String nomFichier = documentType.getObjetNumerique().getCheminEtNomDuFichier();
-         final String extension = nomFichier.split("\\.")[1];
+
+         final String[] splitArray = nomFichier.split("\\.");
+         final String extension = splitArray[splitArray.length - 1];
 
          if (!extensionListString.contains(extension)) {
             throw new CorrespondanceFormatException(String.format("Le mimetype [%s] du document ne correspond pas à l'extension [%s]",
