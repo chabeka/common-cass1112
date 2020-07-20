@@ -117,9 +117,9 @@ public final class MainIntInst {
       LOG.info("Fin de la creation de la base de donnees DFCE");
       LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
       // Création de la base SAE
-      majLotService.demarreCreateSAE();
+      // majLotService.demarreCreateSAE();
       // tables cql
-      majCqlLotService.demarreCreateSAE();
+      // majCqlLotService.demarreCreateSAE();
       LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
 
       // Mise à jour RND
@@ -162,7 +162,7 @@ public final class MainIntInst {
       // Création des metadatas, indexes composites et droits dans la base SAE.
       LOG.info("Lancement de la creation des metadonnees, des droits et des indexes composites pour la base de donnees "
           + applicationConcernee);
-      majLotService.demarreCreateMetadatasIndexesDroitsSAE(applicationConcernee);
+      // majLotService.demarreCreateMetadatasIndexesDroitsSAE(applicationConcernee);
       LOG.info("Fin de la creation des metadonnees, des droits et des indexes composites pour la base de donnees "
           + applicationConcernee);
     }
