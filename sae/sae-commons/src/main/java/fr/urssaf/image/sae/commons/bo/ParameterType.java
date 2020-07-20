@@ -168,7 +168,13 @@ public enum ParameterType {
   /**
    * Date de la version de la base de données
    */
-  versionBDD;
+                           versionBDD,
+
+  /**
+   * Date de la version de la base de données dfce
+   */
+
+  VERSION_BDD_DFCE;
 
   public static ParameterType valueOfLabel(final String label) {
     for (final ParameterType e : values()) {
