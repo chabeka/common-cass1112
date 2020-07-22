@@ -143,8 +143,12 @@ public class TraceFileSupport {
 
         staxUtils.addStartElement("info", PX_RES, NS_RES);
         staxUtils.createTag("code", key, PX_RES, NS_RES);
+        String keyValue = "";
+        if (trace.getInfos().get(key) != null) {
+          keyValue = trace.getInfos().get(key).toString();
+        }
         staxUtils.createTag("valeur",
-                            trace.getInfos().get(key).toString(),
+                            keyValue,
                             PX_RES,
                             NS_RES);
         staxUtils.addEndElement("info", PX_RES, NS_RES);
@@ -196,8 +200,13 @@ public class TraceFileSupport {
 
             staxUtils.addStartElement("info", PX_RES, NS_RES);
             staxUtils.createTag("code", key, PX_RES, NS_RES);
+
+        String keyValue = "";
+        if (trace.getInfos().get(key) != null) {
+          keyValue = trace.getInfos().get(key).toString();
+        }
         staxUtils.createTag("valeur",
-                            trace.getInfos().get(key).toString(),
+                            keyValue,
                             PX_RES,
                             NS_RES);
             staxUtils.addEndElement("info", PX_RES, NS_RES);

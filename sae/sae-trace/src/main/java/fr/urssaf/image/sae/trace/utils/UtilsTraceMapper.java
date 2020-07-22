@@ -77,7 +77,12 @@ public class UtilsTraceMapper {
     final Map<String, String> infos = new HashMap<>();
     if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
-        infos.put(entry.getKey(), entry.getValue().toString());
+        final String key = entry.getKey();
+        String object = "";
+        if (entry.getValue() != null) {
+          object = entry.getValue().toString();
+        }
+        infos.put(key, object);
       }
     }
     if (!infos.isEmpty()) { 
@@ -117,8 +122,14 @@ public class UtilsTraceMapper {
     final Map<String, String> infos = new HashMap<>();
     if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
-        infos.put(entry.getKey(), entry.getValue().toString());
+        final String key = entry.getKey();
+        String object = "";
+        if (entry.getValue() != null) {
+          object = entry.getValue().toString();
+        }
+        infos.put(key, object);
       }
+
     }
     if (!infos.isEmpty()) { 
       tr.setInfos(infos);
@@ -201,7 +212,13 @@ public class UtilsTraceMapper {
     final Map<String, String> infos = new HashMap<>();
     if (traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
-        infos.put(entry.getKey(), entry.getValue().toString());
+        // infos.put(entry.getKey(), entry.getValue().toString());
+        final String key = entry.getKey();
+        String object = "";
+        if (entry.getValue() != null) {
+          object = entry.getValue().toString();
+        }
+        infos.put(key, object);
       }
     }
     if (!infos.isEmpty()) {
@@ -379,7 +396,13 @@ public class UtilsTraceMapper {
     final Map<String, String> infos = new HashMap<>();
     if (index.getInfos() != null && !index.getInfos().isEmpty()) {
       for (final Entry<String, Object> entry : index.getInfos().entrySet()) {
-        infos.put(entry.getKey(), entry.getValue().toString());
+        // infos.put(entry.getKey(), entry.getValue().toString());
+        final String entrykey = entry.getKey();
+        String object = "";
+        if (entry.getValue() != null) {
+          object = entry.getValue().toString();
+        }
+        infos.put(entrykey, object);
       }
       tr.setInfos(infos);
     }
@@ -411,7 +434,13 @@ public class UtilsTraceMapper {
     final Map<String, String> infos = new HashMap<>();
     if (index.getInfos() != null && !index.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : index.getInfos().entrySet()) {
-        infos.put(entry.getKey(), entry.getValue().toString());
+        // infos.put(entry.getKey(), entry.getValue().toString());
+        final String entrykey = entry.getKey();
+        String object = "";
+        if (entry.getValue() != null) {
+          object = entry.getValue().toString();
+        }
+        infos.put(entrykey, object);
       }
     }
     if (!infos.isEmpty()) { 
