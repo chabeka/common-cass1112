@@ -47,122 +47,118 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 public class SAESuppressionServiceImpl extends AbstractSAEServices implements SAESuppressionService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SAESuppressionServiceImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SAESuppressionServiceImpl.class);
 
-	@Autowired
-	@Qualifier("storageDocumentService")
-	private StorageDocumentService storageService;
+  @Autowired
+  @Qualifier("storageDocumentService")
+  private StorageDocumentService storageService;
 
-	@Autowired
-	private MetadataReferenceDAO referenceDAO;
+  @Autowired
+  private MetadataReferenceDAO referenceDAO;
 
-	@Autowired
-	private PrmdService prmdService;
+  @Autowired
+  private PrmdService prmdService;
 
-	@Autowired
-	private MappingDocumentService mappingService;
+  @Autowired
+  private MappingDocumentService mappingService;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void suppression(UUID idArchive) throws SuppressionException, ArchiveInexistanteEx {
-		final String trcPrefix = "suppression";
-		LOG.debug("{} - début", trcPrefix);
-		LOG.debug("{} - Début de suppression du document {}", new Object[] { trcPrefix, idArchive.toString() });
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void suppression(final UUID idArchive) throws SuppressionException, ArchiveInexistanteEx {
+    final String trcPrefix = "suppression";
+    LOG.debug("{} - début", trcPrefix);
+    // L'idArchive ne peut être null à ce niveau il a été contrôlé par l'aspect au niveau du paramètre d'entrée
+    LOG.debug("{} - Début de suppression du document {}", new Object[] {trcPrefix, idArchive.toString()});
 
-		try {
-			LOG.debug("{} - recherche du document", trcPrefix);
-			final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-			final Map<String, MetadataReference> listeAllMeta = referenceDAO.getAllMetadataReferencesPourVerifDroits();
-			for (final String mapKey : listeAllMeta.keySet()) {
-				allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey).getShortCode()));
-			}
-			final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+    try {
+      LOG.debug("{} - recherche du document", trcPrefix);
+      final List<StorageMetadata> allMeta = new ArrayList<>();
+      final Map<String, MetadataReference> listeAllMeta = referenceDAO.getAllMetadataReferencesPourVerifDroits();
+      for (final Map.Entry<String, MetadataReference> entry : listeAllMeta.entrySet()) {
+        allMeta.add(new StorageMetadata(entry.getValue().getShortCode()));
+      }
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+      final List<StorageMetadata> listeStorageMeta = getStorageDocumentService()
+          .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
 
-			final List<StorageMetadata> listeStorageMeta = this.getStorageDocumentService()
-					.retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+      // On vérifie si le document n'est pas gelé
+      final String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
 
-			// On vérifie si le document n'est pas gelé
-			if (idArchive != null) {
-				final String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+      final List<StorageMetadata> listeMetadataDocument = getListeStorageMetadatasWithGel(idArchive);
+      if (isFrozenDocument(listeMetadataDocument)) {
+        throw new SuppressionException(
+                                       StringUtils.replace(frozenDocMsgException, "{0}", idArchive.toString()));
+      }
 
-				final List<StorageMetadata> listeMetadataDocument = getListeStorageMetadatasWithGel(idArchive);
-				if (isFrozenDocument(listeMetadataDocument)) {
-					throw new SuppressionException(
-							StringUtils.replace(frozenDocMsgException, "{0}", idArchive.toString()));
-				}
-			}
+      if (listeStorageMeta.size() == 0) {
+        final String message = StringUtils.replace(
+                                                   "Il n'existe aucun document pour l'identifiant d'archivage '{0}'", "{0}", idArchive.toString());
+        throw new ArchiveInexistanteEx(message);
+      }
+      final List<UntypedMetadata> listeUMeta = mappingService.storageMetadataToUntypedMetadata(listeStorageMeta);
 
-			if (listeStorageMeta.size() == 0) {
-				final String message = StringUtils.replace(
-						"Il n'existe aucun document pour l'identifiant d'archivage '{0}'", "{0}", idArchive.toString());
-				throw new ArchiveInexistanteEx(message);
-			}
-			final List<UntypedMetadata> listeUMeta = mappingService.storageMetadataToUntypedMetadata(listeStorageMeta);
+      // Vérification des droits
+      LOG.debug("{} - Récupération des droits", trcPrefix);
+      final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
+          .getAuthentication();
+      final List<SaePrmd> saePrmds = token.getSaeDroits().get("suppression");
+      LOG.debug("{} - Vérification des droits", trcPrefix);
+      final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 
-			// Vérification des droits
-			LOG.debug("{} - Récupération des droits", trcPrefix);
-			final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
-					.getAuthentication();
-			final List<SaePrmd> saePrmds = token.getSaeDroits().get("suppression");
-			LOG.debug("{} - Vérification des droits", trcPrefix);
-			final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+      if (!isPermitted) {
+        throw new AccessDeniedException(
+            "Le document est refusé à la suppression car les droits sont insuffisants");
 
-			if (!isPermitted) {
-				throw new AccessDeniedException(
-						"Le document est refusé à la suppression car les droits sont insuffisants");
+      }
 
-			}
+      LOG.debug("{} - suppression du document", trcPrefix);
+      storageService.deleteStorageDocument(idArchive);
 
-			LOG.debug("{} - suppression du document", trcPrefix);
-			storageService.deleteStorageDocument(idArchive);
+    } catch (final DeletionServiceEx exception) {
+      throw new SuppressionException(exception);
+    } catch (final ReferentialException exception) {
+      throw new SuppressionException(exception);
+    } catch (final InvalidSAETypeException exception) {
+      throw new SuppressionException(exception);
+    } catch (final MappingFromReferentialException exception) {
+      throw new SuppressionException(exception);
+    } catch (final RetrievalServiceEx exception) {
+      throw new SuppressionException(exception);
+    }
 
-		} catch (final DeletionServiceEx exception) {
-			throw new SuppressionException(exception);
-		} catch (final ReferentialException exception) {
-			throw new SuppressionException(exception);
-		} catch (final InvalidSAETypeException exception) {
-			throw new SuppressionException(exception);
-		} catch (final MappingFromReferentialException exception) {
-			throw new SuppressionException(exception);
-		} catch (final RetrievalServiceEx exception) {
-			throw new SuppressionException(exception);
-		}
+    LOG.debug("{} - Suppression du document {} terminée", new Object[] { trcPrefix, idArchive.toString() });
+    LOG.debug("{} - fin", trcPrefix);
+  }
 
-		LOG.debug("{} - Suppression du document {} terminée", new Object[] { trcPrefix, idArchive.toString() });
-		LOG.debug("{} - fin", trcPrefix);
-	}
+  /**
+   * Méthode permettant de générer la liste des métadonnées storage contenant
+   * la métadonnée GEL
+   * 
+   * @param idArchive
+   * @return
+   * @throws ReferentialException
+   * @throws RetrievalServiceEx
+   */
+  public List<StorageMetadata> getListeStorageMetadatasWithGel(final UUID idArchive)
+      throws ReferentialException, RetrievalServiceEx {
+    // On récupère la liste de toutes les méta du référentiel sauf la
+    // Note, le Gel et la durée de conservation inutile pour les droits
+    // et générant des accès DFCE inutiles
+    final List<StorageMetadata> allMeta = new ArrayList<>();
+    final Map<String, MetadataReference> listeAllMeta = referenceDAO.getAllMetadataReferencesPourVerifDroits();
+    for (final Map.Entry<String, MetadataReference> entry : listeAllMeta.entrySet()) {
+      allMeta.add(new StorageMetadata(entry.getValue().getShortCode()));
+    }
+    // Ajout de la meta GEL puisque non récupéré avant
+    allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode()));
 
-	/**
-	 * Méthode permettant de générer la liste des métadonnées storage contenant
-	 * la métadonnée GEL
-	 * 
-	 * @param idArchive
-	 * @return
-	 * @throws ReferentialException
-	 * @throws RetrievalServiceEx
-	 */
-	public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
-			throws ReferentialException, RetrievalServiceEx {
-		// On récupère la liste de toutes les méta du référentiel sauf la
-		// Note, le Gel et la durée de conservation inutile pour les droits
-		// et générant des accès DFCE inutiles
-		List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-		Map<String, MetadataReference> listeAllMeta = referenceDAO.getAllMetadataReferencesPourVerifDroits();
+    // Création des critéres
+    final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
-		for (String mapKey : listeAllMeta.keySet()) {
-			allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey).getShortCode()));
-		}
-
-		// Ajout de la meta GEL puisque non récupéré avant
-		allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode()));
-
-		// Création des critéres
-		UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
-
-		// Recherche du document par critére
-		return this.getStorageDocumentService().retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
-	}
+    // Recherche du document par critére
+    return getStorageDocumentService().retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+  }
 
 }

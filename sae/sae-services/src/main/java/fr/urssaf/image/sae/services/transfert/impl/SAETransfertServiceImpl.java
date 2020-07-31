@@ -132,7 +132,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
   /**
    * Liste des events du SAE par id du doc
    */
-   @Autowired
+  @Autowired
   private final JournalEvtServiceThriftImpl journalEvtThriftService;
 
   @Autowired
@@ -271,7 +271,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     final List<StorageMetadata> metas = new ArrayList<>();
     metas.add(new StorageMetadata(StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode()));
     metas.add(new StorageMetadata(StorageTechnicalMetadatas.HASH.getShortCode()));
-      metas.add(new StorageMetadata(StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE.getShortCode()));
+    metas.add(new StorageMetadata(StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE.getShortCode()));
     final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, metas);
     final StorageDocument documentGNS = storageTransfertService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
     return documentGNS;
@@ -836,13 +836,13 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
       if(isSuppression) {
 
-    	  documentGNT = genericCodeRNDProcessing(listeMetaClient, documentGNT);
-          
+        documentGNT = genericCodeRNDProcessing(listeMetaClient, documentGNT);
+
       } else {
-          // Contrôle des droits de transfert
-          controleDroitTransfertMasse(documentGNT.getMetadatas());
+        // Contrôle des droits de transfert
+        controleDroitTransfertMasse(documentGNT.getMetadatas());
       }
-      
+
       if (!isSuppression) {
         // On ne garde que les métadonnées transférables
         filterTransfertableMetadatas(documentGNT.getMetadatas());
@@ -870,53 +870,53 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    * @throws InvalidSAETypeException
    * @throws MappingFromReferentialException
    */
-	private StorageDocument genericCodeRNDProcessing(final List<UntypedMetadata> listeMetaClient, final StorageDocument documentGNT)
-			throws TransfertException, InvalidSAETypeException, MappingFromReferentialException {
-		UntypedMetadata metaRND = null;
-		
-		  // backup codeRND initial
-		  String rndFromBase = "";
-		  
-		  // verifie que le codeRN est dans la liste de meta client
-		  if (!listeMetaClient.isEmpty()) {
-			  // recuperer le code rnd
-			  for (final UntypedMetadata meta :listeMetaClient) {
-				  if(meta.getLongCode().equals(StorageTechnicalMetadatas.TYPE.getLongCode())) {
-					  metaRND = meta;
-				  }
-			  }
-			  // on fait le controle avec ce meta en le remplacant ds documentGNT
-			  if(metaRND != null) {
-				  // on le remplace dans le documentGNT le temps du check
-				  for(final StorageMetadata storedata: documentGNT.getMetadatas()) {
-					  if(storedata.getShortCode().equals(StorageTechnicalMetadatas.TYPE.getShortCode())) {
-						  rndFromBase = (String) storedata.getValue();
-						  storedata.setValue(metaRND.getValue());
-						  
-					  }
-				  }
-			  }
-		  }
-		  
-		  // Contrôle des droits de transfert
-		  controleDroitTransfertMasse(documentGNT.getMetadatas());
-		  
-		  // Après le control, on remet l'ancienne valeur
-		  if(metaRND != null) {
-			  for(final StorageMetadata storedata: documentGNT.getMetadatas()) {
-				  if(storedata.getShortCode().equals(StorageTechnicalMetadatas.TYPE.getShortCode())) {
-					  storedata.setValue(rndFromBase);
-				  }
-			  }
-			  // on verifie qu'on à bien mis l'ancienne valeur
-			  final String codeRND = (String) getValueMetaByCode(StorageTechnicalMetadatas.TYPE.getShortCode(),documentGNT.getMetadatas());
-			  if(!codeRND.equals(rndFromBase)) {
-				  throw new TransfertException("Problème de prise en compte de la métadonnée codeRDN pour la suppression");
-			  }
-		  }
+  private StorageDocument genericCodeRNDProcessing(final List<UntypedMetadata> listeMetaClient, final StorageDocument documentGNT)
+      throws TransfertException, InvalidSAETypeException, MappingFromReferentialException {
+    UntypedMetadata metaRND = null;
 
-		  return documentGNT;
-	}
+    // backup codeRND initial
+    String rndFromBase = "";
+
+    // verifie que le codeRN est dans la liste de meta client
+    if (!listeMetaClient.isEmpty()) {
+      // recuperer le code rnd
+      for (final UntypedMetadata meta :listeMetaClient) {
+        if(meta.getLongCode().equals(StorageTechnicalMetadatas.TYPE.getLongCode())) {
+          metaRND = meta;
+        }
+      }
+      // on fait le controle avec ce meta en le remplacant ds documentGNT
+      if(metaRND != null) {
+        // on le remplace dans le documentGNT le temps du check
+        for(final StorageMetadata storedata: documentGNT.getMetadatas()) {
+          if(storedata.getShortCode().equals(StorageTechnicalMetadatas.TYPE.getShortCode())) {
+            rndFromBase = (String) storedata.getValue();
+            storedata.setValue(metaRND.getValue());
+
+          }
+        }
+      }
+    }
+
+    // Contrôle des droits de transfert
+    controleDroitTransfertMasse(documentGNT.getMetadatas());
+
+    // Après le control, on remet l'ancienne valeur
+    if(metaRND != null) {
+      for(final StorageMetadata storedata: documentGNT.getMetadatas()) {
+        if(storedata.getShortCode().equals(StorageTechnicalMetadatas.TYPE.getShortCode())) {
+          storedata.setValue(rndFromBase);
+        }
+      }
+      // on verifie qu'on à bien mis l'ancienne valeur
+      final String codeRND = (String) getValueMetaByCode(StorageTechnicalMetadatas.TYPE.getShortCode(),documentGNT.getMetadatas());
+      if(!codeRND.equals(rndFromBase)) {
+        throw new TransfertException("Problème de prise en compte de la métadonnée codeRDN pour la suppression");
+      }
+    }
+
+    return documentGNT;
+  }
 
   /**
    * Filtre la liste des métadonnées pour en garder que celles qui sont transférables et non vides
@@ -959,19 +959,19 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    */
   private void handleUnexpectedDocInGNS(final UUID idArchive, final boolean isReprise, final UUID idTraitementMasse, final StorageDocument documentGNS)
       throws ArchiveAlreadyTransferedException {
-	   
-	   // recuperer l'IdTraitementMasse du document GNS et verifier qu'il n'est pas vide
-	   boolean isNotIdTraitementMasseDocGNS = false;
-	   for (final StorageMetadata storageMetadata : Utils.nullSafeIterable(documentGNS.getMetadatas())) {
-         if (Constantes.ID_TRAITEMENT_MASSE_INTERNE.equals(storageMetadata.getShortCode())) {
-        	 final String value = storageMetadata.getValue().toString();
-        	 if(value.isEmpty()) {
-        		 isNotIdTraitementMasseDocGNS = true;
-        	 }
-            break;
-         }
-	   }
-	   
+
+    // recuperer l'IdTraitementMasse du document GNS et verifier qu'il n'est pas vide
+    boolean isNotIdTraitementMasseDocGNS = false;
+    for (final StorageMetadata storageMetadata : Utils.nullSafeIterable(documentGNS.getMetadatas())) {
+      if (Constantes.ID_TRAITEMENT_MASSE_INTERNE.equals(storageMetadata.getShortCode())) {
+        final String value = storageMetadata.getValue().toString();
+        if(value.isEmpty()) {
+          isNotIdTraitementMasseDocGNS = true;
+        }
+        break;
+      }
+    }
+
     final String uuid = idArchive.toString();
     if (isReprise) {
       // -- Pour la reprise, on supprime le document de la GNS et
@@ -987,12 +987,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
           final String message = format("Reprise transfert de masse - La suppression du document {} de la GNS a échoué.", uuid);
           throw new TransfertMasseRuntimeException(message);
         }
-         }  else if (isNotIdTraitementMasseDocGNS){
-        	 
-        	// -- Le document existe sur la GNS et sur la GNT, et on n'est pas en mode reprise. Ce n'est pas normal.
-             final String message = format("Le document {} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.", uuid);
-             throw new ArchiveAlreadyTransferedException(message);
-             
+      }  else if (isNotIdTraitementMasseDocGNS){
+
+        // -- Le document existe sur la GNS et sur la GNT, et on n'est pas en mode reprise. Ce n'est pas normal.
+        final String message = format("Le document {} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.", uuid);
+        throw new ArchiveAlreadyTransferedException(message);
+
       } else {
         final String message = format("Reprise transfert de masse - le document {} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution",
                                       uuid);
@@ -1279,10 +1279,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     final List<StorageMetadata> allMeta = new ArrayList<>();
     final Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO.getAllMetadataReferencesPourVerifDroits();
 
-    for (final String mapKey : listeAllMeta.keySet()) {
-      allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey).getShortCode()));
+    for (final Map.Entry<String, MetadataReference> entry : listeAllMeta.entrySet()) {
+      allMeta.add(new StorageMetadata(entry.getValue().getShortCode()));
     }
-
     // Ajout de la meta GEL puisque non récupéré avant
     allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode()));
 

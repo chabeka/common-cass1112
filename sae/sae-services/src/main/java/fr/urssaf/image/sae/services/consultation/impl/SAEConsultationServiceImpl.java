@@ -151,8 +151,8 @@ SAEConsultationService {
       final Map<String, MetadataReference> listeAllMeta = referenceDAO
           .getAllMetadataReferences();
       String shortCode;
-      for (final String mapKey : listeAllMeta.keySet()) {
-        shortCode = listeAllMeta.get(mapKey).getShortCode();
+      for (final Map.Entry<String, MetadataReference> entry : listeAllMeta.entrySet()) {
+        shortCode = entry.getValue().getShortCode();
         // On ne récupère la note, le gel et la durée de conservation que si
         // elle est demandée à la consulation (car sinon cela génère un
         // appel à DFCE inutile)
@@ -204,7 +204,7 @@ SAEConsultationService {
 
         if (!isPermitted) {
           throw new AccessDeniedException(
-                                          "Le document est refusé à la consultation car les droits sont insuffisants");
+              "Le document est refusé à la consultation car les droits sont insuffisants");
         }
 
         // On filtre uniquement sur les métadonnées souhaitées à la
@@ -267,8 +267,8 @@ SAEConsultationService {
       final Map<String, MetadataReference> listeAllMeta = referenceDAO
           .getAllMetadataReferences();
       String shortCode;
-      for (final String mapKey : listeAllMeta.keySet()) {
-        shortCode = listeAllMeta.get(mapKey).getShortCode();
+      for (final Map.Entry<String, MetadataReference> entry : listeAllMeta.entrySet()) {
+        shortCode = entry.getValue().getShortCode();
         // On ne récupère la note, le gel et la durée de conservation que
         // si elle est demandée à la consulation (car sinon cela génère
         // un appel à DFCE inutile)
@@ -318,7 +318,7 @@ SAEConsultationService {
 
         if (!isPermitted) {
           throw new AccessDeniedException(
-                                          "Le document est refusé à la consultation car les droits sont insuffisants");
+              "Le document est refusé à la consultation car les droits sont insuffisants");
         }
 
         // recuperation de l'identifiant de format

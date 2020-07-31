@@ -12,6 +12,9 @@ import javax.activation.DataHandler;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.mail.ByteArrayDataSource;
+import org.codehaus.plexus.util.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
@@ -62,156 +65,158 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 @Qualifier("saeCopieService")
 public class SAECopieServiceImpl implements SAECopieService {
+  private static final Logger LOG = LoggerFactory
+      .getLogger(SAECopieService.class);
+  @Autowired
+  private MetadataReferenceDAO referenceDAO;
 
-   @Autowired
-   private MetadataReferenceDAO referenceDAO;
+  @Autowired
+  @Qualifier("saeConsultationService")
+  private SAEConsultationService consultation;
 
-   @Autowired
-   @Qualifier("saeConsultationService")
-   private SAEConsultationService consultation;
+  @Autowired
+  private SAECaptureService capture;
 
-   @Autowired
-   private SAECaptureService capture;
-   
-   @Autowired
-   private TracesDfceSupport tracesSupport;
+  @Autowired
+  private TracesDfceSupport tracesSupport;
 
-   @Override
-   public UUID copie(UUID idCopie, List<UntypedMetadata> metadata)
-         throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
-         MetaDataUnauthorizedToConsultEx, SAECaptureServiceEx,
-         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException,
-         CaptureExistingUuuidException, ReferentialException,
-         SAECopieServiceException, ArchiveInexistanteEx {
-      // TODO Auto-generated method stub
+  @Override
+  public UUID copie(final UUID idCopie, final List<UntypedMetadata> metadata)
+      throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
+      MetaDataUnauthorizedToConsultEx, SAECaptureServiceEx,
+      ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+      InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+      DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+      RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+      UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
+      UnknownFormatException, ValidationExceptionInvalidFile,
+      UnexpectedDomainException, InvalidPagmsCombinaisonException,
+      CaptureExistingUuuidException, ReferentialException,
+      SAECopieServiceException, ArchiveInexistanteEx {
+    // TODO Auto-generated method stub
 
-      // Ajout des droits pour la consultation et l'archivage unitaire
-      AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-            .getContext().getAuthentication();
-      List<SaePrmd> saePrmds = token.getSaeDroits().get("copie");
+    // Ajout des droits pour la consultation et l'archivage unitaire
+    final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+        .getContext().getAuthentication();
+    final List<SaePrmd> saePrmds = token.getSaeDroits().get("copie");
 
-      if (!token.getSaeDroits().containsKey("archivage_unitaire")) {
-         token.getSaeDroits().put("archivage_unitaire", saePrmds);
+    if (!token.getSaeDroits().containsKey("archivage_unitaire")) {
+      token.getSaeDroits().put("archivage_unitaire", saePrmds);
+    }
+    if (!token.getSaeDroits().containsKey("consultation")) {
+      token.getSaeDroits().put("consultation", saePrmds);
+    }
+
+    final String[] roles = new String[token.getAuthorities().size() + 2];
+    int index = 0;
+    for (final GrantedAuthority authory : token.getAuthorities()) {
+      roles[index] = authory.getAuthority();
+      index++;
+    }
+    roles[index] = "ROLE_archivage_unitaire";
+    roles[++index] = "ROLE_consultation";
+
+    final AuthenticationToken authentication = AuthenticationFactory
+        .createAuthentication(
+                              ((VIContenuExtrait) token.getPrincipal()).getIdUtilisateur(),
+                              token.getPrincipal(), roles);
+
+    AuthenticationContext.setAuthenticationToken(authentication);
+
+    // Consultation du document depuis l'ID copie
+    final Map<String, MetadataReference> map = referenceDAO
+        .getArchivableMetadataReferences();
+
+    // Construire List<String> comprenant toutes les keys de la maps
+    final List<String> list = new ArrayList<>();
+    for (final Map.Entry<String, MetadataReference> e : map.entrySet()) {
+      list.add(e.getValue().getLongCode());
+    }
+
+    // Verification metadatas non specifiables
+
+    if (metadata.get(0).getLongCode() != null) {
+      int i = 0;
+      for (final UntypedMetadata md : metadata) {
+        for (final String str : list) {
+          if (md.getLongCode().equals(str)) {
+            i = 1;
+          }
+        }
+        if (i == 0) {
+          final String message = StringUtils
+              .replace(
+                       "L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable '{0}'",
+                       "{0}", md.getLongCode());
+          throw new SAECopieServiceException(message);
+        }
+        i = 0;
       }
-      if (!token.getSaeDroits().containsKey("consultation")) {
-         token.getSaeDroits().put("consultation", saePrmds);
+    }
+
+    // Appelle du service de consultation
+    final ConsultParams param = new ConsultParams(idCopie, list);
+    UntypedDocument untypedDocument = new UntypedDocument();
+
+    untypedDocument = consultation.consultation(param);
+    if (untypedDocument == null) {
+      return null;
+    }
+
+    // Modification et remplissage des nouvelles métadonnées
+    final List<UntypedMetadata> fin = new ArrayList<>();
+    Boolean bool = false;
+    for (final UntypedMetadata md : untypedDocument.getUMetadatas()) {
+      for (final UntypedMetadata md2 : metadata) {
+        if (md.getLongCode().equals(md2.getLongCode())) {
+          fin.add(md2);
+          bool = true;
+        }
       }
-
-      String[] roles = new String[token.getAuthorities().size() + 2];
-      int index = 0;
-      for (GrantedAuthority authory : token.getAuthorities()) {
-         roles[index] = authory.getAuthority();
-         index++;
+      if (bool.equals(false)) {
+        fin.add(md);
       }
-      roles[index] = "ROLE_archivage_unitaire";
-      roles[++index] = "ROLE_consultation";
+      bool = false;
+    }
 
-      AuthenticationToken authentication = AuthenticationFactory
-            .createAuthentication(
-                  ((VIContenuExtrait) token.getPrincipal()).getIdUtilisateur(),
-                  (VIContenuExtrait) token.getPrincipal(), roles);
-
-      AuthenticationContext.setAuthenticationToken(authentication);
-
-      // Consultation du document depuis l'ID copie
-      Map<String, MetadataReference> map = referenceDAO
-            .getArchivableMetadataReferences();
-
-      // Construire List<String> comprenant toutes les keys de la maps
-      List<String> list = new ArrayList<String>();
-      for (Map.Entry<String, MetadataReference> e : map.entrySet()) {
-         list.add(e.getValue().getLongCode());
+    // suppression des meta vide dans la liste
+    final Iterator<UntypedMetadata> it = fin.iterator();
+    while (it.hasNext()) {
+      final UntypedMetadata name = it.next();
+      // Do something
+      if (StringUtils.isEmpty(name.getValue())
+          || name.getLongCode().startsWith("Domaine")
+          || name.getLongCode().startsWith("IdGed")) {
+        it.remove();
       }
+    }
 
-      // Verification metadatas non specifiables
+    byte[] data = null;
+    try {
+      data = IOUtils.toByteArray(untypedDocument.getContent()
+                                 .getInputStream());
+    } catch (final IOException e) {
+      LOG.error(ExceptionUtils.getFullStackTrace(e));
+    }
 
-      if (metadata.get(0).getLongCode() != null) {
-         int i = 0;
-         for (UntypedMetadata md : metadata) {
-            for (String str : list) {
-               if (md.getLongCode().equals(str))
-                  i = 1;
-            }
-            if (i == 0) {
-               String message = StringUtils
-                     .replace(
-                           "L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable '{0}'",
-                           "{0}", md.getLongCode());
-               throw new SAECopieServiceException(message);
-            }
-            i = 0;
-         }
-      }
+    ByteArrayDataSource bads = null;
+    try {
+      bads = new ByteArrayDataSource(data, "typeMIME");
 
-      // Appelle du service de consultation
-      ConsultParams param = new ConsultParams(idCopie, list);
-      UntypedDocument untypedDocument = new UntypedDocument();
+    } catch (final IOException e1) {
+      LOG.error(ExceptionUtils.getFullStackTrace(e1));
+    }
 
-      untypedDocument = consultation.consultation(param);
-      if (untypedDocument == null) {
-         return null;
-      }
+    final DataHandler dataHandler = new DataHandler(bads);
+    // Appelle au service d'archivageBinaire
+    final CaptureResult res = capture.captureBinaire(fin, dataHandler,
+                                                     untypedDocument.getFileName());
 
-      // Modification et remplissage des nouvelles métadonnées
-      List<UntypedMetadata> fin = new ArrayList<UntypedMetadata>();
-      Boolean bool = false;
-      for (UntypedMetadata md : untypedDocument.getUMetadatas()) {
-         for (UntypedMetadata md2 : metadata) {
-            if (md.getLongCode().equals(md2.getLongCode())) {
-               fin.add(md2);
-               bool = true;
-            }
-         }
-         if (bool.equals(false)) {
-            fin.add(md);
-         }
-         bool = false;
-      }
 
-      // suppression des meta vide dans la liste
-      Iterator<UntypedMetadata> it = fin.iterator();
-      while (it.hasNext()) {
-         UntypedMetadata name = it.next();
-         // Do something
-         if (StringUtils.isEmpty(name.getValue())
-               || name.getLongCode().startsWith("Domaine")
-               || name.getLongCode().startsWith("IdGed"))
-            it.remove();
-      }
+    tracesSupport.traceCopieDocumentDansDFCE(untypedDocument.getUuid(), res.getIdDoc());
 
-      byte[] data = null;
-      try {
-         data = IOUtils.toByteArray(untypedDocument.getContent()
-               .getInputStream());
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-
-      ByteArrayDataSource bads = null;
-      try {
-         bads = new ByteArrayDataSource(data, "typeMIME");
-
-      } catch (IOException e1) {
-         // TODO Auto-generated catch block
-         e1.printStackTrace();
-      }
-
-      DataHandler dataHandler = new DataHandler(bads);
-      // Appelle au service d'archivageBinaire
-      CaptureResult res = capture.captureBinaire(fin, dataHandler,
-            untypedDocument.getFileName());
-
-      
-      tracesSupport.traceCopieDocumentDansDFCE(untypedDocument.getUuid(), res.getIdDoc());
-      
-      // Retourne l'ID du document copié
-      return res.getIdDoc();
-   }
+    // Retourne l'ID du document copié
+    return res.getIdDoc();
+  }
 
 }

@@ -44,118 +44,117 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 public class SAENoteServiceImpl extends AbstractSAEServices implements
 SAENoteService {
 
-   private static final String SEPARATOR_STRING = ", ";
+  private static final String SEPARATOR_STRING = ", ";
 
-   @Autowired
-   private SAEConvertMetadataService convertService;
+  @Autowired
+  private SAEConvertMetadataService convertService;
 
-   @Autowired
-   private SAEControlMetadataService controlService;
+  @Autowired
+  private SAEControlMetadataService controlService;
 
-   @Autowired
-   private PrmdService prmdService;
+  @Autowired
+  private PrmdService prmdService;
 
-   @Autowired
-   private MetadataReferenceDAO referenceDAO;
+  @Autowired
+  private MetadataReferenceDAO referenceDAO;
 
-   @Autowired
-   private MappingDocumentService mappingService;
+  @Autowired
+  private MappingDocumentService mappingService;
 
-   @Autowired
-   @Qualifier("storageDocumentService")
-   private StorageDocumentService storageService;
+  @Autowired
+  @Qualifier("storageDocumentService")
+  private StorageDocumentService storageService;
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(SAENoteServiceImpl.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(SAENoteServiceImpl.class);
 
-   @Override
-   public void addDocumentNote(final UUID docUuid, final String contenu, final String login)
-         throws SAEDocumentNoteException, ArchiveInexistanteEx {
+  @Override
+  public void addDocumentNote(final UUID docUuid, final String contenu, final String login)
+      throws SAEDocumentNoteException, ArchiveInexistanteEx {
 
-      // Traces debug - entrée méthode
-      final String prefixeTrc = "addDocumentNote()";
-      LOG.debug("{} - Début", prefixeTrc);
-      LOG.debug("{} - UUID du document : {}", prefixeTrc, docUuid);
-      LOG.debug("{} - Contenu de la note : {}", prefixeTrc, contenu);
-      LOG.debug("{} - Login : {}", prefixeTrc, login);
+    // Traces debug - entrée méthode
+    final String prefixeTrc = "addDocumentNote()";
+    LOG.debug("{} - Début", prefixeTrc);
+    LOG.debug("{} - UUID du document : {}", prefixeTrc, docUuid);
+    LOG.debug("{} - Contenu de la note : {}", prefixeTrc, contenu);
+    LOG.debug("{} - Login : {}", prefixeTrc, login);
 
-      try {
-         // On récupère la liste de toutes les méta du référentiel
-         final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-         final Map<String, MetadataReference> listeAllMeta = referenceDAO
-               .getAllMetadataReferencesPourVerifDroits();
-         for (final String mapKey : listeAllMeta.keySet()) {
-            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                                            .getShortCode()));
-         }
+    try {
+      // On récupère la liste de toutes les méta du référentiel
+      final List<StorageMetadata> allMeta = new ArrayList<>();
+      final Map<String, MetadataReference> listeAllMeta = referenceDAO
+          .getAllMetadataReferencesPourVerifDroits();
 
-         final UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
-
-         // On récupère les métadonnées du document sur lequel on souhaite
-         // ajouter la note pour vérifier les droits
-         final List<StorageMetadata> listeStorageMeta = this
-               .getStorageDocumentService()
-               .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
-         if (listeStorageMeta.size() == 0) {
-            final String message = StringUtils
-                  .replace(
-                           "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                           "{0}", docUuid.toString());
-            throw new ArchiveInexistanteEx(message);
-         }
-         final List<UntypedMetadata> listeUMeta = mappingService
-               .storageMetadataToUntypedMetadata(listeStorageMeta);
-
-         // Vérification des droits
-         LOG.debug("{} - Récupération des droits", prefixeTrc);
-         final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-               .getContext().getAuthentication();
-         final List<SaePrmd> saePrmds = token.getSaeDroits().get("ajout_note");
-         LOG.debug("{} - Vérification des droits", prefixeTrc);
-         final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
-
-         if (!isPermitted) {
-            throw new AccessDeniedException(
-                  "L'ajout de note est refusé car les droits sont insuffisants");
-         }
-
-         // On ajoute la note au document
-         LOG.debug("{} - Ajout de la note au document", prefixeTrc);
-         storageService.addDocumentNote(docUuid, contenu, login);
-
-      } catch (final DocumentNoteServiceEx e) {
-         throw new SAEDocumentNoteException(
-                                            "Une erreur a eu lieu lors de l'ajout d'une note", e);
-      } catch (final ReferentialException e) {
-         throw new SAEDocumentNoteException(
-                                            "Une erreur a eu lieu lors de l'ajout d'une note", e);
-      } catch (final RetrievalServiceEx e) {
-         throw new SAEDocumentNoteException(
-                                            "Une erreur a eu lieu lors de l'ajout d'une note", e);
-      } catch (final InvalidSAETypeException e) {
-         throw new SAEDocumentNoteException(
-                                            "Une erreur a eu lieu lors de l'ajout d'une note", e);
-      } catch (final MappingFromReferentialException e) {
-         throw new SAEDocumentNoteException(
-                                            "Une erreur a eu lieu lors de l'ajout d'une note", e);
+      for (final Map.Entry<String, MetadataReference> entry : listeAllMeta.entrySet()) {
+        allMeta.add(new StorageMetadata(entry.getValue().getShortCode()));
       }
 
-      LOG.debug("{} - Sortie", prefixeTrc);
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
-   }
+      // On récupère les métadonnées du document sur lequel on souhaite
+      // ajouter la note pour vérifier les droits
+      final List<StorageMetadata> listeStorageMeta = getStorageDocumentService()
+          .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+      if (listeStorageMeta.size() == 0) {
+        final String message = StringUtils
+            .replace(
+                     "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
+                     "{0}", docUuid.toString());
+        throw new ArchiveInexistanteEx(message);
+      }
+      final List<UntypedMetadata> listeUMeta = mappingService
+          .storageMetadataToUntypedMetadata(listeStorageMeta);
 
-   @Override
-   public List<StorageDocumentNote> getDocumentNotes(final UUID docUuid)
-         throws SAEDocumentNoteException {
+      // Vérification des droits
+      LOG.debug("{} - Récupération des droits", prefixeTrc);
+      final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+          .getContext().getAuthentication();
+      final List<SaePrmd> saePrmds = token.getSaeDroits().get("ajout_note");
+      LOG.debug("{} - Vérification des droits", prefixeTrc);
+      final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 
-      // Traces debug - entrée méthode
-      final String prefixeTrc = "getDocumentNotes()";
-      LOG.debug("{} - Début", prefixeTrc);
-      LOG.debug("{} - UUID du document : {}", prefixeTrc, docUuid);
-      LOG.debug("{} - Sortie", prefixeTrc);
+      if (!isPermitted) {
+        throw new AccessDeniedException(
+            "L'ajout de note est refusé car les droits sont insuffisants");
+      }
 
-      return getStorageDocumentService().getDocumentsNotes(docUuid);
+      // On ajoute la note au document
+      LOG.debug("{} - Ajout de la note au document", prefixeTrc);
+      storageService.addDocumentNote(docUuid, contenu, login);
 
-   }
+    } catch (final DocumentNoteServiceEx e) {
+      throw new SAEDocumentNoteException(
+                                         "Une erreur a eu lieu lors de l'ajout d'une note", e);
+    } catch (final ReferentialException e) {
+      throw new SAEDocumentNoteException(
+                                         "Une erreur a eu lieu lors de l'ajout d'une note", e);
+    } catch (final RetrievalServiceEx e) {
+      throw new SAEDocumentNoteException(
+                                         "Une erreur a eu lieu lors de l'ajout d'une note", e);
+    } catch (final InvalidSAETypeException e) {
+      throw new SAEDocumentNoteException(
+                                         "Une erreur a eu lieu lors de l'ajout d'une note", e);
+    } catch (final MappingFromReferentialException e) {
+      throw new SAEDocumentNoteException(
+                                         "Une erreur a eu lieu lors de l'ajout d'une note", e);
+    }
+
+    LOG.debug("{} - Sortie", prefixeTrc);
+
+  }
+
+  @Override
+  public List<StorageDocumentNote> getDocumentNotes(final UUID docUuid)
+      throws SAEDocumentNoteException {
+
+    // Traces debug - entrée méthode
+    final String prefixeTrc = "getDocumentNotes()";
+    LOG.debug("{} - Début", prefixeTrc);
+    LOG.debug("{} - UUID du document : {}", prefixeTrc, docUuid);
+    LOG.debug("{} - Sortie", prefixeTrc);
+
+    return getStorageDocumentService().getDocumentsNotes(docUuid);
+
+  }
 
 }

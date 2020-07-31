@@ -20,26 +20,26 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 public class SAEDocumentExistantServiceImpl implements
 SAEDocumentExistantService {
 
-   @Autowired
-   private MetadataReferenceDAO referenceDAO;
+  @Autowired
+  private MetadataReferenceDAO referenceDAO;
 
-   @Autowired
-   @Qualifier("storageDocumentService")
-   private StorageDocumentService storageDocumentService;
+  @Autowired
+  @Qualifier("storageDocumentService")
+  private StorageDocumentService storageDocumentService;
 
 
-   @Override
-   public boolean documentExistant(final UUID idGed) throws
-   SearchingServiceEx, ConnectionServiceEx {
-      final UUIDCriteria uuidCrit = new UUIDCriteria(idGed,
-                                                     new ArrayList<StorageMetadata>());
-      final StorageDocument document = storageDocumentService
-            .searchMetaDatasByUUIDCriteria(uuidCrit);
-      if (document == null || (document != null && document.getUuid() == null)) {
-         return false;
-      }
+  @Override
+  public boolean documentExistant(final UUID idGed) throws
+  SearchingServiceEx, ConnectionServiceEx {
+    final UUIDCriteria uuidCrit = new UUIDCriteria(idGed,
+                                                   new ArrayList<StorageMetadata>());
+    final StorageDocument document = storageDocumentService
+        .searchMetaDatasByUUIDCriteria(uuidCrit);
+    if (document.getUuid() == null) {
+      return false;
+    }
 
-      return true;
-   }
+    return true;
+  }
 
 }

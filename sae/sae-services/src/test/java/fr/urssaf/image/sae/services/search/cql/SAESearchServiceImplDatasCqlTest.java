@@ -87,8 +87,6 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 import net.docubase.toolkit.model.document.Document;
 
-/*@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })*/
 public class SAESearchServiceImplDatasCqlTest extends AbstractServiceCqlTest {
 
    @Autowired
