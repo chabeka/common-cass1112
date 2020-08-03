@@ -1,9 +1,9 @@
 package fr.urssaf.image.sae.services.batch.transfert.support.controle.batch;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -173,11 +173,11 @@ ItemProcessor<UntypedDocument, StorageDocument> {
          getIndexRepriseDoneListe().add(getIndexOfCurrentDocument());
          return getEmptyDocumentFromItem(item);
       }
-      catch ( TransfertMasseRuntimeException e) {
+      catch ( final TransfertMasseRuntimeException e) {
          return sendException(item, e.getMessage(), e);
       }
       catch (final Exception e) {
-         return sendException(item, "Une erreur est survenue lors du contrôle des documents", e);
+         return sendException(item, "Une erreur est survenue lors du contrôle des documents : " + Objects.toString(e.getMessage(), ""), e);
       }
    }
 
@@ -229,7 +229,8 @@ ItemProcessor<UntypedDocument, StorageDocument> {
          return sendException(item, message, new ArchiveInexistanteEx(message));
       }
       catch (final Exception e) {
-         final String message = "Une exception a eu lieu lors de la récupération des métadonnées du document de la corbeille";
+         final String message = "Une exception a eu lieu lors de la récupération des métadonnées du document de la corbeille : "
+               + Objects.toString(e.getMessage(), "");
          return sendException(item, message, e);
       }
 
