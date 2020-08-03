@@ -178,10 +178,8 @@ public class TraceDestinataireCqlSupport {
         // nouveau destinataires à ajouter
         final Map<String, List<String>> newDestinataires = trace.getDestinataires();
         if (MapUtils.isNotEmpty(newDestinataires)) {
-          for (final String key : newDestinataires.keySet()) {
-            final List<String> desti = newDestinataires.get(key);
-            // On ecrase l'existant avec le nouveau s'il y en un avec la meme clé "key"
-            destinatairesFromDB.put(key, desti);
+          for (final Map.Entry<String, List<String>> entry : newDestinataires.entrySet()) {
+            destinatairesFromDB.put(entry.getKey(), entry.getValue());
           }
         }
         traceFromBD.setDestinataires(destinatairesFromDB);

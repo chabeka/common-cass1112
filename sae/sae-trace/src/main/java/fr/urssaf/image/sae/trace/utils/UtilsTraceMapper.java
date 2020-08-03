@@ -39,15 +39,17 @@ public class UtilsTraceMapper {
    * @return Trace Thrift
    */
   public static TraceJournalEvt createTraceJournalEvtFromCqlToThrift(final TraceJournalEvtCql traceCql) {
+    if (traceCql == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceJournalEvt tr = new TraceJournalEvt(traceCql.getIdentifiant(), traceCql.getTimestamp());
-
     tr.setCodeEvt(traceCql.getCodeEvt() == null ? "NULL" : traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
     tr.setContratService(traceCql.getContratService());
     tr.setLogin(traceCql.getLogin());
     tr.setPagms(traceCql.getPagms());
     final Map<String, Object> infos = new HashMap<>();
-    if (traceCql != null && traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
+    if (traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
       for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
         infos.put(entry.getKey(), entry.getValue());
       }
@@ -67,8 +69,11 @@ public class UtilsTraceMapper {
    * @return Trace Cql
    */
   public static TraceJournalEvtCql createTraceJournalEvtFromThriftToCql(final TraceJournalEvt traceThrift) {
+    if (traceThrift == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceJournalEvtCql tr = new TraceJournalEvtCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
-    // tr.setAction(traceThrift.getAction());
+
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
     tr.setContratService(traceThrift.getContratService());
@@ -92,8 +97,10 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegSecurite createTraceRegSecuriteFromCqlToThrift(final TraceRegSecuriteCql traceCql) {
+    if (traceCql == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegSecurite tr = new TraceRegSecurite(traceCql.getIdentifiant(), traceCql.getTimestamp());
-    // tr.setAction(traceCql.getAction());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
     tr.setContratService(traceCql.getContratService());
@@ -112,8 +119,10 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegSecuriteCql createTraceRegSecuFromThriftToCql(final TraceRegSecurite traceThrift) {
+    if (traceThrift == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegSecuriteCql tr = new TraceRegSecuriteCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
-    // tr.setAction(traceThrift.getAction());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
     tr.setContratService(traceThrift.getContratService());
@@ -138,8 +147,10 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegTechnique createTraceRegTechniqueFromCqlToThrift(final TraceRegTechniqueCql traceCql) {
+    if (traceCql == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegTechnique tr = new TraceRegTechnique(traceCql.getIdentifiant(), traceCql.getTimestamp());
-    // tr.setAction(traceCql.getAction());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
     tr.setContratService(traceCql.getContratService());
@@ -159,8 +170,10 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegTechniqueCql createTraceRegTechniqueFromThriftToCql(final TraceRegTechnique traceThrift) {
+    if (traceThrift == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegTechniqueCql tr = new TraceRegTechniqueCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
-    // tr.setAction(traceThrift.getAction());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
     tr.setContratService(traceThrift.getContratService());
@@ -184,6 +197,9 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegExploitation createTraceRegExploitationFromCqlToThrift(final TraceRegExploitationCql traceCql) {
+    if (traceCql == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegExploitation tr = new TraceRegExploitation(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setAction(traceCql.getAction());
     tr.setCodeEvt(traceCql.getCodeEvt());
@@ -203,6 +219,9 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegExploitationCql createTraceRegExploitationFromThriftToCql(final TraceRegExploitation traceThrift) {
+    if (traceThrift == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegExploitationCql tr = new TraceRegExploitationCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setAction(traceThrift.getAction());
     tr.setCodeEvt(traceThrift.getCodeEvt());
@@ -237,6 +256,9 @@ public class UtilsTraceMapper {
    * @return index cql
    */
   public static TraceJournalEvtIndexCql createJournalIndexFromThriftToCql(final TraceJournalEvtIndex index, final String key) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceJournalEvtIndexCql tr = new TraceJournalEvtIndexCql();
 
     tr.setContexte(index.getContexte());
@@ -259,8 +281,10 @@ public class UtilsTraceMapper {
    * @return index Thrift
    */
   public static TraceJournalEvtIndex createTraceJournalIndexFromCqlToThrift(final TraceJournalEvtIndexCql index) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceJournalEvtIndex tr = new TraceJournalEvtIndex();
-    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -272,8 +296,10 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegSecuriteIndexCql createTraceRegSecuIndexFromThriftToCql(final TraceRegSecuriteIndex index, final String key) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegSecuriteIndexCql tr = new TraceRegSecuriteIndexCql();
-    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -285,8 +311,10 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegSecuriteIndex createTraceRegSecuIndexFromCqlToThrift(final TraceRegSecuriteIndexCql index) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegSecuriteIndex tr = new TraceRegSecuriteIndex();
-    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -298,8 +326,10 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegTechniqueIndexCql createTraceRegTechniqueIndexFromThriftToCql(final TraceRegTechniqueIndex index, final String key) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegTechniqueIndexCql tr = new TraceRegTechniqueIndexCql();
-    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -311,8 +341,10 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegTechniqueIndex createTraceRegTechniqueIndexFromCqlToThrift(final TraceRegTechniqueIndexCql index) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegTechniqueIndex tr = new TraceRegTechniqueIndex();
-    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -324,6 +356,9 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegExploitationIndexCql createTraceRegExploitationIndexFromThriftToCql(final TraceRegExploitationIndex index, final String key) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegExploitationIndexCql tr = new TraceRegExploitationIndexCql();
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
@@ -336,6 +371,9 @@ public class UtilsTraceMapper {
   }
 
   public static TraceRegExploitationIndex createTraceRegExploitationIndexFromCqlToThrift(final TraceRegExploitationIndexCql index) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceRegExploitationIndex tr = new TraceRegExploitationIndex();
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
@@ -355,6 +393,9 @@ public class UtilsTraceMapper {
    * @return un {@link TraceJournalEvtIndex}
    */
   public static TraceJournalEvtIndexDoc createTraceIndexDocFromCqlToThrift(final TraceJournalEvtIndexDocCql index) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceJournalEvtIndexDoc tr = new TraceJournalEvtIndexDoc();
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
@@ -382,6 +423,9 @@ public class UtilsTraceMapper {
    * @return un {@link TraceJournalEvtIndex}
    */
   public static TraceJournalEvtIndexDocCql createTraceIndexDocFromThriftToCql(final TraceJournalEvtIndexDoc index, final String key) {
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceJournalEvtIndexDocCql tr = new TraceJournalEvtIndexDocCql();
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
@@ -419,7 +463,9 @@ public class UtilsTraceMapper {
    * @return un {@link TraceJournalEvtIndex}
    */
   public static TraceJournalEvtIndexDocCql createTraceIndexDocFromCqlToThrift(final TraceJournalEvtIndexDoc index, final String idDoc) {
-
+    if (index == null) {
+      throw new IllegalArgumentException("la trace doit etre non nulle");
+    }
     final TraceJournalEvtIndexDocCql tr = new TraceJournalEvtIndexDocCql();
     tr.setIdentifiantIndex(java.util.UUID.fromString(idDoc));
     tr.setIdentifiant(index.getIdentifiant());

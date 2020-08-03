@@ -191,7 +191,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     while (iterator.hasNext()) {
       if (limite == null) {
         list.add(iterator.next());
-      } else if (limite != null && count < limite) {
+      } else if (count < limite) {
         list.add(iterator.next());
       }
       count++;
@@ -220,7 +220,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     while (iterator.hasNext()) {
       if (limite == null) {
         list.add(iterator.next());
-      } else if (limite != null && count < limite) {
+      } else if (count < limite) {
         list.add(iterator.next());
       }
       count++;
@@ -242,7 +242,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     while (iterator.hasNext()) {
       if (limite == null) {
         list.add(iterator.next());
-      } else if (limite != null && count < limite) {
+      } else if (count < limite) {
         list.add(iterator.next());
       }
       count++;
