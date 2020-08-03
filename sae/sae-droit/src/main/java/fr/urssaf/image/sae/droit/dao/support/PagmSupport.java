@@ -8,27 +8,16 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.droit.dao.PagmDao;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
-import fr.urssaf.image.sae.droit.dao.modelcql.PagmCql;
 import fr.urssaf.image.sae.droit.dao.serializer.PagmSerializer;
-import me.prettyprint.cassandra.serializers.BytesArraySerializer;
-import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.beans.OrderedRows;
-import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.QueryResult;
-import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
  * Classe de support de la classe {@link PagmDao}
@@ -155,83 +144,7 @@ public class PagmSupport {
 
       pagms.add(pagm);
     }
-
     return pagms;
-
   }
 
-
-  /**
-   * Retourne l'ensemble des Pagm sous forme de liste PagmCql
-   * 
-   * @return l'ensemble des pagm
-   */
-
-  public final List<PagmCql> findAll() {
-
-    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-    final RangeSlicesQuery<byte[], String, byte[]> rangeSlicesQuery = HFactory
-        .createRangeSlicesQuery(dao.getKeyspace(),
-                                bytesSerializer,
-                                StringSerializer.get(),
-                                bytesSerializer);
-    rangeSlicesQuery.setColumnFamily(dao.getColumnFamilyName());
-    rangeSlicesQuery.setRange(
-                              StringUtils.EMPTY,
-                              StringUtils.EMPTY,
-                              false,
-                              AbstractDao.DEFAULT_MAX_COLS);
-    rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
-    QueryResult<OrderedRows<byte[], String, byte[]>> queryResult;
-    queryResult = rangeSlicesQuery.execute();
-    // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
-    // son utilisation
-    final QueryResultConverter<byte[], String, byte[]> converter = new QueryResultConverter<>();
-    final ColumnFamilyResultWrapper<byte[], String> result = converter
-        .getColumnFamilyResultWrapper(queryResult,
-                                      bytesSerializer,
-                                      StringSerializer.get(),
-                                      bytesSerializer);
-    // On itère sur le résultat
-    final HectorIterator<byte[], String> resultIterator = new HectorIterator<>(
-        result);
-    final List<PagmCql> list = new ArrayList<>();
-    for (final ColumnFamilyResult<byte[], String> row : resultIterator) {
-      if (row != null && row.hasResults()) {
-
-        final PagmCql pagm = getPagmFromResult(row);
-        list.add(pagm);
-      }
-    }
-    return list;
-  }
-
-  private PagmCql getPagmFromResult(final ColumnFamilyResult<byte[], String> result) {
-
-    PagmCql pagm = null;
-
-    if (result != null && result.hasResults()) {
-      pagm = new PagmCql();
-
-      pagm.setIdClient(result.getKey().toString());
-
-      pagm.setCode(result.getString("code"));
-
-      pagm.setPagma(result.getString("pagma"));
-
-      pagm.setPagmf(result.getString("pagmf"));
-
-      pagm.setPagmp(result.getString("pagmp"));
-
-      pagm.setDescription(result.getString("description"));
-
-      pagm.setCompressionPdfActive(result.getBoolean("compressionPdfActive"));
-
-      pagm.setSeuilCompressionPdf(result.getInteger("seuilCompressionPdf"));
-
-      // Voir pour parametres
-    }
-
-    return pagm;
-  }
 }

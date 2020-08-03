@@ -307,18 +307,22 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     }
 
     // initialisation du cache des actions
-    for (final String action : pagma.getActionUnitaires()) {
-      final ActionUnitaire actionUnitaire = actionSupport.find(action);
-      if (actionUnitaire != null) {
-        actionsCache.put(action, actionUnitaire);
-      } 
+    if (pagma.getActionUnitaires() != null) {
+      for (final String action : pagma.getActionUnitaires()) {
+        final ActionUnitaire actionUnitaire = actionSupport.find(action);
+        if (actionUnitaire != null) {
+          actionsCache.put(action, actionUnitaire);
+        } 
+      }
     }
 
     // initialisation du cache des perimetres de donnees
-    final Prmd prmd = prmdSupport.find(pagmp.getPrmd());
-    if (prmd != null) {
-      prmdsCache.put(pagmp.getPrmd(), prmd);
-    } 
+    if (pagmp.getPrmd() != null) {
+      final Prmd prmd = prmdSupport.find(pagmp.getPrmd());
+      if (prmd != null) {
+        prmdsCache.put(pagmp.getPrmd(), prmd);
+      } 
+    }
 
     if (pagmf != null) {
       // initialisation du cache des profil de controle de format

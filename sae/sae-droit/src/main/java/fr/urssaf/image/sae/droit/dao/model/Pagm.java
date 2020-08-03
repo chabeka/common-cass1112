@@ -191,9 +191,9 @@ public class Pagm {
           && parametres.keySet()
           .containsAll(pagm.getParametres().keySet())
           && (compressionPdfActive == null && pagm.getCompressionPdfActive() == null 
-          || compressionPdfActive.equals(pagm.getCompressionPdfActive()))
+              || pagm.getCompressionPdfActive() != null && compressionPdfActive.equals(pagm.getCompressionPdfActive()))
           && (seuilCompressionPdf == null && pagm.getSeuilCompressionPdf() == null 
-          || seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf()));
+              || pagm.getSeuilCompressionPdf() != null && seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf()));
 
     }
     return areEquals;
@@ -206,15 +206,15 @@ public class Pagm {
    */
   @Override
   public final String toString() {
-    final StringBuffer buffer = new StringBuffer();
-    for (final String key : parametres.keySet()) {
-      buffer.append(key + " = " + parametres.get(key) + "\n");
+    final StringBuilder str = new StringBuilder();
+    for (final Map.Entry<String, String> entry : parametres.entrySet()) {
+      str.append(entry.getKey() + " = " + entry.getValue() + "\n");
     }
 
     return "code : " + code + "\n" + "description : " + description + "\n"
     + "pagma : " + pagma + "\n" + "pagmf : " + pagmf + "\n"
     + "pagmp : " + pagmp + "\n" + "liste des parametres :\n"
-    + buffer.toString() + "\n"
+        + str.toString() + "\n"
     + "compressionPdfActive : " + compressionPdfActive + "\n"
     + "seuilCompressionPdf : " + seuilCompressionPdf + "\n";
   }

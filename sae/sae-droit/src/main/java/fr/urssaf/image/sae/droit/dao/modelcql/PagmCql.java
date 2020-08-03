@@ -277,10 +277,9 @@ public class PagmCql implements Comparable<PagmCql> {
   @Override
   public final String toString() {
     final StringBuffer buffer = new StringBuffer();
-    for (final String key : parametres.keySet()) {
-      buffer.append(key + " = " + parametres.get(key) + "\n");
+    for (final Map.Entry<String, String> entry : parametres.entrySet()) {
+      buffer.append(entry.getKey() + " = " + entry.getValue() + "\n");
     }
-
     return "code : " + code + "\n" + "description : " + description + "\n"
     + "pagma : " + pagma + "\n" + "pagmf : " + pagmf + "\n"
     + "pagmp : " + pagmp + "\n" + "liste des parametres :\n"

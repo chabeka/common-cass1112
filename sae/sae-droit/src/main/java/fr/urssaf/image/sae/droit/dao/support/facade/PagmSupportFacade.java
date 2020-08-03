@@ -182,6 +182,7 @@ public class PagmSupportFacade {
     case MODE_API.DUAL_MODE_READ_CQL:
       pagmSupport.delete(idClient, codePagm, clockSupport.currentCLock(), mutator);
       pagmCqlSupport.delete(idClient, codePagm);
+      break;
 
     default:
       throw new ModeGestionAPIUnkownException("PagmSupportFacade/delete/Mode API inconnu");

@@ -127,8 +127,8 @@ public class Prmd implements Comparable<Prmd> {
   public final String toString() {
 
     final StringBuffer buffer = new StringBuffer("\nliste des metadonnees :");
-    for (final String key : metadata.keySet()) {
-      buffer.append("\nclé = " + key + " / valeur = " + metadata.get(key));
+    for (final Map.Entry<String, List<String>> entry : metadata.entrySet()) {
+      buffer.append("\nclé = " + entry.getKey() + " / valeur = " + entry.getValue());
     }
 
     return "code : " + code + "\ndescription : " + description

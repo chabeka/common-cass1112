@@ -30,7 +30,7 @@ import me.prettyprint.hector.api.mutation.Mutator;
 @Repository
 public class FormatControlProfilDao extends AbstractDao<String, String> {
 
-   /**
+  /**
    * Constructeur
    * 
    * @param keyspace
@@ -84,22 +84,20 @@ public class FormatControlProfilDao extends AbstractDao<String, String> {
                                                                            "erreur.control.profil.obligatoire", variable.toString()));
     }
 
-    if (formatProfil != null) {
-      final boolean validation = formatProfil.isFormatValidation();
-      final String validationMode = formatProfil.getFormatValidationMode();
-      if (validation) {
-        if (!StringUtils.isBlank(validationMode)
-            && !EnumValidationMode.contains(validationMode)) {
+    final boolean validation = formatProfil.isFormatValidation();
+    final String validationMode = formatProfil.getFormatValidationMode();
+    if (validation) {
+      if (!StringUtils.isBlank(validationMode)
+          && !EnumValidationMode.contains(validationMode)) {
 
-          throw new IllegalArgumentException(ResourceMessagesUtils
-                                             .loadMessage("erreur.param.format.valid.mode.obligatoire"));
-        }
-      } else {
-        if (!StringUtils.isBlank(validationMode)
-            && !(Constantes.AUCUN.equalsIgnoreCase(validationMode) || Constantes.NONE
-                .equalsIgnoreCase(validationMode))) {
-          variable.add(Constantes.FORMAT_VALIDATION_MODE);
-        }
+        throw new IllegalArgumentException(ResourceMessagesUtils
+                                           .loadMessage("erreur.param.format.valid.mode.obligatoire"));
+      }
+    } else {
+      if (!StringUtils.isBlank(validationMode)
+          && !(Constantes.AUCUN.equalsIgnoreCase(validationMode) || Constantes.NONE
+              .equalsIgnoreCase(validationMode))) {
+        variable.add(Constantes.FORMAT_VALIDATION_MODE);
       }
     }
 
