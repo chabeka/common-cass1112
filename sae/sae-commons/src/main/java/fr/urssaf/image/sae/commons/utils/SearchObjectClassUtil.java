@@ -29,12 +29,13 @@ public class SearchObjectClassUtil {
     } else {
       reentrantLevel++;
     }
-    final List<String> listeKlazzSearch = Arrays.asList(arrayKlazzSearch);
+
     Object objFind = null;
     if (objAnalyse == null || arrayKlazzSearch == null) {
       reentrantLevel--;
       return null;
     } else {
+      final List<String> listeKlazzSearch = Arrays.asList(arrayKlazzSearch);
       // On récupere la class de l'objet à analyser
       final Class klazz = objAnalyse.getClass();
       // On ne gére pas les primitif et les types génériques
@@ -82,7 +83,7 @@ public class SearchObjectClassUtil {
           }
         }
         catch (final IllegalAccessException | IllegalArgumentException e) {
-        	LOGGER.error(e.getMessage());
+          LOGGER.error(e.getMessage());
         }
       }
     }
