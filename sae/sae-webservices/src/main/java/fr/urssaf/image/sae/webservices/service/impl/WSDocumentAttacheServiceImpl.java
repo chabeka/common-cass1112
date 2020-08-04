@@ -84,9 +84,6 @@ public final class WSDocumentAttacheServiceImpl implements
             final GetDocFormatOrigineResponse response = ObjectGetDocFormatOrigineFactory
                   .createGetDocFormatOrigineResponse(uDocAtt.getContent(),
                         metadatas);
-            if (response == null) {
-               LOG.debug("{} - Valeur de retour : null", prefixeTrc);
-            }
             // Traces debug - sortie méthode
             LOG.debug("{} - Sortie", prefixeTrc);
 

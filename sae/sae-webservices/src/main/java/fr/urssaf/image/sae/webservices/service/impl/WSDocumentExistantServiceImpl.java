@@ -19,47 +19,43 @@ import fr.urssaf.image.sae.webservices.service.WSDocumentExistantService;
 @Service
 public class WSDocumentExistantServiceImpl implements WSDocumentExistantService{
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(WSDocumentExistantServiceImpl.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(WSDocumentExistantServiceImpl.class);
 
-   @Autowired
-   private SAEDocumentExistantService saeService;
+  @Autowired
+  private SAEDocumentExistantService saeService;
 
-   @Override
-   public DocumentExistantResponse documentExistant(final DocumentExistant request)
-         throws DocumentExistantAxisFault, SearchingServiceEx,
-         ConnectionServiceEx {
+  @Override
+  public DocumentExistantResponse documentExistant(final DocumentExistant request)
+      throws DocumentExistantAxisFault, SearchingServiceEx,
+      ConnectionServiceEx {
 
-      final String prefixeTrc = "copie()";
-      final UUID uuid = UUID.fromString(request.getDocumentExistant().getIdGed()
-            .getUuidType());
-      LOG.debug("{} - UUID envoyé par l'application cliente : {}", "copie()",
-            uuid);
+    final String prefixeTrc = "copie()";
+    final UUID uuid = UUID.fromString(request.getDocumentExistant().getIdGed()
+                                      .getUuidType());
+    LOG.debug("{} - UUID envoyé par l'application cliente : {}", "copie()",
+              uuid);
 
-      final boolean res = saeService.documentExistant(uuid);
-      LOG.debug("{} - UUID : \"{}\"", prefixeTrc, res);
-      final DocumentExistantResponse response = createDocumentExistantResponse();
-      final DocumentExistantResponseType responseType = response
-            .getDocumentExistantResponse();
-      responseType.setIsDocExist(res);
-      if (response == null) {
-         LOG.debug("{} - Valeur de retour : null", prefixeTrc);
-      } else {
-         LOG.debug("{} - Valeur de retour isDocExist: \"{}\"", prefixeTrc,
-               response.getDocumentExistantResponse().getIsDocExist());
-      }
-      LOG.debug("{} - Sortie", prefixeTrc);
-      // Fin des traces debug - sortie méthode
-      return response;
-   }
+    final boolean res = saeService.documentExistant(uuid);
+    LOG.debug("{} - UUID : \"{}\"", prefixeTrc, res);
+    final DocumentExistantResponse response = createDocumentExistantResponse();
+    final DocumentExistantResponseType responseType = response
+        .getDocumentExistantResponse();
+    responseType.setIsDocExist(res);
+    LOG.debug("{} - Valeur de retour isDocExist: \"{}\"", prefixeTrc,
+              response.getDocumentExistantResponse().getIsDocExist());
+    LOG.debug("{} - Sortie", prefixeTrc);
+    // Fin des traces debug - sortie méthode
+    return response;
+  }
 
-   private static DocumentExistantResponse createDocumentExistantResponse() {
+  private static DocumentExistantResponse createDocumentExistantResponse() {
 
-      final DocumentExistantResponse response = new DocumentExistantResponse();
-      final DocumentExistantResponseType responseType = new DocumentExistantResponseType();
-      response.setDocumentExistantResponse(responseType);
+    final DocumentExistantResponse response = new DocumentExistantResponse();
+    final DocumentExistantResponseType responseType = new DocumentExistantResponseType();
+    response.setDocumentExistantResponse(responseType);
 
-      return response;
-   }
+    return response;
+  }
 
 }

@@ -53,7 +53,7 @@ public final class ObjectArchivageUnitaireFactory {
       String prefixeTrc = "createArchivageUnitaireResponse()";
       LOG.debug("{} - Début", prefixeTrc);
       ArchivageUnitaireResponse response = createArchivageUnitaireResponse();
-      ArchivageUnitaireResponseType responseType = response
+      final ArchivageUnitaireResponseType responseType = response
             .getArchivageUnitaireResponse();
 
       responseType.setIdArchive(ObjectTypeFactory.createUuidType(idArchive));

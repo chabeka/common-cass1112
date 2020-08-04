@@ -51,10 +51,10 @@ public class LogHandler extends AbstractHandler {
    * @param msgContext Context SOAP
    * @param dureeMaxRequeteSoap Durée maximum d'une requete SOAP en seconde
    */
-  private void logRequestInformation(final MessageContext msgContext, int dureeMaxRequeteSoap) {
-    String messageContextID = msgContext.getLogCorrelationID();
+  private void logRequestInformation(final MessageContext msgContext, final int dureeMaxRequeteSoap) {
+    final String messageContextID = msgContext.getLogCorrelationID();
     LOG.warn("MessageContextID::" + messageContextID + " - Temps d'exécution de la requête est supérieur à " + dureeMaxRequeteSoap + " secondes");
-    if (msgContext != null && msgContext.getEnvelope() != null && msgContext.getEnvelope().getBody() != null) {
+    if (msgContext.getEnvelope() != null && msgContext.getEnvelope().getBody() != null) {
       LOG.warn("MessageContextID::" + messageContextID + " - Request : " + msgContext.getEnvelope().getBody());
     }
   }
