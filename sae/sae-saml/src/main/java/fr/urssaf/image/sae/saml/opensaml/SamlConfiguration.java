@@ -17,18 +17,19 @@ import org.opensaml.xml.ConfigurationException;
  */
 public class SamlConfiguration {
 
-   /**
-    * appel de la méthode {@link DefaultBootstrap#bootstrap()}<br>
-    * <br>
-    * 
-    * throws IllegalStateException : {@link ConfigurationException} est levé
-    */
-   public SamlConfiguration() {
+  /**
+   * appel de la méthode {@link DefaultBootstrap#bootstrap()}<br>
+   * <br>
+   * 
+   * throws IllegalStateException : {@link ConfigurationException} est levé
+   */
 
-      try {
-         DefaultBootstrap.bootstrap();
-      } catch (ConfigurationException e) {
-         throw new IllegalStateException(e);
-      }
-   }
+  public void initializeSamlConfiguration() {
+
+    try {
+      DefaultBootstrap.bootstrap();
+    } catch (final ConfigurationException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 }
