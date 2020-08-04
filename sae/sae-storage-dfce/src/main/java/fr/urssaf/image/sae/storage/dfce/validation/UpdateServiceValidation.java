@@ -9,7 +9,9 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
+import fr.urssaf.image.sae.storage.dfce.utils.IntegerUtils;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+
 
 /**
  * Fournit des méthodes de validation des arguments des services de suppression
@@ -41,7 +43,7 @@ public class UpdateServiceValidation {
                      StorageMessageHandler.getMessage(CODE_ERROR,
                                                       "update.uuid.required",
                                                       "update.impact",
-                                                      "update.action"));
+                         "update.action"));
 
   }
 
@@ -59,18 +61,29 @@ public class UpdateServiceValidation {
                      StorageMessageHandler.getMessage(CODE_ERROR,
                                                       "rollback.processId.required",
                                                       "rollback.processId.impact",
-                                                      "rollback.processId.action"));
-    try {
-      Integer.parseInt(StorageMessageHandler
-                                            .getMessage("max.lucene.results"));
-    }
-    catch (final NumberFormatException e) {
+                         "rollback.processId.action"));
+
+    if (!IntegerUtils.tryParse(StorageMessageHandler
+                                                    .getMessage("max.lucene.results"))) {
       Validate.isTrue(true,
                       StorageMessageHandler.getMessage(CODE_ERROR,
                                                        "max.lucene.results.required",
                                                        "max.lucene.results.impact",
-                                                       "max.lucene.results.action"));
+                          "max.lucene.results.action"));
     }
+    /*
+     * try {
+     * Integer.parseInt(StorageMessageHandler
+     * .getMessage("max.lucene.results"));
+     * }
+     * catch (final NumberFormatException e) {
+     * Validate.isTrue(true,
+     * StorageMessageHandler.getMessage(CODE_ERROR,
+     * "max.lucene.results.required",
+     * "max.lucene.results.impact",
+     * "max.lucene.results.action"));
+     * }
+     */
 
   }
 }

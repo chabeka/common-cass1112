@@ -94,7 +94,7 @@ DeletionService {
                                      .getMessage(Constants.DEL_CODE_ERROR),
                                      numberExcept.getMessage(), numberExcept);
       } catch (final SearchingServiceEx searchingExcept) {
-         new DeletionServiceEx(StorageMessageHandler
+         throw new DeletionServiceEx(StorageMessageHandler
                                .getMessage(Constants.DEL_CODE_ERROR), searchingExcept
                                .getMessage(), searchingExcept);
       } catch (final QueryParseServiceEx searchingExcept) {
