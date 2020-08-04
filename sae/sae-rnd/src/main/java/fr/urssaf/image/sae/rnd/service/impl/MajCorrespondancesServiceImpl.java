@@ -45,13 +45,9 @@ public class MajCorrespondancesServiceImpl implements MajCorrespondancesService 
       final List<Correspondance> listeCorrespondances = saeBddSupport
           .getAllCorrespondances();
 
-      if (listeCorrespondances == null) {
-        LOGGER.info("{} - Nombre d'associations trouvées : aucune",
-                    trcPrefix);
-      } else {
-        LOGGER.info("{} - Nombre d'associations trouvées : {}", trcPrefix,
-                    listeCorrespondances.size());
-      }
+      LOGGER.info("{} - Nombre d'associations trouvées : {}", trcPrefix,
+                  listeCorrespondances.size());
+
 
       if (CollectionUtils.isEmpty(listeCorrespondances)) {
         LOGGER.info("{} - Aucun traitement à réaliser", trcPrefix);
