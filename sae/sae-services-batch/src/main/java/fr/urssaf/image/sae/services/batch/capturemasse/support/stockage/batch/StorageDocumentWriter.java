@@ -134,9 +134,9 @@ ItemWriter<StorageDocument> {
       }
       catch (Exception ex) {
          if (isModePartielBatch()) {
-        	if(ex.getCause() != null && ex.getCause().getCause() instanceof DFCERuntimeException) {
-      	      ex = new Exception("Erreur DFCE");
-        	}
+          if(ex.getCause() != null && ex.getCause().getCause() instanceof DFCERuntimeException) {
+              ex = new Exception("Erreur DFCE");
+          }
            sendExceptionInPartielMode(ex, docIndex);
            return null;
          } else {

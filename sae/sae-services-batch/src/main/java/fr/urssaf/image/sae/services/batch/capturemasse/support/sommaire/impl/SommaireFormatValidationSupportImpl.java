@@ -37,10 +37,10 @@ import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlValidationUtils;
  */
 @Component
 public class SommaireFormatValidationSupportImpl implements
-                                                 SommaireFormatValidationSupport {
+SommaireFormatValidationSupport {
 
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(SommaireFormatValidationSupportImpl.class);
+      .getLogger(SommaireFormatValidationSupportImpl.class);
 
   private static final String SOMMAIRE_XSD = "xsd_som_res/sommaire.xsd";
 
@@ -89,10 +89,9 @@ public class SommaireFormatValidationSupportImpl implements
       throws CaptureMasseSommaireFormatValidationException,
       CaptureMasseSommaireFileNotFoundException {
 
-    if (sommaireFile == null || batchModes == null
-        || batchModes != null && batchModes.length == 0) {
+    if (sommaireFile == null || batchModes == null || batchModes.length == 0) {
       throw new IllegalArgumentException(
-                                         "Le fichier sommaire ou le mode du batch est null. La validation du sommaire.xml à échouée.");
+          "Le fichier sommaire ou le mode du batch est null. La validation du sommaire.xml à échouée.");
     }
 
     FileInputStream sommaireStream = null;
@@ -109,8 +108,8 @@ public class SommaireFormatValidationSupportImpl implements
 
         if (event.isStartElement()
             && "batchMode".equals(event.asStartElement()
-                                       .getName()
-                                       .getLocalPart())) {
+                                  .getName()
+                                  .getLocalPart())) {
           event = reader.nextEvent();
           if (event.isCharacters()) {
             mode = event.asCharacters().getData();
@@ -127,8 +126,8 @@ public class SommaireFormatValidationSupportImpl implements
       if (!containValue) {
         throw new CaptureMasseSommaireFormatValidationException("mode "
             + mode + " non accepté",
-                                                                new Exception("Mode non accepté : "
-                                                                    + mode));
+            new Exception("Mode non accepté : "
+                + mode));
       }
 
     }
@@ -209,8 +208,8 @@ public class SommaireFormatValidationSupportImpl implements
         event = reader.nextEvent();
         if (event.isStartElement()
             && "document".equals(event.asStartElement()
-                                      .getName()
-                                      .getLocalPart())) {
+                                 .getName()
+                                 .getLocalPart())) {
 
           // On continue le parcourt pour trouver la métadonnée IdGed
           while (reader.hasNext()) {
@@ -218,8 +217,8 @@ public class SommaireFormatValidationSupportImpl implements
 
             if (event.isStartElement()
                 && "code".equals(event.asStartElement()
-                                      .getName()
-                                      .getLocalPart())) {
+                                 .getName()
+                                 .getLocalPart())) {
               event = reader.nextEvent();
               if (event.isCharacters()) {
                 nomMeta = event.asCharacters().getData();
@@ -232,8 +231,8 @@ public class SommaireFormatValidationSupportImpl implements
                     event = reader.nextEvent();
                     if (event.isStartElement()
                         && "valeur".equals(event.asStartElement()
-                                                .getName()
-                                                .getLocalPart())) {
+                                           .getName()
+                                           .getLocalPart())) {
                       event = reader.nextEvent();
                       if (event.isCharacters()) {
                         uuid = event.asCharacters().getData();
@@ -243,7 +242,7 @@ public class SommaireFormatValidationSupportImpl implements
                           // exception
                           throw new CaptureMasseSommaireFormatValidationException(
                                                                                   "IdGed " + uuid
-                                                                                      + " présent plusieurs fois",
+                                                                                  + " présent plusieurs fois",
                                                                                   new Exception(
                                                                                                 "IdGed présent plusieurs fois : "
                                                                                                     + uuid));
@@ -258,7 +257,7 @@ public class SommaireFormatValidationSupportImpl implements
                         throw new CaptureMasseSommaireFormatValidationException(
                                                                                 "Valeur manquante pour la métadonnée IdGed",
                                                                                 new Exception(
-                                                                                              "Valeur manquante pour la métadonnée IdGed"));
+                                                                                    "Valeur manquante pour la métadonnée IdGed"));
                       }
                     }
                   }
@@ -305,7 +304,7 @@ public class SommaireFormatValidationSupportImpl implements
   @Override
   public void validationDocumentBaliseRequisSommaire(final File sommaireFile,
                                                      final String baliseRequired)
-      throws CaptureMasseSommaireFormatValidationException {
+                                                         throws CaptureMasseSommaireFormatValidationException {
 
     FileInputStream sommaireStream = null;
     XMLEventReader reader = null;
@@ -322,12 +321,12 @@ public class SommaireFormatValidationSupportImpl implements
         event = reader.nextEvent();
         if (event.isStartElement()
             && ("document".equals(event.asStartElement()
-                                       .getName()
-                                       .getLocalPart())
+                                  .getName()
+                                  .getLocalPart())
                 || "documentMultiAction".equals(event
-                                                     .asStartElement()
-                                                     .getName()
-                                                     .getLocalPart()))) {
+                                                .asStartElement()
+                                                .getName()
+                                                .getLocalPart()))) {
 
           // On continue le parcourt pour trouver la métadonnée IdGed
           while (reader.hasNext()) {
@@ -335,9 +334,9 @@ public class SommaireFormatValidationSupportImpl implements
 
             if (event.isStartElement()
                 && event.asStartElement()
-                        .getName()
-                        .getLocalPart()
-                        .equals(baliseRequired)) {
+                .getName()
+                .getLocalPart()
+                .equals(baliseRequired)) {
               event = reader.nextEvent();
               if (event.isCharacters()) {
                 valeurBalise = event.asCharacters().getData();
@@ -346,7 +345,7 @@ public class SommaireFormatValidationSupportImpl implements
                   throw new CaptureMasseSommaireFormatValidationException(
                                                                           "La balise " + baliseRequired + " 'est vide",
                                                                           new Exception("La balise " + baliseRequired
-                                                                              + " est obligatoire"));
+                                                                                        + " est obligatoire"));
                 }
               }
             }
@@ -391,7 +390,7 @@ public class SommaireFormatValidationSupportImpl implements
   @Override
   public void validationDocumentValeurBaliseRequisSommaire(final File sommaireFile,
                                                            final String baliseRequired, final String valeurRequired, final boolean verifyValue)
-      throws CaptureMasseSommaireFormatValidationException {
+                                                               throws CaptureMasseSommaireFormatValidationException {
     boolean baliseValuefind = false;
     FileInputStream sommaireStream = null;
     XMLEventReader reader = null;
@@ -408,12 +407,12 @@ public class SommaireFormatValidationSupportImpl implements
         event = reader.nextEvent();
         if (event.isStartElement()
             && ("document".equals(event.asStartElement()
-                                       .getName()
-                                       .getLocalPart())
+                                  .getName()
+                                  .getLocalPart())
                 || "documentMultiAction".equals(event
-                                                     .asStartElement()
-                                                     .getName()
-                                                     .getLocalPart()))) {
+                                                .asStartElement()
+                                                .getName()
+                                                .getLocalPart()))) {
 
           // On continue le parcourt pour trouver la métadonnée IdGed
           while (reader.hasNext()) {
@@ -421,9 +420,9 @@ public class SommaireFormatValidationSupportImpl implements
 
             if (event.isStartElement()
                 && event.asStartElement()
-                        .getName()
-                        .getLocalPart()
-                        .equals(baliseRequired)) {
+                .getName()
+                .getLocalPart()
+                .equals(baliseRequired)) {
               event = reader.nextEvent();
               if (event.isCharacters()) {
                 valeurBalise = event.asCharacters().getData();
@@ -436,8 +435,8 @@ public class SommaireFormatValidationSupportImpl implements
                       event = reader.nextEvent();
                       if (event.isStartElement()
                           && "valeur".equals(event.asStartElement()
-                                                  .getName()
-                                                  .getLocalPart())) {
+                                             .getName()
+                                             .getLocalPart())) {
                         event = reader.nextEvent();
                         if (event.isCharacters()) {
                           final String value = event.asCharacters().getData();
@@ -446,7 +445,7 @@ public class SommaireFormatValidationSupportImpl implements
                             // Le valeur est vide ou contient uniquement des espaces
                             throw new CaptureMasseSommaireFormatValidationException(
                                                                                     "La balise " + valeurBalise
-                                                                                        + " ne contient pas de valeur.",
+                                                                                    + " ne contient pas de valeur.",
                                                                                     new Exception(
                                                                                                   valeurBalise + " ne contient pas de valeur."));
 
@@ -455,7 +454,7 @@ public class SommaireFormatValidationSupportImpl implements
                           // Le valeur est vide ou contient uniquement des espaces
                           throw new CaptureMasseSommaireFormatValidationException(
                                                                                   "La balise " + valeurBalise
-                                                                                      + " ne contient pas de valeur.",
+                                                                                  + " ne contient pas de valeur.",
                                                                                   new Exception(
                                                                                                 valeurBalise + " ne contient pas de valeur."));
 
@@ -482,7 +481,7 @@ public class SommaireFormatValidationSupportImpl implements
       if (!baliseValuefind) {
         throw new CaptureMasseSommaireFormatValidationException(
                                                                 "Au moins un '" + valeurRequired + "' n'est pas présent dans le sommaire. '" + valeurRequired
-                                                                    + "'  est obligatoire pour tous les documents",
+                                                                + "'  est obligatoire pour tous les documents",
                                                                 new Exception(
                                                                               "'" + valeurRequired + "' est obligatoire pour tous les documents."));
       }
@@ -540,8 +539,8 @@ public class SommaireFormatValidationSupportImpl implements
         event = reader.nextEvent();
         if (event.isStartElement()
             && "documentsMultiAction".equals(event.asStartElement()
-                                                  .getName()
-                                                  .getLocalPart())) {
+                                             .getName()
+                                             .getLocalPart())) {
           isPresent = true;
         }
       }
@@ -607,11 +606,11 @@ public class SommaireFormatValidationSupportImpl implements
         event = reader.nextEvent();
         if (event.isStartElement()
             && ("document".equals(event.asStartElement()
-                                       .getName()
-                                       .getLocalPart())
+                                  .getName()
+                                  .getLocalPart())
                 || "documentMultiAction".equals(event.asStartElement()
-                                                     .getName()
-                                                     .getLocalPart()))) {
+                                                .getName()
+                                                .getLocalPart()))) {
           indexDocument++;
           valeurMetaTrouve = false;
           // On continue le parcourt pour trouver la métadonnée IdGed
@@ -624,8 +623,8 @@ public class SommaireFormatValidationSupportImpl implements
 
             if (event.isStartElement()
                 && "code".equals(event.asStartElement()
-                                      .getName()
-                                      .getLocalPart())) {
+                                 .getName()
+                                 .getLocalPart())) {
               event = reader.nextEvent();
               if (event.isCharacters()) {
                 codeValue = event.asCharacters().getData();
@@ -642,8 +641,8 @@ public class SommaireFormatValidationSupportImpl implements
                     event = reader.nextEvent();
                     if (event.isStartElement()
                         && "valeur".equals(event.asStartElement()
-                                                .getName()
-                                                .getLocalPart())) {
+                                           .getName()
+                                           .getLocalPart())) {
                       identifierValeurDoublons(reader, listValeurMeta, listIdValeurMetaDoublons, indexDocument, nomMeta);
                       valeurMetaTrouve = true;
                       break;
@@ -692,12 +691,12 @@ public class SommaireFormatValidationSupportImpl implements
         event = reader.nextEvent();
         if (event.isStartElement()
             && ("document".equals(event.asStartElement()
-                                       .getName()
-                                       .getLocalPart())
+                                  .getName()
+                                  .getLocalPart())
                 || "documentMultiAction".equals(event
-                                                     .asStartElement()
-                                                     .getName()
-                                                     .getLocalPart()))) {
+                                                .asStartElement()
+                                                .getName()
+                                                .getLocalPart()))) {
           indexDocument++;
           // On continue le parcourt pour trouver la métadonnée IdGed
           while (reader.hasNext()) {
@@ -705,8 +704,8 @@ public class SommaireFormatValidationSupportImpl implements
 
             if (event.isStartElement()
                 && StringUtils.isNotEmpty(nomTag) && nomTag.equalsIgnoreCase(event.asStartElement()
-                                                                                  .getName()
-                                                                                  .getLocalPart())) {
+                                                                             .getName()
+                                                                             .getLocalPart())) {
               identifierValeurDoublons(reader, listValeurTag, listValeurTagDoublons, indexDocument, nomTag);
               break;
             }
@@ -752,7 +751,7 @@ public class SommaireFormatValidationSupportImpl implements
    */
   private void identifierValeurDoublons(final XMLEventReader reader, final Map<Integer, String> listValeurTag,
                                         final Map<Integer, String> listValeurTagDoublons, final int indexDocument, final String nomTag)
-      throws XMLStreamException {
+                                            throws XMLStreamException {
     String tagValue = null;
     final XMLEvent event = reader.nextEvent();
     if (event.isCharacters()) {
@@ -763,13 +762,14 @@ public class SommaireFormatValidationSupportImpl implements
         return;
       }
       // A partir du deuxieme passage
-      for (final int indexDoc : listValeurTag.keySet()) {
-        if (StringUtils.isNotEmpty(tagValue) && tagValue.equals(listValeurTag.get(indexDoc))) {
+      for (final Map.Entry<Integer, String> entry : listValeurTag.entrySet()) {
+        final int indexDoc = entry.getKey();
+        // for (final int indexDoc : listValeurTag.keySet()) {
+        if (StringUtils.isNotEmpty(tagValue) && tagValue.equals(entry.getValue())) {
           // On ajoute dans la liste des doublons le document intégré à la liste des documents de référence.
           if (!listValeurTagDoublons.containsKey(indexDoc)) {
-            listValeurTagDoublons.put(indexDoc, listValeurTag.get(indexDoc));
+            listValeurTagDoublons.put(indexDoc, entry.getValue());
           }
-
           // On ajoute dans la liste des doublons le document en doublons.
           listValeurTagDoublons.put(indexDocument, tagValue);
           return;
@@ -780,7 +780,7 @@ public class SommaireFormatValidationSupportImpl implements
     } else {
       throw new CaptureMasseRuntimeException(
                                              "La balise " + nomTag
-                                                 + " ne contient pas une chaine de caractére. Echec de validation de doublons");
+                                             + " ne contient pas une chaine de caractére. Echec de validation de doublons");
     }
   }
 

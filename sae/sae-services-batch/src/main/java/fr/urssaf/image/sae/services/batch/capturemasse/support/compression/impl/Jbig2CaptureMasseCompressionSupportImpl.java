@@ -325,16 +325,48 @@ public class Jbig2CaptureMasseCompressionSupportImpl implements CaptureMasseComp
 
             if (codeRetour != 0) {
               final InputStream stream = p.getErrorStream();
-              final BufferedReader br = new BufferedReader(new InputStreamReader(stream));
-              String ligne = br.readLine();
-              final StringBuffer buffer = new StringBuffer();
-              while (ligne != null) {
-                buffer.append(ligne);
-                buffer.append("\n");
-                ligne = br.readLine();
-              }
-              LOGGER.error(buffer.toString());
+              final InputStreamReader isr = new InputStreamReader(stream);
+              final BufferedReader br = new BufferedReader(isr);
+              try {
 
+                String ligne = br.readLine();
+                final StringBuffer buffer = new StringBuffer();
+                while (ligne != null) {
+                  buffer.append(ligne);
+                  buffer.append("\n");
+                  ligne = br.readLine();
+                }
+                LOGGER.error(buffer.toString());
+              }
+              catch (final Exception e) {
+                LOGGER.error(e.getMessage());
+              }
+              finally {
+                try {
+                  if (br != null) {
+                    br.close();
+                  }
+                }
+                catch (final Exception e) {
+                  LOGGER.error(e.getMessage());
+                }
+                try {
+                  if (isr != null) {
+                    isr.close();
+                  }
+                }
+                catch (final Exception e) {
+                  LOGGER.error(e.getMessage());
+                }
+                try {
+                  if (stream != null) {
+                    stream.close();
+                  }
+                }
+                catch (final Exception e) {
+                  LOGGER.error(e.getMessage());
+                }
+              }
             }
           } catch (final IOException e) {
             LOGGER.error(e.getMessage());

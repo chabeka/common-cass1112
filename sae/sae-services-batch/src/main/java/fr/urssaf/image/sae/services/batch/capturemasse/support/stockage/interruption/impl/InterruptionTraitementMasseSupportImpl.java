@@ -35,7 +35,7 @@ InterruptionTraitementMasseSupport {
   private static final String CATCH = "AvoidCatchingThrowable";
 
   private volatile boolean interrupted;
-  
+
   private ConnectionResult connectionResult;
 
   /**
@@ -98,16 +98,16 @@ InterruptionTraitementMasseSupport {
           .forPattern(DATE_TIME_PATTERN);
 
       LOG.debug("{} - Reprise prévue à {}",
-               LOG_PREFIX,
-               formatter
-               .print(endDate));
+                LOG_PREFIX,
+                formatter
+                .print(endDate));
 
       // On ne ferme pas la connexion avec DFCE pour éviter une levée
       // d'exception sur les Threads en cours d'exécution qui effectuent une
       // insertion dans DFCE
       // dfceManager.closeConnection();
 
-      
+
       try {
         connectionResult = pause(diffTime,
                                  null,
@@ -127,9 +127,9 @@ InterruptionTraitementMasseSupport {
       }
 
       LOG.debug(
-               "{} - Réussite de la tentative n°{}/{} de reconnexion à DFCE ",
-               new Object[] {LOG_PREFIX, connectionResult.step,
-                             config.getTentatives()});
+                "{} - Réussite de la tentative n°{}/{} de reconnexion à DFCE ",
+                new Object[] {LOG_PREFIX, connectionResult.step,
+                              config.getTentatives()});
 
     }
   }
@@ -151,16 +151,16 @@ InterruptionTraitementMasseSupport {
       final Duration duration = Duration.millis(delay);
 
       LOG.debug("{} - Interruption de {} secondes",
-               LOG_PREFIX,
-               duration
-               .getStandardSeconds());
+                LOG_PREFIX,
+                duration
+                .getStandardSeconds());
 
       Thread.sleep(delay);
 
       try {
 
         LOG.debug("{} - Tentative n°{}/{} de reconnexion à DFCE",
-                 new Object[] {LOG_PREFIX, step, total});
+                  new Object[] {LOG_PREFIX, step, total});
 
         dfceServices.reconnect();
 
@@ -177,8 +177,8 @@ InterruptionTraitementMasseSupport {
         final int newTentatives = tentatives - 1;
 
         LOG.debug(
-                 "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
-                 new Object[] {LOG_PREFIX, step, total});
+                  "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
+                  new Object[] {LOG_PREFIX, step, total});
 
         connectionResult = pause(defaultDelay,
                                  e,
@@ -234,8 +234,7 @@ InterruptionTraitementMasseSupport {
         // on vérifie que le traitement ne doit pas s'interrompre
         currentDate = new DateTime();
 
-        if (config != null
-            && hasInterrupted(currentDate, config)) {
+        if (hasInterrupted(currentDate, config)) {
           interrupted = true;
           // appel de la méthode de reconnexion
           interruption(currentDate, config);
@@ -254,11 +253,12 @@ InterruptionTraitementMasseSupport {
     return interrupted;
   }
 
+  @Override
   public String getConnectionResultExceptionMessage() {
-	  if(connectionResult != null && connectionResult.exception != null) {
-		  return connectionResult.exception.getMessage();
-	  }
-	return "";
+    if(connectionResult != null && connectionResult.exception != null) {
+      return connectionResult.exception.getMessage();
+    }
+    return "";
   }
 
 

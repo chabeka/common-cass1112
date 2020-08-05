@@ -17,6 +17,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,317 +46,315 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 @Component
 public class VerificationSupportImpl implements VerificationSupport {
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(VerificationSupportImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(VerificationSupportImpl.class);
 
-   private static final String CHECK = "checkFinTraitement()";
+  private static final String CHECK = "checkFinTraitement()";
 
-   @Autowired
-   private DebutTraitementFlagSupport debutSupport;
+  @Autowired
+  private DebutTraitementFlagSupport debutSupport;
 
-   @Autowired
-   private FinTraitementFlagSupport finSupport;
+  @Autowired
+  private FinTraitementFlagSupport finSupport;
 
-   @Autowired
-   private ResultatsFileEchecSupport resultatsSupport;
+  @Autowired
+  private ResultatsFileEchecSupport resultatsSupport;
 
-   @Autowired
-   private EcdeSommaireFileSupport fileSupport;
+  @Autowired
+  private EcdeSommaireFileSupport fileSupport;
 
-   private static final String LIBELLE_BUL003 = "La capture de masse en mode "
-         + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
-         + "initialisée pour supprimer les données qui auraient pu être stockées.";
+  private static final String LIBELLE_BUL003 = "La capture de masse en mode "
+      + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
+      + "initialisée pour supprimer les données qui auraient pu être stockées.";
 
-   private static final String LIBELLE_BUL004 = "La modification en masse en mode 'Partiel' a été interrompue. "
-         + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
+  private static final String LIBELLE_BUL004 = "La modification en masse en mode 'Partiel' a été interrompue. "
+      + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
-   private static final String LIBELLE_BUL005 = "Le transfert de masse en mode 'Partiel' a été interrompu. "
-         + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
+  private static final String LIBELLE_BUL005 = "Le transfert de masse en mode 'Partiel' a été interrompu. "
+      + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
-   private static final String CATCH = "AvoidCatchingThrowable";
+  private static final String CATCH = "AvoidCatchingThrowable";
 
 
 
-   /**
-    * @param urlEcde
-    * @return
-    * @throws CaptureMasseSommaireFileNotFoundException
-    * @throws CaptureMasseSommaireEcdeURLException
-    */
-   private File checkSommaire(URI urlEcde)
-         throws CaptureMasseSommaireEcdeURLException,
-         CaptureMasseSommaireFileNotFoundException {
+  /**
+   * @param urlEcde
+   * @return
+   * @throws CaptureMasseSommaireFileNotFoundException
+   * @throws CaptureMasseSommaireEcdeURLException
+   */
+  private File checkSommaire(final URI urlEcde)
+      throws CaptureMasseSommaireEcdeURLException,
+      CaptureMasseSommaireFileNotFoundException {
 
-      return fileSupport.convertURLtoFile(urlEcde);
+    return fileSupport.convertURLtoFile(urlEcde);
 
-   }
+  }
 
-   /**
-    * Verification du debut du traitement.
-    * 
-    * @param repTravail
-    *           repertoire père
-    * @param typeJob
-    *           Type de job
-    * @throws UnknownHostException
-    *            @{@link UnknownHostException}
-    */
-   private void checkDebutTraitement(File repTravail, UUID idTraitement,
-         TYPES_JOB typeJob)
-         throws UnknownHostException {
+  /**
+   * Verification du debut du traitement.
+   * 
+   * @param repTravail
+   *           repertoire père
+   * @param typeJob
+   *           Type de job
+   * @throws UnknownHostException
+   *            @{@link UnknownHostException}
+   */
+  private void checkDebutTraitement(final File repTravail, final UUID idTraitement,
+                                    final TYPES_JOB typeJob)
+                                        throws UnknownHostException {
 
-      File debut = new File(repTravail, "debut_traitement.flag");
+    final File debut = new File(repTravail, "debut_traitement.flag");
 
-      if (!debut.exists()) {
+    if (!debut.exists()) {
 
-         LOGGER.error("Génération de secours du "
-               + "fichier debut_traitement.flag car il n'a "
-               + "pas été généré par le job de " + typeJob.name());
+      LOGGER.error("Génération de secours du "
+          + "fichier debut_traitement.flag car il n'a "
+          + "pas été généré par le job de " + typeJob.name());
 
-         InetAddress hostInfo = InetAddress.getLocalHost();
+      final InetAddress hostInfo = InetAddress.getLocalHost();
 
-         DebutTraitementFlag flag = new DebutTraitementFlag();
-         flag.setStartDate(new Date());
-         flag.setIdTraitement(idTraitement);
-         flag.setHostInfo(hostInfo);
-         debutSupport.writeDebutTraitementFlag(flag, repTravail);
+      final DebutTraitementFlag flag = new DebutTraitementFlag();
+      flag.setStartDate(new Date());
+      flag.setIdTraitement(idTraitement);
+      flag.setHostInfo(hostInfo);
+      debutSupport.writeDebutTraitementFlag(flag, repTravail);
+    }
+
+  }
+
+  /**
+   * Controle si le fichier resultat est existant, sinon il le cree avec les
+   * informations necessaires.
+   * 
+   * @param repTravail
+   *           Dossier du fichier resultat.xml
+   * @param nbreDocs
+   *           Nombre de documents total
+   * @param nbreStockes
+   *           Nombre de documents intégrés
+   * @param batchModeTraitement
+   *           Mode de traitement du batch
+   * @param listeDocsIntegres
+   *           Liste des documents intégrés
+   * @param typeJob
+   *           Le type du job qui demande le check
+   */
+  private void checkResultats(final File repTravail, final Integer nbreDocs,
+                              final Integer nbreStockes, String batchModeTraitement,
+                              final List<Throwable> listeErreurs, final File sommaire,
+                              final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres,
+                              final TYPES_JOB typeJob) {
+
+    final File resultats = new File(repTravail, "resultats.xml");
+
+    if (!resultats.exists()) {
+
+      final int nbreTotal = checkCountDocs(nbreDocs, sommaire);
+      final int nbreIntegres = checkIntegratedDocs(nbreStockes);
+      // Récupération du mode du batch si non renseigné.
+      if (StringUtils.isBlank(batchModeTraitement)) {
+        batchModeTraitement = XmlReadUtils.getElementValue(sommaire,
+                                                           Constantes.BATCH_MODE_ELEMENT_NAME);
+
+        if (BatchModeType.fromValue(batchModeTraitement).equals("null")) {
+          throw new CaptureMasseRuntimeException(String.format(
+                                                               "Le mode du batch %s est inconnu.", batchModeTraitement));
+        }
       }
 
-   }
+      final CaptureMasseErreur erreur = convertListToErreur(listeErreurs,
+                                                            nbreIntegres, typeJob);
 
-   /**
-    * Controle si le fichier resultat est existant, sinon il le cree avec les
-    * informations necessaires.
-    * 
-    * @param repTravail
-    *           Dossier du fichier resultat.xml
-    * @param nbreDocs
-    *           Nombre de documents total
-    * @param nbreStockes
-    *           Nombre de documents intégrés
-    * @param batchModeTraitement
-    *           Mode de traitement du batch
-    * @param listeDocsIntegres
-    *           Liste des documents intégrés
-    * @param typeJob
-    *           Le type du job qui demande le check
-    */
-   private void checkResultats(File repTravail, Integer nbreDocs,
-         Integer nbreStockes, String batchModeTraitement,
-         List<Throwable> listeErreurs, File sommaire,
-         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres,
-         TYPES_JOB typeJob) {
+      resultatsSupport.writeResultatsFile(repTravail, sommaire, erreur,
+                                          nbreTotal, nbreIntegres, batchModeTraitement, listeDocsIntegres);
+    }
 
-      File resultats = new File(repTravail, "resultats.xml");
+  }
 
-      if (!resultats.exists()) {
+  /**
+   * Convertit la liste d'exception en bean erreur.
+   * 
+   * @param listeErreurs
+   *           liste des erreurs
+   * @param nbreIntegres
+   *           Nombre de documents intégrés
+   * @param typeJob
+   *           Le type du job qui demande le check
+   * @return L'erreur de capture de masse
+   */
+  private CaptureMasseErreur convertListToErreur(final List<Throwable> listeErreurs,
+                                                 final int nbreIntegres, final TYPES_JOB typeJob) {
 
-         int nbreTotal = checkCountDocs(nbreDocs, sommaire);
-         int nbreIntegres = checkIntegratedDocs(nbreStockes);
-         // Récupération du mode du batch si non renseigné.
-         if (StringUtils.isBlank(batchModeTraitement)) {
-            batchModeTraitement = XmlReadUtils.getElementValue(sommaire,
-                  Constantes.BATCH_MODE_ELEMENT_NAME);
+    String messageErreur = null, codeErreur = null;
 
-            if (BatchModeType.fromValue(batchModeTraitement) == null) {
-               throw new CaptureMasseRuntimeException(String.format(
-                     "Le mode du batch %s est inconnu.", batchModeTraitement));
-            }
-         }
+    final String messException = "Génération de secours du fichier resultats.xml car il n'a pas été généré par le job de "
+        + typeJob.name() + ". Détails : Erreur ";
 
-         CaptureMasseErreur erreur = convertListToErreur(listeErreurs,
-               nbreIntegres, typeJob);
-
-         resultatsSupport.writeResultatsFile(repTravail, sommaire, erreur,
-               nbreTotal, nbreIntegres, batchModeTraitement, listeDocsIntegres);
+    if (nbreIntegres > 0) {
+      if (TYPES_JOB.capture_masse.equals(typeJob)) {
+        messageErreur = LIBELLE_BUL003;
+        codeErreur = Constantes.ERR_BUL003;
+        LOGGER.error(messException + Constantes.ERR_BUL003);
+      } else if (TYPES_JOB.modification_masse.equals(typeJob)) {
+        messageErreur = LIBELLE_BUL004;
+        codeErreur = Constantes.ERR_MO_BUL001;
+        LOGGER.error(messException + Constantes.ERR_MO_BUL001);
+      } else if (TYPES_JOB.transfert_masse.equals(typeJob)) {
+        messageErreur = LIBELLE_BUL005;
+        codeErreur = Constantes.ERR_TR_BUL001;
+        LOGGER.error(messException + Constantes.ERR_TR_BUL001);
       }
 
-   }
+    } else {
+      codeErreur = Constantes.ERR_BUL001;
 
-   /**
-    * Convertit la liste d'exception en bean erreur.
-    * 
-    * @param listeErreurs
-    *           liste des erreurs
-    * @param nbreIntegres
-    *           Nombre de documents intégrés
-    * @param typeJob
-    *           Le type du job qui demande le check
-    * @return L'erreur de capture de masse
-    */
-   private CaptureMasseErreur convertListToErreur(List<Throwable> listeErreurs,
-         int nbreIntegres, TYPES_JOB typeJob) {
+      // concaténation de toutes les erreurs en une seule
+      final StringBuffer buffer = new StringBuffer();
+      final StringWriter stringWriter = new StringWriter();
 
-      String messageErreur = null, codeErreur = null;
+      final PrintWriter printWriter = new PrintWriter(stringWriter);
 
-      String messException = "Génération de secours du fichier resultats.xml car il n'a pas été généré par le job de "
-            + typeJob.name() + ". Détails : Erreur ";
-
-      if (nbreIntegres > 0) {
-         if (TYPES_JOB.capture_masse.equals(typeJob)) {
-            messageErreur = LIBELLE_BUL003;
-            codeErreur = Constantes.ERR_BUL003;
-            LOGGER.error(messException + Constantes.ERR_BUL003);
-         } else if (TYPES_JOB.modification_masse.equals(typeJob)) {
-            messageErreur = LIBELLE_BUL004;
-            codeErreur = Constantes.ERR_MO_BUL001;
-            LOGGER.error(messException + Constantes.ERR_MO_BUL001);
-         } else if (TYPES_JOB.transfert_masse.equals(typeJob)) {
-            messageErreur = LIBELLE_BUL005;
-            codeErreur = Constantes.ERR_TR_BUL001;
-            LOGGER.error(messException + Constantes.ERR_TR_BUL001);
-         }
-
-      } else {
-         codeErreur = Constantes.ERR_BUL001;
-
-         // concaténation de toutes les erreurs en une seule
-         StringBuffer buffer = new StringBuffer();
-         StringWriter stringWriter = new StringWriter();
-
-         PrintWriter printWriter = new PrintWriter(stringWriter);
-
-         for (Throwable erreur : listeErreurs) {
-
-            erreur.printStackTrace(printWriter);
-         }
-
-         buffer.append(stringWriter.getBuffer());
-
-         printWriter.close();
-
-         try {
-            stringWriter.close();
-         } catch (IOException e) {
-            LOGGER.debug("erreur fermeture stringwriter", e);
-         }
-
-         messageErreur = buffer.toString();
-
-         LOGGER.error(messException + Constantes.ERR_BUL001
-               + " avec le message : " + messageErreur);
+      for (final Throwable erreur : listeErreurs) {
+        LOGGER.error(ExceptionUtils.getFullStackTrace(erreur));
       }
+      buffer.append(stringWriter.getBuffer());
 
-      List<String> exceptions = new ArrayList<String>();
-      exceptions.add(new Exception(messageErreur).toString());
-
-      List<Integer> listIndex = new ArrayList<Integer>();
-      listIndex.add(0);
-
-      List<String> listCodes = new ArrayList<String>();
-      listCodes.add(codeErreur);
-
-      CaptureMasseErreur captureMasseErreur = new CaptureMasseErreur();
-      captureMasseErreur.setListException(exceptions);
-      captureMasseErreur.setListIndex(listIndex);
-      captureMasseErreur.setListCodes(listCodes);
-
-      return captureMasseErreur;
-   }
-
-   private int checkCountDocs(Integer nbreDocs, File sommaire) {
-      int total;
-
-      if (nbreDocs == null) {
-         total = XmlReadUtils.compterElements(sommaire, "document");
-      } else {
-         total = nbreDocs.intValue();
-      }
-      return total;
-   }
-
-   private int checkIntegratedDocs(Integer nbreStockes) {
-      int total;
-
-      if (nbreStockes == null) {
-         total = 0;
-      } else {
-         total = nbreStockes.intValue();
-      }
-      return total;
-   }
-
-   /**
-    * @param repTravail
-    * @param typeJob
-    */
-   private void checkFinTraitement(File repTravail, TYPES_JOB typeJob) {
-
-      File fin = new File(repTravail, "fin_traitement.flag");
-
-      if (!fin.exists()) {
-
-         LOGGER.error("Génération de secours du "
-               + "fichier fin_traitement.flag car il n'a "
-               + "pas été généré par le job de " + typeJob.name());
-
-         finSupport.writeFinTraitementFlag(repTravail);
-      }
-
-   }
-
-   /**
-    * @param nbreStockes
-    * @param idTraitement
-    * @param logPresent
-    * @param typeJob
-    */
-   private void checkLogs(Integer nbreStockes, UUID idTraitement,
-         boolean logPresent, TYPES_JOB typeJob) {
-
-      if (!logPresent && nbreStockes != null && nbreStockes > 0) {
-         LOGGER.error("Génération de secours du log ERROR "
-               + "de rollback par procédure d'exploitation "
-               + "car il n'a pas été généré par le job de " + typeJob.name());
-
-         LOGGER.error("Le traitement de masse n°{} doit éventuellement être rollbacké "
-               + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
-               idTraitement);
-      }
-
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @SuppressWarnings(CATCH)
-   @Override
-   public void checkFinTraitement(
-         URI sommaireURL,
-         Integer nbreDocs,
-         Integer nbreStockes,
-         String batchModeTraitement,
-         boolean logPresent,
-         List<Throwable> erreurs,
-         UUID idTraitement,
-         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres,
-         TYPES_JOB typeJob) {
-
-      LOGGER.debug("{} - debut", CHECK);
+      printWriter.close();
 
       try {
-
-         File sommaire = checkSommaire(sommaireURL);
-
-         File repTravail = sommaire.getParentFile();
-
-         checkDebutTraitement(repTravail, idTraitement, typeJob);
-
-         checkResultats(repTravail, nbreDocs, nbreStockes, batchModeTraitement,
-               erreurs, sommaire, listeDocsIntegres, typeJob);
-
-         checkFinTraitement(repTravail, typeJob);
-
-         checkLogs(nbreStockes, idTraitement, logPresent, typeJob);
-
-         LOGGER.debug("{} - fin", CHECK);
-
-         /* erreurs de vérification du fichier sommaire */
-      } catch (Exception e) {
-         LOGGER.warn(
-               "une erreur est survenue lors de la vérification de fin de traitement",
-               CHECK, e);
+        stringWriter.close();
+      } catch (final IOException e) {
+        LOGGER.debug("erreur fermeture stringwriter", e);
       }
-   }
+
+      messageErreur = buffer.toString();
+
+      LOGGER.error(messException + Constantes.ERR_BUL001
+                   + " avec le message : " + messageErreur);
+    }
+
+    final List<String> exceptions = new ArrayList<>();
+    exceptions.add(new Exception(messageErreur).toString());
+
+    final List<Integer> listIndex = new ArrayList<>();
+    listIndex.add(0);
+
+    final List<String> listCodes = new ArrayList<>();
+    listCodes.add(codeErreur);
+
+    final CaptureMasseErreur captureMasseErreur = new CaptureMasseErreur();
+    captureMasseErreur.setListException(exceptions);
+    captureMasseErreur.setListIndex(listIndex);
+    captureMasseErreur.setListCodes(listCodes);
+
+    return captureMasseErreur;
+  }
+
+  private int checkCountDocs(final Integer nbreDocs, final File sommaire) {
+    int total;
+
+    if (nbreDocs == null) {
+      total = XmlReadUtils.compterElements(sommaire, "document");
+    } else {
+      total = nbreDocs.intValue();
+    }
+    return total;
+  }
+
+  private int checkIntegratedDocs(final Integer nbreStockes) {
+    int total;
+
+    if (nbreStockes == null) {
+      total = 0;
+    } else {
+      total = nbreStockes.intValue();
+    }
+    return total;
+  }
+
+  /**
+   * @param repTravail
+   * @param typeJob
+   */
+  private void checkFinTraitement(final File repTravail, final TYPES_JOB typeJob) {
+
+    final File fin = new File(repTravail, "fin_traitement.flag");
+
+    if (!fin.exists()) {
+
+      LOGGER.error("Génération de secours du "
+          + "fichier fin_traitement.flag car il n'a "
+          + "pas été généré par le job de " + typeJob.name());
+
+      finSupport.writeFinTraitementFlag(repTravail);
+    }
+
+  }
+
+  /**
+   * @param nbreStockes
+   * @param idTraitement
+   * @param logPresent
+   * @param typeJob
+   */
+  private void checkLogs(final Integer nbreStockes, final UUID idTraitement,
+                         final boolean logPresent, final TYPES_JOB typeJob) {
+
+    if (!logPresent && nbreStockes != null && nbreStockes > 0) {
+      LOGGER.error("Génération de secours du log ERROR "
+          + "de rollback par procédure d'exploitation "
+          + "car il n'a pas été généré par le job de " + typeJob.name());
+
+      LOGGER.error("Le traitement de masse n°{} doit éventuellement être rollbacké "
+          + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
+          idTraitement);
+    }
+
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @SuppressWarnings(CATCH)
+  @Override
+  public void checkFinTraitement(
+                                 final URI sommaireURL,
+                                 final Integer nbreDocs,
+                                 final Integer nbreStockes,
+                                 final String batchModeTraitement,
+                                 final boolean logPresent,
+                                 final List<Throwable> erreurs,
+                                 final UUID idTraitement,
+                                 final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres,
+                                 final TYPES_JOB typeJob) {
+
+    LOGGER.debug("{} - debut", CHECK);
+
+    try {
+
+      final File sommaire = checkSommaire(sommaireURL);
+
+      final File repTravail = sommaire.getParentFile();
+
+      checkDebutTraitement(repTravail, idTraitement, typeJob);
+
+      checkResultats(repTravail, nbreDocs, nbreStockes, batchModeTraitement,
+                     erreurs, sommaire, listeDocsIntegres, typeJob);
+
+      checkFinTraitement(repTravail, typeJob);
+
+      checkLogs(nbreStockes, idTraitement, logPresent, typeJob);
+
+      LOGGER.debug("{} - fin", CHECK);
+
+      /* erreurs de vérification du fichier sommaire */
+    } catch (final Exception e) {
+      LOGGER.warn(
+                  "une erreur est survenue lors de la vérification de fin de traitement",
+                  CHECK, e);
+    }
+  }
 
 }

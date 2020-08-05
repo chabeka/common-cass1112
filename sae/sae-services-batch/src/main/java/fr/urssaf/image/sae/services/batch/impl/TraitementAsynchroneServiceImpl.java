@@ -48,10 +48,10 @@ import me.prettyprint.cassandra.utils.TimeUUIDUtils;
  */
 @Service
 public class TraitementAsynchroneServiceImpl implements
-                                             TraitementAsynchroneService {
+TraitementAsynchroneService {
 
   private static final Logger LOG = LoggerFactory
-                                                 .getLogger(TraitementAsynchroneServiceImpl.class);
+      .getLogger(TraitementAsynchroneServiceImpl.class);
 
   private static final String TRC_LANCER = "lancerJob";
 
@@ -118,8 +118,8 @@ public class TraitementAsynchroneServiceImpl implements
     final byte[] jobKey = createJobKey(parameters.getType().name(),
                                        parameters.getJobParameters());
     if (checkDoublonDisable == null
-        || checkDoublonDisable != null && !checkDoublonDisable
-                                                              .booleanValue()) {
+        || !checkDoublonDisable
+        .booleanValue()) {
       final UUID jobRequestId = jobLectureService.getJobRequestIdByJobKey(jobKey);
       if (jobRequestId != null) {
         throw new JobRequestAlreadyExistsException(jobRequestId);
@@ -146,7 +146,7 @@ public class TraitementAsynchroneServiceImpl implements
    */
   @Override
   public void lancerJob(final UUID idJob) throws JobInexistantException,
-      JobNonReserveException {
+  JobNonReserveException {
 
     final JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -239,13 +239,13 @@ public class TraitementAsynchroneServiceImpl implements
                             job.getIdJob(),
                             BooleanUtils.toString(exitTraitement.isSucces(),
                                                   "avec succès",
-                                                  "sur un échec"),
+                                "sur un échec"),
                             exitTraitement.getExitMessage()});
 
     String codeTraitement = null;
     if (job.getJobParameters() != null) {
       codeTraitement = job.getJobParameters()
-                          .get(Constantes.CODE_TRAITEMENT);
+          .get(Constantes.CODE_TRAITEMENT);
     }
 
     // le traitement est terminé
@@ -363,8 +363,8 @@ public class TraitementAsynchroneServiceImpl implements
 
     // 1- Vérifier si le param uidJobAReprendre est bien renseigné
     final String jobAReprendreParam = jobReprise.getJobParameters()
-                                                .get(
-                                                     Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
+        .get(
+             Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
 
     // 2- Vérifier si le jobAReprendre existe en base
     final UUID idJobAReprendre = UUID.fromString(jobAReprendreParam);
@@ -415,16 +415,16 @@ public class TraitementAsynchroneServiceImpl implements
     }
     catch (final NoSuchAlgorithmException e) {
       throw new IllegalStateException(
-                                      "MD5 algorithm not available.  Fatal (should be in the JDK).");
+          "MD5 algorithm not available.  Fatal (should be in the JDK).");
     }
     try {
       final byte[] bytes = digest
-                                 .digest(stringBuffer.toString().getBytes("UTF-8"));
+          .digest(stringBuffer.toString().getBytes("UTF-8"));
       return bytes;
     }
     catch (final UnsupportedEncodingException e) {
       throw new IllegalStateException(
-                                      "UTF-8 encoding not available.  Fatal (should be in the JDK).");
+          "UTF-8 encoding not available.  Fatal (should be in the JDK).");
     }
 
   }

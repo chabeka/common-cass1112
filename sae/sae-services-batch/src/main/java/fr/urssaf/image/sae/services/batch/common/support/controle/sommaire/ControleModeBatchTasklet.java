@@ -26,54 +26,54 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 @Component
 public class ControleModeBatchTasklet implements Tasklet {
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(ControleModeBatchTasklet.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(ControleModeBatchTasklet.class);
 
-   private static final String TRC_EXEC = "execute()";
+  private static final String TRC_EXEC = "execute()";
 
-   /**
-    * {@inheritDoc}
-    */
-   @SuppressWarnings("unchecked")
-   @Override
-   public final RepeatStatus execute(StepContribution contribution,
-         ChunkContext chunkContext) throws Exception {
+  /**
+   * {@inheritDoc}
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public final RepeatStatus execute(final StepContribution contribution,
+                                    final ChunkContext chunkContext) throws Exception {
 
-      LOGGER.debug("{} - Début de méthode", TRC_EXEC);
+    LOGGER.debug("{} - Début de méthode", TRC_EXEC);
 
-      StepExecution stepExecution = chunkContext.getStepContext()
-            .getStepExecution();
+    final StepExecution stepExecution = chunkContext.getStepContext()
+        .getStepExecution();
 
-      ExecutionContext context = stepExecution.getJobExecution()
-            .getExecutionContext();
+    final ExecutionContext context = stepExecution.getJobExecution()
+        .getExecutionContext();
 
-      String path = context.getString(Constantes.SOMMAIRE_FILE);
+    final String path = context.getString(Constantes.SOMMAIRE_FILE);
 
-      File file = new File(path);
+    final File file = new File(path);
 
-      LOGGER.debug(
-            "{} - Début du controle du mode de traitement du batch présent dans le fichier sommaire.xml",
-            TRC_EXEC);
+    LOGGER.debug(
+                 "{} - Début du controle du mode de traitement du batch présent dans le fichier sommaire.xml",
+                 TRC_EXEC);
 
-      String batchMode = XmlReadUtils.getElementValue(file,
-            Constantes.BATCH_MODE_ELEMENT_NAME);
-      String batchModeActif = (String) context.get(Constantes.BATCH_MODE_NOM);
+    final String batchMode = XmlReadUtils.getElementValue(file,
+                                                          Constantes.BATCH_MODE_ELEMENT_NAME);
+    final String batchModeActif = (String) context.get(Constantes.BATCH_MODE_NOM);
 
-      if (batchModeActif == null || (batchModeActif!= null && !batchMode.equals(batchModeActif))) {
-         ExecutionContext jobExecution = chunkContext.getStepContext()
-               .getStepExecution().getJobExecution().getExecutionContext();
-         final Exception exception = new Exception("Le mode de traitement du batch a changé dans le sommaire.xml. Traitement impossible.");
-         ((ConcurrentLinkedQueue<String>) jobExecution.get(Constantes.DOC_EXCEPTION)).add(exception.getMessage());
-         LOGGER.warn("erreur lors de controle du mode de traitement batch", exception);
-      }
+    if (batchModeActif == null || !batchMode.equals(batchModeActif)) {
+      final ExecutionContext jobExecution = chunkContext.getStepContext()
+          .getStepExecution().getJobExecution().getExecutionContext();
+      final Exception exception = new Exception("Le mode de traitement du batch a changé dans le sommaire.xml. Traitement impossible.");
+      ((ConcurrentLinkedQueue<String>) jobExecution.get(Constantes.DOC_EXCEPTION)).add(exception.getMessage());
+      LOGGER.warn("erreur lors de controle du mode de traitement batch", exception);
+    }
 
-      LOGGER.debug(
-            "{} - Fin du controle du mode de traitement du batch présent dans le fichier sommaire.xml",
-            TRC_EXEC);
+    LOGGER.debug(
+                 "{} - Fin du controle du mode de traitement du batch présent dans le fichier sommaire.xml",
+                 TRC_EXEC);
 
-      LOGGER.debug("{} - Fin de méthode", TRC_EXEC);
+    LOGGER.debug("{} - Fin de méthode", TRC_EXEC);
 
-      return RepeatStatus.FINISHED;
-   }
+    return RepeatStatus.FINISHED;
+  }
 
 }
