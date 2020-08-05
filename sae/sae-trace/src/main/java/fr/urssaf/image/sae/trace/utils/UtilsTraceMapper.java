@@ -80,7 +80,7 @@ public class UtilsTraceMapper {
     tr.setLogin(traceThrift.getLogin());
     tr.setPagms(traceThrift.getPagms());
     final Map<String, String> infos = new HashMap<>();
-    if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
+    if (traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
         final String key = entry.getKey();
         String object = "";
@@ -107,7 +107,7 @@ public class UtilsTraceMapper {
     tr.setLogin(traceCql.getLogin());
     tr.setPagms(traceCql.getPagms());
     final Map<String, Object> infos = new HashMap<>();
-    if (traceCql != null && traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
+    if (traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
       for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
         infos.put(entry.getKey(), entry.getValue());
       }
@@ -129,7 +129,7 @@ public class UtilsTraceMapper {
     tr.setLogin(traceThrift.getLogin());
     tr.setPagms(traceThrift.getPagms());
     final Map<String, String> infos = new HashMap<>();
-    if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
+    if (traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
         final String key = entry.getKey();
         String object = "";
@@ -157,7 +157,7 @@ public class UtilsTraceMapper {
     tr.setLogin(traceCql.getLogin());
     tr.setPagms(traceCql.getPagms());
     final Map<String, Object> infos = new HashMap<>();
-    if (traceCql != null && traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
+    if (traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
       for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
         infos.put(entry.getKey(), entry.getValue());
       }
@@ -180,7 +180,7 @@ public class UtilsTraceMapper {
     tr.setLogin(traceThrift.getLogin());
     tr.setPagms(traceThrift.getPagms());
     final Map<String, String> infos = new HashMap<>();
-    if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
+    if (traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
       for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
         if (entry.getValue() != null) {
           infos.put(entry.getKey(), entry.getValue().toString());
