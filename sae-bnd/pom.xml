@@ -34,6 +34,7 @@
 		<org.apache.poi.version>4.1.0</org.apache.poi.version>
 		<org.apache.pdfbox.version>1.8.1.1</org.apache.pdfbox.version>
 		<maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
+		<junit.version>4.12</junit.version>
 	</properties>
 
 	<dependencyManagement>
@@ -94,6 +95,10 @@
 					<groupId>org.apache.maven.wagon</groupId>
 					<artifactId>wagon-file</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
 		<dependency>
@@ -105,6 +110,12 @@
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-storage-dfce</artifactId>
 			<version>${sae.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
@@ -120,6 +131,12 @@
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-format</artifactId>
 			<version>${sae.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.javassist</groupId>
+					<artifactId>javassist</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
@@ -136,12 +153,13 @@
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-jpa</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
@@ -175,9 +193,10 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.4.2.Final</version>
+			<version>5.3.8.final</version>
 			<scope>runtime</scope>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
