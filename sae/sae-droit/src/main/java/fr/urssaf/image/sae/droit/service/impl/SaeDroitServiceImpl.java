@@ -307,7 +307,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     }
 
     // initialisation du cache des actions
-    if (pagma.getActionUnitaires() != null) {
+    if (pagma != null && pagma.getActionUnitaires() != null) {
       for (final String action : pagma.getActionUnitaires()) {
         final ActionUnitaire actionUnitaire = actionSupport.find(action);
         if (actionUnitaire != null) {
@@ -317,7 +317,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
     }
 
     // initialisation du cache des perimetres de donnees
-    if (pagmp.getPrmd() != null) {
+    if (pagmp != null && pagmp.getPrmd() != null) {
       final Prmd prmd = prmdSupport.find(pagmp.getPrmd());
       if (prmd != null) {
         prmdsCache.put(pagmp.getPrmd(), prmd);
