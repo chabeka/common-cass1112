@@ -18,185 +18,189 @@ import fr.urssaf.image.sae.documents.executable.utils.MetadataUtils;
  */
 public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
 
-   /**
-    * Logger de la classe.
-    */
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(FormatValidationPoolThreadExecutor.class);
+  /**
+   * Logger de la classe.
+   */
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(FormatValidationPoolThreadExecutor.class);
 
-   /**
-    * Liste des métadonnées à consulter.
-    */
-   private final List<String> metadonnees;
+  /**
+   * Liste des métadonnées à consulter.
+   */
+  private final List<String> metadonnees;
 
-   /**
-    * Nombre de documents traités en erreur.
-    */
-   private int nombreDocsErreur;
+  /**
+   * Nombre de documents traités en erreur.
+   */
+  private int nombreDocsErreur;
 
-   /**
-    * Nombre de documents traités.
-    */
-   private int nombreTraites;
+  /**
+   * Nombre de documents traités.
+   */
+  private int nombreTraites;
 
-   /**
-    * Pas d'exécution (nombre de documents à traités pour avoir une trace
-    * applicative).
-    */
-   private int pasExecution;
+  /**
+   * Pas d'exécution (nombre de documents à traités pour avoir une trace
+   * applicative).
+   */
+  private int pasExecution;
 
-   /**
-    * Construteur.
-    *
-    * @param parametres
-    *           parametres
-    */
-   public FormatValidationPoolThreadExecutor(
-                                             final FormatValidationParametres parametres) {
-      super(parametres.getTaillePool(), parametres.getTaillePool(), 1,
-            TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(parametres
-                  .getTailleQueue()), new DiscardPolicy());
-      setPasExecution(parametres.getTaillePasExecution());
-      this.metadonnees = parametres.getMetadonnees();
-   }
+  /**
+   * Construteur.
+   *
+   * @param parametres
+   *           parametres
+   */
+  public FormatValidationPoolThreadExecutor(
+                                            final FormatValidationParametres parametres) {
+    super(parametres.getTaillePool(), parametres.getTaillePool(), 1,
+          TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(parametres
+              .getTailleQueue()), new DiscardPolicy());
+    setPasExecution(parametres.getTaillePasExecution());
+    metadonnees = parametres.getMetadonnees();
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void afterExecute(final Runnable runnable,
-                                     final Throwable throwable) {
-      super.afterExecute(runnable, throwable);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final void afterExecute(final Runnable runnable,
+                                    final Throwable throwable) {
+    super.afterExecute(runnable, throwable);
 
-      synchronized (this) {
-         final FormatRunnable formatRunnable = (FormatRunnable) runnable;
-         final String idDocument = formatRunnable.getDocument().getUuid()
-               .toString();
-         final String metaToLog = MetadataUtils.getMetadatasForLog(formatRunnable
-                                                                   .getDocument(), metadonnees);
+    synchronized (this) {
+      final FormatRunnable formatRunnable = (FormatRunnable) runnable;
+      final String idDocument = formatRunnable.getDocument().getUuid()
+          .toString();
+      final String metaToLog = MetadataUtils.getMetadatasForLog(formatRunnable
+                                                                .getDocument(), metadonnees);
 
-         if ((throwable == null) && (!formatRunnable.getResultat().isValid())) {
-            nombreDocsErreur++;
-            final String resultatDetail = formatResultatDetails(formatRunnable);
-            LOGGER.warn("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
-                                                            resultatDetail });
-         } else if (throwable != null) {
-            nombreDocsErreur++;
+      if (throwable == null && !formatRunnable.getResultat().isValid()) {
+        nombreDocsErreur++;
+        final String resultatDetail = formatResultatDetails(formatRunnable);
+        LOGGER.warn("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
+                                                        resultatDetail });
+      } else if (throwable != null) {
+        nombreDocsErreur++;
 
-            LOGGER.error("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
-                                                             throwable.getMessage() });
-         }
-         nombreTraites++;
-         if (getNombreTraites() % getPasExecution() == 0) {
-            LOGGER.info("{} documents validés", getNombreTraites());
-         }
-
-         // supprime le fichier temporaire
-         if (formatRunnable.getFile() != null) {
-            final File file = formatRunnable.getFile();
-            LOGGER.debug("Suppression du fichier temporaire {}", file
-                         .getAbsolutePath());
-            if (!file.delete()) {
-               LOGGER.error("Impossible de supprimer le fichier temporaire {}",
-                            file.getAbsolutePath());
-            }
-         }
+        LOGGER.error("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
+                                                         throwable.getMessage() });
       }
-   }
-
-   /**
-    * Methode permettant de formatter le détail du résultat.
-    *
-    * @param formatRunnable
-    *           runnable
-    * @return String
-    */
-   private String formatResultatDetails(final FormatRunnable formatRunnable) {
-      final StringBuffer buffer = new StringBuffer();
-      boolean first = true;
-      for (final String detail : formatRunnable.getResultat().getDetails()) {
-         if (!first) {
-            buffer.append(", ");
-         }
-         buffer.append(detail);
-         first = false;
+      nombreTraites++;
+      if (getNombreTraites() % getPasExecution() == 0) {
+        LOGGER.info("{} documents validés", getNombreTraites());
       }
-      return buffer.toString();
-   }
 
-   /**
-    * Attend que l'ensemble des threads aient bien terminé leur travail.
-    */
-   public final void waitFinishValidation() {
-      try {
-         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+      // supprime le fichier temporaire
+      if (formatRunnable.getFile() != null) {
+        final File file = formatRunnable.getFile();
+        LOGGER.debug("Suppression du fichier temporaire {}", file
+                     .getAbsolutePath());
+        if (!file.delete()) {
+          LOGGER.error("Impossible de supprimer le fichier temporaire {}",
+                       file.getAbsolutePath());
+        }
       }
-      catch (final InterruptedException e) {
-         throw new IllegalStateException(e);
-      }
-   }
+    }
+  }
 
-   /**
-    * Permet de récupérer le nombre de documents traités en erreur.
-    *
-    * @return int
-    */
-   public final int getNombreDocsErreur() {
+  /**
+   * Methode permettant de formatter le détail du résultat.
+   *
+   * @param formatRunnable
+   *           runnable
+   * @return String
+   */
+  private String formatResultatDetails(final FormatRunnable formatRunnable) {
+    final StringBuffer buffer = new StringBuffer();
+    boolean first = true;
+    for (final String detail : formatRunnable.getResultat().getDetails()) {
+      if (!first) {
+        buffer.append(", ");
+      }
+      buffer.append(detail);
+      first = false;
+    }
+    return buffer.toString();
+  }
+
+  /**
+   * Attend que l'ensemble des threads aient bien terminé leur travail.
+   */
+  public final void waitFinishValidation() {
+    try {
+      awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+    }
+    catch (final InterruptedException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
+  /**
+   * Permet de récupérer le nombre de documents traités en erreur.
+   *
+   * @return int
+   */
+  public final int getNombreDocsErreur() {
+    synchronized (this) {
       return nombreDocsErreur;
-   }
+    }
+  }
 
-   /**
-    * Permet de modifier le nombre de documents traités en erreur.
-    *
-    * @param nombreDocsErreur
-    *           nombre de documents traités en erreur
-    */
-   public final void setNombreDocsErreur(final int nombreDocsErreur) {
+  /**
+   * Permet de modifier le nombre de documents traités en erreur.
+   *
+   * @param nombreDocsErreur
+   *           nombre de documents traités en erreur
+   */
+  public final void setNombreDocsErreur(final int nombreDocsErreur) {
+    synchronized (this) {
       this.nombreDocsErreur = nombreDocsErreur;
-   }
+    }
+  }
 
-   /**
-    * Permet de récupérer le nombre de documents traités.
-    *
-    * @return int
-    */
-   public final int getNombreTraites() {
-	   synchronized (this) {
-		   return nombreTraites;
-	   }  
-   }
+  /**
+   * Permet de récupérer le nombre de documents traités.
+   *
+   * @return int
+   */
+  public final int getNombreTraites() {
+    synchronized (this) {
+      return nombreTraites;
+    }  
+  }
 
-   /**
-    * Permet de modifier le nombre de documents traités.
-    *
-    * @param nombreTraites
-    *           nombre de documents traités
-    */
-   public  final void setNombreTraites(final int nombreTraites) {
-	   synchronized(this){
-		   this.nombreTraites = nombreTraites; 
-	   }
-   }
+  /**
+   * Permet de modifier le nombre de documents traités.
+   *
+   * @param nombreTraites
+   *           nombre de documents traités
+   */
+  public  final void setNombreTraites(final int nombreTraites) {
+    synchronized(this){
+      this.nombreTraites = nombreTraites; 
+    }
+  }
 
-   /**
-    * Permet de récupérer le pas d'exécution (nombre de documents à traités pour
-    * avoir une trace applicative).
-    *
-    * @return int
-    */
-   public final int getPasExecution() {
-      return pasExecution;
-   }
+  /**
+   * Permet de récupérer le pas d'exécution (nombre de documents à traités pour
+   * avoir une trace applicative).
+   *
+   * @return int
+   */
+  public final int getPasExecution() {
+    return pasExecution;
+  }
 
-   /**
-    * Permet de modifier le pas d'exécution (nombre de documents à traités pour
-    * avoir une trace applicative).
-    *
-    * @param pasExecution
-    *           pas d'exécution (nombre de documents à traités pour avoir une
-    *           trace applicative)
-    */
-   public final void setPasExecution(final int pasExecution) {
-      this.pasExecution = pasExecution;
-   }
+  /**
+   * Permet de modifier le pas d'exécution (nombre de documents à traités pour
+   * avoir une trace applicative).
+   *
+   * @param pasExecution
+   *           pas d'exécution (nombre de documents à traités pour avoir une
+   *           trace applicative)
+   */
+  public final void setPasExecution(final int pasExecution) {
+    this.pasExecution = pasExecution;
+  }
 }
