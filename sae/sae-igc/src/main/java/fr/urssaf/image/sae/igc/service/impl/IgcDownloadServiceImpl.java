@@ -36,262 +36,272 @@ import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 @Service
 public class IgcDownloadServiceImpl implements IgcDownloadService {
 
-   private DispatcheurService dispatcheurService;
+  private final DispatcheurService dispatcheurService;
 
-   private static final String TRACE_CODE_EVT_ECHEC_CHARGEMENT_CRL = "IGC_LOAD_CRLS|KO";
+  private static final String TRACE_CODE_EVT_ECHEC_CHARGEMENT_CRL = "IGC_LOAD_CRLS|KO";
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(IgcDownloadServiceImpl.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(IgcDownloadServiceImpl.class);
 
-   /**
-    * Constructeur
-    * 
-    * @param dispatcheurService
-    *           Le service de dispatch des traces
-    */
-   @Autowired
-   public IgcDownloadServiceImpl(DispatcheurService dispatcheurService) {
-      this.dispatcheurService = dispatcheurService;
-   }
+  /**
+   * Constructeur
+   * 
+   * @param dispatcheurService
+   *           Le service de dispatch des traces
+   */
+  @Autowired
+  public IgcDownloadServiceImpl(final DispatcheurService dispatcheurService) {
+    this.dispatcheurService = dispatcheurService;
+  }
 
-   @Override
-   public final void telechargeCRLs(IgcConfigs igcConfigs)
-         throws IgcDownloadException {
+  @Override
+  public final void telechargeCRLs(final IgcConfigs igcConfigs)
+      throws IgcDownloadException {
 
-      for (IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
+    for (final IgcConfig igcConfig : igcConfigs.getIgcConfigs()) {
 
-         if (igcConfig.isDlActivated()) {
+      if (igcConfig.isDlActivated()) {
 
-            // Création d'un répertoire temporaire
-            String repCrls = igcConfig.getCrlsRep();
-            String[] split = repCrls.split(Pattern.quote(File.separator));
-            String repTemp = repCrls.replace(split[split.length - 1],
-                  "repCrlsTemp");
+        // Création d'un répertoire temporaire
+        final String repCrls = igcConfig.getCrlsRep();
+        final String[] split = repCrls.split(Pattern.quote(File.separator));
+        final String repTemp = repCrls.replace(split[split.length - 1],
+            "repCrlsTemp");
 
-            for (URL url : igcConfig.getUrlList().getUrls()) {
-               boolean erreur = false;
+        for (final URL url : igcConfig.getUrlList().getUrls()) {
+          boolean erreur = false;
 
-               try {
-                  // Téléchargement des CRLs
-                  int downloads = this.download(url, repTemp);
-                  LOG
-                        .info(
-                              "Mise a jour des CRL pour la PKI {} : {} CRL telechargees",
-                              igcConfig.getPkiIdent(), downloads);
+          try {
+            // Téléchargement des CRLs
+            final int downloads = this.download(url, repTemp);
+            LOG
+            .info(
+                  "Mise a jour des CRL pour la PKI {} : {} CRL telechargees",
+                  igcConfig.getPkiIdent(), downloads);
 
-                  // Test de chargement des CRL
-                  File repertoire = new File(repTemp);
-                  String[] listeCRL = repertoire.list();
-
-                  for (String crl : listeCRL) {
-                     InputStream input = new FileInputStream(repTemp + "/"
-                           + crl);
-                     CertificateFactory certifFactory;
-                     try {
-                        certifFactory = CertificateFactory.getInstance("X.509");
-                        certifFactory.generateCRL(input);
-                     } catch (GeneralSecurityException e) {
-                        erreur = true;
-                        LOG.error(
-                              "erreur de chargement du fichier CRL: " + crl, e);
-                        ecrireTraces(TRACE_CODE_EVT_ECHEC_CHARGEMENT_CRL, crl,
-                              igcConfig.getPkiIdent());
-                     }
-                  }
-
-               } catch (IOException e) {
+            // Test de chargement des CRL
+            final File repertoire = new File(repTemp);
+            final String[] listeCRL = repertoire.list();
+            if (listeCRL != null) {
+              for (final String crl : listeCRL) {
+                final InputStream input = new FileInputStream(repTemp + "/"
+                    + crl);
+                CertificateFactory certifFactory;
+                try {
+                  certifFactory = CertificateFactory.getInstance("X.509");
+                  certifFactory.generateCRL(input);
+                } catch (final GeneralSecurityException e) {
                   erreur = true;
-                  LOG.error("erreur de téléchargement des CRLs : " + url, e);
-                  ecrireTraces(TRACE_CODE_EVT_ECHEC_CHARGEMENT_CRL, url
-                        .toString(), igcConfig.getPkiIdent());
-               }
-
-               // Si pas de pb de chargement, on déplace les CRL du
-               // répertoire temporaire au répertoire définitif
-               if (!erreur) {
-                  // Liste des éléments du répertoire temporaire
-                  File repertoireTemp = new File(repTemp);
-                  String[] tabCRLTemp = repertoireTemp.list();
-                  List<String> listeCRLTemp = Arrays.asList(tabCRLTemp);
-                  // Liste des éléments du répertoire définitif
-                  File repertoireDef = new File(repCrls);
-                  String[] tabCRLDef = repertoireDef.list();
-                  // Suppression des éléments présents dans le répertoire
-                  // définitif mais pas dans le répertoire temporaire
-                  for (String crl : tabCRLDef) {
-                     if (!listeCRLTemp.contains(crl)) {
-                        File crlToDelete = new File(repCrls + "/" + crl);
-                        try {
-                        crlToDelete.delete();
-                        } catch (Exception e) {
-                           System.out.println("exeption");
-                          System.out.println(e.getMessage());
-                        }
-                        
-                     }
-                  }
-                  // Copie de tous les fichiers du répertoire temporaire au
-                  // répertoire définitif
-                  for (String crl : tabCRLTemp) {
-                     LOG.debug("Copie du fichier : " + crl);
-                     System.out.println("Copie du fichier : " + crl);
-                     File source = new File(repTemp + "/" + crl);
-                     File destination = new File(repCrls + "/" + crl);
-                     boolean res = copier(source, destination);
-                     if (!res) {
-                        LOG.debug("Fichier non copié");
-                     }
-                  }
-               }
-
-               // Suppression du répertoire temporaire
-               File repToDelete = new File(repTemp);
-               String[] tabCRLToDelete = repToDelete.list();
-               if (tabCRLToDelete != null) {
-                  List<String> listeCRLToDelete = Arrays.asList(tabCRLToDelete);
-                  for (String crlToDelete : listeCRLToDelete) {
-                     File source = new File(repTemp + "/" + crlToDelete);
-                     if (source.exists()) {
-                        source.delete();
-                     }
-                  }
-               }
-               
-               if (repToDelete.exists()) {
-                  repToDelete.delete();
-               }
+                  LOG.error(
+                            "erreur de chargement du fichier CRL: " + crl, e);
+                  ecrireTraces(TRACE_CODE_EVT_ECHEC_CHARGEMENT_CRL, crl,
+                               igcConfig.getPkiIdent());
+                }
+              }
+            } else {
+              LOG.error("Répertoire invalide");
             }
 
-         } else {
-            LOG.info("mise à jour des CRL désactivée pour la PKI {}", igcConfig
-                  .getPkiIdent());
-         }
+          } catch (final IOException e) {
+            erreur = true;
+            LOG.error("erreur de téléchargement des CRLs : " + url, e);
+            ecrireTraces(TRACE_CODE_EVT_ECHEC_CHARGEMENT_CRL, url
+                         .toString(), igcConfig.getPkiIdent());
+          }
+
+          // Si pas de pb de chargement, on déplace les CRL du
+          // répertoire temporaire au répertoire définitif
+          if (!erreur) {
+            // Liste des éléments du répertoire temporaire
+            final File repertoireTemp = new File(repTemp);
+            final String[] tabCRLTemp = repertoireTemp.list();
+            if (tabCRLTemp != null) {
+              final List<String> listeCRLTemp = Arrays.asList(tabCRLTemp);
+              // Liste des éléments du répertoire définitif
+              final File repertoireDef = new File(repCrls);
+              final String[] tabCRLDef = repertoireDef.list();
+              // Suppression des éléments présents dans le répertoire
+              // définitif mais pas dans le répertoire temporaire
+              if (tabCRLDef != null) {
+                for (final String crl : tabCRLDef) {
+                  if (!listeCRLTemp.contains(crl)) {
+                    final File crlToDelete = new File(repCrls + "/" + crl);
+                    try {
+                      crlToDelete.delete();
+                    } catch (final Exception e) {
+                      System.out.println("exception");
+                      System.out.println(e.getMessage());
+                    }
+                  } else {
+                    LOG.error("Répertoire invalide");
+                  }
+                }
+              } else {
+                LOG.error("Répertoire invalide");
+              }
+            }
+            // Copie de tous les fichiers du répertoire temporaire au
+            // répertoire définitif
+            for (final String crl : tabCRLTemp) {
+              LOG.debug("Copie du fichier : " + crl);
+              System.out.println("Copie du fichier : " + crl);
+              final File source = new File(repTemp + "/" + crl);
+              final File destination = new File(repCrls + "/" + crl);
+              final boolean res = copier(source, destination);
+              if (!res) {
+                LOG.debug("Fichier non copié");
+              }
+            }
+          }
+
+          // Suppression du répertoire temporaire
+          final File repToDelete = new File(repTemp);
+          final String[] tabCRLToDelete = repToDelete.list();
+          if (tabCRLToDelete != null) {
+            final List<String> listeCRLToDelete = Arrays.asList(tabCRLToDelete);
+            for (final String crlToDelete : listeCRLToDelete) {
+              final File source = new File(repTemp + "/" + crlToDelete);
+              if (source.exists()) {
+                source.delete();
+              }
+            }
+          }
+
+          if (repToDelete.exists()) {
+            repToDelete.delete();
+          }
+        }
+
+      } else {
+        LOG.info("mise à jour des CRL désactivée pour la PKI {}", igcConfig
+                 .getPkiIdent());
+      }
+    }
+
+  }
+
+  private int download(final URL url, final String repertory) throws IOException {
+
+    final List<URL> urls = URLUtils.findLinks(new URL(url.getProtocol(), url
+                                                      .getHost(), url.getPort(), "/"));
+
+    return this.download(urls, repertory, FilenameUtils.getExtension(url
+                                                                     .getFile()));
+
+  }
+
+  private int download(final List<URL> urls, final String repertory, final String extension)
+      throws IOException {
+
+    int downloads = 0;
+
+    for (final URL url : urls) {
+
+      if (this.download(url, repertory, extension)) {
+
+        downloads++;
+
       }
 
-   }
+    }
 
-   private int download(URL url, String repertory) throws IOException {
+    return downloads;
 
-      List<URL> urls = URLUtils.findLinks(new URL(url.getProtocol(), url
-            .getHost(), url.getPort(), "/"));
+  }
 
-      return this.download(urls, repertory, FilenameUtils.getExtension(url
-            .getFile()));
+  private boolean download(final URL url, final String repertory, final String extension)
+      throws IOException {
 
-   }
+    boolean isDownload = false;
 
-   private int download(List<URL> urls, String repertory, String extension)
-         throws IOException {
+    final File destination = new File(repertory + url.getFile());
 
-      int downloads = 0;
+    if (FileFilterUtils.suffixFileFilter(extension).accept(destination)) {
 
-      for (URL url : urls) {
+      LOG.debug("downloading from " + url.toString());
 
-         if (this.download(url, repertory, extension)) {
+      FileUtils.copyURLToFile(url, destination);
 
-            downloads++;
+      isDownload = true;
 
-         }
+    }
 
+    return isDownload;
+
+  }
+
+  private void ecrireTraces(final String codeEvenement, final String crl, final String pki) {
+    try {
+      // Instantiation de l'objet TraceToCreate
+      final TraceToCreate traceToCreate = new TraceToCreate();
+
+      // Code de l'événement
+      traceToCreate.setCodeEvt(codeEvenement);
+
+      // Contexte
+      traceToCreate.setContexte("telechargerCRLs");
+
+      // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
+      // ce code
+      traceToCreate.getInfos().put("saeServeurHostname",
+                                   HostnameUtil.getHostname());
+      traceToCreate.getInfos().put("fichier", crl);
+      traceToCreate.getInfos().put("pki", pki);
+
+      // Appel du dispatcheur
+      dispatcheurService.ajouterTrace(traceToCreate);
+    } catch (final Exception ex) {
+      LOG
+      .error(
+             "Une erreur s'est produite lors de l'écriture de la trace d'erreur de chargement des CRLs",
+             ex);
+    }
+  }
+
+  /**
+   * copie le fichier source dans le fichier resultat retourne vrai si cela
+   * réussit
+   */
+  private boolean copier(final File source, final File destination) {
+    boolean resultat = false;
+
+    // Declaration des flux
+    java.io.FileInputStream sourceFile = null;
+    java.io.FileOutputStream destinationFile = null;
+
+    try {
+      // Création du fichier :
+      destination.createNewFile();
+
+      // Ouverture des flux
+      sourceFile = new java.io.FileInputStream(source);
+      destinationFile = new java.io.FileOutputStream(destination);
+
+      // Lecture par segment de 0.5Mo
+      final byte buffer[] = new byte[512 * 1024];
+      int nbLecture;
+
+      while ((nbLecture = sourceFile.read(buffer)) != -1) {
+        destinationFile.write(buffer, 0, nbLecture);
       }
 
-      return downloads;
+      // Copie réussie
+      resultat = true;
+    } catch (final java.io.FileNotFoundException f) {
 
-   }
+    } catch (final java.io.IOException e) {
 
-   private boolean download(URL url, String repertory, String extension)
-         throws IOException {
-
-      boolean isDownload = false;
-
-      File destination = new File(repertory + url.getFile());
-
-      if (FileFilterUtils.suffixFileFilter(extension).accept(destination)) {
-
-         LOG.debug("downloading from " + url.toString());
-
-         FileUtils.copyURLToFile(url, destination);
-
-         isDownload = true;
-
-      }
-
-      return isDownload;
-
-   }
-
-   private void ecrireTraces(String codeEvenement, String crl, String pki) {
+    } finally {
+      // Quoi qu'il arrive, on ferme les flux
       try {
-         // Instantiation de l'objet TraceToCreate
-         TraceToCreate traceToCreate = new TraceToCreate();
-
-         // Code de l'événement
-         traceToCreate.setCodeEvt(codeEvenement);
-
-         // Contexte
-         traceToCreate.setContexte("telechargerCRLs");
-
-         // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
-         // ce code
-         traceToCreate.getInfos().put("saeServeurHostname",
-               HostnameUtil.getHostname());
-         traceToCreate.getInfos().put("fichier", crl);
-         traceToCreate.getInfos().put("pki", pki);
-
-         // Appel du dispatcheur
-         dispatcheurService.ajouterTrace(traceToCreate);
-      } catch (Exception ex) {
-         LOG
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace d'erreur de chargement des CRLs",
-                     ex);
+        sourceFile.close();
+      } catch (final Exception e) {
       }
-   }
-
-   /**
-    * copie le fichier source dans le fichier resultat retourne vrai si cela
-    * réussit
-    */
-   private boolean copier(File source, File destination) {
-      boolean resultat = false;
-
-      // Declaration des flux
-      java.io.FileInputStream sourceFile = null;
-      java.io.FileOutputStream destinationFile = null;
-
       try {
-         // Création du fichier :
-         destination.createNewFile();
-
-         // Ouverture des flux
-         sourceFile = new java.io.FileInputStream(source);
-         destinationFile = new java.io.FileOutputStream(destination);
-
-         // Lecture par segment de 0.5Mo
-         byte buffer[] = new byte[512 * 1024];
-         int nbLecture;
-
-         while ((nbLecture = sourceFile.read(buffer)) != -1) {
-            destinationFile.write(buffer, 0, nbLecture);
-         }
-
-         // Copie réussie
-         resultat = true;
-      } catch (java.io.FileNotFoundException f) {
-
-      } catch (java.io.IOException e) {
-
-      } finally {
-         // Quoi qu'il arrive, on ferme les flux
-         try {
-            sourceFile.close();
-         } catch (Exception e) {
-         }
-         try {
-            destinationFile.close();
-         } catch (Exception e) {
-         }
+        destinationFile.close();
+      } catch (final Exception e) {
       }
-      return (resultat);
-   }
+    }
+    return resultat;
+  }
 }
