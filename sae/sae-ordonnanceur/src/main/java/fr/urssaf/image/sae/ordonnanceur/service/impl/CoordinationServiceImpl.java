@@ -46,7 +46,7 @@ public class CoordinationServiceImpl implements CoordinationService {
    * Logger.
    */
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(CoordinationServiceImpl.class);
+      .getLogger(CoordinationServiceImpl.class);
 
   private final DecisionService decisionService;
 
@@ -80,7 +80,7 @@ public class CoordinationServiceImpl implements CoordinationService {
   }
 
   private static final Logger LOG = LoggerFactory
-                                                 .getLogger(CoordinationServiceImpl.class);
+      .getLogger(CoordinationServiceImpl.class);
 
   private static final String PREFIX_LOG = "ordonnanceur()";
 
@@ -130,7 +130,7 @@ public class CoordinationServiceImpl implements CoordinationService {
     // Etape 3: Décision du traitement à lancer
 
     final List<JobQueue> listeTraitement = decisionService
-                                                          .trouverListeJobALancer(jobsEnAttente, jobsEnCours);
+        .trouverListeJobALancer(jobsEnAttente, jobsEnCours);
 
     // Etape 4 : Réservation du traitement
     JobQueue traitement = null;
@@ -140,12 +140,12 @@ public class CoordinationServiceImpl implements CoordinationService {
           // Etape 5 : Vérification que l'URL ECDE est toujours actif
           if (!Constantes.REPRISE_MASSE_JN.equals(jobQueue.getType())) {
             decisionService
-                           .controleDispoEcdeTraitementMasse(jobQueue);
+            .controleDispoEcdeTraitementMasse(jobQueue);
           }
           // Etape 6 : Positionne le sémaphore pour le traitement
           // sélectionné
           traitement = jobService
-                                 .reserverCodeTraitementJobALancer(jobQueue);
+              .reserverCodeTraitementJobALancer(jobQueue);
           break;
         }
         catch (final ParameterRuntimeException e) {
@@ -164,7 +164,7 @@ public class CoordinationServiceImpl implements CoordinationService {
         }
       } else {
         LOGGER.info("{} - Le job " + jobQueue.getIdJob().toString()
-            + " n'est pas sélectionné - Passage au job suivant");
+                    + " n'est pas sélectionné - Passage au job suivant");
       }
     }
 
@@ -245,14 +245,14 @@ public class CoordinationServiceImpl implements CoordinationService {
       currentDate = new Date();
 
       final boolean isJobReserveBloque = JobState.RESERVED.equals(jobCourant
-                                                                            .getState())
+                                                                  .getState())
           && currentDate.after(DateUtils.addMinutes(
                                                     jobCourant.getReservationDate(),
                                                     ordonnanceurConfiguration.getTpsMaxReservation()))
           && !Boolean.TRUE.equals(jobCourant.getToCheckFlag());
 
       final boolean isJobLanceBloque = JobState.STARTING.equals(jobCourant
-                                                                          .getState())
+                                                                .getState())
           && currentDate.after(DateUtils.addMinutes(
                                                     jobCourant.getStartingDate(),
                                                     ordonnanceurConfiguration.getTpsMaxTraitement()))
@@ -262,12 +262,12 @@ public class CoordinationServiceImpl implements CoordinationService {
         LOG.error(
                   "Contrôler le traitement n°{}. Raison : Etat \"réservé\" "
                       + "depuis plus de {} minutes (date de réservation : {}, date de contrôle : {})",
-                  new Object[] {
-                                jobCourant.getIdJob(),
-                                ordonnanceurConfiguration.getTpsMaxReservation(),
-                                DateFormatUtils.format(jobCourant.getReservationDate(),
-                                                       FORMAT),
-                                DateFormatUtils.format(currentDate, FORMAT)});
+                      new Object[] {
+                                    jobCourant.getIdJob(),
+                                    ordonnanceurConfiguration.getTpsMaxReservation(),
+                                    DateFormatUtils.format(jobCourant.getReservationDate(),
+                                                           FORMAT),
+                                    DateFormatUtils.format(currentDate, FORMAT)});
         try {
           jobService.updateToCheckFlag(
                                        jobCourant.getIdJob(),
@@ -294,12 +294,12 @@ public class CoordinationServiceImpl implements CoordinationService {
                   "Le traitement n°{} semble bloqué à l'état \"en cours\" "
                       + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
                       + "date de contrôle : {}) - Vérification de l'existence du process",
-                  new Object[] {
-                                jobCourant.getIdJob(),
-                                ordonnanceurConfiguration.getTpsMaxTraitement(),
-                                DateFormatUtils.format(jobCourant.getStartingDate(),
-                                                       FORMAT),
-                                DateFormatUtils.format(currentDate, FORMAT)});
+                      new Object[] {
+                                    jobCourant.getIdJob(),
+                                    ordonnanceurConfiguration.getTpsMaxTraitement(),
+                                    DateFormatUtils.format(jobCourant.getStartingDate(),
+                                                           FORMAT),
+                                    DateFormatUtils.format(currentDate, FORMAT)});
         boolean isProcessRunning = true;
         try {
           isProcessRunning = verificationProcessRunning(jobCourant);
@@ -309,13 +309,13 @@ public class CoordinationServiceImpl implements CoordinationService {
                    "Le traitement n°{} semble bloqué à l'état \"en cours\" "
                        + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
                        + "date de contrôle : {}) - Echec vérification existence process - {}",
-                   new Object[] {
-                                 jobCourant.getIdJob(),
-                                 ordonnanceurConfiguration.getTpsMaxTraitement(),
-                                 DateFormatUtils.format(jobCourant.getStartingDate(),
-                                                        FORMAT),
-                                 DateFormatUtils.format(currentDate, FORMAT),
-                                 e.getMessage()});
+                       new Object[] {
+                                     jobCourant.getIdJob(),
+                                     ordonnanceurConfiguration.getTpsMaxTraitement(),
+                                     DateFormatUtils.format(jobCourant.getStartingDate(),
+                                                            FORMAT),
+                                     DateFormatUtils.format(currentDate, FORMAT),
+                                     e.getMessage()});
 
           // On met un message sur le job mais sans changer le flag car on
           // ne sait pas si le process existe
@@ -345,23 +345,23 @@ public class CoordinationServiceImpl implements CoordinationService {
                     "Le traitement n°{} semble bloqué à l'état \"en cours\" "
                         + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
                         + "date de contrôle : {}) - Le process n'a pas été trouvé",
-                    new Object[] {
-                                  jobCourant.getIdJob(),
-                                  ordonnanceurConfiguration.getTpsMaxTraitement(),
-                                  DateFormatUtils.format(jobCourant.getStartingDate(),
-                                                         FORMAT),
-                                  DateFormatUtils.format(currentDate, FORMAT)});
+                        new Object[] {
+                                      jobCourant.getIdJob(),
+                                      ordonnanceurConfiguration.getTpsMaxTraitement(),
+                                      DateFormatUtils.format(jobCourant.getStartingDate(),
+                                                             FORMAT),
+                                      DateFormatUtils.format(currentDate, FORMAT)});
 
           LOG.error(
                     "Contrôler le traitement n°{}. Raison : Etat \"en cours\" "
                         + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
                         + "date de contrôle : {})",
-                    new Object[] {
-                                  jobCourant.getIdJob(),
-                                  ordonnanceurConfiguration.getTpsMaxTraitement(),
-                                  DateFormatUtils.format(jobCourant.getStartingDate(),
-                                                         FORMAT),
-                                  DateFormatUtils.format(currentDate, FORMAT)});
+                        new Object[] {
+                                      jobCourant.getIdJob(),
+                                      ordonnanceurConfiguration.getTpsMaxTraitement(),
+                                      DateFormatUtils.format(jobCourant.getStartingDate(),
+                                                             FORMAT),
+                                      DateFormatUtils.format(currentDate, FORMAT)});
           try {
             jobService.updateToCheckFlag(
                                          jobCourant.getIdJob(),
@@ -384,12 +384,12 @@ public class CoordinationServiceImpl implements CoordinationService {
                     "Le traitement n°{} semble bloqué à l'état \"en cours\" "
                         + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
                         + "date de contrôle : {}) - Le process tourne toujours",
-                    new Object[] {
-                                  jobCourant.getIdJob(),
-                                  ordonnanceurConfiguration.getTpsMaxTraitement(),
-                                  DateFormatUtils.format(jobCourant.getStartingDate(),
-                                                         FORMAT),
-                                  DateFormatUtils.format(currentDate, FORMAT)});
+                        new Object[] {
+                                      jobCourant.getIdJob(),
+                                      ordonnanceurConfiguration.getTpsMaxTraitement(),
+                                      DateFormatUtils.format(jobCourant.getStartingDate(),
+                                                             FORMAT),
+                                      DateFormatUtils.format(currentDate, FORMAT)});
         }
       }
     }
@@ -415,13 +415,15 @@ public class CoordinationServiceImpl implements CoordinationService {
                               "-c",
                               "ps aux | awk '{print $2 }' | grep " + jobCourant.getPid());
     }
-
+    if (pb == null) {
+      throw new RuntimeException("ProcessBuilder null");
+    }
     // Lancement de la commande de vérification du process
     final Process p = pb.start();
 
     // Initialisation du scheduler de thread
     final ScheduledExecutorService scheduler = Executors
-                                                        .newSingleThreadScheduledExecutor();
+        .newSingleThreadScheduledExecutor();
 
     // Initialisation du Thread de contrôle du résultat de la vérification du
     // process
@@ -442,11 +444,11 @@ public class CoordinationServiceImpl implements CoordinationService {
       LOG.debug(
                 "Le traitement n°{} est en cours de vérification (date de démarrage du traitement : {}, "
                     + "date de contrôle : {})",
-                new Object[] {
-                              jobCourant.getIdJob(),
-                              DateFormatUtils.format(jobCourant.getStartingDate(),
-                                                     FORMAT),
-                              DateFormatUtils.format(new Date(), FORMAT)});
+                    new Object[] {
+                                  jobCourant.getIdJob(),
+                                  DateFormatUtils.format(jobCourant.getStartingDate(),
+                                                         FORMAT),
+                                  DateFormatUtils.format(new Date(), FORMAT)});
       // Attend le temps du delay que le thread de vérification se termine.
       // Evite de logger trop souvent le message ci-dessus
       Thread.sleep(delay);
