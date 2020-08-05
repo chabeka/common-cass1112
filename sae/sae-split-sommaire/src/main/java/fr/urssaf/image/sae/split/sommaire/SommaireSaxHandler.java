@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -152,9 +153,8 @@ class SommaireSaxHandler extends DefaultHandler {
 
       }
     } else {
-      if (qName != null) {
-        recordRowDataLines.append("</" + qName + ">");
-      }
+      // qname inconnu
+      recordRowDataLines.append("</" + qName + ">");
     }
     currentElement = null;
   }
@@ -200,7 +200,10 @@ class SommaireSaxHandler extends DefaultHandler {
     final Reader inputString = new StringReader(fileContent.toString());
     final BufferedReader inFromUser = new BufferedReader(inputString);
 
-    final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+    dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    final DocumentBuilder builder = dbf.newDocumentBuilder();
+
     final Document doc = builder.parse(new InputSource(inFromUser));
     source = new DOMSource(doc);
     transformer = TransformerFactory.newInstance().newTransformer();
