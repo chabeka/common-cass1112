@@ -6,13 +6,14 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.javers.core.metamodel.annotation.Id;
+
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-import org.javers.core.metamodel.annotation.Id;
 
 /**
  * Traitement dans la pile des travaux. Les propriétés sont.
@@ -42,6 +43,8 @@ import org.javers.core.metamodel.annotation.Id;
  * </ul>
  */
 @Table(name = "jobrequestcql")
+@SuppressWarnings("pmd:MethodReturnsInternalArray")
+// Pour des raisons de performance on ignore la règle sonar ci-dessus
 public class JobRequestCql implements Serializable, Comparable<JobRequestCql> {
 
   @PartitionKey
