@@ -142,14 +142,16 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
             }
             // Copie de tous les fichiers du répertoire temporaire au
             // répertoire définitif
-            for (final String crl : tabCRLTemp) {
-              LOG.debug("Copie du fichier : " + crl);
-              System.out.println("Copie du fichier : " + crl);
-              final File source = new File(repTemp + "/" + crl);
-              final File destination = new File(repCrls + "/" + crl);
-              final boolean res = copier(source, destination);
-              if (!res) {
-                LOG.debug("Fichier non copié");
+            if (tabCRLTemp != null) {
+              for (final String crl : tabCRLTemp) {
+                LOG.debug("Copie du fichier : " + crl);
+                System.out.println("Copie du fichier : " + crl);
+                final File source = new File(repTemp + "/" + crl);
+                final File destination = new File(repCrls + "/" + crl);
+                final boolean res = copier(source, destination);
+                if (!res) {
+                  LOG.debug("Fichier non copié");
+                }
               }
             }
           }
