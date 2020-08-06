@@ -17,7 +17,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -217,7 +216,7 @@ public class VerificationSupportImpl implements VerificationSupport {
       final PrintWriter printWriter = new PrintWriter(stringWriter);
 
       for (final Throwable erreur : listeErreurs) {
-        LOGGER.error(ExceptionUtils.getFullStackTrace(erreur));
+        erreur.printStackTrace(printWriter);
       }
       buffer.append(stringWriter.getBuffer());
 
