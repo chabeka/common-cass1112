@@ -26,79 +26,79 @@ import net.docubase.toolkit.model.document.Document;
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })
 public class FormatFichierServiceTest {
 
-   @Autowired
-   private FormatFichierService formatFichierService;
+  @Autowired
+  private FormatFichierService formatFichierService;
 
-   private final File file = new File(
-         "src/test/resources/identification/PdfaValide.pdf");
+  private final File file = new File(
+                                     "src/test/resources/identification/PdfaValide.pdf");
 
-   private final File doc = new File(
-         "src/test/resources/identification/word.doc");
+  private final File doc = new File(
+      "src/test/resources/identification/word.doc");
 
-   private Document createDocument(String idFormat) {
-      Document document = new Document();
-      document.setUuid(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-      document.setArchivageDate(new Date());
-      document.setType("2.3.1.1.12");
-      document.addCriterion("cse", "CS1");
-      document.addCriterion("apr", "GED");
-      document.addCriterion("atr", "GED");
-      document.addCriterion("ffi", idFormat);
-      return document;
-   }
+  private Document createDocument(final String idFormat) {
+    final Document document = new Document();
+    document.setUuid(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+    document.setArchivageDate(new Date());
+    document.setType("2.3.1.1.12");
+    document.addCriterion("cse", "CS1");
+    document.addCriterion("apr", "GED");
+    document.addCriterion("atr", "GED");
+    document.addCriterion("ffi", idFormat);
+    return document;
+  }
 
-   private List<String> createMetadonnees() {
-      return Arrays.asList(Constantes.METADONNEES_DEFAULT);
-   }
+  private List<String> createMetadonnees() {
+    return Arrays.asList(Constantes.getMETADONNEES_DEFAULT());
+  }
 
-   @Test
-   public void identifierFichierWithUnknownFormatException()
-         throws FileNotFoundException, IOException {
-      Assert
-            .assertFalse(
-                  "Le format 'idFormat' ne devrait pas être connu dans le référentiel des formats",
-                  formatFichierService.identifierFichier("idFormat", file,
-                        createDocument("idFormat"), createMetadonnees()));
-   }
+  @Test
+  public void identifierFichierWithUnknownFormatException()
+      throws FileNotFoundException, IOException {
+    Assert
+    .assertFalse(
+                 "Le format 'idFormat' ne devrait pas être connu dans le référentiel des formats",
+                 formatFichierService.identifierFichier("idFormat", file,
+                                                        createDocument("idFormat"), createMetadonnees()));
+  }
 
-   @Test
-   public void identifierFichierWithIdentifierInitialisationException()
-         throws FileNotFoundException, IOException {
-      Assert
-            .assertFalse(
-                  "L'identificateur du format 'format1' n'aurait pas du être instancié",
-                  formatFichierService.identifierFichier("format1", file,
-                        createDocument("format1"), createMetadonnees()));
-   }
+  @Test
+  public void identifierFichierWithIdentifierInitialisationException()
+      throws FileNotFoundException, IOException {
+    Assert
+    .assertFalse(
+                 "L'identificateur du format 'format1' n'aurait pas du être instancié",
+                 formatFichierService.identifierFichier("format1", file,
+                                                        createDocument("format1"), createMetadonnees()));
+  }
 
-   @Test
-   public void identifierFichierFormatNonValid() throws FileNotFoundException,
-         IOException {
-      Assert
-            .assertFalse(
-                  "L'identification du document n'aurait pas du réussir car ce n'est pas un pdf/a",
-                  formatFichierService.identifierFichier("fmt/354", doc,
-                        createDocument("fmt/354"), createMetadonnees()));
-   }
+  @Test
+  public void identifierFichierFormatNonValid() throws FileNotFoundException,
+  IOException {
+    Assert
+    .assertFalse(
+                 "L'identification du document n'aurait pas du réussir car ce n'est pas un pdf/a",
+                 formatFichierService.identifierFichier("fmt/354", doc,
+                                                        createDocument("fmt/354"), createMetadonnees()));
+  }
 
-   @Test
-   public void identifierFichierFormatValid() throws FileNotFoundException,
-         IOException {
-      Assert.assertTrue("L'identification du document aurait du réussir",
-            formatFichierService.identifierFichier("fmt/354", file,
-                  createDocument("fmt/354"), createMetadonnees()));
-   }
+  @Test
+  public void identifierFichierFormatValid() throws FileNotFoundException,
+  IOException {
+    Assert.assertTrue("L'identification du document aurait du réussir",
+                      formatFichierService.identifierFichier("fmt/354", file,
+                                                             createDocument("fmt/354"), createMetadonnees()));
+  }
 
-   @Test
-   public void validerFichier() throws UnknownFormatException,
-         ValidatorInitialisationException, IOException,
-         ValidatorUnhandledException {
-      ValidationResult validationResult = formatFichierService.validerFichier(
-            "fmt/354", file);
-      Assert.assertNotNull(
-            "Le résultat de la validation ne devrait pas être null",
-            validationResult);
-      Assert.assertTrue("Le fichier aurait du être valide", validationResult
-            .isValid());
-   }
+  @Test
+  public void validerFichier() throws UnknownFormatException,
+  ValidatorInitialisationException, IOException,
+  ValidatorUnhandledException {
+    final ValidationResult validationResult = formatFichierService.validerFichier(
+                                                                                  "fmt/354", file);
+    Assert.assertNotNull(
+                         "Le résultat de la validation ne devrait pas être null",
+                         validationResult);
+    Assert.assertTrue("Le fichier aurait du être valide", validationResult
+                      .isValid());
+  }
 }
