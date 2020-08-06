@@ -28,7 +28,7 @@ public class ReferentielServiceUtils {
    * Logger
    */
   private static final Logger LOG = LoggerFactory
-                                                 .getLogger(ReferentielServiceUtils.class);
+      .getLogger(ReferentielServiceUtils.class);
 
   /**
    * Constructeur
@@ -107,10 +107,10 @@ public class ReferentielServiceUtils {
     LOG.info("Initialisation du référentiel des événements");
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -230,10 +230,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -276,10 +276,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -316,10 +316,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -393,10 +393,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -439,10 +439,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -492,10 +492,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -526,10 +526,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -560,10 +560,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -601,10 +601,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -685,10 +685,10 @@ public class ReferentielServiceUtils {
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_EVT);
 
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       TRACE_DESTINATAIRE,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        TRACE_DESTINATAIRE,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -714,10 +714,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielEvenementV12(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       "TraceDestinataire",
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        "TraceDestinataire",
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -783,10 +783,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielFormat(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     String formatKey = FORMAT_FMT_354;
     addNewColumnToReferentielFormat(cfTmpl,
@@ -821,10 +821,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielFormatV2(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     final String formatKey = "fmt/353";
     addNewColumnToReferentielFormat(cfTmpl,
@@ -837,7 +837,7 @@ public class ReferentielServiceUtils {
                                                           null,
                                                           null,
                                                           null,
-                                                          "tiffToPdfConvertisseurImpl"));
+                                        "tiffToPdfConvertisseurImpl"));
 
   }
 
@@ -850,10 +850,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielFormatV3(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     final String nouveauFormat = "x-fmt/111";
 
@@ -875,10 +875,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielFormatV4(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     final String nouveauFormat = FORMAT_PDF;
 
@@ -892,7 +892,7 @@ public class ReferentielServiceUtils {
                                                           null,
                                                           null,
                                                           null,
-                                                          "pdfSplitterImpl"));
+                                        "pdfSplitterImpl"));
   }
 
   /**
@@ -905,10 +905,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielFormatV5(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     final String formatPNG = "fmt/13";
     addNewColumnToReferentielFormat(cfTmpl,
@@ -937,10 +937,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielFormatV6(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     String formatKey = "migrationW2";
     addNewColumnToReferentielFormat(cfTmpl,
@@ -1068,10 +1068,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielFormatV6Bis(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     String formatKey = "pptx";
     addNewColumnToReferentielFormat(
@@ -1101,10 +1101,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielFormatV7(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     LOG.info("Mise à jour du référentiel des formats");
 
@@ -1136,10 +1136,10 @@ public class ReferentielServiceUtils {
    */
   public static void modifyReferentielFormatFmt354(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -1165,10 +1165,10 @@ public class ReferentielServiceUtils {
    */
   public static void modifyReferentielFormatFmt353(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -1194,10 +1194,10 @@ public class ReferentielServiceUtils {
    */
   public static void modifyReferentielFormatFmt44(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -1223,10 +1223,10 @@ public class ReferentielServiceUtils {
    */
   public static void modifyReferentielFormatCrtl1(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -1262,21 +1262,21 @@ public class ReferentielServiceUtils {
    */
   public static void addFormatControleProfil(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       "DroitFormatControlProfil",
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        "DroitFormatControlProfil",
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
     updater = cfTmpl.createUpdater("IDENT_FMT_354");
     CassandraUtils
-                  .addColumn(
-                             LIBELLE_DESCRIPTION,
-                             "format de controle gérant exclusivement l'identification du fmt/354",
-                             StringSerializer.get(),
-                             StringSerializer.get(),
-                             updater);
+    .addColumn(
+               LIBELLE_DESCRIPTION,
+               "format de controle gérant exclusivement l'identification du fmt/354",
+               StringSerializer.get(),
+               StringSerializer.get(),
+               updater);
 
     FormatProfil profil = new FormatProfil();
     profil.setFileFormat(FORMAT_FMT_354);
@@ -1423,62 +1423,61 @@ public class ReferentielServiceUtils {
     ColumnFamilyUpdater<String, String> updater = null;
     LOG.info(LIBELLE_DEBUT_TRAITEMENT_REF_FMT);
     if (cfTmpl == null || refFormat == null || formatKey == null
-        || formatKey != null && formatKey.isEmpty()) {
+        || formatKey.isEmpty()) {
       LOG.error("Mise à jour impossible car l'updater ne peut être créer");
-    }
-
-    updater = cfTmpl.createUpdater(formatKey);
-    CassandraUtils.addColumn("idFormat",
-                             formatKey,
-                             StringSerializer.get(),
-                             StringSerializer.get(),
-                             updater);
-    cfTmpl.update(updater);
-
-    // Default column
-    addNewDefaultColumnToReferentielFormat(cfTmpl, updater, refFormat);
-
-    final Boolean autoriseEnGed = refFormat.getAutoriseEnGed();
-    if (autoriseEnGed != null) {
-      CassandraUtils.addColumn(AUTORISE_GED,
-                               autoriseEnGed,
-                               StringSerializer.get(),
-                               BooleanSerializer.get(),
-                               updater);
-      cfTmpl.update(updater);
-    }
-
-    final String identifier = refFormat.getIdentifier();
-    if (identifier != null && !identifier.isEmpty()) {
-      CassandraUtils.addColumn("identifieur",
-                               identifier,
+    } else {
+      updater = cfTmpl.createUpdater(formatKey);
+      CassandraUtils.addColumn("idFormat",
+                               formatKey,
                                StringSerializer.get(),
                                StringSerializer.get(),
                                updater);
       cfTmpl.update(updater);
-    }
 
-    final String validator = refFormat.getValidator();
-    if (validator != null && !validator.isEmpty()) {
-      CassandraUtils.addColumn("validator",
-                               validator,
-                               StringSerializer.get(),
-                               StringSerializer.get(),
-                               updater);
-      cfTmpl.update(updater);
-    }
+      // Default column
+      addNewDefaultColumnToReferentielFormat(cfTmpl, updater, refFormat);
 
-    final String convertisseur = refFormat.getConvertisseur();
-    if (convertisseur != null && !convertisseur.isEmpty()) {
-      CassandraUtils.addColumn("convertisseur",
-                               convertisseur,
-                               StringSerializer.get(),
-                               StringSerializer.get(),
-                               updater);
-      cfTmpl.update(updater);
-    }
+      final Boolean autoriseEnGed = refFormat.getAutoriseEnGed();
+      if (autoriseEnGed != null) {
+        CassandraUtils.addColumn(AUTORISE_GED,
+                                 autoriseEnGed,
+                                 StringSerializer.get(),
+                                 BooleanSerializer.get(),
+                                 updater);
+        cfTmpl.update(updater);
+      }
 
-    LOG.info("Format ajouté : {}", formatKey);
+      final String identifier = refFormat.getIdentifier();
+      if (identifier != null && !identifier.isEmpty()) {
+        CassandraUtils.addColumn("identifieur",
+                                 identifier,
+                                 StringSerializer.get(),
+                                 StringSerializer.get(),
+                                 updater);
+        cfTmpl.update(updater);
+      }
+
+      final String validator = refFormat.getValidator();
+      if (validator != null && !validator.isEmpty()) {
+        CassandraUtils.addColumn("validator",
+                                 validator,
+                                 StringSerializer.get(),
+                                 StringSerializer.get(),
+                                 updater);
+        cfTmpl.update(updater);
+      }
+
+      final String convertisseur = refFormat.getConvertisseur();
+      if (convertisseur != null && !convertisseur.isEmpty()) {
+        CassandraUtils.addColumn("convertisseur",
+                                 convertisseur,
+                                 StringSerializer.get(),
+                                 StringSerializer.get(),
+                                 updater);
+        cfTmpl.update(updater);
+      }
+      LOG.info("Format ajouté : {}", formatKey);
+    }
   }
 
   /**
@@ -1553,10 +1552,10 @@ public class ReferentielServiceUtils {
    */
   public static void addColumnAutoriseGEDReferentielFormat(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       REFERENTIEL_FORMAT,
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        REFERENTIEL_FORMAT,
+        StringSerializer.get(),
+        StringSerializer.get());
     // tar.gz
     addColumnAutoriseGED("crtl/1", Boolean.TRUE, cfTmpl);
     // csv
@@ -1617,7 +1616,7 @@ public class ReferentielServiceUtils {
                                            final ColumnFamilyTemplate<String, String> cfTmpl) {
     LOG.info("Ajout colonne autoriseGED dans le référentiel des formats");
     final ColumnFamilyUpdater<String, String> updater = cfTmpl
-                                                              .createUpdater(identifiant);
+        .createUpdater(identifiant);
     final HColumn<String, Boolean> column = HFactory.createColumn(AUTORISE_GED,
                                                                   value,
                                                                   StringSerializer.get(),
@@ -1637,10 +1636,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielEvenementV13(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       "TraceDestinataire",
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        "TraceDestinataire",
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 
@@ -1675,10 +1674,10 @@ public class ReferentielServiceUtils {
    */
   public static void addReferentielEvenementV14(final Keyspace keyspace) {
     final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
-                                                                                                       keyspace,
-                                                                                                       "TraceDestinataire",
-                                                                                                       StringSerializer.get(),
-                                                                                                       StringSerializer.get());
+        keyspace,
+        "TraceDestinataire",
+        StringSerializer.get(),
+        StringSerializer.get());
 
     ColumnFamilyUpdater<String, String> updater;
 

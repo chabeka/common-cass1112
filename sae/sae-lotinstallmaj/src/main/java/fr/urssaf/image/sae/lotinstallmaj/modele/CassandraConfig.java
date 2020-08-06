@@ -22,7 +22,7 @@ public final class CassandraConfig {
    /**
     * @param hosts Chaîne de connexion aux serveurs cassandra
     */
-   public void setHosts(String hosts) {
+   public void setHosts(final String hosts) {
       this.hosts = hosts;
    }
    
@@ -35,7 +35,7 @@ public final class CassandraConfig {
    /**
     * @param login de connexion à cassandra
     */
-   public void setLogin(String login) {
+   public void setLogin(final String login) {
       this.login = login;
    }
    /**
@@ -47,7 +47,7 @@ public final class CassandraConfig {
    /**
     * @param password de connexion à cassandra
     */
-   public void setPassword(String password) {
+   public void setPassword(final String password) {
       this.password = password;
    }
    /**
@@ -59,7 +59,7 @@ public final class CassandraConfig {
    /**
     * @param keyspaceName nom du keyspace à utiliser.
     */
-   public void setKeyspaceName(String keyspaceName) {
+   public void setKeyspaceName(final String keyspaceName) {
       this.keyspaceName = keyspaceName;
    }
    
@@ -73,7 +73,7 @@ public final class CassandraConfig {
    /**
     * @param timeout le timeout de la connexion à CASSANDRA
     */
-   public final void setTimeout(int timeout) {
+   public final void setTimeout(final int timeout) {
       this.timeout = timeout;
    }
    
