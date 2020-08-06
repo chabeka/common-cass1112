@@ -64,6 +64,7 @@ class SommaireSaxHandler extends DefaultHandler {
   @Override
   public void startDocument() throws SAXException {
     final File dir = new File(SAXSplitSommaire.DIRECTORY);
+    // Check directory exist and create if not
     if (!dir.exists()) {
       dir.mkdir();
     }
@@ -100,7 +101,9 @@ class SommaireSaxHandler extends DefaultHandler {
     }
 
     else if (!qName.equals("som:documents")) {
+
       recordRowDataLines.append("<" + qName);
+      // Add Attributes from documents in recordRowDataLines
       attributes = new String();
       if (atts != null && atts.getLength() > 0) {
         for (int i = 0; i < atts.getLength(); i++) {
@@ -162,13 +165,19 @@ class SommaireSaxHandler extends DefaultHandler {
   @Override
   public void characters(final char[] ch, final int start, final int length) throws SAXException {
 
+
     if (checkModeBatch) {
+      // Add String for BatchMode
       batchMode += new String(ch, start, length);
       checkModeBatch = false;
+
     } else if (checkRestitUuid) {
+      // Add String for UUID
       restitUuid += new String(ch, start, length);
       checkRestitUuid = false;
+
     } else if (currentElement != null) {
+      // Add String for current document
       currentDocumentData = new String(ch, start, length);
       // TODO
       recordRowDataLines.append(currentDocumentData.replaceAll("&", "&amp;"));
@@ -186,7 +195,7 @@ class SommaireSaxHandler extends DefaultHandler {
    * @throws IOException
    */
   public void saveFragment() throws SAXException, IOException, TransformerFactoryConfigurationError, TransformerException, ParserConfigurationException {
-
+    // Build string file content
     StringBuilder fileContent = new StringBuilder();
     fileContent.append(headerSommaire);
 
@@ -196,14 +205,14 @@ class SommaireSaxHandler extends DefaultHandler {
     recordRowDataLines.append("</som:documents>");
     recordRowDataLines.append("</som:sommaire>");
     fileContent.append(recordRowDataLines);
-
+    // Instance reader for fileContent
     final Reader inputString = new StringReader(fileContent.toString());
     final BufferedReader inFromUser = new BufferedReader(inputString);
 
     final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
     final DocumentBuilder builder = dbf.newDocumentBuilder();
-
+    // Parsing document
     final Document doc = builder.parse(new InputSource(inFromUser));
     source = new DOMSource(doc);
     transformer = TransformerFactory.newInstance().newTransformer();
@@ -211,13 +220,6 @@ class SommaireSaxHandler extends DefaultHandler {
     transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
     final StreamResult result = new StreamResult(new File(SAXSplitSommaire.DIRECTORY, "sommaire" + sommaireCount + ".xml"));
     transformer.transform(source, result);
-
-    // final File fragment = new File(SAXSplitSommaire.DIRECTORY, "sommaire" + sommaireCount + ".xml");
-    // final FileWriter out = new FileWriter(fragment);
-    // out.write(fileContent.toString());
-    // out.flush();
-    // out.close();
-
     // Reset
     recordRowDataLines = new StringBuilder();
     fileContent = new StringBuilder();

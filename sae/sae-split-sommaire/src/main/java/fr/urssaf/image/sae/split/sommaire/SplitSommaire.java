@@ -39,11 +39,11 @@ public class SplitSommaire {
    * @throws Exception
    */
   public static void main(final String[] args) throws Exception {
-
+    // Parsing document
     final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
     final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
     final Document doc = dBuilder.parse(new File(INPUT_FILE_PARAM));
-
+    // Split the sommaire of current document
     splitSommaire(doc, ITEMS_PER_FILE, RESULT_SPLIT_PATH);
 
   }
@@ -61,10 +61,11 @@ public class SplitSommaire {
     final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
     doc.getDocumentElement().normalize();
-
+    // Get Sommaire Node
     final Node mainSommaireNode = doc.getElementsByTagName("som:sommaire").item(0);
-
+    // Get BatchMode node
     final Node batchModeNode = doc.getElementsByTagName("som:batchMode").item(0);
+    // Get RestitutionUuuid Node
     final Node restitutionUuidsNode = doc.getElementsByTagName("som:restitutionUuids").item(0);
 
     Document currentDoc;
@@ -74,11 +75,10 @@ public class SplitSommaire {
       batchMode.setTextContent(batchModeNode.getTextContent());
       Node restitutionUuids = currentDoc.createElement("som:restitutionUuids");
       restitutionUuids.setTextContent(restitutionUuidsNode.getTextContent());
-
       Element principalNode = currentDoc.createElement("som:sommaire");
       final NamedNodeMap attributes = mainSommaireNode.getAttributes();
       copyNodeAttributes(principalNode, attributes);
-
+      // Get root node (documents)
       Node rootNode = currentDoc.createElement("som:documents");
       final NodeList listOfDocuments = doc.getElementsByTagName("somres:document");
       int fileNumber = 0;

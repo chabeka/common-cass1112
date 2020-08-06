@@ -25,19 +25,22 @@ import org.xml.sax.XMLReader;
 public class SAXSplitSommaire {
 
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(SAXSplitSommaire.class);
+      .getLogger(SAXSplitSommaire.class);
 
   // Change this to the directory where the files will be stored
   static String DIRECTORY = null;
 
+  // Number of items by file
   static int ITEMS_PER_FILE = 10000;
 
+  // Path of sommaire to split
   static String PATH_FILE_TO_SPLIT = "c:\\split_sommaire\\sommaire.xml";
 
   static DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 
   public static void main(final String[] args) throws ParserConfigurationException, SAXException, IOException {
 
+    // Check arguments null values
     if (args == null || args[0] == null) {
       LOGGER.warn("Le repertoire de sortie de decoupage doit etre renseigne !");
       return;
@@ -48,12 +51,13 @@ public class SAXSplitSommaire {
       LOGGER.warn("Le nombre de documents par sommaire doit etre renseigne !");
       return;
     }
-
+    // Assign values from parameters
     DIRECTORY = args[0];
     PATH_FILE_TO_SPLIT = args[1];
     final String nbrItems = args[2];
     ITEMS_PER_FILE = Integer.parseInt(nbrItems);
 
+    // Parsing file
     final SAXParserFactory spf = SAXParserFactory.newInstance();
     final SAXParser sp = spf.newSAXParser();
     final XMLReader reader = sp.getXMLReader();
