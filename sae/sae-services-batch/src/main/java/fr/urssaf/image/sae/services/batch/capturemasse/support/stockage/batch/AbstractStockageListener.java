@@ -30,8 +30,9 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
  * @param <CAPT>
  *          Classe de capture
  */
+@SuppressWarnings("squid:S2250") // On ne tient pas compte de la règle "ConcurrentLinkedQueue.size()" should not be used
 public abstract class AbstractStockageListener<BOT, CAPT> extends
-                                              AbstractListener {
+AbstractListener {
 
   private static final int THREAD_SLEEP = 30000;
 
@@ -75,13 +76,13 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
     getLogger().warn("erreur lors du traitement de persistance", exception);
     if (!(isModePartielBatch() && getIndexErreurListe().contains(
                                                                  getStepExecution().getExecutionContext()
-                                                                                   .getInt(
-                                                                                           Constantes.CTRL_INDEX)))) {
+                                                                 .getInt(
+                                                                         Constantes.CTRL_INDEX)))) {
       getCodesErreurListe().add(Constantes.ERR_BUL002);
       getIndexErreurListe().add(
                                 getStepExecution().getExecutionContext()
-                                                  .getInt(
-                                                          Constantes.CTRL_INDEX));
+                                .getInt(
+                                        Constantes.CTRL_INDEX));
       getErrorMessageList().add(exception.getMessage());
     }
   }
@@ -172,15 +173,15 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
       final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
 
       jobExecution.getExecutionContext()
-                  .put(Constantes.NB_INTEG_DOCS,
-                       getExecutor().getIntegratedDocuments().size());
+      .put(Constantes.NB_INTEG_DOCS,
+           getExecutor().getIntegratedDocuments().size());
 
       jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
 
       getStepExecution().setWriteCount(list.size());
 
       final AbstractInsertionMasseRuntimeException exception = getExecutor()
-                                                                            .getInsertionMasseException();
+          .getInsertionMasseException();
 
       if (exception != null) {
 
@@ -213,16 +214,16 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
       getLogger().warn("{} - " + e.getMessage(), "stockageListener()");
 
       final String idTraitement = getStepExecution().getJobParameters()
-                                                    .getString(Constantes.ID_TRAITEMENT);
+          .getString(Constantes.ID_TRAITEMENT);
       getLogger()
-                 .error(
+      .error(
 
-                        "Le traitement de masse n°{} doit faire l'objet d'une reprise par une procédure d'exploitation.",
-                        idTraitement);
+             "Le traitement de masse n°{} doit faire l'objet d'une reprise par une procédure d'exploitation.",
+             idTraitement);
 
       getStepExecution().getJobExecution()
-                        .getExecutionContext()
-                        .put(Constantes.FLAG_BUL003, Boolean.TRUE);
+      .getExecutionContext()
+      .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
       codes.add(Constantes.ERR_BUL003);
       codes.add(Constantes.ERR_BUL003);

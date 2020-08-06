@@ -62,6 +62,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.utils.JAXBUtils;
  * 
  */
 @Component
+@SuppressWarnings("squid:S2250") // On ne tient pas compte de la règle "ConcurrentLinkedQueue.size()" should not be used
 public class ResultatFileSuccessSupportImpl implements
 ResultatFileSuccessSupport {
 

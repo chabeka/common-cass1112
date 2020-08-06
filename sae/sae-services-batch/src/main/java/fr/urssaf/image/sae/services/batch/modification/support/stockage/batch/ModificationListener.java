@@ -34,10 +34,11 @@ import fr.urssaf.image.sae.services.batch.modification.support.stockage.multithr
  * Ecouteur pour la partie persistance des documents du fichier sommaire.xml
  */
 @Component
+@SuppressWarnings("squid:S2250") // On ne tient pas compte de la règle "ConcurrentLinkedQueue.size()" should not be used
 public class ModificationListener extends AbstractListener {
 
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(ModificationListener.class);
+      .getLogger(ModificationListener.class);
 
   private static final int THREAD_SLEEP = 30000;
 
@@ -63,7 +64,7 @@ public class ModificationListener extends AbstractListener {
   protected final ConcurrentLinkedQueue<UUID> getIntegratedDocuments() {
 
     final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> list = executor
-                                                                                  .getIntegratedDocuments();
+        .getIntegratedDocuments();
 
     final ConcurrentLinkedQueue<UUID> listUuid = new ConcurrentLinkedQueue<>();
     if (CollectionUtils.isNotEmpty(list)) {
@@ -111,8 +112,8 @@ public class ModificationListener extends AbstractListener {
     getCodesErreurListe().add(Constantes.ERR_BUL002);
     getIndexErreurListe().add(
                               getStepExecution().getExecutionContext()
-                                                .getInt(
-                                                        Constantes.CTRL_INDEX));
+                              .getInt(
+                                      Constantes.CTRL_INDEX));
     LOGGER.warn("Erreur lors du traitement de modification", exception);
     getErrorMessageList().add(exception.getMessage());
   }
@@ -140,7 +141,7 @@ public class ModificationListener extends AbstractListener {
   public final void afterChunk() {
 
     final AbstractInsertionMasseRuntimeException exception = executor
-                                                                     .getInsertionMasseException();
+        .getInsertionMasseException();
 
     if (exception != null) {
       throw exception;
@@ -186,15 +187,15 @@ public class ModificationListener extends AbstractListener {
     final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
 
     jobExecution.getExecutionContext()
-                .put(Constantes.NB_INTEG_DOCS,
-                     executor.getIntegratedDocuments().size());
+    .put(Constantes.NB_INTEG_DOCS,
+         executor.getIntegratedDocuments().size());
 
     jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
 
     getStepExecution().setWriteCount(list.size());
 
     final AbstractInsertionMasseRuntimeException exception = executor
-                                                                     .getInsertionMasseException();
+        .getInsertionMasseException();
 
     if (exception != null) {
       status = gestionException(exception);
@@ -220,17 +221,17 @@ public class ModificationListener extends AbstractListener {
       LOGGER.warn("{} - " + e.getMessage(), trcPrefix);
 
       final String idTraitement = getStepExecution().getJobParameters()
-                                                    .getString(Constantes.ID_TRAITEMENT);
+          .getString(Constantes.ID_TRAITEMENT);
       final String codeTraitement = getStepExecution().getJobParameters()
-                                                      .getString(Constantes.CODE_TRAITEMENT);
+          .getString(Constantes.CODE_TRAITEMENT);
       LOGGER.error(
                    "Le sémaphore du code traitement {} du traitement de masse n°{} doit être libéré par une procédure d'exploitation",
                    codeTraitement,
                    idTraitement);
 
       getStepExecution().getJobExecution()
-                        .getExecutionContext()
-                        .put(Constantes.FLAG_BUL003, Boolean.TRUE);
+      .getExecutionContext()
+      .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
       final String messageError = "La modification de masse en mode 'Partiel' a été interrompue. "
           + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";

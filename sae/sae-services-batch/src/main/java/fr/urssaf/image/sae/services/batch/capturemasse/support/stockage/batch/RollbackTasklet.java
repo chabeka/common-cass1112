@@ -32,259 +32,260 @@ import fr.urssaf.image.sae.services.document.SAEDocumentService;
  * 
  */
 @Component
+@SuppressWarnings("squid:S2250") // On ne tient pas compte de la règle "ConcurrentLinkedQueue.size()" should not be used
 public class RollbackTasklet extends AbstractRollbackTasklet implements Tasklet {
 
-   /**
-    * 
-    */
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(RollbackTasklet.class);
+  /**
+   * 
+   */
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(RollbackTasklet.class);
 
-   private static final String TRC_ROLLBACK = "rollbacktasklet()";
+  private static final String TRC_ROLLBACK = "rollbacktasklet()";
 
-   @Autowired
-   private RollbackSupport support;
+  @Autowired
+  private RollbackSupport support;
 
-   /**
-    * Pool d'exécution des insertions de documents
-    */
-   @Autowired
-   private SAEDocumentService documentService;
+  /**
+   * Pool d'exécution des insertions de documents
+   */
+  @Autowired
+  private SAEDocumentService documentService;
 
-   @Autowired
-   private InsertionCapturePoolThreadExecutor executor;
+  @Autowired
+  private InsertionCapturePoolThreadExecutor executor;
 
-   /**
-    * {@inheritDoc}
-    */
-   @SuppressWarnings( { "PMD.AvoidThrowingRawExceptionTypes", "unchecked" })
-   @Override
-   public final RepeatStatus execute(final StepContribution contribution,
-         final ChunkContext chunkContext) {
+  /**
+   * {@inheritDoc}
+   */
+  @SuppressWarnings( { "PMD.AvoidThrowingRawExceptionTypes", "unchecked" })
+  @Override
+  public final RepeatStatus execute(final StepContribution contribution,
+                                    final ChunkContext chunkContext) {
 
-      /*
-       * on va incrémenter le nombre d'enregistrements lus et écrits. ces
-       * nombres sont décorrélés du nombre lus et écrits dans le step précédent.
-       */
+    /*
+     * on va incrémenter le nombre d'enregistrements lus et écrits. ces
+     * nombres sont décorrélés du nombre lus et écrits dans le step précédent.
+     */
 
-      int countRead = chunkContext.getStepContext().getStepExecution()
-            .getReadCount();
+    int countRead = chunkContext.getStepContext().getStepExecution()
+        .getReadCount();
 
-      int countWrite = chunkContext.getStepContext().getStepExecution()
-            .getWriteCount();
+    int countWrite = chunkContext.getStepContext().getStepExecution()
+        .getWriteCount();
 
-      ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listIntegDocs = executor
-            .getIntegratedDocuments();
+    final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listIntegDocs = executor
+        .getIntegratedDocuments();
 
-      RepeatStatus status;
+    RepeatStatus status;
 
-      try {
+    try {
 
-         if (CollectionUtils.isNotEmpty(listIntegDocs)) {
+      if (CollectionUtils.isNotEmpty(listIntegDocs)) {
 
-            /*
-             * Afin de savoir si il y a eu un problème de rollback dans l'étape
-             * de fin, nous supprimons les enregistrements de la liste au fur et
-             * à mesure. Il faut donc toujours récupérer le 1er élément de la
-             * liste.
-             */
-            TraitementMasseIntegratedDocument intDoc = listIntegDocs.peek();
-            // UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
-            UUID strDocumentID = intDoc.getIdentifiant();
+        /*
+         * Afin de savoir si il y a eu un problème de rollback dans l'étape
+         * de fin, nous supprimons les enregistrements de la liste au fur et
+         * à mesure. Il faut donc toujours récupérer le 1er élément de la
+         * liste.
+         */
+        final TraitementMasseIntegratedDocument intDoc = listIntegDocs.peek();
+        // UUID strDocumentID = listIntegDocs.toArray(new UUID[0])[0];
+        final UUID strDocumentID = intDoc.getIdentifiant();
 
-            support.rollback(strDocumentID);
+        support.rollback(strDocumentID);
 
-            chunkContext.getStepContext().getStepExecution().setReadCount(
-                  ++countRead);
+        chunkContext.getStepContext().getStepExecution().setReadCount(
+                                                                      ++countRead);
 
-            LOGGER.debug("{} - Rollback du document #{} ({})", new Object[] {
-                  TRC_ROLLBACK, countRead, strDocumentID });
+        LOGGER.debug("{} - Rollback du document #{} ({})", new Object[] {
+                                                                         TRC_ROLLBACK, countRead, strDocumentID });
 
-            chunkContext.getStepContext().getStepExecution().setWriteCount(
-                  ++countWrite);
+        chunkContext.getStepContext().getStepExecution().setWriteCount(
+                                                                       ++countWrite);
 
-            listIntegDocs.remove(intDoc);
+        listIntegDocs.remove(intDoc);
 
-            if (CollectionUtils.isEmpty(listIntegDocs)) {
-               status = realiserRecherche(chunkContext);
-            } else {
-               status = RepeatStatus.CONTINUABLE;
-            }
+        if (CollectionUtils.isEmpty(listIntegDocs)) {
+          status = realiserRecherche(chunkContext);
+        } else {
+          status = RepeatStatus.CONTINUABLE;
+        }
 
-         } else {
+      } else {
 
-            LOGGER.debug("{} - Aucun document à supprimer",
-                  new Object[] { TRC_ROLLBACK });
-
-            status = realiserRecherche(chunkContext);
-         }
-
-      } catch (Exception e) {
-
-         String idTraitement = (String) chunkContext.getStepContext()
-               .getJobParameters().get(Constantes.ID_TRAITEMENT);
-
-         String errorMessage = MessageFormat.format(
-               "{0} - Une exception a été levée lors du rollback : {1}",
-               TRC_ROLLBACK, idTraitement);
-
-         LOGGER.warn(errorMessage, e);
-
-         LOGGER
-               .error(
-
-                     "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
-                     idTraitement);
-         chunkContext.getStepContext().getStepExecution().getJobExecution()
-               .getExecutionContext().put(Constantes.FLAG_BUL003, Boolean.TRUE);
-
-         // Ajoute l'exception survenue dans la liste des exceptions du Rollback
-         ExecutionContext executionContext = chunkContext.getStepContext()
-               .getStepExecution().getJobExecution().getExecutionContext();
-         if (executionContext.get(Constantes.ROLLBACK_EXCEPTION) != null) {
-            ConcurrentLinkedQueue<String> listExceptions = (ConcurrentLinkedQueue<String>) executionContext
-                  .get(Constantes.ROLLBACK_EXCEPTION);
-            listExceptions.add(e.toString());
-         }
-
-         status = RepeatStatus.FINISHED;
-
-      }
-      return status;
-   }
-
-   /**
-    * @param chunkContext
-    */
-   private RepeatStatus realiserRecherche(ChunkContext chunkContext) {
-
-      RepeatStatus repeatStatus;
-
-      
-      // ConcurrentLinkedQueue<UUID> listUUID = new
-      // ConcurrentLinkedQueue<UUID>();
-      ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeIntegratedDoc = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
-
-      
-      //
-      Map<String, Object> jobExecutionContext = chunkContext.getStepContext()
-            .getJobExecutionContext();
-      int nbreDocsTotal = (Integer) jobExecutionContext.get(Constantes.DOC_COUNT);
-
-      int rollbackCount = chunkContext.getStepContext().getStepExecution()
-            .getExecutionContext().getInt(Constantes.COUNT_ROLLBACK);
-      int countRecherche = 0;
-
-      if (!chunkContext.getStepContext().getStepExecution()
-            .getExecutionContext().containsKey(Constantes.SEARCH_ROLLBACK)) {
-
-         LOGGER
-               .debug(
-                     "{} - On recherche les potentiels documents restants à supprimer",
+        LOGGER.debug("{} - Aucun document à supprimer",
                      new Object[] { TRC_ROLLBACK });
 
-         String idTraitement = (String) chunkContext.getStepContext()
-               .getJobParameters().get(Constantes.ID_TRAITEMENT);
-
-         List<UntypedDocument> listDocs = trouverDocumentsRestants(idTraitement);
-
-         if (CollectionUtils.isNotEmpty(listDocs)) {
-
-            // listUUID = transformerListeDocEnUuid(listDocs);
-            listeIntegratedDoc = transformerEnListeIntegratedDoc(listDocs);
-            executor.getIntegratedDocuments().addAll(listeIntegratedDoc);
-
-            countRecherche = listDocs.size();
-
-         }
+        status = realiserRecherche(chunkContext);
       }
 
-      rollbackCount = rollbackCount + countRecherche;
-      chunkContext.getStepContext().getStepExecution().getExecutionContext()
-            .putInt(Constantes.COUNT_ROLLBACK, rollbackCount);
+    } catch (final Exception e) {
 
-      if (nbreDocsTotal < rollbackCount) {
-         repeatStatus = RepeatStatus.FINISHED;
-         LOGGER
-               .warn(
-                     "{} - Une erreur est survenue lors du rollback. "
-                           + "Le nombre maximal de documents à supprimer est de {}, et {} ont été comptabilisés.",
-                     new Object[] { TRC_ROLLBACK,
-                           String.valueOf(nbreDocsTotal),
-                           String.valueOf(rollbackCount) });
+      final String idTraitement = (String) chunkContext.getStepContext()
+          .getJobParameters().get(Constantes.ID_TRAITEMENT);
 
-      } else if (CollectionUtils.isEmpty(listeIntegratedDoc)) {
-         repeatStatus = RepeatStatus.FINISHED;
+      final String errorMessage = MessageFormat.format(
+                                                       "{0} - Une exception a été levée lors du rollback : {1}",
+                                                       TRC_ROLLBACK, idTraitement);
 
-      } else if (MAX_RESULT == listeIntegratedDoc.size()) {
+      LOGGER.warn(errorMessage, e);
 
-         repeatStatus = RepeatStatus.CONTINUABLE;
+      LOGGER
+      .error(
 
-         // chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(Constantes.INTEG_DOCS,
-         // listUUID);
-      } else {
-         repeatStatus = RepeatStatus.CONTINUABLE;
+             "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
+             idTraitement);
+      chunkContext.getStepContext().getStepExecution().getJobExecution()
+      .getExecutionContext().put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
-         // chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(Constantes.INTEG_DOCS,
-         // listUUID);
-
-         chunkContext.getStepContext().getStepExecution().getExecutionContext()
-               .put(Constantes.SEARCH_ROLLBACK, Boolean.TRUE.toString());
+      // Ajoute l'exception survenue dans la liste des exceptions du Rollback
+      final ExecutionContext executionContext = chunkContext.getStepContext()
+          .getStepExecution().getJobExecution().getExecutionContext();
+      if (executionContext.get(Constantes.ROLLBACK_EXCEPTION) != null) {
+        final ConcurrentLinkedQueue<String> listExceptions = (ConcurrentLinkedQueue<String>) executionContext
+            .get(Constantes.ROLLBACK_EXCEPTION);
+        listExceptions.add(e.toString());
       }
 
-      return repeatStatus;
+      status = RepeatStatus.FINISHED;
 
-   }
+    }
+    return status;
+  }
 
-   /**
-    * @param listDocs
-    * @return
-    */
-   /*
-    * private ConcurrentLinkedQueue<UUID> transformerListeDocEnUuid(
-    * List<UntypedDocument> listDocs) {
-    * 
-    * ConcurrentLinkedQueue<UUID> list = new ConcurrentLinkedQueue<UUID>();
-    * 
-    * if (CollectionUtils.isNotEmpty(listDocs)) {
-    * 
-    * for (UntypedDocument document : listDocs) { list.add(document.getUuid());
-    * } }
-    * 
-    * return list; }
-    */
+  /**
+   * @param chunkContext
+   */
+  private RepeatStatus realiserRecherche(final ChunkContext chunkContext) {
 
-   /**
-    * Transforme une liste de UntypedDoc en liste d'IntegratedDocumentType
-    * (uniquement pour l'uuid)
-    */
-   private ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> transformerEnListeIntegratedDoc(
-         List<UntypedDocument> listDocs) {
-      ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> list = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
+    RepeatStatus repeatStatus;
+
+
+    // ConcurrentLinkedQueue<UUID> listUUID = new
+    // ConcurrentLinkedQueue<UUID>();
+    ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeIntegratedDoc = new ConcurrentLinkedQueue<>();
+
+
+    //
+    final Map<String, Object> jobExecutionContext = chunkContext.getStepContext()
+        .getJobExecutionContext();
+    final int nbreDocsTotal = (Integer) jobExecutionContext.get(Constantes.DOC_COUNT);
+
+    int rollbackCount = chunkContext.getStepContext().getStepExecution()
+        .getExecutionContext().getInt(Constantes.COUNT_ROLLBACK);
+    int countRecherche = 0;
+
+    if (!chunkContext.getStepContext().getStepExecution()
+        .getExecutionContext().containsKey(Constantes.SEARCH_ROLLBACK)) {
+
+      LOGGER
+      .debug(
+             "{} - On recherche les potentiels documents restants à supprimer",
+             new Object[] { TRC_ROLLBACK });
+
+      final String idTraitement = (String) chunkContext.getStepContext()
+          .getJobParameters().get(Constantes.ID_TRAITEMENT);
+
+      final List<UntypedDocument> listDocs = trouverDocumentsRestants(idTraitement);
+
       if (CollectionUtils.isNotEmpty(listDocs)) {
-         for (UntypedDocument document : listDocs) {
-            TraitementMasseIntegratedDocument doc = new TraitementMasseIntegratedDocument();
-            doc.setIdentifiant(document.getUuid());
-            list.add(doc);
-         }
+
+        // listUUID = transformerListeDocEnUuid(listDocs);
+        listeIntegratedDoc = transformerEnListeIntegratedDoc(listDocs);
+        executor.getIntegratedDocuments().addAll(listeIntegratedDoc);
+
+        countRecherche = listDocs.size();
+
       }
-      return list;
-   }
+    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final SAEDocumentService getDocumentService() {
-      return documentService;
-   }
+    rollbackCount = rollbackCount + countRecherche;
+    chunkContext.getStepContext().getStepExecution().getExecutionContext()
+    .putInt(Constantes.COUNT_ROLLBACK, rollbackCount);
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final Logger getLogger() {
-      return LOGGER;
-   }
+    if (nbreDocsTotal < rollbackCount) {
+      repeatStatus = RepeatStatus.FINISHED;
+      LOGGER
+      .warn(
+            "{} - Une erreur est survenue lors du rollback. "
+                + "Le nombre maximal de documents à supprimer est de {}, et {} ont été comptabilisés.",
+                new Object[] { TRC_ROLLBACK,
+                               String.valueOf(nbreDocsTotal),
+                               String.valueOf(rollbackCount) });
+
+    } else if (CollectionUtils.isEmpty(listeIntegratedDoc)) {
+      repeatStatus = RepeatStatus.FINISHED;
+
+    } else if (MAX_RESULT == listeIntegratedDoc.size()) {
+
+      repeatStatus = RepeatStatus.CONTINUABLE;
+
+      // chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(Constantes.INTEG_DOCS,
+      // listUUID);
+    } else {
+      repeatStatus = RepeatStatus.CONTINUABLE;
+
+      // chunkContext.getStepContext().getStepExecution().getJobExecution().getExecutionContext().put(Constantes.INTEG_DOCS,
+      // listUUID);
+
+      chunkContext.getStepContext().getStepExecution().getExecutionContext()
+      .put(Constantes.SEARCH_ROLLBACK, Boolean.TRUE.toString());
+    }
+
+    return repeatStatus;
+
+  }
+
+  /**
+   * @param listDocs
+   * @return
+   */
+  /*
+   * private ConcurrentLinkedQueue<UUID> transformerListeDocEnUuid(
+   * List<UntypedDocument> listDocs) {
+   * 
+   * ConcurrentLinkedQueue<UUID> list = new ConcurrentLinkedQueue<UUID>();
+   * 
+   * if (CollectionUtils.isNotEmpty(listDocs)) {
+   * 
+   * for (UntypedDocument document : listDocs) { list.add(document.getUuid());
+   * } }
+   * 
+   * return list; }
+   */
+
+  /**
+   * Transforme une liste de UntypedDoc en liste d'IntegratedDocumentType
+   * (uniquement pour l'uuid)
+   */
+  private ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> transformerEnListeIntegratedDoc(
+                                                                                                   final List<UntypedDocument> listDocs) {
+    final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> list = new ConcurrentLinkedQueue<>();
+    if (CollectionUtils.isNotEmpty(listDocs)) {
+      for (final UntypedDocument document : listDocs) {
+        final TraitementMasseIntegratedDocument doc = new TraitementMasseIntegratedDocument();
+        doc.setIdentifiant(document.getUuid());
+        list.add(doc);
+      }
+    }
+    return list;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final SAEDocumentService getDocumentService() {
+    return documentService;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final Logger getLogger() {
+    return LOGGER;
+  }
 
 }

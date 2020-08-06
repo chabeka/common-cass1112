@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.services.batch.transfert.support.stockage.batch;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -37,296 +36,298 @@ import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithread
  * Classe d'écoute du transfert de masse
  */
 @Component
+@SuppressWarnings("squid:S2250") // On ne tient pas compte de la règle "ConcurrentLinkedQueue.size()" should not be used
 public class TransfertListener extends AbstractListener {
 
-   /**
-    * Logger
-    */
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(TransfertListener.class);
+  /**
+   * Logger
+   */
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(TransfertListener.class);
 
-   private static final int THREAD_SLEEP = 30000;
+  private static final int THREAD_SLEEP = 30000;
 
-   /**
-    * classe d'execution des threads
-    */
-   @Autowired
-   private TransfertPoolThreadExecutor executor;
+  /**
+   * classe d'execution des threads
+   */
+  @Autowired
+  private TransfertPoolThreadExecutor executor;
 
-   /**
-    * class controlant les interruptions serveur
-    */
-   @Autowired
-   private InterruptionTraitementMasseSupport interruptionTraitementMasseSupport;
-   /**
-    * Action exécutée avant chaque process
-    * 
-    * @param untypedType
-    *           le document
-    */
-   @BeforeProcess
-   public final void beforeProcess(
-                                   final JAXBElement<UntypedDocument> untypedType) {
-      incrementCount();
-   }
+  /**
+   * class controlant les interruptions serveur
+   */
+  @Autowired
+  private InterruptionTraitementMasseSupport interruptionTraitementMasseSupport;
+  /**
+   * Action exécutée avant chaque process
+   * 
+   * @param untypedType
+   *           le document
+   */
+  @BeforeProcess
+  public final void beforeProcess(
+                                  final JAXBElement<UntypedDocument> untypedType) {
+    incrementCount();
+  }
 
-   /**
-    * Incrémente le nombre de document traité de 1
-    */
-   protected final void incrementCount() {
-      final ExecutionContext context = getStepExecution().getExecutionContext();
+  /**
+   * Incrémente le nombre de document traité de 1
+   */
+  protected final void incrementCount() {
+    final ExecutionContext context = getStepExecution().getExecutionContext();
 
-      int valeur = context.getInt(Constantes.CTRL_INDEX);
-      valeur++;
+    int valeur = context.getInt(Constantes.CTRL_INDEX);
+    valeur++;
 
-      context.put(Constantes.CTRL_INDEX, valeur);
-   }
+    context.put(Constantes.CTRL_INDEX, valeur);
+  }
 
-   /**
-    * @return la liste identifiants des documents traités
-    */
-   protected final ConcurrentLinkedQueue<UUID> getIntegratedDocuments() {
+  /**
+   * @return la liste identifiants des documents traités
+   */
+  protected final ConcurrentLinkedQueue<UUID> getIntegratedDocuments() {
 
-      final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> list = executor
-            .getIntegratedDocuments();
+    final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> list = executor
+        .getIntegratedDocuments();
 
-      final ConcurrentLinkedQueue<UUID> listUuid = new ConcurrentLinkedQueue<>();
-      if (CollectionUtils.isNotEmpty(list)) {
-         for (final TraitementMasseIntegratedDocument document : list) {
-            listUuid.add(document.getIdentifiant());
-         }
+    final ConcurrentLinkedQueue<UUID> listUuid = new ConcurrentLinkedQueue<>();
+    if (CollectionUtils.isNotEmpty(list)) {
+      for (final TraitementMasseIntegratedDocument document : list) {
+        listUuid.add(document.getIdentifiant());
       }
+    }
 
-      return listUuid;
-   }
+    return listUuid;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void specificInitOperations() {
-      getStepExecution().getExecutionContext().put(Constantes.CTRL_INDEX, -1);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final void specificInitOperations() {
+    getStepExecution().getExecutionContext().put(Constantes.CTRL_INDEX, -1);
+  }
 
-   /**
-    * ajout d'erreurs dans la liste stockée dans le contexte d'execution du job
-    * 
-    * @param exception
-    *           exception levée par la lecture
-    */
-   @OnReadError
-   public final void logReadError(final Exception exception) {
-      getCodesErreurListe().add(Constantes.ERR_BUL001);
-      getIndexErreurListe().add(getStepExecution().getReadCount());
-      getErrorMessageList().add(exception.getMessage());
-      LOGGER.warn("Erreur lors de la lecture du fichier", exception);
-   }
+  /**
+   * ajout d'erreurs dans la liste stockée dans le contexte d'execution du job
+   * 
+   * @param exception
+   *           exception levée par la lecture
+   */
+  @OnReadError
+  public final void logReadError(final Exception exception) {
+    getCodesErreurListe().add(Constantes.ERR_BUL001);
+    getIndexErreurListe().add(getStepExecution().getReadCount());
+    getErrorMessageList().add(exception.getMessage());
+    LOGGER.warn("Erreur lors de la lecture du fichier", exception);
+  }
 
-   /**
-    * réalisé sur erreur de transformation
-    * 
-    * @param documentType
-    *           document en erreur
-    * @param exception
-    *           exception levée
-    */
-   @OnProcessError
-   public final void logProcessError(final Object documentType,
-                                     final Exception exception) {
-	  
-	   // Traitement du cas d'echec de reconnexion au DFCE après interruption survenu avant le traitement
-	  // du premier documment, ano:#443725
-	  String errorMsg = interruptionTraitementMasseSupport.getConnectionResultExceptionMessage();
-	  if(errorMsg.isEmpty()) {
-		  errorMsg = exception.getMessage();
-	  }
-      getCodesErreurListe().add(Constantes.ERR_BUL002);
-      getIndexErreurListe().add(
-                                getStepExecution().getExecutionContext()
-                                .getInt(
-                                        Constantes.CTRL_INDEX));
-      LOGGER.warn("Erreur lors du transfert de document", exception);
-      getErrorMessageList().add(errorMsg);
-   }
+  /**
+   * réalisé sur erreur de transformation
+   * 
+   * @param documentType
+   *           document en erreur
+   * @param exception
+   *           exception levée
+   */
+  @OnProcessError
+  public final void logProcessError(final Object documentType,
+                                    final Exception exception) {
 
-   /**
-    * Vérifie que le traitement est interrompu. Boucle tant que c'est le cas
-    */
-   @BeforeChunk
-   protected final void beforeChunk() {
-      while (Boolean.TRUE.equals(executor.isInterrupted())) {
-         try {
-            LOGGER.debug("en attente de reprise de travail");
-            Thread.sleep(THREAD_SLEEP);
-         }
-         catch (final InterruptedException e) {
-            LOGGER.info("Impossible de traiter l'interruption", e);
-         }
-      }
-   }
+    // Traitement du cas d'echec de reconnexion au DFCE après interruption survenu avant le traitement
+    // du premier documment, ano:#443725
+    String errorMsg = interruptionTraitementMasseSupport.getConnectionResultExceptionMessage();
+    if(errorMsg.isEmpty()) {
+      errorMsg = exception.getMessage();
+    }
+    getCodesErreurListe().add(Constantes.ERR_BUL002);
+    getIndexErreurListe().add(
+                              getStepExecution().getExecutionContext()
+                              .getInt(
+                                      Constantes.CTRL_INDEX));
+    LOGGER.warn("Erreur lors du transfert de document", exception);
+    getErrorMessageList().add(errorMsg);
+  }
 
-   /**
-    * Réalisé après le chunk
-    */
-   @AfterChunk
-   protected final void afterChunk() {
-      final AbstractInsertionMasseRuntimeException exception = executor
-            .getInsertionMasseException();
-
-      if (exception != null) {
-         throw exception;
-      }
-   }
-
-   /**
-    * {@inheritDoc}
-    * <ul>
-    * <li>Vérification du traitement réalisé avec succès</li>
-    * <li>débranchement vers la bonne étape suivante</li>
-    * </ul>
-    */
-   @Override
-   protected final ExitStatus specificAfterStepOperations() {
-      ExitStatus status = getStepExecution().getExitStatus();
-
-      final JobExecution jobExecution = getStepExecution().getJobExecution();
-      final ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
-      if (CollectionUtils.isEmpty(errorMessageList)) {
-         status = ExitStatus.COMPLETED;
-      } else {
-         status = ExitStatus.FAILED;
-      }
-
-      executor.shutdown();
-      executor.waitFinishInsertion();
-      
-      final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
-      jobExecution.getExecutionContext()
-      .put(Constantes.NB_INTEG_DOCS,
-           executor.getIntegratedDocuments().size());
-
-      jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
-
-      getStepExecution().setWriteCount(list.size());
-
-      final AbstractInsertionMasseRuntimeException exception = executor.getInsertionMasseException();
-
-      if (exception != null) {
-
-         status = gestionException(exception);
-
-      }
-      
-      // ajout du message d'erreur sur les documents non traiité
-      addErrorMsgOnNonIntegratedDocument(jobExecution);
-
-      return status;
-   }
-
-   /**
-    * Ajout d'un message d'erreur sur tous  les documents qui n'ont pas été traité
-    * par les thread et qui n'ont donc pas de message d'erreur
-    * @param jobExecution
-    */
-	private void addErrorMsgOnNonIntegratedDocument(final JobExecution jobExecution) {
-		
-	      // nombre de doc total du sommaire
-	      int nbDocCount = (int) jobExecution.getExecutionContext().get(Constantes.DOC_COUNT);
-	      int nbDocIntegDoc = executor.getIntegratedDocuments().size();
-	      
-	      // nombre de doc non intrégré
-	      int nbDocNonIntegDoc = nbDocCount - nbDocIntegDoc;
-	      // nombre de doc avec message d'erreur non vide
-	      int nbDocWithError = getIndexErreurListe().size();
-	      int nbDocWithoutError = nbDocNonIntegDoc - nbDocWithError;
-	      if (nbDocWithoutError > 0) {
-	    	  // code et message par default
-	          String mgsToAdd = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible : ";
-	    	  String codeError = Constantes.ERR_BUL001;
-	          
-	    	  // index du dernier document traité
-	    	  List<Integer> listIndex = Lists.newArrayList(getIndexErreurListe().iterator());
-	    	  Integer max = Collections.max(listIndex);
-	    	  
-	    	  // on verifie que c'est pas un probleme de connection
-	          String interrupMsg = interruptionTraitementMasseSupport.getConnectionResultExceptionMessage();
-	          if(!interrupMsg.isEmpty()) {
-	        	  codeError = Constantes.ERR_BUL002;
-	        	  mgsToAdd = interrupMsg;
-	        	  
-	          } else if (!listIndex.isEmpty()) {
-	        	  
-	        	  // on recupere le message et le code du dernier document traité
-	        	  List<String> listCodes = Lists.newArrayList(getCodesErreurListe().iterator());
-		    	  List<String> listMsg = Lists.newArrayList(getErrorMessageList().iterator()); 		    	  
-		    	  codeError = listCodes.get(listCodes.size() -1);
-		    	  mgsToAdd = listMsg.get(listMsg.size() -1);
-	          } else {
-	        	  // keep default code and error message
-	          }
-	          
-	          // ajout des erreus au documents
-	    	  for(int i = max + 1; i <= nbDocCount; i++) {
-	    		  getCodesErreurListe().add(codeError);
-	    		  getIndexErreurListe().add(i);
-	    		  getErrorMessageList().add(mgsToAdd);
-	    	  }
-	      }
-	}
-
-   private ExitStatus gestionException(
-                                       final AbstractInsertionMasseRuntimeException exception) {
-
-      final String trcPrefix = "gestionException()";
-
-      final ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
-      final ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
-      final ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
-
-      ExitStatus status;
-
+  /**
+   * Vérifie que le traitement est interrompu. Boucle tant que c'est le cas
+   */
+  @BeforeChunk
+  protected final void beforeChunk() {
+    while (Boolean.TRUE.equals(executor.isInterrupted())) {
       try {
-         throw exception.getCause();
+        LOGGER.debug("en attente de reprise de travail");
+        Thread.sleep(THREAD_SLEEP);
       }
-      catch (final InterruptionTraitementException e) {
-
-         final String messageError = "Le transfert de masse en mode 'Partiel' a été interrompu. "
-               + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
-         LOGGER.warn("{} - " + messageError, trcPrefix);
-         LOGGER.warn("{} - " + e.toString(), trcPrefix);
-
-         getStepExecution().getJobExecution()
-         .getExecutionContext()
-         .put(Constantes.FLAG_BUL003, Boolean.TRUE);
-
-         codes.add(Constantes.ERR_TR_BUL001);
-         index.add(exception.getIndex());
-         errorMessageList.add(messageError);
-
-         status = ExitStatus.FAILED;
-
+      catch (final InterruptedException e) {
+        LOGGER.info("Impossible de traiter l'interruption", e);
       }
-      catch (final Exception e) {
+    }
+  }
 
-         LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
+  /**
+   * Réalisé après le chunk
+   */
+  @AfterChunk
+  protected final void afterChunk() {
+    final AbstractInsertionMasseRuntimeException exception = executor
+        .getInsertionMasseException();
 
-         String message;
-         if (exception.getCause() == null) {
-            message = exception.getMessage();
-         } else {
-            message = exception.getCause().getMessage();
-         }
+    if (exception != null) {
+      throw exception;
+    }
+  }
 
-         LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
+  /**
+   * {@inheritDoc}
+   * <ul>
+   * <li>Vérification du traitement réalisé avec succès</li>
+   * <li>débranchement vers la bonne étape suivante</li>
+   * </ul>
+   */
+  @Override
+  protected final ExitStatus specificAfterStepOperations() {
+    ExitStatus status = getStepExecution().getExitStatus();
 
-         codes.add(Constantes.ERR_BUL001);
-         index.add(exception.getIndex());
-         errorMessageList.add(message);
+    final JobExecution jobExecution = getStepExecution().getJobExecution();
+    final ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
+    if (CollectionUtils.isEmpty(errorMessageList)) {
+      status = ExitStatus.COMPLETED;
+    } else {
+      status = ExitStatus.FAILED;
+    }
 
-         status = ExitStatus.FAILED;
+    executor.shutdown();
+    executor.waitFinishInsertion();
+
+    final ConcurrentLinkedQueue<UUID> list = getIntegratedDocuments();
+    jobExecution.getExecutionContext()
+    .put(Constantes.NB_INTEG_DOCS,
+         executor.getIntegratedDocuments().size());
+
+    jobExecution.getExecutionContext().remove(Constantes.THREAD_POOL);
+
+    getStepExecution().setWriteCount(list.size());
+
+    final AbstractInsertionMasseRuntimeException exception = executor.getInsertionMasseException();
+
+    if (exception != null) {
+
+      status = gestionException(exception);
+
+    }
+
+    // ajout du message d'erreur sur les documents non traiité
+    addErrorMsgOnNonIntegratedDocument(jobExecution);
+
+    return status;
+  }
+
+  /**
+   * Ajout d'un message d'erreur sur tous  les documents qui n'ont pas été traité
+   * par les thread et qui n'ont donc pas de message d'erreur
+   * @param jobExecution
+   */
+
+  private void addErrorMsgOnNonIntegratedDocument(final JobExecution jobExecution) {
+
+    // nombre de doc total du sommaire
+    final int nbDocCount = (int) jobExecution.getExecutionContext().get(Constantes.DOC_COUNT);
+    final int nbDocIntegDoc = executor.getIntegratedDocuments().size();
+
+    // nombre de doc non intrégré
+    final int nbDocNonIntegDoc = nbDocCount - nbDocIntegDoc;
+    // nombre de doc avec message d'erreur non vide
+    final int nbDocWithError = getIndexErreurListe().size();
+    final int nbDocWithoutError = nbDocNonIntegDoc - nbDocWithError;
+    if (nbDocWithoutError > 0) {
+      // code et message par default
+      String mgsToAdd = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible : ";
+      String codeError = Constantes.ERR_BUL001;
+
+      // index du dernier document traité
+      final List<Integer> listIndex = Lists.newArrayList(getIndexErreurListe().iterator());
+      final Integer max = Collections.max(listIndex);
+
+      // on verifie que c'est pas un probleme de connection
+      final String interrupMsg = interruptionTraitementMasseSupport.getConnectionResultExceptionMessage();
+      if(!interrupMsg.isEmpty()) {
+        codeError = Constantes.ERR_BUL002;
+        mgsToAdd = interrupMsg;
+
+      } else if (!listIndex.isEmpty()) {
+
+        // on recupere le message et le code du dernier document traité
+        final List<String> listCodes = Lists.newArrayList(getCodesErreurListe().iterator());
+        final List<String> listMsg = Lists.newArrayList(getErrorMessageList().iterator()); 		    	  
+        codeError = listCodes.get(listCodes.size() -1);
+        mgsToAdd = listMsg.get(listMsg.size() -1);
+      } else {
+        // keep default code and error message
       }
 
-      return status;
-   }
+      // ajout des erreus au documents
+      for(int i = max + 1; i <= nbDocCount; i++) {
+        getCodesErreurListe().add(codeError);
+        getIndexErreurListe().add(i);
+        getErrorMessageList().add(mgsToAdd);
+      }
+    }
+  }
+
+  private ExitStatus gestionException(
+                                      final AbstractInsertionMasseRuntimeException exception) {
+
+    final String trcPrefix = "gestionException()";
+
+    final ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
+    final ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
+    final ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
+
+    ExitStatus status;
+
+    try {
+      throw exception.getCause();
+    }
+    catch (final InterruptionTraitementException e) {
+
+      final String messageError = "Le transfert de masse en mode 'Partiel' a été interrompu. "
+          + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
+      LOGGER.warn("{} - " + messageError, trcPrefix);
+      LOGGER.warn("{} - " + e.toString(), trcPrefix);
+
+      getStepExecution().getJobExecution()
+      .getExecutionContext()
+      .put(Constantes.FLAG_BUL003, Boolean.TRUE);
+
+      codes.add(Constantes.ERR_TR_BUL001);
+      index.add(exception.getIndex());
+      errorMessageList.add(messageError);
+
+      status = ExitStatus.FAILED;
+
+    }
+    catch (final Exception e) {
+
+      LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
+
+      String message;
+      if (exception.getCause() == null) {
+        message = exception.getMessage();
+      } else {
+        message = exception.getCause().getMessage();
+      }
+
+      LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
+
+      codes.add(Constantes.ERR_BUL001);
+      index.add(exception.getIndex());
+      errorMessageList.add(message);
+
+      status = ExitStatus.FAILED;
+    }
+
+    return status;
+  }
 
 }

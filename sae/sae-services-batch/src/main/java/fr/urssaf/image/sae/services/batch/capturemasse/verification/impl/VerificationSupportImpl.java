@@ -157,7 +157,7 @@ public class VerificationSupportImpl implements VerificationSupport {
         batchModeTraitement = XmlReadUtils.getElementValue(sommaire,
                                                            Constantes.BATCH_MODE_ELEMENT_NAME);
 
-        if (BatchModeType.fromValue(batchModeTraitement).equals("null")) {
+        if (BatchModeType.fromValue(batchModeTraitement) == null) {
           throw new CaptureMasseRuntimeException(String.format(
                                                                "Le mode du batch %s est inconnu.", batchModeTraitement));
         }

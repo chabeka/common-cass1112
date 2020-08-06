@@ -60,6 +60,7 @@ import fr.urssaf.image.sae.services.batch.transfert.support.resultats.ResultatFi
  *
  */
 @Component
+@SuppressWarnings("squid:S2250") // On ne tient pas compte de la règle "ConcurrentLinkedQueue.size()" should not be used
 public class ResultatFileSuccessTransfertSupportImpl implements
 ResultatFileSuccessTransfertSupport {
 

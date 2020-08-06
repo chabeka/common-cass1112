@@ -24,112 +24,113 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  *           classe de capture
  *
  */
+@SuppressWarnings("squid:S2250") // On ne tient pas compte de la règle "ConcurrentLinkedQueue.size()" should not be used
 public abstract class AbstractRollbackListener<BOT, CAPT> {
 
-   private static final String CATCH = "AvoidCatchingThrowable";
+  private static final String CATCH = "AvoidCatchingThrowable";
 
-   /**
-    * Ouverture de la connexion à DFCE au début du rollback
-    *
-    * @param stepExecution
-    *           étape de rollback
-    */
-   @SuppressWarnings(CATCH)
-   @BeforeStep
-   public final void beforeRollback(final StepExecution stepExecution) {
+  /**
+   * Ouverture de la connexion à DFCE au début du rollback
+   *
+   * @param stepExecution
+   *           étape de rollback
+   */
+  @SuppressWarnings(CATCH)
+  @BeforeStep
+  public final void beforeRollback(final StepExecution stepExecution) {
 
-      final String trcPrefix = "beforeRollback()";
-      final int nbDocsIntegres = getExecutor().getIntegratedDocuments().size();
+    final String trcPrefix = "beforeRollback()";
+    final int nbDocsIntegres = getExecutor().getIntegratedDocuments().size();
 
-      try {
-         getServiceProvider().openConnexion();
+    try {
+      getServiceProvider().openConnexion();
 
-         /* on catch les throwable de DFCE */
-      } catch (final Exception e) {
+      /* on catch les throwable de DFCE */
+    } catch (final Exception e) {
 
-         final String idTraitement = stepExecution.getJobParameters()
-               .getString(Constantes.ID_TRAITEMENT);
+      final String idTraitement = stepExecution.getJobParameters()
+          .getString(Constantes.ID_TRAITEMENT);
 
-         final String errorMessage = MessageFormat.format(
-                                                          "{0} - Une exception a été levée lors du rollback : {1}",
-                                                          trcPrefix, idTraitement);
+      final String errorMessage = MessageFormat.format(
+                                                       "{0} - Une exception a été levée lors du rollback : {1}",
+                                                       trcPrefix, idTraitement);
 
-         getLogger().warn(errorMessage, e);
-
-         if (nbDocsIntegres > 0) {
-
-            getLogger()
-            .error(
-
-                   "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
-                   idTraitement);
-            stepExecution.getJobExecution().getExecutionContext().put(
-                                                                      Constantes.FLAG_BUL003, Boolean.TRUE);
-         }
-
-         throw new CaptureMasseRuntimeException(e);
-      }
-
-      getLogger().debug("{} - ouverture de la connexion DFCE", trcPrefix);
-
-      // insertion du nombre d'éléments à supprimer dans une variable de step
-      int countRollback = 0;
+      getLogger().warn(errorMessage, e);
 
       if (nbDocsIntegres > 0) {
-         countRollback = nbDocsIntegres;
+
+        getLogger()
+        .error(
+
+               "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
+               idTraitement);
+        stepExecution.getJobExecution().getExecutionContext().put(
+                                                                  Constantes.FLAG_BUL003, Boolean.TRUE);
       }
 
-      stepExecution.getExecutionContext().putInt(Constantes.COUNT_ROLLBACK,
-                                                 countRollback);
-   }
+      throw new CaptureMasseRuntimeException(e);
+    }
 
-   /**
-    * Fermeture de la connexion à DFCE à la fin du rollback
-    *
-    * @param stepExecution
-    *           étape de rollback
-    */
-   @AfterStep
-   @SuppressWarnings(CATCH)
-   public final void afterRollback(final StepExecution stepExecution) {
+    getLogger().debug("{} - ouverture de la connexion DFCE", trcPrefix);
 
-      // pour l'instant nous avons fait le choix de propager l'erreur
-      // pour ne pas la cacher et attérir dans un état en erreur
+    // insertion du nombre d'éléments à supprimer dans une variable de step
+    int countRollback = 0;
 
-      final String trcPrefix = "afterRollback()";
+    if (nbDocsIntegres > 0) {
+      countRollback = nbDocsIntegres;
+    }
 
-      try {
-         // On stocke le nombre de document intégrés
-         stepExecution.getJobExecution().getExecutionContext().put(
-                                                                   Constantes.NB_INTEG_DOCS,
-                                                                   getExecutor().getIntegratedDocuments().size());
+    stepExecution.getExecutionContext().putInt(Constantes.COUNT_ROLLBACK,
+                                               countRollback);
+  }
 
-         getServiceProvider().closeConnexion();
+  /**
+   * Fermeture de la connexion à DFCE à la fin du rollback
+   *
+   * @param stepExecution
+   *           étape de rollback
+   */
+  @AfterStep
+  @SuppressWarnings(CATCH)
+  public final void afterRollback(final StepExecution stepExecution) {
 
-         /* on catch car DFCE renvoie des throwables */
-      } catch (final Exception e) {
+    // pour l'instant nous avons fait le choix de propager l'erreur
+    // pour ne pas la cacher et attérir dans un état en erreur
 
-         getLogger().warn("{} - Fermeture de la base impossible", trcPrefix, e);
-         throw new CaptureMasseRuntimeException(e);
-      }
+    final String trcPrefix = "afterRollback()";
 
-      getLogger().debug("{} - fermeture de la connexion DFCE", trcPrefix);
+    try {
+      // On stocke le nombre de document intégrés
+      stepExecution.getJobExecution().getExecutionContext().put(
+                                                                Constantes.NB_INTEG_DOCS,
+                                                                getExecutor().getIntegratedDocuments().size());
 
-   }
+      getServiceProvider().closeConnexion();
 
-   /**
-    * @return l'executorO
-    */
-   protected abstract AbstractPoolThreadExecutor<BOT, CAPT> getExecutor();
+      /* on catch car DFCE renvoie des throwables */
+    } catch (final Exception e) {
 
-   /**
-    * @return le logger
-    */
-   protected abstract Logger getLogger();
+      getLogger().warn("{} - Fermeture de la base impossible", trcPrefix, e);
+      throw new CaptureMasseRuntimeException(e);
+    }
 
-   /**
-    * @return le serviceProvider
-    */
-   protected abstract StorageServiceProvider getServiceProvider();
+    getLogger().debug("{} - fermeture de la connexion DFCE", trcPrefix);
+
+  }
+
+  /**
+   * @return l'executorO
+   */
+  protected abstract AbstractPoolThreadExecutor<BOT, CAPT> getExecutor();
+
+  /**
+   * @return le logger
+   */
+  protected abstract Logger getLogger();
+
+  /**
+   * @return le serviceProvider
+   */
+  protected abstract StorageServiceProvider getServiceProvider();
 
 }
