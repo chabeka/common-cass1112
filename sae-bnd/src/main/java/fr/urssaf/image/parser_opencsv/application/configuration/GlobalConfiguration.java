@@ -18,9 +18,9 @@ import fr.urssaf.image.parser_opencsv.application.reader.correspondance.Correspo
 @Import({EcdeConfiguration.class, SaeConfiguration.class, JobConfiguration.class, PersistenceJPAConfig.class})
 public class GlobalConfiguration {
 
-   private static final String CORRESPONDANCE_CAISSE_FILE = "src/main/resources/correspondances/correspondance_caisse_ssti.csv";
+   private static final String CORRESPONDANCE_CAISSE_FILE = "correspondances/correspondance_caisse_ssti.csv";
 
-   private static final String CORRESPONDANCE_RND_FILE = "src/main/resources/correspondances/correspondance_rnd_ssti.csv";
+   private static final String CORRESPONDANCE_RND_FILE = "correspondances/correspondance_rnd_ssti.csv";
 
    /**
     * Bean Builder du reader du fichier CSV fourni par SSTI
@@ -30,7 +30,6 @@ public class GlobalConfiguration {
    @Bean(name = "bnd_csv_reader_builder")
    @Scope("prototype")
    public BndCsvReaderBuilder getCSVReaderBuilder() {
-
       return new BndCsvReaderBuilder();
    }
 

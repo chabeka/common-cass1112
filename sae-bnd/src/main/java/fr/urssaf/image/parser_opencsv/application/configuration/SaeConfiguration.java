@@ -10,7 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.io.FileSystemResource;
 
 import fr.urssaf.image.parser_opencsv.application.exception.BNDScriptRuntimeException;
 import fr.urssaf.image.parser_opencsv.webservice.factory.AddViHeaderHandlerResolver;
@@ -31,8 +30,8 @@ import fr.urssaf.image.parser_opencsv.webservice.model.SaeServicePortType;
    "classpath:/applicationContext-sae-droit.xml"
 
 })
-@PropertySource("file:/${sae.config.directory}/sae-config.properties")
-@PropertySource("file:/${sae.cassandra.cheminFichierConfig}")
+@PropertySource("file:${sae.config.directory}/sae-config.properties")
+@PropertySource("file:${sae.cassandra.cheminFichierConfig}")
 @ComponentScan(basePackages = "fr.urssaf.image.sae")
 public class SaeConfiguration {
 
@@ -59,11 +58,11 @@ public class SaeConfiguration {
    @Bean
    public SaeServicePortType getSaeServiceStub() {
       final SaeServiceStubFactory saeServiceStubFactory = new SaeServiceStubFactory(
-                                                                                    endPoint,
-                                                                                    new AddViHeaderHandlerResolver(privateKeyFile,
-                                                                                                                   passphrase,
-                                                                                                                   pagms,
-                                                                                                                   contratService));
+            endPoint,
+            new AddViHeaderHandlerResolver(privateKeyFile,
+                  passphrase,
+                  pagms,
+                  contratService));
       SaeService saeService;
       try {
          saeService = saeServiceStubFactory.createStubAvecAuthentification();

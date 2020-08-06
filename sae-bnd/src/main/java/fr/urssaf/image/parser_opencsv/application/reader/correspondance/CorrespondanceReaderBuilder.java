@@ -1,12 +1,13 @@
 package fr.urssaf.image.parser_opencsv.application.reader.correspondance;
 
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
 
 import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
@@ -19,7 +20,7 @@ public class CorrespondanceReaderBuilder {
 
    private static final char SEPARATOR = ';';
 
-   private FileInputStream fileInputStream;
+   private InputStream fileInputStream;
 
    private InputStreamReader inputStreamReader;
 
@@ -40,8 +41,7 @@ public class CorrespondanceReaderBuilder {
     * @throws IOException
     */
    public CSVReader getCsvBuilder() throws IOException {
-
-      fileInputStream = new FileInputStream(filePath);
+      fileInputStream = new ClassPathResource(filePath).getInputStream();
       inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
 
       LOGGER.info("Encoding {} ", inputStreamReader.getEncoding());
@@ -50,9 +50,9 @@ public class CorrespondanceReaderBuilder {
             .withKeepCarriageReturn(false)
             .withSkipLines(1);
       builderCSV.withCSVParser(
-                               new CSVParserBuilder()
-                               .withSeparator(SEPARATOR)
-                               .build());
+            new CSVParserBuilder()
+            .withSeparator(SEPARATOR)
+            .build());
 
       return builderCSV.build();
    }

@@ -42,8 +42,12 @@ public class JobLauncher {
 
    /**
     * @param args
+    * @throws Exception
     */
-   public static void main(final String[] args) {
+   public static void main(final String[] args) throws Exception {
+      final Class<?> clazz = Class.forName("org.postgresql.Driver");
+      LOGGER.info("Classe org.postgresql.Driver bien trouvée {} ", clazz);
+
       final GenericApplicationContext context = new AnnotationConfigApplicationContext(GlobalConfiguration.class);
       final JobLauncher jobLauncher = context.getBean(JobLauncher.class);
       jobLauncher.launchScript(context);

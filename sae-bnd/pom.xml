@@ -24,7 +24,7 @@
 		<maven.jar.version>3.2.0</maven.jar.version>
 		<slf4j.version>1.6.6</slf4j.version>
 		<logback.version>1.0.7</logback.version>
-		<sae.version>20.04.0-SNAPSHOT</sae.version>
+		<sae.version>20.4.7</sae.version>
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<skipTests>false</skipTests>
 		<sshj.version>0.27.0</sshj.version>
@@ -193,7 +193,7 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>5.3.8.final</version>
+			<version>5.3.8.Final</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -309,7 +309,18 @@
 			<artifactId>guava</artifactId>
 			<version>23.0</version>
 		</dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.12</version>
+      </dependency>
 
+	<!-- on force la version de javassist : version nécessaire pour hibernate -->
+		<dependency>
+			<groupId>org.javassist</groupId>
+			<artifactId>javassist</artifactId>
+			<version>3.24.0-GA</version>
+		</dependency>
 	</dependencies>
 
 	<build>
