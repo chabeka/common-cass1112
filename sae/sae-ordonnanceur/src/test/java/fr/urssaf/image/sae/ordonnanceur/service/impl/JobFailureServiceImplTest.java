@@ -7,7 +7,7 @@ import org.apache.commons.lang.exception.NestableException;
 import org.junit.Test;
 
 import fr.urssaf.image.sae.ordonnanceur.service.impl.JobFailureServiceImpl.JobFailureInfo;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class JobFailureServiceImplTest {

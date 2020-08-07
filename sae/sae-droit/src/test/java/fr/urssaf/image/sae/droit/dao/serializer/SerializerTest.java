@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

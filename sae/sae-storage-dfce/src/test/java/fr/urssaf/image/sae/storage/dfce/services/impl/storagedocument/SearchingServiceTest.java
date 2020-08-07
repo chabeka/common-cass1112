@@ -29,7 +29,7 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
-import junit.framework.Assert;
+import org.junit.Assert;
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;

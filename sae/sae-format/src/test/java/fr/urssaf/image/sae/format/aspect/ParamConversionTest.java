@@ -14,7 +14,7 @@ import fr.urssaf.image.sae.format.conversion.exceptions.ConvertisseurInitialisat
 import fr.urssaf.image.sae.format.conversion.service.ConversionService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })

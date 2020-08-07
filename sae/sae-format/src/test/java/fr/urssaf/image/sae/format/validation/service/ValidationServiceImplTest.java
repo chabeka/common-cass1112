@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationE
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.impl.ValidationServiceImpl;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

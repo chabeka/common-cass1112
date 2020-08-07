@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.utils.Utils;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Classe testant les services de la classe {@link ConversionServiceImpl}

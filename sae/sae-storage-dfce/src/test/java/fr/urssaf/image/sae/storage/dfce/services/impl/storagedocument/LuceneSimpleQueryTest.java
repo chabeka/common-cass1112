@@ -30,7 +30,7 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Classe de test des services de recherche.

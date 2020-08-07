@@ -21,7 +21,7 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
-import junit.framework.Assert;
+import org.junit.Assert;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;

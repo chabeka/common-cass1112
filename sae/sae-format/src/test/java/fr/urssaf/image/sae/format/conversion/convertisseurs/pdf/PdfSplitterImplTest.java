@@ -17,7 +17,7 @@ import fr.urssaf.image.commons.itext.exception.FormatConversionException;
 import fr.urssaf.image.commons.itext.exception.FormatConversionParametrageException;
 import fr.urssaf.image.commons.itext.service.FormatConversionService;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

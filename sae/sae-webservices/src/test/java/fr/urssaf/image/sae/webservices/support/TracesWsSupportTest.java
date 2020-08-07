@@ -43,7 +43,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 import fr.urssaf.image.sae.webservices.constantes.TracesConstantes;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
 import fr.urssaf.image.sae.webservices.util.HostnameUtil;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Tests unitaires de la classe {@link TracesWsSupport}

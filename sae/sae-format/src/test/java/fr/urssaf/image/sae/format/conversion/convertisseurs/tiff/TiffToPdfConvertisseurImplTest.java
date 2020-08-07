@@ -18,7 +18,7 @@ import fr.urssaf.image.commons.itext.exception.FormatConversionParametrageExcept
 import fr.urssaf.image.commons.itext.service.FormatConversionService;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionRuntimeException;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Classe testant les services de la classe {@link TiffToPdfConvertisseurImpl}

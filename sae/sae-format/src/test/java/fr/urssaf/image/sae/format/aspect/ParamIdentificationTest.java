@@ -16,7 +16,7 @@ import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisa
 import fr.urssaf.image.sae.format.identification.identifiers.pdfa.PdfaIdentifierImpl;
 import fr.urssaf.image.sae.format.identification.service.impl.IdentificationServiceImpl;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })

@@ -15,7 +15,7 @@ import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Tests unitaires de la classe {@link WSMetadataServiceImpl}

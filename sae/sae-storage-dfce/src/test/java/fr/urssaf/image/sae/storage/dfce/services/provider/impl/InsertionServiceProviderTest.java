@@ -21,7 +21,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageReference;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Classe permettant de test l'insertion d'un document en base.

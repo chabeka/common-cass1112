@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
-import junit.framework.Assert;
+import org.junit.Assert;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)

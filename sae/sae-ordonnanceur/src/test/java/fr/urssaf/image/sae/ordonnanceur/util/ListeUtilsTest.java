@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Tests unitaires de la classe ListeUtils

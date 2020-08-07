@@ -39,7 +39,7 @@ import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 import fr.urssaf.image.sae.webservices.component.IgcConfigUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
 import fr.urssaf.image.sae.webservices.support.TracesWsSupport;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-traces-test.xml" })

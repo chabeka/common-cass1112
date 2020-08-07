@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.ReferentielFormatSupportBouchon;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 
 

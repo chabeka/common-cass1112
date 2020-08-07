@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.format.referentiel.dao.support.facade.ReferentielForm
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.utils.AbstractReferentielFormatCqlTest;
 import fr.urssaf.image.sae.format.utils.Utils;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Classe testant les services de la classe {@link ConversionServiceImpl}

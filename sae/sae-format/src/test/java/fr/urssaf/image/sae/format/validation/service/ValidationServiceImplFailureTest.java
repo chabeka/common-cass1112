@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntim
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.impl.ValidationServiceImpl;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

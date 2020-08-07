@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.modele.source.EcdeSource;
 import fr.urssaf.image.sae.ecde.service.EcdeFileService;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Classe permettant de tester l'aspect sur la validation des paramètres

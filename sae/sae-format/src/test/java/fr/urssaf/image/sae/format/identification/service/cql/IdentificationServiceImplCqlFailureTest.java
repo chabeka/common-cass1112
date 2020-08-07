@@ -13,7 +13,7 @@ import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntim
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
 import fr.urssaf.image.sae.format.identification.service.impl.IdentificationServiceImpl;
 import fr.urssaf.image.sae.format.utils.AbstractReferentielFormatCqlFailureTest;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-ordonnanceur-commande-test.xml" })

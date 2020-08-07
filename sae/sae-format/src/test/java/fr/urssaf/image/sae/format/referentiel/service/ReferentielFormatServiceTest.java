@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.utils.Utils;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

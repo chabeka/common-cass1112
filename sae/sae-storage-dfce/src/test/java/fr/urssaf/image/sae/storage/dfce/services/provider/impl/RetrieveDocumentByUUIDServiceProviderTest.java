@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * Classe permettant de test la récupération d'un document en base.

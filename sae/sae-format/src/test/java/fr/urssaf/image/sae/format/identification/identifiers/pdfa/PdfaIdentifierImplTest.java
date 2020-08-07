@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntim
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.model.EtapeEtResultat;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

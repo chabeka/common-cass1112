@@ -16,7 +16,7 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.identification.service.impl.IdentificationServiceImpl;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 /**
  * 

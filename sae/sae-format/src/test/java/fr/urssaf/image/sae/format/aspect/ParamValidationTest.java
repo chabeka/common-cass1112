@@ -14,7 +14,7 @@ import fr.urssaf.image.sae.format.validation.exceptions.ValidationRuntimeExcepti
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.Validator;
 import fr.urssaf.image.sae.format.validation.validators.pdfa.PdfaValidatorImpl;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })
