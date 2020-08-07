@@ -29,9 +29,6 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  */
 public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends TraceIndex> {
 
-  // private final SimpleDateFormat dateFormat = new SimpleDateFormat(
-  // "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
-
   private static final String DATE_FORMAT = "yyyyMMdd";
 
 
@@ -64,22 +61,8 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     // création de l'index
     final I index = getIndexFromTrace(trace);
 
-    // final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
+
     getIndexDao().saveWithMapper(index, clock);
-
-    /*
-     * try {
-     * final Date date = dateFormat.parse(journee);
-     * final Date date1 = DateRegUtils.getDateWithoutTime();
-     * index.setIdentifiant(journee);
-     * getIndexDao().saveWithMapper(index);
-     * }
-     * catch (final ParseException e) {
-     * e.printStackTrace();
-     * }
-     */
-
-    // Trace applicative
 
   }
 
@@ -240,9 +223,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     }
 
     while (iterator.hasNext()) {
-      if (limite == null) {
-        list.add(iterator.next());
-      } else if (count < limite) {
+      if (count < limite) {
         list.add(iterator.next());
       }
       count++;
