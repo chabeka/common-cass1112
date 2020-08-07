@@ -23,55 +23,55 @@ import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 @Qualifier("modificationMasseTraitement")
 public class ModificationMasseSupportImpl implements TraitementExecutionSupport {
 
-   @Autowired
-   private SAEModificationMasseService modificationMasseService;
+  @Autowired
+  private SAEModificationMasseService modificationMasseService;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final ExitTraitement execute(JobRequest job) {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final ExitTraitement execute(final JobRequest job) {
 
-      Assert
-            .notNull(
-                  this.modificationMasseService,
-                  "Il n'existe aucune configuration pour instancier le composant 'SAEModificationMasseService'");
+    Assert
+    .notNull(
+             modificationMasseService,
+        "Il n'existe aucune configuration pour instancier le composant 'SAEModificationMasseService'");
 
-      Assert.notNull(job, "'job' is required");
+    Assert.notNull(job, "'job' is required");
 
-      UUID idTraitement = job.getIdJob();
+    final UUID idTraitement = job.getIdJob();
 
-      Assert.notNull(idTraitement, "'identifiant job' is required");
+    Assert.notNull(idTraitement, "'identifiant job' is required");
 
-      // le paramètre stocké dans la pile des travaux correspond pour les
-      // traitements de capture en masse à l'URL ECDE
-      String urlECDE = job.getJobParameters().get(Constantes.ECDE_URL);
+    // le paramètre stocké dans la pile des travaux correspond pour les
+    // traitements de capture en masse à l'URL ECDE
+    final String urlECDE = job.getJobParameters().get(Constantes.ECDE_URL);
 
-      URI sommaireURL;
+    URI sommaireURL;
 
-      try {
-         sommaireURL = URI.create(urlECDE);
+    try {
+      sommaireURL = URI.create(urlECDE);
 
-      } catch (IllegalArgumentException e) {
+    } catch (final IllegalArgumentException e) {
 
-         // cas où ecdeParameter ne respecte pas RFC 2396
-         // (Cf. http://www.ietf.org/rfc/rfc2396.txt)
+      // cas où ecdeParameter ne respecte pas RFC 2396
+      // (Cf. http://www.ietf.org/rfc/rfc2396.txt)
 
-         throw new JobParameterTypeException(job, e);
+      throw new JobParameterTypeException(job, e);
 
-      }
+    }
 
-      String codeTraitement = job.getJobParameters().get(
-            Constantes.CODE_TRAITEMENT);
+    final String codeTraitement = job.getJobParameters().get(
+                                                             Constantes.CODE_TRAITEMENT);
 
-      if (codeTraitement == null
-            || (codeTraitement != null && codeTraitement.isEmpty())) {
-         throw new JobParameterTypeException(job, new Exception(
-               "Le code traitement est obligatoire pour le lancement du job"));
-      }
+    if (codeTraitement == null
+        || codeTraitement.isEmpty()) {
+      throw new JobParameterTypeException(job, new Exception(
+                                                             "Le code traitement est obligatoire pour le lancement du job"));
+    }
 
-      return modificationMasseService.modificationMasse(sommaireURL,
-            idTraitement, job.getJobParameters().get(Constantes.HASH), job
-                  .getJobParameters().get(Constantes.TYPE_HASH));
-   }
+    return modificationMasseService.modificationMasse(sommaireURL,
+                                                      idTraitement, job.getJobParameters().get(Constantes.HASH), job
+                                                      .getJobParameters().get(Constantes.TYPE_HASH));
+  }
 }

@@ -24,7 +24,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseEcd
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceRuntimeException;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })

@@ -30,7 +30,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })

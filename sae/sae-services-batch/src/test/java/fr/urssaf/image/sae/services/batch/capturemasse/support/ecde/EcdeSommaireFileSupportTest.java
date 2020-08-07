@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })

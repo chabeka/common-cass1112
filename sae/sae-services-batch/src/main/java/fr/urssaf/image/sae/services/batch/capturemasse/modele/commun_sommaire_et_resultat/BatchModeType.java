@@ -31,15 +31,18 @@ import javax.xml.bind.annotation.XmlType;
 @XmlEnum
 public enum BatchModeType {
 
-    TOUT_OU_RIEN,
-    PARTIEL;
+  TOUT_OU_RIEN,
+  PARTIEL;
 
-    public String value() {
-        return name();
-    }
+  public String value() {
+    return name();
+  }
 
-    public static BatchModeType fromValue(String v) {
-        return valueOf(v);
+  public static BatchModeType fromValue(final String v) {
+    if (v == null) {
+      return null;
     }
+    return valueOf(v);
+  }
 
 }

@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class XmlValidationUtilsTest {
