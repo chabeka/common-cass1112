@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.apache.commons.lang.time.DateUtils;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.exception.TagControlException;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
@@ -39,565 +42,574 @@ import net.docubase.toolkit.model.document.Document;
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })
 public class TraitementServiceTest {
 
-   @Autowired
-   private TraitementService traitementService;
+  @Autowired
+  private TraitementService traitementService;
 
-   @Autowired
-   private ParametersService paramService;
+  @Autowired
+  private ParametersService paramService;
 
-   @Autowired
-   private DfceService dfceService;
+  @Autowired
+  private DfceService dfceService;
 
-   private final File file = new File(
-         "src/test/resources/identification/PdfaValide.pdf");
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
 
-   private final File doc1 = new File(
-         "src/test/resources/identification/doc1.pdf");
+  @Before
+  public void setup() throws Exception {
 
-   private final File doc = new File(
-         "src/test/resources/identification/word.doc");
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+  }
 
-   private final int TYPE_RETOUR_OK = 0;
-   private final int TYPE_RETOUR_TAG_CONTROL_EXCEPTION = 1;
-   private final int TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION = 2;
+  private final File file = new File(
+                                     "src/test/resources/identification/PdfaValide.pdf");
 
-   private FormatValidationParametres createParametres(final String requeteLucene,
-                                                       final MODE_VERIFICATION mode) {
-      final FormatValidationParametres parametres = new FormatValidationParametres();
-      parametres.setModeVerification(mode);
-      parametres.setRequeteLucene(requeteLucene);
-      parametres.setNombreMaxDocs(10);
-      parametres.setTaillePasExecution(5);
-      parametres.setTaillePool(1);
-      parametres.setTailleQueue(5);
-      parametres.setTempsMaxTraitement(0);
-      parametres.setMetadonnees(new ArrayList<String>());
-      return parametres;
-   }
+  private final File doc1 = new File(
+      "src/test/resources/identification/doc1.pdf");
 
-   private AddMetadatasParametres createAddMetaParametres(final String requeteLucene,
-                                                          final String cheminFichier) {
-      final AddMetadatasParametres parametres = new AddMetadatasParametres();
-      parametres.setRequeteLucene(requeteLucene);
-      parametres.setTaillePasExecution(5);
-      parametres.setTaillePool(1);
-      parametres.setTailleQueue(5);
-      parametres.setCheminFichier(cheminFichier);
+  private final File doc = new File(
+      "src/test/resources/identification/word.doc");
 
-      final Map<String, String> metas = new HashMap<String, String>();
-      metas.put("toDelete", null);
-      metas.put("toAdd", "true");
+  private final int TYPE_RETOUR_OK = 0;
+  private final int TYPE_RETOUR_TAG_CONTROL_EXCEPTION = 1;
+  private final int TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION = 2;
 
-      parametres.setMetadonnees(metas);
-      return parametres;
-   }
+  private FormatValidationParametres createParametres(final String requeteLucene,
+                                                      final MODE_VERIFICATION mode) {
+    final FormatValidationParametres parametres = new FormatValidationParametres();
+    parametres.setModeVerification(mode);
+    parametres.setRequeteLucene(requeteLucene);
+    parametres.setNombreMaxDocs(10);
+    parametres.setTaillePasExecution(5);
+    parametres.setTaillePool(1);
+    parametres.setTailleQueue(5);
+    parametres.setTempsMaxTraitement(0);
+    parametres.setMetadonnees(new ArrayList<String>());
+    return parametres;
+  }
 
-   private PurgeCorbeilleParametres createPurgeCorbeilleParametres() {
-      final PurgeCorbeilleParametres parametres = new PurgeCorbeilleParametres();
+  private AddMetadatasParametres createAddMetaParametres(final String requeteLucene,
+                                                         final String cheminFichier) {
+    final AddMetadatasParametres parametres = new AddMetadatasParametres();
+    parametres.setRequeteLucene(requeteLucene);
+    parametres.setTaillePasExecution(5);
+    parametres.setTaillePool(1);
+    parametres.setTailleQueue(5);
+    parametres.setCheminFichier(cheminFichier);
 
-      parametres.setTaillePasExecution(5);
-      parametres.setTaillePool(1);
-      parametres.setTailleQueue(5);
+    final Map<String, String> metas = new HashMap<>();
+    metas.put("toDelete", null);
+    metas.put("toAdd", "true");
 
-      return parametres;
-   }
+    parametres.setMetadonnees(metas);
+    return parametres;
+  }
 
-   private Document createDocument(final String idFormat) {
-      final Document document = new Document();
-      document.setUuid(UUID.fromString("00000000-0000-0000-0000-000000000000"));
-      document.setArchivageDate(new Date());
-      document.setType("2.3.1.1.12");
-      document.addCriterion("cse", "CS1");
-      document.addCriterion("apr", "GED");
-      document.addCriterion("atr", "GED");
-      document.addCriterion("ffi", idFormat);
-      return document;
-   }
+  private PurgeCorbeilleParametres createPurgeCorbeilleParametres() {
+    final PurgeCorbeilleParametres parametres = new PurgeCorbeilleParametres();
 
-   private void createMock(final TraitementServiceImpl traitementService,
-                           final String idFormat, final String requeteLucene, final File fichier)
-                                 throws FileNotFoundException, SearchQueryParseException {
+    parametres.setTaillePasExecution(5);
+    parametres.setTaillePool(1);
+    parametres.setTailleQueue(5);
 
-      final Document document = createDocument(idFormat);
-      // creation de la liste des documents
-      final List<Document> listeDoc = new ArrayList<Document>();
-      for (int index = 0; index < 10; index++) {
-         listeDoc.add(document);
+    return parametres;
+  }
+
+  private Document createDocument(final String idFormat) {
+    final Document document = new Document();
+    document.setUuid(UUID.fromString("00000000-0000-0000-0000-000000000000"));
+    document.setArchivageDate(new Date());
+    document.setType("2.3.1.1.12");
+    document.addCriterion("cse", "CS1");
+    document.addCriterion("apr", "GED");
+    document.addCriterion("atr", "GED");
+    document.addCriterion("ffi", idFormat);
+    return document;
+  }
+
+  private void createMock(final TraitementServiceImpl traitementService,
+                          final String idFormat, final String requeteLucene, final File fichier)
+                              throws FileNotFoundException, SearchQueryParseException {
+
+    final Document document = createDocument(idFormat);
+    // creation de la liste des documents
+    final List<Document> listeDoc = new ArrayList<>();
+    for (int index = 0; index < 10; index++) {
+      listeDoc.add(document);
+    }
+
+    // creation du mock
+    final DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
+    EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
+                                                                          listeDoc.iterator());
+    EasyMock.expect(dfceService.recupererContenu(document))
+    .andAnswer(new IAnswer<InputStream>() {
+      /**
+       * {@inheritDoc}
+       */
+      @Override
+      public InputStream answer() throws Throwable {
+        return new FileInputStream(fichier);
       }
+    }).anyTimes();
+    EasyMock.replay(dfceService);
+    traitementService.setDfceService(dfceService);
+  }
 
-      // creation du mock
-      final DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
-      EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
-                                                                            listeDoc.iterator());
-      EasyMock.expect(dfceService.recupererContenu(document))
-      .andAnswer(new IAnswer<InputStream>() {
-         /**
-          * {@inheritDoc}
-          */
-         @Override
-         public InputStream answer() throws Throwable {
-            return new FileInputStream(fichier);
-         }
-      }).anyTimes();
-      EasyMock.replay(dfceService);
-      traitementService.setDfceService(dfceService);
-   }
+  private void createAddMetaMock(final TraitementServiceImpl traitementService,
+                                 final String requeteLucene, final int typeRetour)
+                                     throws SearchQueryParseException, TagControlException,
+                                     FrozenDocumentException {
 
-   private void createAddMetaMock(final TraitementServiceImpl traitementService,
-                                  final String requeteLucene, final int typeRetour)
-                                        throws SearchQueryParseException, TagControlException,
-                                        FrozenDocumentException {
+    final Document document = createDocument("fmt/354");
+    document.addCriterion("toDelete", "maValeur");
+    // creation de la liste des documents
+    final List<Document> listeDoc = new ArrayList<>();
+    for (int index = 0; index < 10; index++) {
+      listeDoc.add(document);
+    }
 
-      final Document document = createDocument("fmt/354");
-      document.addCriterion("toDelete", "maValeur");
-      // creation de la liste des documents
-      final List<Document> listeDoc = new ArrayList<Document>();
-      for (int index = 0; index < 10; index++) {
-         listeDoc.add(document);
-      }
-
-      // creation du mock
-      final DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
-      final DFCEServices dfceServices = EasyMock.createNiceMock(DFCEServices.class);
-      EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
-                                                                            listeDoc.iterator());
-      EasyMock.expect(dfceService.getDFCEServices())
-      .andReturn(dfceServices).anyTimes();
-      if (typeRetour == TYPE_RETOUR_OK) {
-         EasyMock.expect(dfceServices.updateDocument(document))
-         .andReturn(document).anyTimes();
-      } else if (typeRetour == TYPE_RETOUR_TAG_CONTROL_EXCEPTION) {
-         EasyMock.expect(dfceServices.updateDocument(document))
-         .andThrow(new TagControlException("Erreur simulé par junit"))
-         .anyTimes();
-      } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
-         EasyMock
-         .expect(dfceServices.updateDocument(document))
-         .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
-         .anyTimes();
-      }
-      EasyMock.replay(dfceService);
-      EasyMock.replay(dfceServices);
-      traitementService.setDfceService(dfceService);
-   }
-
-   private void createAddMetaFromCsvMock(
-                                         final TraitementServiceImpl traitementService, final int typeRetour)
-                                               throws SearchQueryParseException, TagControlException,
-                                               FrozenDocumentException {
-
-      final Document document = createDocument("fmt/354");
-      document.addCriterion("toDelete", "maValeur");
-
-      // creation du mock
-      final DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
-      final DFCEServices dfceServices = EasyMock.createNiceMock(DFCEServices.class);
-
-      EasyMock
-      .expect(dfceService.getDocumentById(EasyMock.anyObject(UUID.class)))
+    // creation du mock
+    final DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
+    final DFCEServices dfceServices = EasyMock.createNiceMock(DFCEServices.class);
+    EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
+                                                                          listeDoc.iterator());
+    EasyMock.expect(dfceService.getDFCEServices())
+    .andReturn(dfceServices).anyTimes();
+    if (typeRetour == TYPE_RETOUR_OK) {
+      EasyMock.expect(dfceServices.updateDocument(document))
       .andReturn(document).anyTimes();
-
-      EasyMock.expect(dfceService.getDFCEServices())
-      .andReturn(dfceServices).anyTimes();
-
-
-      if (typeRetour == TYPE_RETOUR_OK) {
-         EasyMock.expect(dfceServices.updateDocument(document))
-         .andReturn(document).anyTimes();
-      } else if (typeRetour == TYPE_RETOUR_TAG_CONTROL_EXCEPTION) {
-         EasyMock.expect(dfceServices.updateDocument(document))
-         .andThrow(new TagControlException("Erreur simulé par junit"))
-         .anyTimes();
-      } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
-         EasyMock
-         .expect(dfceServices.updateDocument(document))
-         .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
-         .anyTimes();
-      }
-      EasyMock.replay(dfceService);
-      EasyMock.replay(dfceServices);
-      traitementService.setDfceService(dfceService);
-   }
-
-   private void createPurgeCorbeilleMock(
-                                         final TraitementServiceImpl traitementService, final int typeRetour)
-                                               throws SearchQueryParseException, FrozenDocumentException,
-                                               ParameterNotFoundException {
-
-      final Document document = createDocument("fmt/354");
-      document.addCriterion("toDelete", "maValeur");
-
-      // creation de la liste des documents
-      final List<Document> listeDoc = new ArrayList<Document>();
-      for (int index = 0; index < 10; index++) {
-         listeDoc.add(document);
-      }
-
-      // creation du mock
-      final DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
-      final DFCEServices dfceServices = EasyMock.createNiceMock(DFCEServices.class);
-
+    } else if (typeRetour == TYPE_RETOUR_TAG_CONTROL_EXCEPTION) {
+      EasyMock.expect(dfceServices.updateDocument(document))
+      .andThrow(new TagControlException("Erreur simulé par junit"))
+      .anyTimes();
+    } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
       EasyMock
-      .expect(dfceService.getDocumentById(EasyMock.anyObject(UUID.class)))
+      .expect(dfceServices.updateDocument(document))
+      .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
+      .anyTimes();
+    }
+    EasyMock.replay(dfceService);
+    EasyMock.replay(dfceServices);
+    traitementService.setDfceService(dfceService);
+  }
+
+  private void createAddMetaFromCsvMock(
+                                        final TraitementServiceImpl traitementService, final int typeRetour)
+                                            throws SearchQueryParseException, TagControlException,
+                                            FrozenDocumentException {
+
+    final Document document = createDocument("fmt/354");
+    document.addCriterion("toDelete", "maValeur");
+
+    // creation du mock
+    final DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
+    final DFCEServices dfceServices = EasyMock.createNiceMock(DFCEServices.class);
+
+    EasyMock
+    .expect(dfceService.getDocumentById(EasyMock.anyObject(UUID.class)))
+    .andReturn(document).anyTimes();
+
+    EasyMock.expect(dfceService.getDFCEServices())
+    .andReturn(dfceServices).anyTimes();
+
+
+    if (typeRetour == TYPE_RETOUR_OK) {
+      EasyMock.expect(dfceServices.updateDocument(document))
       .andReturn(document).anyTimes();
+    } else if (typeRetour == TYPE_RETOUR_TAG_CONTROL_EXCEPTION) {
+      EasyMock.expect(dfceServices.updateDocument(document))
+      .andThrow(new TagControlException("Erreur simulé par junit"))
+      .anyTimes();
+    } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
+      EasyMock
+      .expect(dfceServices.updateDocument(document))
+      .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
+      .anyTimes();
+    }
+    EasyMock.replay(dfceService);
+    EasyMock.replay(dfceServices);
+    traitementService.setDfceService(dfceService);
+  }
+
+  private void createPurgeCorbeilleMock(
+                                        final TraitementServiceImpl traitementService, final int typeRetour)
+                                            throws SearchQueryParseException, FrozenDocumentException,
+                                            ParameterNotFoundException {
+
+    final Document document = createDocument("fmt/354");
+    document.addCriterion("toDelete", "maValeur");
+
+    // creation de la liste des documents
+    final List<Document> listeDoc = new ArrayList<>();
+    for (int index = 0; index < 10; index++) {
+      listeDoc.add(document);
+    }
+
+    // creation du mock
+    final DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
+    final DFCEServices dfceServices = EasyMock.createNiceMock(DFCEServices.class);
+
+    EasyMock
+    .expect(dfceService.getDocumentById(EasyMock.anyObject(UUID.class)))
+    .andReturn(document).anyTimes();
+
+    EasyMock.expect(dfceService.getDFCEServices())
+    .andReturn(dfceServices).anyTimes();
+
+    EasyMock.expect(
+                    dfceService.executerRequeteCorbeille(EasyMock
+                                                         .anyObject(String.class))).andReturn(listeDoc.iterator());
+
+    if (typeRetour == TYPE_RETOUR_OK) {
+      dfceServices.deleteDocumentFromRecycleBin(document.getUuid());
+
+    } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
+      dfceServices.deleteDocumentFromRecycleBin(document.getUuid());
+      EasyMock
+      .expectLastCall()
+      .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
+      .anyTimes();
+    }
+    EasyMock.replay(dfceService);
+    EasyMock.replay(dfceServices);
+    traitementService.setDfceService(dfceService);
+  }
+
+  @Test
+  public void identifierValiderFichiersIdentificationValide()
+      throws FileNotFoundException, SearchQueryParseException {
+
+    final FormatValidationParametres parametres = createParametres(
+                                                                   "iti:73132b50-d404-11e2-9df1-005056c00008",
+                                                                   MODE_VERIFICATION.IDENTIFICATION);
+
+    createMock((TraitementServiceImpl) traitementService, "fmt/354",
+               parametres.getRequeteLucene(), file);
+
+    // cas d'identification valide
+    final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+    Assert.assertEquals("Le nombre de documents traités n'est pas correct",
+                        10, nbTraites);
+
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
+
+  @Test
+  public void identifierValiderFichiersIdentificationNonValide()
+      throws FileNotFoundException, SearchQueryParseException {
+
+    final FormatValidationParametres parametres = createParametres(
+                                                                   "srt:41882050200023", MODE_VERIFICATION.IDENTIFICATION);
+
+    createMock((TraitementServiceImpl) traitementService, "fmt/18",
+               parametres.getRequeteLucene(), doc);
+
+    // cas d'identification non valide
+    final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+
+    Assert.assertEquals("Le nombre de documents traités n'est pas correct",
+                        10, nbTraites);
+
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
+
+  @Test
+  public void identifierValiderFichiersValidationValide()
+      throws FileNotFoundException, SearchQueryParseException {
 
-      EasyMock.expect(dfceService.getDFCEServices())
-      .andReturn(dfceServices).anyTimes();
+    final FormatValidationParametres parametres = createParametres(
+                                                                   "iti:73132b50-d404-11e2-9df1-005056c00008",
+                                                                   MODE_VERIFICATION.VALIDATION);
 
-      EasyMock.expect(
-                      dfceService.executerRequeteCorbeille(EasyMock
-                                                           .anyObject(String.class))).andReturn(listeDoc.iterator());
+    createMock((TraitementServiceImpl) traitementService, "fmt/354",
+               parametres.getRequeteLucene(), file);
 
-      if (typeRetour == TYPE_RETOUR_OK) {
-         dfceServices.deleteDocumentFromRecycleBin(document.getUuid());
+    // cas de validation (document valide)
+    final int nbTraites = traitementService.identifierValiderFichiers(parametres);
 
-      } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
-         dfceServices.deleteDocumentFromRecycleBin(document.getUuid());
-         EasyMock
-         .expectLastCall()
-         .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
-         .anyTimes();
-      }
-      EasyMock.replay(dfceService);
-      EasyMock.replay(dfceServices);
-      traitementService.setDfceService(dfceService);
-   }
+    Assert.assertEquals("Le nombre de documents traités n'est pas correct",
+                        10, nbTraites);
 
-   @Test
-   public void identifierValiderFichiersIdentificationValide()
-         throws FileNotFoundException, SearchQueryParseException {
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      final FormatValidationParametres parametres = createParametres(
-                                                                     "iti:73132b50-d404-11e2-9df1-005056c00008",
-                                                                     MODE_VERIFICATION.IDENTIFICATION);
+  @Test
+  public void identifierValiderFichiersValidationNonValide()
+      throws FileNotFoundException, SearchQueryParseException {
 
-      createMock((TraitementServiceImpl) traitementService, "fmt/354",
-                 parametres.getRequeteLucene(), file);
+    final FormatValidationParametres parametres = createParametres(
+                                                                   "iti:73132b50-d404-11e2-9df1-005056c00008",
+                                                                   MODE_VERIFICATION.VALIDATION);
 
-      // cas d'identification valide
-      final int nbTraites = traitementService.identifierValiderFichiers(parametres);
-      Assert.assertEquals("Le nombre de documents traités n'est pas correct",
-                          10, nbTraites);
+    createMock((TraitementServiceImpl) traitementService, "fmt/354",
+               parametres.getRequeteLucene(), doc1);
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    // cas de validation (document non valide)
+    final int nbTraites = traitementService.identifierValiderFichiers(parametres);
 
-   @Test
-   public void identifierValiderFichiersIdentificationNonValide()
-         throws FileNotFoundException, SearchQueryParseException {
+    Assert.assertEquals("Le nombre de documents traités n'est pas correct",
+                        10, nbTraites);
 
-      final FormatValidationParametres parametres = createParametres(
-                                                                     "srt:41882050200023", MODE_VERIFICATION.IDENTIFICATION);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      createMock((TraitementServiceImpl) traitementService, "fmt/18",
-                 parametres.getRequeteLucene(), doc);
+  @Test
+  public void identifierValiderFichiersValidationUnknownFormat()
+      throws FileNotFoundException, SearchQueryParseException {
 
-      // cas d'identification non valide
-      final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+    final FormatValidationParametres parametres = createParametres(
+                                                                   "srt:41882050200023", MODE_VERIFICATION.VALIDATION);
 
-      Assert.assertEquals("Le nombre de documents traités n'est pas correct",
-                          10, nbTraites);
+    createMock((TraitementServiceImpl) traitementService, "fmt/18",
+               parametres.getRequeteLucene(), doc);
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    // cas de validation (unknown format)
+    final int nbTraites = traitementService.identifierValiderFichiers(parametres);
 
-   @Test
-   public void identifierValiderFichiersValidationValide()
-         throws FileNotFoundException, SearchQueryParseException {
+    Assert.assertEquals("Le nombre de documents traités n'est pas correct",
+                        10, nbTraites);
 
-      final FormatValidationParametres parametres = createParametres(
-                                                                     "iti:73132b50-d404-11e2-9df1-005056c00008",
-                                                                     MODE_VERIFICATION.VALIDATION);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      createMock((TraitementServiceImpl) traitementService, "fmt/354",
-                 parametres.getRequeteLucene(), file);
+  @Test
+  public void identifierValiderFichiersIdentValidationValide()
+      throws FileNotFoundException, SearchQueryParseException {
 
-      // cas de validation (document valide)
-      final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+    final FormatValidationParametres parametres = createParametres(
+                                                                   "iti:73132b50-d404-11e2-9df1-005056c00008",
+                                                                   MODE_VERIFICATION.IDENT_VALID);
 
-      Assert.assertEquals("Le nombre de documents traités n'est pas correct",
-                          10, nbTraites);
+    createMock((TraitementServiceImpl) traitementService, "fmt/354",
+               parametres.getRequeteLucene(), file);
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    // cas d'identification et validation (document non valide)
+    final int nbTraites = traitementService.identifierValiderFichiers(parametres);
 
-   @Test
-   public void identifierValiderFichiersValidationNonValide()
-         throws FileNotFoundException, SearchQueryParseException {
+    Assert.assertEquals("Le nombre de documents traités n'est pas correct",
+                        10, nbTraites);
 
-      final FormatValidationParametres parametres = createParametres(
-                                                                     "iti:73132b50-d404-11e2-9df1-005056c00008",
-                                                                     MODE_VERIFICATION.VALIDATION);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      createMock((TraitementServiceImpl) traitementService, "fmt/354",
-                 parametres.getRequeteLucene(), doc1);
+  @Test
+  public void identifierValiderFichiersIdentValidationNonValide()
+      throws FileNotFoundException, SearchQueryParseException {
 
-      // cas de validation (document non valide)
-      final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+    final FormatValidationParametres parametres = createParametres(
+                                                                   "iti:73132b50-d404-11e2-9df1-005056c00008",
+                                                                   MODE_VERIFICATION.IDENT_VALID);
 
-      Assert.assertEquals("Le nombre de documents traités n'est pas correct",
-                          10, nbTraites);
+    createMock((TraitementServiceImpl) traitementService, "fmt/354",
+               parametres.getRequeteLucene(), doc1);
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    // cas d'identification et validation (document non valide)
+    final int nbTraites = traitementService.identifierValiderFichiers(parametres);
 
-   @Test
-   public void identifierValiderFichiersValidationUnknownFormat()
-         throws FileNotFoundException, SearchQueryParseException {
+    Assert.assertEquals("Le nombre de documents traités n'est pas correct",
+                        10, nbTraites);
 
-      final FormatValidationParametres parametres = createParametres(
-                                                                     "srt:41882050200023", MODE_VERIFICATION.VALIDATION);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      createMock((TraitementServiceImpl) traitementService, "fmt/18",
-                 parametres.getRequeteLucene(), doc);
+  @Test
+  public void identifierValiderFichiersIdentValidationUnknownFormat()
+      throws FileNotFoundException, SearchQueryParseException {
 
-      // cas de validation (unknown format)
-      final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+    final FormatValidationParametres parametres = createParametres(
+                                                                   "srt:41882050200023", MODE_VERIFICATION.IDENT_VALID);
 
-      Assert.assertEquals("Le nombre de documents traités n'est pas correct",
-                          10, nbTraites);
+    createMock((TraitementServiceImpl) traitementService, "fmt/18",
+               parametres.getRequeteLucene(), doc);
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    // cas d'identification et validation (unknown format)
+    final int nbTraites = traitementService.identifierValiderFichiers(parametres);
 
-   @Test
-   public void identifierValiderFichiersIdentValidationValide()
-         throws FileNotFoundException, SearchQueryParseException {
+    Assert.assertEquals("Le nombre de documents traités n'est pas correct",
+                        10, nbTraites);
 
-      final FormatValidationParametres parametres = createParametres(
-                                                                     "iti:73132b50-d404-11e2-9df1-005056c00008",
-                                                                     MODE_VERIFICATION.IDENT_VALID);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      createMock((TraitementServiceImpl) traitementService, "fmt/354",
-                 parametres.getRequeteLucene(), file);
+  @Test
+  public void addMetadatasToDocumentsOK() throws SearchQueryParseException,
+  TagControlException, FrozenDocumentException {
 
-      // cas d'identification et validation (document non valide)
-      final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+    final AddMetadatasParametres parametres = createAddMetaParametres(
+                                                                      "iti:73132b50-d404-11e2-9df1-005056c00008", "");
 
-      Assert.assertEquals("Le nombre de documents traités n'est pas correct",
-                          10, nbTraites);
+    createAddMetaMock((TraitementServiceImpl) traitementService,
+                      parametres.getRequeteLucene(), TYPE_RETOUR_OK);
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    // cas d'identification valide
+    traitementService.addMetadatasToDocuments(parametres);
 
-   @Test
-   public void identifierValiderFichiersIdentValidationNonValide()
-         throws FileNotFoundException, SearchQueryParseException {
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      final FormatValidationParametres parametres = createParametres(
-                                                                     "iti:73132b50-d404-11e2-9df1-005056c00008",
-                                                                     MODE_VERIFICATION.IDENT_VALID);
+  @Test
+  public void addMetadatasToDocumentsTagControlException()
+      throws SearchQueryParseException, TagControlException,
+      FrozenDocumentException {
 
-      createMock((TraitementServiceImpl) traitementService, "fmt/354",
-                 parametres.getRequeteLucene(), doc1);
+    final AddMetadatasParametres parametres = createAddMetaParametres(
+                                                                      "iti:73132b50-d404-11e2-9df1-005056c00008", "");
 
-      // cas d'identification et validation (document non valide)
-      final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+    createAddMetaMock((TraitementServiceImpl) traitementService,
+                      parametres.getRequeteLucene(), TYPE_RETOUR_TAG_CONTROL_EXCEPTION);
 
-      Assert.assertEquals("Le nombre de documents traités n'est pas correct",
-                          10, nbTraites);
+    // cas d'identification valide
+    traitementService.addMetadatasToDocuments(parametres);
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-   @Test
-   public void identifierValiderFichiersIdentValidationUnknownFormat()
-         throws FileNotFoundException, SearchQueryParseException {
+  @Test
+  public void addMetadatasToDocumentsFrozenDocumentException()
+      throws SearchQueryParseException, TagControlException,
+      FrozenDocumentException {
 
-      final FormatValidationParametres parametres = createParametres(
-                                                                     "srt:41882050200023", MODE_VERIFICATION.IDENT_VALID);
+    final AddMetadatasParametres parametres = createAddMetaParametres(
+                                                                      "iti:73132b50-d404-11e2-9df1-005056c00008", "");
 
-      createMock((TraitementServiceImpl) traitementService, "fmt/18",
-                 parametres.getRequeteLucene(), doc);
+    createAddMetaMock((TraitementServiceImpl) traitementService,
+                      parametres.getRequeteLucene(),
+                      TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
 
-      // cas d'identification et validation (unknown format)
-      final int nbTraites = traitementService.identifierValiderFichiers(parametres);
+    // cas d'identification valide
+    traitementService.addMetadatasToDocuments(parametres);
 
-      Assert.assertEquals("Le nombre de documents traités n'est pas correct",
-                          10, nbTraites);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+  @Test
+  public void addMetadatasToDocumentsFromCsvOK()
+      throws SearchQueryParseException, TagControlException,
+      FrozenDocumentException {
 
-   @Test
-   public void addMetadatasToDocumentsOK() throws SearchQueryParseException,
-   TagControlException, FrozenDocumentException {
+    final AddMetadatasParametres parametres = createAddMetaParametres("",
+        "src/test/resources/add-meta/addMetadatas.csv");
 
-      final AddMetadatasParametres parametres = createAddMetaParametres(
-                                                                        "iti:73132b50-d404-11e2-9df1-005056c00008", "");
+    createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
+                             TYPE_RETOUR_OK);
 
-      createAddMetaMock((TraitementServiceImpl) traitementService,
-                        parametres.getRequeteLucene(), TYPE_RETOUR_OK);
+    // cas d'identification valide
+    traitementService.addMetadatasToDocumentsFromCSV(parametres);
 
-      // cas d'identification valide
-      traitementService.addMetadatasToDocuments(parametres);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+  @Test
+  public void addMetadatasToDocumentsFromCsvTagControlException()
+      throws SearchQueryParseException, TagControlException,
+      FrozenDocumentException {
 
-   @Test
-   public void addMetadatasToDocumentsTagControlException()
-         throws SearchQueryParseException, TagControlException,
-         FrozenDocumentException {
+    final AddMetadatasParametres parametres = createAddMetaParametres("",
+        "src/test/resources/add-meta/addMetadatas.csv");
 
-      final AddMetadatasParametres parametres = createAddMetaParametres(
-                                                                        "iti:73132b50-d404-11e2-9df1-005056c00008", "");
+    createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
+                             TYPE_RETOUR_TAG_CONTROL_EXCEPTION);
 
-      createAddMetaMock((TraitementServiceImpl) traitementService,
-                        parametres.getRequeteLucene(), TYPE_RETOUR_TAG_CONTROL_EXCEPTION);
+    // cas d'identification valide
+    traitementService.addMetadatasToDocumentsFromCSV(parametres);
 
-      // cas d'identification valide
-      traitementService.addMetadatasToDocuments(parametres);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+  @Test
+  public void addMetadatasToDocumentsFromCsvFrozenDocumentException()
+      throws SearchQueryParseException, TagControlException,
+      FrozenDocumentException {
 
-   @Test
-   public void addMetadatasToDocumentsFrozenDocumentException()
-         throws SearchQueryParseException, TagControlException,
-         FrozenDocumentException {
+    final AddMetadatasParametres parametres = createAddMetaParametres("",
+        "src/test/resources/add-meta/addMetadatas.csv");
 
-      final AddMetadatasParametres parametres = createAddMetaParametres(
-                                                                        "iti:73132b50-d404-11e2-9df1-005056c00008", "");
+    createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
+                             TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
 
-      createAddMetaMock((TraitementServiceImpl) traitementService,
-                        parametres.getRequeteLucene(),
-                        TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
+    // cas d'identification valide
+    traitementService.addMetadatasToDocumentsFromCSV(parametres);
 
-      // cas d'identification valide
-      traitementService.addMetadatasToDocuments(parametres);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+  @Test
+  public void addMetadatasToDocumentsFromCsvFileNotFoundException()
+      throws SearchQueryParseException, TagControlException,
+      FrozenDocumentException {
 
-   @Test
-   public void addMetadatasToDocumentsFromCsvOK()
-         throws SearchQueryParseException, TagControlException,
-         FrozenDocumentException {
+    final AddMetadatasParametres parametres = createAddMetaParametres("",
+        "src/test/resources/add-meta/zorg");
 
-      final AddMetadatasParametres parametres = createAddMetaParametres("",
-            "src/test/resources/add-meta/addMetadatas.csv");
+    createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
+                             TYPE_RETOUR_OK);
 
-      createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
-                               TYPE_RETOUR_OK);
+    // cas d'identification valide
+    traitementService.addMetadatasToDocumentsFromCSV(parametres);
 
-      // cas d'identification valide
-      traitementService.addMetadatasToDocumentsFromCSV(parametres);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+  @Test
+  public void purgeCorbeilleFrozenDocumentException()
+      throws SearchQueryParseException, FrozenDocumentException,
+      ParameterNotFoundException {
 
-   @Test
-   public void addMetadatasToDocumentsFromCsvTagControlException()
-         throws SearchQueryParseException, TagControlException,
-         FrozenDocumentException {
+    final PurgeCorbeilleParametres parametres = createPurgeCorbeilleParametres();
 
-      final AddMetadatasParametres parametres = createAddMetaParametres("",
-            "src/test/resources/add-meta/addMetadatas.csv");
+    paramService.setPurgeCorbeilleDateLancement(new Date());
+    paramService.setPurgeCorbeilleDateDebutPurge(DateUtils.addDays(
+                                                                   new Date(), -20));
 
-      createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
-                               TYPE_RETOUR_TAG_CONTROL_EXCEPTION);
+    paramService.setPurgeCorbeilleDateSucces(new Date());
+    paramService.setPurgeCorbeilleDuree(10);
+    paramService.setPurgeCorbeilleIsRunning(false);
 
-      // cas d'identification valide
-      traitementService.addMetadatasToDocumentsFromCSV(parametres);
+    createPurgeCorbeilleMock((TraitementServiceImpl) traitementService,
+                             TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    traitementService.purgerCorbeille(parametres);
 
-   @Test
-   public void addMetadatasToDocumentsFromCsvFrozenDocumentException()
-         throws SearchQueryParseException, TagControlException,
-         FrozenDocumentException {
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+  }
 
-      final AddMetadatasParametres parametres = createAddMetaParametres("",
-            "src/test/resources/add-meta/addMetadatas.csv");
+  @Test
+  public void purgeCorbeilleOK() throws SearchQueryParseException,
+  ParameterNotFoundException, FrozenDocumentException {
 
-      createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
-                               TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
+    final PurgeCorbeilleParametres parametres = createPurgeCorbeilleParametres();
 
-      // cas d'identification valide
-      traitementService.addMetadatasToDocumentsFromCSV(parametres);
+    paramService.setPurgeCorbeilleDateLancement(new Date());
+    paramService.setPurgeCorbeilleDateDebutPurge(DateUtils.addDays(
+                                                                   new Date(), -20));
 
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
+    paramService.setPurgeCorbeilleDateSucces(new Date());
+    paramService.setPurgeCorbeilleDuree(10);
+    paramService.setPurgeCorbeilleIsRunning(false);
 
-   @Test
-   public void addMetadatasToDocumentsFromCsvFileNotFoundException()
-         throws SearchQueryParseException, TagControlException,
-         FrozenDocumentException {
+    createPurgeCorbeilleMock((TraitementServiceImpl) traitementService,
+                             TYPE_RETOUR_OK);
 
-      final AddMetadatasParametres parametres = createAddMetaParametres("",
-            "src/test/resources/add-meta/zorg");
+    traitementService.purgerCorbeille(parametres);
 
-      createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
-                               TYPE_RETOUR_OK);
+    // remet a jour le context
+    ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
 
-      // cas d'identification valide
-      traitementService.addMetadatasToDocumentsFromCSV(parametres);
-
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
-
-   @Test
-   public void purgeCorbeilleFrozenDocumentException()
-         throws SearchQueryParseException, FrozenDocumentException,
-         ParameterNotFoundException {
-
-      final PurgeCorbeilleParametres parametres = createPurgeCorbeilleParametres();
-
-      paramService.setPurgeCorbeilleDateLancement(new Date());
-      paramService.setPurgeCorbeilleDateDebutPurge(DateUtils.addDays(
-                                                                     new Date(), -20));
-
-      paramService.setPurgeCorbeilleDateSucces(new Date());
-      paramService.setPurgeCorbeilleDuree(10);
-      paramService.setPurgeCorbeilleIsRunning(false);
-
-      createPurgeCorbeilleMock((TraitementServiceImpl) traitementService,
-                               TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
-
-      traitementService.purgerCorbeille(parametres);
-
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-   }
-
-   @Test
-   public void purgeCorbeilleOK() throws SearchQueryParseException,
-   ParameterNotFoundException, FrozenDocumentException {
-
-      final PurgeCorbeilleParametres parametres = createPurgeCorbeilleParametres();
-
-      paramService.setPurgeCorbeilleDateLancement(new Date());
-      paramService.setPurgeCorbeilleDateDebutPurge(DateUtils.addDays(
-                                                                     new Date(), -20));
-
-      paramService.setPurgeCorbeilleDateSucces(new Date());
-      paramService.setPurgeCorbeilleDuree(10);
-      paramService.setPurgeCorbeilleIsRunning(false);
-
-      createPurgeCorbeilleMock((TraitementServiceImpl) traitementService,
-                               TYPE_RETOUR_OK);
-
-      traitementService.purgerCorbeille(parametres);
-
-      // remet a jour le context
-      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
-
-   }
+  }
 }

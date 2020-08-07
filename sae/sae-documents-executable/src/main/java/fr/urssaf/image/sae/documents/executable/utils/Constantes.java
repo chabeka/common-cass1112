@@ -41,11 +41,20 @@ public final class Constantes {
    * "yyyy-mm-dd",
    * Locale.FRENCH);
    */
+  /*
+   * private final SimpleDateFormat dateJourneeFormat = new SimpleDateFormat(
+   * "yyyyMMdd",
+   * Locale.FRENCH);
+   */
   public static final FastDateFormat FORMATTER_DATE = FastDateFormat.getInstance(
                                                                                  "yyyy-mm-dd",
 
                                                                                  Locale.FRENCH);
 
+  public static final FastDateFormat FORMATTER_DATE_LUCENE = FastDateFormat.getInstance(
+                                                                                        "yyyyMMdd",
+
+                                                                                        Locale.FRENCH);
   /** Cette classe n'est pas faite pour être instanciée. */
   private Constantes() {
     assert false;

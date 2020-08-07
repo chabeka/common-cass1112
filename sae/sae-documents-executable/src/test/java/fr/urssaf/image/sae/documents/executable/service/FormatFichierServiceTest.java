@@ -8,12 +8,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
@@ -29,8 +32,17 @@ public class FormatFichierServiceTest {
   @Autowired
   private FormatFichierService formatFichierService;
 
+  @Autowired
+  private ModeApiCqlSupport modeApiSupport;
+
+  @Before
+  public void setup() throws Exception {
+
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+  }
+
   private final File file = new File(
-                                     "src/test/resources/identification/PdfaValide.pdf");
+      "src/test/resources/identification/PdfaValide.pdf");
 
   private final File doc = new File(
       "src/test/resources/identification/word.doc");

@@ -6,14 +6,12 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -65,9 +63,10 @@ public class TraitementServiceImpl implements TraitementService {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(TraitementServiceImpl.class);
 
-  private final SimpleDateFormat dateJourneeFormat = new SimpleDateFormat(
-                                                                          "yyyyMMdd", Locale.FRENCH);
-
+  /*
+   * private final SimpleDateFormat dateJourneeFormat = new SimpleDateFormat(
+   * "yyyyMMdd", Locale.FRENCH);
+   */
   /**
    * Service permettant de réaliser des opérations sur DFCE.
    */
@@ -633,7 +632,7 @@ public class TraitementServiceImpl implements TraitementService {
     if (Boolean.TRUE.equals(isRunning)) {
 
       throw new PurgeRuntimeException(
-                                      "La purge de la corbeille est déjà en cours");
+          "La purge de la corbeille est déjà en cours");
     }
 
     // Mettre le flag purge en cours à true
@@ -655,8 +654,8 @@ public class TraitementServiceImpl implements TraitementService {
         PurgeCorbeillePoolThreadExecutor poolThread = null;
 
         final String requeteLucene = "dmc:[" +
-            dateJourneeFormat.format(minDate)
-        + " TO " + dateJourneeFormat.format(maxDate) + "]";
+            Constantes.FORMATTER_DATE_LUCENE.format(minDate)
+        + " TO " + Constantes.FORMATTER_DATE_LUCENE.format(maxDate) + "]";
 
         LOGGER.debug("{} - Requête de suppression : {}", trcPrefix,
                      requeteLucene);
