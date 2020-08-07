@@ -27,6 +27,8 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import fr.urssaf.image.sae.split.exception.ConfigurationRuntimeParseException;
+
 /**
  * @author AC75094939
  */
@@ -125,7 +127,7 @@ class SommaireSaxHandler extends DefaultHandler {
         saveFragment();
       }
       catch (TransformerFactoryConfigurationError | TransformerException | ParserConfigurationException e) {
-        e.printStackTrace();
+        throw new ConfigurationRuntimeParseException(e);
       }
       catch (final IOException ex) {
         throw new SAXException(ex);
@@ -148,7 +150,7 @@ class SommaireSaxHandler extends DefaultHandler {
           saveFragment();
         }
         catch (TransformerFactoryConfigurationError | ParserConfigurationException | TransformerException e) {
-          e.printStackTrace();
+          throw new ConfigurationRuntimeParseException(e);
         }
         catch (final IOException ex) {
           throw new SAXException(ex);

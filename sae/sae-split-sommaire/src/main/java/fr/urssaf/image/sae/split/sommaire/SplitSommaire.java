@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.split.sommaire;
 import java.io.File;
 import java.io.FileWriter;
 
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -18,6 +19,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import fr.urssaf.image.sae.split.exception.SplitSommaireRuntimeException;
 
 /**
  * @author AC75094939
@@ -41,6 +44,7 @@ public class SplitSommaire {
   public static void main(final String[] args) throws Exception {
     // Parsing document
     final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+    dbFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
     final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
     final Document doc = dBuilder.parse(new File(INPUT_FILE_PARAM));
     // Split the sommaire of current document
@@ -115,8 +119,8 @@ public class SplitSommaire {
       writeToFile(principalNode, currentFile);
     }
     catch (final ParserConfigurationException e) {
-      System.out.println("Erreur de parsing du fichier sommaire en entrée: " + e.getStackTrace());
-      e.printStackTrace();
+      // Erreur de parsing du fichier sommaire en entrée
+      throw new SplitSommaireRuntimeException(e);
     }
 
   }
