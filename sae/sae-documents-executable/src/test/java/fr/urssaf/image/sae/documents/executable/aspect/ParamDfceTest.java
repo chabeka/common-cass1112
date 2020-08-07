@@ -10,7 +10,7 @@ import com.docubase.dfce.exception.SearchQueryParseException;
 
 import fr.urssaf.image.sae.documents.executable.exception.ParametreRuntimeException;
 import fr.urssaf.image.sae.documents.executable.service.DfceService;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })

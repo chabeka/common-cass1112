@@ -1,8 +1,9 @@
-package fr.urssaf.image.sae.documents.executable.service;
+package fr.urssaf.image.sae.documents.executable.service.cql;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -18,8 +19,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.modeapi.ModeApiCqlSupport;
+import fr.urssaf.image.sae.commons.utils.Row;
+import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
+import fr.urssaf.image.sae.documents.executable.service.FormatFichierService;
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.format.referentiel.dao.support.facade.ReferentielFormatSupportFacade;
+import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
+import fr.urssaf.image.sae.format.utils.FormatFichierUtils;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
@@ -27,7 +34,7 @@ import net.docubase.toolkit.model.document.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })
-public class FormatFichierServiceTest {
+public class FormatFichierServiceCqlTest {
 
   @Autowired
   private FormatFichierService formatFichierService;
@@ -35,12 +42,14 @@ public class FormatFichierServiceTest {
   @Autowired
   private ModeApiCqlSupport modeApiSupport;
 
-
+  @Autowired
+  private ReferentielFormatSupportFacade referentielFormatSupportFacade;
 
   @Before
   public void setup() throws Exception {
 
-    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
+    createReferentielFormat();
   }
 
   private final File file = new File(
@@ -118,5 +127,12 @@ public class FormatFichierServiceTest {
                       .isValid());
   }
 
-
+  private void createReferentielFormat() {
+    final URL url = this.getClass().getResource("/cassandra-local-datasets/cassandra-local-dataset-sae-documents-executable.xml");
+    final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "ReferentielFormat");
+    final List<FormatFichier> listFormatFichier = FormatFichierUtils.convertRowsToFormatFichier(list);
+    for (final FormatFichier formatFichier : listFormatFichier) {
+      referentielFormatSupportFacade.create(formatFichier);
+    }
+  }
 }

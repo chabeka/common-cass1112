@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.documents.executable.service;
+package fr.urssaf.image.sae.documents.executable.service.cql;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,12 +35,14 @@ import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
 import fr.urssaf.image.sae.documents.executable.model.PurgeCorbeilleParametres;
+import fr.urssaf.image.sae.documents.executable.service.DfceService;
+import fr.urssaf.image.sae.documents.executable.service.TraitementService;
 import fr.urssaf.image.sae.documents.executable.service.impl.TraitementServiceImpl;
 import net.docubase.toolkit.model.document.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })
-public class TraitementServiceTest {
+public class TraitementServiceCqlTest {
 
   @Autowired
   private TraitementService traitementService;
@@ -57,7 +59,7 @@ public class TraitementServiceTest {
   @Before
   public void setup() throws Exception {
 
-    modeApiSupport.initTables(ModeGestionAPI.MODE_API.HECTOR);
+    modeApiSupport.initTables(ModeGestionAPI.MODE_API.DATASTAX);
   }
 
   private final File file = new File(
