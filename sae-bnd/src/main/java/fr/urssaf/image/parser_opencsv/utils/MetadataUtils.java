@@ -4,6 +4,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.velocity.exception.ParseErrorException;
+
+import fr.urssaf.image.parser_opencsv.application.constantes.FileConst;
 import fr.urssaf.image.parser_opencsv.application.exception.HashInexistantException;
 import fr.urssaf.image.parser_opencsv.application.exception.MetaFormatCSVException;
 import fr.urssaf.image.parser_opencsv.jaxb.model.DocumentType;
@@ -95,12 +98,24 @@ public class MetadataUtils {
     * @throws ParseException
     * @throws HashInexistantException
     */
-   public static DocumentType convertLigneArrayToDocument(final String[] csvLigne) throws ParseException, HashInexistantException {
+  public static DocumentType convertLigneArrayToDocument(final String[] csvLigne, final String extension)
+      throws ParseException, HashInexistantException {
       final DocumentType documentType = new DocumentType();
       final FichierType fichierType = new FichierType();
       final String path = csvLigne[22];
-      fichierType.setCheminEtNomDuFichier(getNomFichierFromPath(path));
-      fichierType.setCheminEtNomDuFichier(csvLigne[20]);
+      // nom du fichier original
+      final String nomFichierFromPath = getNomFichierFromPath(path);
+      
+      // dans le referentiel des formats, on peut avoir plusieurs extension
+      // correspondant à un type mime Exemple: tif,tiff ou jpg,jpeg
+      final String[] tabEx = extension.split(","); 
+      if(tabEx[0].isEmpty()) {
+        throw new ParseErrorException("Problème d'extension du fichier");
+      }
+      // remplacer le .bin par la vraie extension
+      final String nomFichier = nomFichierFromPath.replaceFirst(FileConst.Extension.BIN, "." + tabEx[0]);
+      
+      fichierType.setCheminEtNomDuFichier(nomFichier);
       fichierType.setPath(path);
 
       // Nombre de pages par défaut

@@ -82,14 +82,14 @@ public class FileUtils {
       final File file = new File(filename);
       int count = 0;
 
-      try (SeekableStream s = new FileSeekableStream(file)) {
+    try (SeekableStream s = new FileSeekableStream(file)) {
          final TIFFDecodeParam param = null;
          final ImageDecoder dec = ImageCodec.createImageDecoder("tiff", s, param);
          count = dec.getNumPages();
       }
       catch (final IOException e) {
          throw new CountNbrePageFileException(e);
-      }
+    }
       return count;
    }
 

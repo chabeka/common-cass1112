@@ -1,8 +1,11 @@
 package fr.urssaf.image.parser_opencsv.application.service.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -41,6 +44,8 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
    Map<String, CorrespondanceMetaObject> mapsRnd;
 
    private final Map<String, CorrespondanceMetaObject> mapCorrespondancesCaisses;
+
+   private  List<FormatFichier> formats = new ArrayList<>();
 
    @Autowired
    public CorrespondanceServiceImpl(final ICorrespondanceTableSSTIGedDao matcher,
@@ -222,7 +227,7 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
     */
    private Map<String, FormatFichier> getMapFormats() {
 
-      final List<FormatFichier> formats = referentielFormatService.getAllFormat();
+    formats = referentielFormatService.getAllFormat();
 
       final Map<String, FormatFichier> formatsMap = formats.stream()
             .filter(format -> !format.getIdFormat().equals("pdf"))
@@ -246,5 +251,32 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
       });
       return maps;
    }
+
+   @Override
+  public String getExtensionFromMimeType(final String mimeType) {
+      String extensions = "";
+     for(final FormatFichier format : formats) {
+       if (mimeType.equals(format.getTypeMime())) {
+         extensions = format.getExtension();
+         final String[] extTab = extensions.split(",");
+         if(extTab.length > 1) {
+           for(final String ext : extTab) {
+            if (isContain(mimeType, ext)) {
+               extensions = ext;
+             }
+           }  
+         }
+         break;
+       }
+     }
+     return extensions;
+   }
+
+  private static boolean isContain(final String source, final String subItem) {
+    final String pattern = "\\b" + subItem + "\\b";
+    final Pattern p = Pattern.compile(pattern);
+    final Matcher m = p.matcher(source);
+    return m.find();
+  }
 
 }

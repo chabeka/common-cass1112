@@ -51,7 +51,7 @@ public class PersistenceJPAConfig {
    @Bean
    public DataSource dataSource() {
       final DriverManagerDataSource datasource = new DriverManagerDataSource();
-      datasource.setDriverClassName(driver);
+    // datasource.setDriverClassName(driver);
       datasource.setUsername(username);
       datasource.setPassword(credential);
       datasource.setUrl(url);
@@ -68,7 +68,7 @@ public class PersistenceJPAConfig {
 
    Properties additionalProperties() {
       final Properties properties = new Properties();
-      properties.setProperty("hibernate.hbm2ddl.auto", "validate");
+    properties.setProperty("hibernate.hbm2ddl.auto", "update");
       properties.setProperty("hibernate.dialect", driver);
       return properties;
    }

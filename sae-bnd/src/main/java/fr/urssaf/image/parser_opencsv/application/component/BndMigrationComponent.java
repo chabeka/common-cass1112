@@ -9,6 +9,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.javers.common.collections.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import fr.urssaf.image.parser_opencsv.application.exception.CorrespondanceExcept
 import fr.urssaf.image.parser_opencsv.application.exception.CorrespondanceFormatException;
 import fr.urssaf.image.parser_opencsv.application.exception.CountNbrePageFileException;
 import fr.urssaf.image.parser_opencsv.application.exception.HashInexistantException;
+import fr.urssaf.image.parser_opencsv.application.exception.UnknownHashCodeEx;
 import fr.urssaf.image.parser_opencsv.application.model.Statistic;
 import fr.urssaf.image.parser_opencsv.application.model.entity.JobEntity;
 import fr.urssaf.image.parser_opencsv.application.reader.BndCsvReaderBuilder;
@@ -116,8 +118,7 @@ public class BndMigrationComponent {
 
       int countError = 0;
       int countIntegrated = 0;
-      int ligneNumber = 2;
-      String messageError = "";
+      int ligneNumber = 2;  
       String[] nextLine;
 
       while ((nextLine = csvReader.readNext()) != null) {
@@ -128,8 +129,12 @@ public class BndMigrationComponent {
          }
 
          DocumentType document;
+         String messageError = "";
          try {
-            document = MetadataUtils.convertLigneArrayToDocument(nextLine);
+          
+           final String mimeType = nextLine[24];
+           final String extension = correspondanceService.getExtensionFromMimeType(mimeType);
+           document = MetadataUtils.convertLigneArrayToDocument(nextLine, extension);
             LOGGER.info("Meta : {}", document.getMetadonnees().getMetadonnee());
             LOGGER.info("Le document est valide : {}", validatorService.validateRequireMetadatas(document));
 
@@ -152,14 +157,19 @@ public class BndMigrationComponent {
 
                if (new File(sourceFile).exists()) {
 
+                 // ajout du test sur le hash du document
                   final String hashInitial = document.getMetadonnees().getMetaValue("Hash");
-                  final String hash = FileUtils.getHash(sourceFile);
+                  final String hashCalculated = FileUtils.getHash(sourceFile);
+                  if (!StringUtils.equalsIgnoreCase(hashCalculated, hashInitial.trim())) {
+                    throw new UnknownHashCodeEx("Le hash du document ne correspond pas");
+                 }
 
                   LOGGER.info("Copie du binaire du doc {} ==> {}", sourceFile, destinationFile);
                   ResourceUtils.copyResourceToFile(sourceFile, destinationFile);
                   // Calcul du nombre du binaire associé
                   correspondanceService.calculateNbPages(destinationFile, document, Boolean.valueOf(activeRTF));
                   LOGGER.info("Ajout du Document {} au fichier sommaire.xml", document);
+
                   sommaireWriter.addDocument(document);
                   countIntegrated++;
                } else {
@@ -170,7 +180,7 @@ public class BndMigrationComponent {
                messageError = "Certaines métadonnées requises au stockage sont manquantes";
             }
          }
-         catch (final CorrespondanceException | CorrespondanceFormatException | ParseException | HashInexistantException | CountNbrePageFileException e) {
+         catch (final CorrespondanceException | CorrespondanceFormatException | ParseException | HashInexistantException | CountNbrePageFileException | UnknownHashCodeEx e) {
             LOGGER.error("Le traitement a planté a la ligne N°{}, Contenu : {} ", ligneNumber, MetadataUtils.convertStringFromArray(nextLine));
             messageError = e.getMessage();
          }

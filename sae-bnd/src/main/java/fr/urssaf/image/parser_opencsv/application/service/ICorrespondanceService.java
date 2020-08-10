@@ -18,4 +18,5 @@ public interface ICorrespondanceService {
    void calculateNbPages(final String fileAbsolutePath, final DocumentType documentType, final boolean activateRTF)
          throws CountNbrePageFileException, IOException;
 
+  public String getExtensionFromMimeType(String mimeType);
 }
