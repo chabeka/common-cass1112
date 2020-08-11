@@ -194,7 +194,7 @@ public class TracesServicesRepriseMasseSupport {
     LOGGER.debug("{} - Traitement des exceptions du rollback", prefix);
     final ConcurrentLinkedQueue<String> exceptionsRoll = getRollbackExceptions(jobExecution);
     nbEx = sizeCollection(exceptionsRoll);
-    sBuilder.append(String.format("Exception(s) du rollback : %s\r\n", nbEx));
+    sBuilder.append(String.format("Exception(s) du rollback : %s%n", nbEx));
     if (nbEx > 0) {
       LOGGER.debug("{} - {} exception(s) du rollback", prefix, nbEx);
       concatErrorMessageList(exceptionsRoll, sBuilder);

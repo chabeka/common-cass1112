@@ -325,47 +325,53 @@ public class Jbig2CaptureMasseCompressionSupportImpl implements CaptureMasseComp
 
             if (codeRetour != 0) {
               final InputStream stream = p.getErrorStream();
-              final InputStreamReader isr = new InputStreamReader(stream);
-              final BufferedReader br = new BufferedReader(isr);
-              try {
+              if (stream!=null) {
+                final InputStreamReader isr = new InputStreamReader(stream);
 
-                String ligne = br.readLine();
-                final StringBuffer buffer = new StringBuffer();
-                while (ligne != null) {
-                  buffer.append(ligne);
-                  buffer.append("\n");
-                  ligne = br.readLine();
-                }
-                LOGGER.error(buffer.toString());
-              }
-              catch (final Exception e) {
-                LOGGER.error(e.getMessage());
-              }
-              finally {
+                final BufferedReader br = new BufferedReader(isr);
                 try {
-                  if (br != null) {
-                    br.close();
+
+                  String ligne = br.readLine();
+                  final StringBuffer buffer = new StringBuffer();
+                  while (ligne != null) {
+                    buffer.append(ligne);
+                    buffer.append("\n");
+                    ligne = br.readLine();
                   }
+                  LOGGER.error(buffer.toString());
                 }
-                catch (final Exception e) {
+                catch (final IOException e) {
                   LOGGER.error(e.getMessage());
                 }
-                try {
-                  if (isr != null) {
-                    isr.close();
+                finally {
+                  try {
+                    if (br != null) {
+                      br.close();
+                    }
+                  }
+                  catch (final IOException e) {
+                    LOGGER.error(e.getMessage());
+                  }
+                  try {
+                    if (isr != null) {
+                      isr.close();
+                    }
+                  }
+                  catch (final IOException e) {
+                    LOGGER.error(e.getMessage());
+                  }
+                  try {
+                    if (stream != null) {
+                      stream.close();
+                    }
+                  }
+                  catch (final IOException e) {
+                    LOGGER.error(e.getMessage());
                   }
                 }
-                catch (final Exception e) {
-                  LOGGER.error(e.getMessage());
-                }
-                try {
-                  if (stream != null) {
-                    stream.close();
-                  }
-                }
-                catch (final Exception e) {
-                  LOGGER.error(e.getMessage());
-                }
+
+              }else {
+                LOGGER.error("Stream null");
               }
             }
           } catch (final IOException e) {

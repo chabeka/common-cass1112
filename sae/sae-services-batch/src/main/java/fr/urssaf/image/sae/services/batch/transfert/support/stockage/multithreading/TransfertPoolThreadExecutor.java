@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading;
 
-import java.io.Serializable;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -30,184 +29,187 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  */
 @Component
 public class TransfertPoolThreadExecutor
-      extends
-      AbstractPoolThreadExecutor<StorageDocument, TraitementMasseIntegratedDocument>
-      implements Serializable, DisposableBean {
+extends
+AbstractPoolThreadExecutor<StorageDocument, TraitementMasseIntegratedDocument>
+                                         implements
+                                         DisposableBean {
 
-   private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(TransfertPoolThreadExecutor.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(TransfertPoolThreadExecutor.class);
 
-   private final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs;
+  private final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs;
 
-   private InsertionMasseRuntimeException exception;
+  private InsertionMasseRuntimeException exception;
 
-   private static final String PREFIX_TRACE = "TransfertPoolThreadExecutor()";
+  private static final String PREFIX_TRACE = "TransfertPoolThreadExecutor()";
 
-   /**
-    * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments
-    * : <br>
-    * <ul>
-    * <li>
-    * <code>corePoolSize</code> :
-    * {@link InsertionPoolConfiguration#getCorePoolSize()}</li>
-    * <li>
-    * <code>maximumPoolSize</code> :
-    * {@link InsertionPoolConfiguration#getCorePoolSize()}</li>
-    * <li>
-    * <code>keepAliveTime</code> : 0L</li>
-    * <li>
-    * <code>TimeUnit</code> : TimeUnit.MILLISECONDS</li>
-    * <li>
-    * <code>workQueue</code> : LinkedBlockingQueue</li>
-    * <li><code>policy</code> :
-    * {@link java.util.concurrent.ThreadPoolExecutor.DiscardPolicy}</li>
-    * </ul>
-    * 
-    * Le pool accepte un nombre fixe de threads configurable<br>
-    * Les threads en plus sont stockés dans une liste non bornée<br>
-    * Le temps de vie d'un thread n'est pas prise en compte ici
-    * 
-    * @param poolConfiguration
-    *           configuration du pool d'insertion des documents dans DFCE
-    * @param support
-    *           support pour l'arrêt du traitement de la capture en masse
-    * @param config
-    *           configuration pour l'arrêt du traitement de la capture en masse
-    */
-   @Autowired
-   public TransfertPoolThreadExecutor(
-         TransfertPoolConfiguration poolConfiguration,
-         final InterruptionTraitementMasseSupport support,
-         final InterruptionTraitementConfig config) {
+  /**
+   * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments
+   * : <br>
+   * <ul>
+   * <li>
+   * <code>corePoolSize</code> :
+   * {@link InsertionPoolConfiguration#getCorePoolSize()}</li>
+   * <li>
+   * <code>maximumPoolSize</code> :
+   * {@link InsertionPoolConfiguration#getCorePoolSize()}</li>
+   * <li>
+   * <code>keepAliveTime</code> : 0L</li>
+   * <li>
+   * <code>TimeUnit</code> : TimeUnit.MILLISECONDS</li>
+   * <li>
+   * <code>workQueue</code> : LinkedBlockingQueue</li>
+   * <li><code>policy</code> :
+   * {@link java.util.concurrent.ThreadPoolExecutor.DiscardPolicy}</li>
+   * </ul>
+   * 
+   * Le pool accepte un nombre fixe de threads configurable<br>
+   * Les threads en plus sont stockés dans une liste non bornée<br>
+   * Le temps de vie d'un thread n'est pas prise en compte ici
+   * 
+   * @param poolConfiguration
+   *           configuration du pool d'insertion des documents dans DFCE
+   * @param support
+   *           support pour l'arrêt du traitement de la capture en masse
+   * @param config
+   *           configuration pour l'arrêt du traitement de la capture en masse
+   */
+  @Autowired
+  public TransfertPoolThreadExecutor(
+                                     final TransfertPoolConfiguration poolConfiguration,
+                                     final InterruptionTraitementMasseSupport support,
+                                     final InterruptionTraitementConfig config) {
 
-      super(poolConfiguration, support, config);
+    super(poolConfiguration, support, config);
 
-      LOGGER.debug(
-            "{} - Taille du pool de threads pour la modification en masse dans DFCE: {}",
-            new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
+    LOGGER.debug(
+                 "{} - Taille du pool de threads pour la modification en masse dans DFCE: {}",
+                 new Object[] { PREFIX_TRACE, getCorePoolSize() });
 
-      this.integDocs = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
+    integDocs = new ConcurrentLinkedQueue<>();
 
-   }
+  }
 
-   /**
-    * 
-    * @return l'insertion levée lors du traitement de capture en masse
-    */
-   public final InsertionMasseRuntimeException getInsertionMasseException() {
-      return this.exception;
-   }
+  /**
+   * 
+   * @return l'insertion levée lors du traitement de capture en masse
+   */
+  @Override
+  public final InsertionMasseRuntimeException getInsertionMasseException() {
+    return exception;
+  }
 
-   /**
-    * 
-    * @return liste des documents persistés dans DFCE
-    */
-   public final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> getIntegratedDocuments() {
-      return this.integDocs;
-   }
+  /**
+   * 
+   * @return liste des documents persistés dans DFCE
+   */
+  @Override
+  public final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> getIntegratedDocuments() {
+    return integDocs;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void destroy() throws Exception {
-      this.shutdownNow();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void destroy() throws Exception {
+    shutdownNow();
 
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void setInsertionMasseRuntimeException(
-         AbstractInsertionMasseRuntimeException exception) {
-      this.exception = (InsertionMasseRuntimeException) exception;
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final void setInsertionMasseRuntimeException(
+                                                         final AbstractInsertionMasseRuntimeException exception) {
+    this.exception = (InsertionMasseRuntimeException) exception;
 
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final AbstractInsertionMasseRuntimeException createError(
-         int index, StorageDocument document,
-         InterruptionTraitementException exception) {
-      return new InsertionMasseRuntimeException(index, document, exception);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final AbstractInsertionMasseRuntimeException createError(
+                                                                     final int index, final StorageDocument document,
+                                                                     final InterruptionTraitementException exception) {
+    return new InsertionMasseRuntimeException(index, document, exception);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final StorageDocument getDocumentFromRunnable(Runnable runnable) {
-      InsertionRunnable insertionRunnable = (InsertionRunnable) runnable;
-      return insertionRunnable.getStorageDocument();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final StorageDocument getDocumentFromRunnable(final Runnable runnable) {
+    final InsertionRunnable insertionRunnable = (InsertionRunnable) runnable;
+    return insertionRunnable.getStorageDocument();
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final int getIndexFromRunnable(Runnable runnable) {
-      InsertionRunnable insertionRunnable = (InsertionRunnable) runnable;
-      return insertionRunnable.getIndexDocument();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final int getIndexFromRunnable(final Runnable runnable) {
+    final InsertionRunnable insertionRunnable = (InsertionRunnable) runnable;
+    return insertionRunnable.getIndexDocument();
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void addDocumentToIntegratedList(
-         StorageDocument storageDocument, int indexDocument) {
-      TraitementMasseIntegratedDocument document = new TraitementMasseIntegratedDocument();
-      document.setIdentifiant(storageDocument.getUuid());
-      document.setIndex(indexDocument);
-      integDocs.add(document);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final void addDocumentToIntegratedList(
+                                                   final StorageDocument storageDocument, final int indexDocument) {
+    final TraitementMasseIntegratedDocument document = new TraitementMasseIntegratedDocument();
+    document.setIdentifiant(storageDocument.getUuid());
+    document.setIndex(indexDocument);
+    integDocs.add(document);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected void traitementAfterExecute(String trcPrefix,
-         StorageDocument document, int indexDocument) {
-      // On test si le document a été modifié ou non (en mode PARTIEL, si erreur
-      // lors de la modification, l'exception est catchée et on renvoie un UUID
-      // null)
-      if (document.getUuid() != null) {
-         addDocumentToIntegratedList(document, indexDocument);
-         getLogger()
-               .debug(
-                     "{} - Modification du document #{} uuid:{}",
-                     new Object[] { trcPrefix, (indexDocument + 1),
-                           getUuid(document) });
-      }
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected void traitementAfterExecute(final String trcPrefix,
+                                        final StorageDocument document, final int indexDocument) {
+    // On test si le document a été modifié ou non (en mode PARTIEL, si erreur
+    // lors de la modification, l'exception est catchée et on renvoie un UUID
+    // null)
+    if (document.getUuid() != null) {
+      addDocumentToIntegratedList(document, indexDocument);
+      getLogger()
+      .debug(
+             "{} - Modification du document #{} uuid:{}",
+             new Object[] { trcPrefix, indexDocument + 1,
+                            getUuid(document) });
+    }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final Logger getLogger() {
-      return LOGGER;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final Logger getLogger() {
+    return LOGGER;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final String getPathName(StorageDocument document) {
-      return null;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final String getPathName(final StorageDocument document) {
+    return null;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final UUID getUuid(StorageDocument document) {
-      return document.getUuid();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final UUID getUuid(final StorageDocument document) {
+    return document.getUuid();
+  }
 
 }
