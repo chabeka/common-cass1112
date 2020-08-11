@@ -10,8 +10,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.nio.file.attribute.PosixFilePermission;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -163,11 +166,33 @@ public final class ResourceUtils {
          final File subDir = new File(subDirAsString);
          if (!subDir.exists()) {
             subDir.mkdir();
+            setFilePermissions(subDir);
             final Path path = Paths.get(subDirAsString + DOCUMENTS_SUFFIX_DIR_PATH);
             Files.createDirectories(path);
             return subDirAsString;
          }
          counter++;
+      }
+   }
+   
+   /**
+    * Ajout des permissions pour les creation des dossiers sur le serveur linux
+    * @param ecdeFile
+    * @throws IOException
+    */
+   public static void setFilePermissions(final File ecdeFile) throws IOException {
+     final Set<PosixFilePermission> perms = new HashSet<>();
+    if (!System.getProperty("os.name").contains("Windows")) {
+        perms.add(PosixFilePermission.OWNER_READ);
+        perms.add(PosixFilePermission.OWNER_WRITE);
+        perms.add(PosixFilePermission.OWNER_EXECUTE);
+        perms.add(PosixFilePermission.GROUP_READ);
+        perms.add(PosixFilePermission.GROUP_WRITE);
+        perms.add(PosixFilePermission.GROUP_EXECUTE);
+        perms.add(PosixFilePermission.OTHERS_READ);
+        perms.add(PosixFilePermission.OTHERS_WRITE);
+        perms.add(PosixFilePermission.OTHERS_EXECUTE);
+        Files.setPosixFilePermissions(ecdeFile.toPath(), perms);
       }
    }
 }

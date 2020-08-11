@@ -306,15 +306,19 @@ public class BndMigrationComponent {
       final String sommaireAbsolutePath = sommairePath + FileConst.SOMMAIRE_FILE_NAME;
       LOGGER.info("Generation de l'URI vers l'ecde à partir du fichier : {} ", sommaireAbsolutePath);
       try {
-         final URI uri = ecdeService.convertFileToURI(new File(sommaireAbsolutePath), ecdeConfig);
+         final File ecdeFile = new File(sommaireAbsolutePath);
+         ResourceUtils.setFilePermissions(ecdeFile);
+         
+        final URI uri = ecdeService.convertFileToURI(ecdeFile, ecdeConfig);
          LOGGER.info("URL du sommaire {}", uri.getPath());
 
          return uri;
       }
-      catch (final EcdeBadFileException e) {
+      catch (final EcdeBadFileException | IOException e) {
          LOGGER.error("L'url de l'ECDE n'est pas conforme");
          LOGGER.error("Details de l'erreur : {}", e.getMessage());
          throw new RuntimeException(e);
       }
    }
+
 }
