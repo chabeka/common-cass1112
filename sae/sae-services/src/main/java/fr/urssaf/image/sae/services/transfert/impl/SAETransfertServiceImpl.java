@@ -85,6 +85,8 @@ import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 import fr.urssaf.image.sae.trace.service.CycleVieService;
 import fr.urssaf.image.sae.trace.service.implcql.JournalEvtCqlServiceImpl;
 import fr.urssaf.image.sae.trace.service.implthrift.JournalEvtServiceThriftImpl;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
@@ -338,11 +340,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
       // Lock du document
       ZookeeperUtils.acquire(mutex, uuid);
-
+      // On modifie le contrat de service vérifier si faire avant
+      updateMetaDocumentContratServiceForTransfert(document);
+      // On transfert le document sur la GNS
       sendToGNS(document);
-
+      // On supprime le document de la GNT
       deleteFromGNT(document.getUuid());
-
       // A la fin on vérifie qu'on à toujours le lock
       if (!ZookeeperUtils.isLock(mutex)) {
         // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
@@ -1102,6 +1105,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       // -- Modification des métadonnées du document pour le transfert
       addMetaDocumentForTransfert(document);
       filterTransfertableMetadatas(document.getMetadatas());
+      updateMetaDocumentContratServiceForTransfert(document);
       // -- Archivage du document en GNS
       sendToGNS(document);
       // -- Suppression du document transféré de la GNT
@@ -1292,4 +1296,30 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     return getStorageDocumentService().retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
   }
 
+  /**
+   * Modifications de métadonnées sur le document à transférer :
+   * <li>ContratDeService</li>
+   *
+   * @param document
+   *          Document à transférer
+   */
+  private void updateMetaDocumentContratServiceForTransfert(final StorageDocument document)
+  {
+    // Récupération du contrat de service
+    final AuthenticationToken token = AuthenticationContext
+        .getAuthenticationToken();
+    final VIContenuExtrait extrait = (VIContenuExtrait) token.getPrincipal();
+    final String codeContrat = extrait.getCodeAppli();
+    // On cherche ContratDeService dans les metadata du document
+    // on modifie la valeur avec celle du VI une fois trouvé et on sort de la boucle
+    int i = 0;
+    for (final StorageMetadata storageMetadata:document.getMetadatas()) {
+      if (storageMetadata.getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())) {
+        final StorageMetadata storageMetadataContratServiceTransfert=new StorageMetadata(storageMetadata.getShortCode());
+        storageMetadataContratServiceTransfert.setValue(codeContrat);
+        document.getMetadatas().set(i, storageMetadataContratServiceTransfert);
+        break;
+      }
+      i++;}
+  }
 }
