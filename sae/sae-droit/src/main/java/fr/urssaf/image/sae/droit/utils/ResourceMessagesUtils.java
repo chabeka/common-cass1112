@@ -25,32 +25,32 @@ import org.springframework.stereotype.Component;
 @Component
 public final class ResourceMessagesUtils {
 
-   private static MessageSource MESSAGE_SOURCES;
+  private static MessageSource MESSAGE_SOURCES;
 
-   /**
-    * Constructeur
-    * 
-    * @param messageSource
-    *           l'object d'accès aux messages
-    */
-   @Autowired
-   public ResourceMessagesUtils(
-         @Qualifier("messageSource_sae_droits") MessageSource messageSource) {
-      // Récupération du contexte pour les fichiers properties
-      MESSAGE_SOURCES = messageSource;
-   }
+  /**
+   * Constructeur
+   * 
+   * @param messageSource
+   *           l'object d'accès aux messages
+   */
+  @Autowired
+  public ResourceMessagesUtils(
+                               @Qualifier("messageSource_sae_droits") final MessageSource messageSource) {
+    // Récupération du contexte pour les fichiers properties
+    MESSAGE_SOURCES = messageSource;
+  }
 
-   /**
-    * charge un message
-    * 
-    * @param code
-    *           code du message
-    * @param args
-    *           arguments du message
-    * @return message formaté
-    */
-   public static String loadMessage(String code, Object... args) {
-      return MESSAGE_SOURCES.getMessage(code, args, Locale.getDefault());
-   }
+  /**
+   * charge un message
+   * 
+   * @param code
+   *           code du message
+   * @param args
+   *           arguments du message
+   * @return message formaté
+   */
+  public static String loadMessage(final String code, final Object... args) {
+    return MESSAGE_SOURCES.getMessage(code, args, Locale.getDefault());
+  }
 
 }

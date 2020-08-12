@@ -361,9 +361,9 @@ public class Jbig2CaptureMasseCompressionSupportImpl implements CaptureMasseComp
                     LOGGER.error(e.getMessage());
                   }
                   try {
-                    if (stream != null) {
-                      stream.close();
-                    }
+
+                    stream.close();
+
                   }
                   catch (final IOException e) {
                     LOGGER.error(e.getMessage());

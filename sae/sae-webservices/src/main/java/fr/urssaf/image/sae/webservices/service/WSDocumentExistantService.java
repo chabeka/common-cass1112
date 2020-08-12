@@ -6,7 +6,10 @@ import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.webservices.exception.DocumentExistantAxisFault;
 
+/**
+ * (AC75095351) Interface du webservice WSDocumentExistantService permettant de savoir si un document existe dans la GED
+ */
 public interface WSDocumentExistantService {
 
-   DocumentExistantResponse documentExistant(DocumentExistant request) throws DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx;
+  DocumentExistantResponse documentExistant(DocumentExistant request) throws DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx;
 }
