@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.batch.documents.executable.model.ConfigurationsEnviro
 import fr.urssaf.image.sae.batch.documents.executable.service.DfceService;
 import fr.urssaf.image.sae.batch.documents.executable.service.impl.ConfigurationServiceImpl;
 import fr.urssaf.image.sae.batch.documents.executable.service.impl.DfceServiceImpl;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-test.xml" })

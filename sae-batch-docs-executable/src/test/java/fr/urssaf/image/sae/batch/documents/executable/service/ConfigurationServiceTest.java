@@ -10,7 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.batch.documents.executable.model.ConfigurationsEnvironnement;
 import fr.urssaf.image.sae.batch.documents.executable.service.impl.ConfigurationServiceImpl;
-import junit.framework.Assert;
+import org.junit.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-test.xml" })
