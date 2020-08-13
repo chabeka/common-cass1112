@@ -63,7 +63,7 @@ public class DroitsServiceUtilsCQL {
    }
 
    /**
-    * Conservation par defaut.
+    * Conservation par défaut.
     */
    private static final int DEFAULT_CONSERVATION = 7200;
 

@@ -66,11 +66,11 @@ public class Initializer {
     * Creation de la base DFCE (SAE-INT)
     */
    public void createBaseDfce() {
-      // les operations de ce services peuvent etre relativement longue
-      // on configure donc un timeout de 3h (plutot que quelques minutes)
+      // les operations de ce service peuvent être relativement longues
+      // on configure donc un timeout de 3h (plutôt que quelques minutes)
       dfceConnexionParameter.setTimeout(AdministrationSAEMain.TIMEOUT_DFCE);
 
-      // Recuperation des fichiers XML du model de la BD Dfce
+      // Récupération des fichiers XML du model de la BD Dfce
       final File xmlDataBaseModel = new File(databaseXMLFile);
       final File xmlDocumentsType = new File(documentTypeXMLFile);
       if (!xmlDataBaseModel.isFile()) {
@@ -88,8 +88,8 @@ public class Initializer {
       LOGGER.info("Lancement de la creation de la base de donnees DFCE");
       try {
          adminDFCEService.createSAEBase(dfceConnexionParameter,
-                                        xmlDataBaseModel,
-                                        xmlDocumentsType);
+               xmlDataBaseModel,
+               xmlDocumentsType);
       }
       catch (final BaseAdministrationServiceEx | ConnectionServiceEx e) {
          LOGGER.info(e.getMessage());

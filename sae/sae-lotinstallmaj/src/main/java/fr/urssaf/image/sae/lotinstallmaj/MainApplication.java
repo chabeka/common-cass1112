@@ -78,7 +78,7 @@ public class MainApplication {
    }
 
    /**
-    * Démarage du contexte Spring
+    * Démarrage du contexte Spring
     * 
     * @param cheminFicConfSae
     *           le chemin du fichier de configuration principal du sae
@@ -86,12 +86,12 @@ public class MainApplication {
     * @return le contexte Spring
     */
    protected static ApplicationContext startContextSpring(
-                                                          final String cheminFicConfSae) {
+         final String cheminFicConfSae) {
 
       final String contextConfig = "/applicationContext-sae-lotinstallmaj.xml";
 
       return ContextFactory.createSAEApplicationContext(contextConfig,
-                                                        cheminFicConfSae);
+            cheminFicConfSae);
    }
 
 }

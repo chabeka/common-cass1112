@@ -100,7 +100,7 @@ public enum LotVersion {
 
    CASSANDRA_DFCE_201100("CASSANDRA_DFCE_201100", 34, "Met la base Cassandra du SAE en version 34 :\r\n" +
          "\r\n" +
-         "- Ajout du Parmaètre de trace de Déblocage OK [WS_DEBLOCAGE|OK]\r\n");
+         "- Ajout du Paramètre de trace de Déblocage OK [WS_DEBLOCAGE|OK]\r\n");
 
    // CASSANDRA_DFCE_201100("GNS_CASSANDRA_DFCE_200500", 34, true, "Cette mise à jour se fait en dehors de lotinstallmaj. Il convient d'upgrader le cluster cassandra en version 3.11.28. Reportez-vous à la documation xxx\r\n"
    // + " Puis lancer la commande \"lotinstallmaj --changeVersionTo 34\" une fois l'action effectuée");

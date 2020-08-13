@@ -23,12 +23,12 @@ public class MainArgsValidation {
    private static final Logger LOG = LoggerFactory.getLogger(MainArgsValidation.class);
 
    private static final List<String> LIST_CMDS = Arrays.asList(
-                                                                "info",
-                                                                "details",
-                                                                "update",
-                                                                "updateTo",
-                                                                "verify",
-                                                                "redo",
+         "info",
+         "details",
+         "update",
+         "updateTo",
+         "verify",
+         "redo",
          "changeVersionTo");
 
    @Before("execution(void fr.urssaf.image.sae.lotinstallmaj.App.main(*)) && args(args)")
@@ -89,7 +89,7 @@ public class MainArgsValidation {
    }
 
    /**
-    * Verifie que le nom de la commande spécifiée existe bien dans la liste
+    * Vérifie que le nom de la commande spécifiée existe bien dans la liste
     * des commandes possibles
     * 
     * @param nomDeLaCommande
