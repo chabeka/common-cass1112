@@ -41,7 +41,7 @@ public final class MyKeyStore implements KeyStoreInterface {
       this.passphrase = passphrase;
       try {
          keystore = KeyStore.getInstance(KEY_TYPE, KEY_PROVIDER);
-         final InputStream inputStream = ResourceUtils.loadResource(this, keyFileName);
+      final InputStream inputStream = ResourceUtils.loadResource(this, keyFileName);
          try {
             keystore.load(inputStream, passphrase.toCharArray());
          }

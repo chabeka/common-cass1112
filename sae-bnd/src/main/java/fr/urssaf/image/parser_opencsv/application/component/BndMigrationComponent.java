@@ -81,6 +81,9 @@ public class BndMigrationComponent {
    @Value("${bnd.activate.rtf}")
    private String activeRTF;
 
+   @Value("${bnd.logging.file}")
+   private String logPath;
+   
    /**
     * Reader du fichier CSV pivot
     */
@@ -103,10 +106,7 @@ public class BndMigrationComponent {
     * @throws IOException
     * @throws XMLStreamException
     */
-   public JobEntity generateSommaireFromCSV(final String csvFileName, final JobEntity jobEntity) throws XMLStreamException, IOException {
-
-      // On crée le repertoire dans lequel les fichiers seront déposés sur l'ECDE
-      final String targetPath = ResourceUtils.createEcdeDir(ecdeConfig);
+   public JobEntity generateSommaireFromCSV(final String csvFileName, final JobEntity jobEntity, final String targetPath) throws XMLStreamException, IOException {
 
       csvErrorWriter = new CSVErrorWriter();
       statWriter = new XMLStatisticWriter();
@@ -135,11 +135,12 @@ public class BndMigrationComponent {
          DocumentType document;
          String messageError = "";
          try {
-
-            final String mimeType = nextLine[24];
-            final String extension = correspondanceService.getExtensionFromMimeType(mimeType);
-            document = MetadataUtils.convertLigneArrayToDocument(nextLine, extension, bndDateFormat, gnsDateFormat);
-            LOGGER.info("Meta : {}", document.getMetadonnees().getMetadonnee());
+          
+           final String mimeType = nextLine[24];
+           final String extension = correspondanceService.getExtensionFromMimeType(mimeType);
+           document = MetadataUtils.convertLigneArrayToDocument(nextLine, extension, bndDateFormat, gnsDateFormat, ligneNumber);
+            LOGGER.info("LIGNE : " + ligneNumber + " NOM FICHIER BIN : {}", MetadataUtils.getNomFichierFromPath(nextLine[22]));
+            LOGGER.info("Le document est valide : {}", validatorService.getMissingMetadatas(document));
 
             // Si regarde si les métadonnées requises sont bien renseignées
             final List<String> missingMetadatas = validatorService.getMissingMetadatas(document);
@@ -166,8 +167,8 @@ public class BndMigrationComponent {
                   final String hashInitial = document.getMetadonnees().getMetaValue("Hash");
                   final String hashCalculated = FileUtils.getHash(sourceFile);
                   if (!StringUtils.equalsIgnoreCase(hashCalculated, hashInitial.trim())) {
-                     throw new UnknownHashCodeEx("Le hash du document ne correspond pas");
-                  }
+                    throw new UnknownHashCodeEx("Le hash du document ne correspond pas");
+                 }
 
                   LOGGER.info("Copie du binaire du doc {} ==> {}", sourceFile, destinationFile);
                   ResourceUtils.copyResourceToFile(sourceFile, destinationFile);
@@ -179,7 +180,7 @@ public class BndMigrationComponent {
                   countIntegrated++;
                } else {
                   messageError = "Le binaire du document est manquant!";
-                  LOGGER.error(messageError);
+                  //LOGGER.error(messageError);
                }
             }
          }
@@ -295,7 +296,7 @@ public class BndMigrationComponent {
       listObj.add("Ligne : " + ligneNumber);
       listObj.add(message);
       nextLine = listObj.toArray(new String[0]);
-      LOGGER.info("Ecriture de l'erreur survenue à la ligne : {}", ligneNumber);
+      //LOGGER.info("Ecriture de l'erreur survenue à la ligne : {}", ligneNumber);
       csvErrorWriter.write(nextLine);
    }
 
@@ -311,8 +312,8 @@ public class BndMigrationComponent {
       try {
          final File ecdeFile = new File(sommaireAbsolutePath);
          ResourceUtils.setFilePermissions(ecdeFile);
-
-         final URI uri = ecdeService.convertFileToURI(ecdeFile, ecdeConfig);
+         
+        final URI uri = ecdeService.convertFileToURI(ecdeFile, ecdeConfig);
          LOGGER.info("URL du sommaire {}", uri.getPath());
 
          return uri;
@@ -323,5 +324,19 @@ public class BndMigrationComponent {
          throw new RuntimeException(e);
       }
    }
+
+  /**
+   * @return the logPath
+   */
+  public String getLogPath() {
+    return logPath;
+  }
+
+  /**
+   * @return the sourcePath
+   */
+  public String getSourcePath() {
+    return sourcePath;
+  }
 
 }

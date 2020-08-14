@@ -5,6 +5,8 @@ import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,8 @@ import fr.urssaf.image.parser_opencsv.application.service.ICaptureMasseService;
 import fr.urssaf.image.parser_opencsv.application.service.IJobService;
 import fr.urssaf.image.parser_opencsv.application.service.impl.AsynchronousService;
 import fr.urssaf.image.parser_opencsv.utils.FileUtils;
+import fr.urssaf.image.parser_opencsv.utils.ResourceUtils;
+import fr.urssaf.image.sae.ecde.modele.source.EcdeSource;
 
 /**
  * Composant de lancement du Script de migration
@@ -43,6 +47,9 @@ public class Worker implements Runnable {
 
    @Autowired
    private AsynchronousService executorService;
+   
+   @Autowired
+   private EcdeSource ecdeConfig;
 
    ResultatsXMLReader resultatsXMLReader;
 
@@ -65,25 +72,46 @@ public class Worker implements Runnable {
       this.jobUUID = jobUUID;
    }
 
-   private void launch() {
+   private void launch(final String targetPath) {
       LOGGER.info("Generation du sommaire");
       JobEntity jobEntity = null;
       try {
+
+         LOGGER.info("Création du job {}  pour le fichier csv", csvFileName);
          jobEntity = new JobEntity(jobUUID, csvFileName);
          jobEntity = jobService.saveJob(jobEntity);
-         bndComponent.generateSommaireFromCSV(csvFileName, jobEntity);
+         
+         bndComponent.generateSommaireFromCSV(csvFileName, jobEntity, targetPath);
+         
          jobService.saveJob(jobEntity);
-         LOGGER.info("Le job {}  a été persisté en base", jobEntity);
+         LOGGER.info("Le job {} a été persisté en base", jobEntity, csvFileName);
 
          final String hash = FileUtils.getHash(jobEntity.getTargetPath() + FileConst.SOMMAIRE_FILE_NAME);
-         final String uuid = captureService.lancerCaptureMasseAvecHash(jobEntity.getEcdeUrl(), hash);
-         jobEntity.setIdTraitementMasse(uuid);
-         jobService.saveJob(jobEntity);
-         LOGGER.info("Le Traitement uuid : {} et JobId : {}", uuid, jobEntity);
+         
+         LOGGER.info("Lancement de la capture de masse pour le {}", jobEntity);
+         try {
+           
+           final String uuid = captureService.lancerCaptureMasseAvecHash(jobEntity.getEcdeUrl(), hash);
+           jobEntity.setIdTraitementMasse(uuid);
+           jobService.saveJob(jobEntity);
+           LOGGER.info("Le Traitement uuid : {} et JobId : {} a été persisté en base", uuid, jobEntity);
+           
+         } catch(final Exception e){
+           LOGGER.error("Exception : " + ExceptionUtils.getStackTrace(e));
+           throw e;
+         }
+         
+         // renommage du fichier csv qui vient d'être traité
+         final String csvFilePath = bndComponent.getSourcePath();
+         final File csvFile = new File(csvFilePath+ csvFileName); 
+         final String fileRenamed = csvFileName.replace(".csv", ".done");
+         csvFile.renameTo(new File(csvFilePath+ fileRenamed));
       }
       catch (XMLStreamException | IOException e) {
+         
          final String message = "Une erreur est survenue lors du parsing du fichier CSV";
          LOGGER.error(message);
+         LOGGER.error("Exception : " + ExceptionUtils.getStackTrace(e));
          throw new RuntimeException(message, e);
       }
       finally {
@@ -119,7 +147,20 @@ public class Worker implements Runnable {
     */
    @Override
    public void run() {
-      launch();
+     // On crée le repertoire dans lequel les fichiers seront déposés sur l'ECDE
+     String targetPath = null;
+    try {
+      targetPath = ResourceUtils.createEcdeDir(ecdeConfig);
+    }
+    catch (final IOException e) {
+      e.printStackTrace();
+    }
+    
+     MDC.put("logFileName", targetPath + "bnd_ssti_");
+     
+     launch(targetPath);
+     
+     MDC.remove("logFileName");
    }
 
    /**
@@ -168,7 +209,7 @@ public class Worker implements Runnable {
       }
       catch (IOException | XMLStreamException e) {
          final String message = "Une erreur est survenue lors de lecture du fichier Resultats.xml";
-         LOGGER.error("");
+         LOGGER.error(e.getMessage());
          throw new BNDScriptRuntimeException(message, e);
       }
       finally {
@@ -177,7 +218,7 @@ public class Worker implements Runnable {
          }
          catch (final XMLStreamException e) {
             final String message = "Une erreur est survenue lors de la fermeture du flux du fichier Resultats.xml";
-            LOGGER.error("");
+            LOGGER.error(e.getMessage());
             throw new BNDScriptRuntimeException(message, e);
          }
       }

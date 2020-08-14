@@ -1,5 +1,9 @@
 package fr.urssaf.image.parser_opencsv.application.service.impl;
 
+import org.apache.cxf.endpoint.Client;
+import org.apache.cxf.frontend.ClientProxy;
+import org.apache.cxf.transport.http.HTTPConduit;
+import org.apache.cxf.transports.http.configuration.HTTPClientPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +35,7 @@ public class CaptureMasseServiceImpl implements ICaptureMasseService {
       archivageMasseRequestType.setUrlSommaire(urlEcde);
 
       port.archivageMasse(archivageMasseRequestType);
+
    }
 
    /**
@@ -49,6 +54,14 @@ public class CaptureMasseServiceImpl implements ICaptureMasseService {
       archivageMasseRequestType.setHash(hash);
       final ArchivageMasseAvecHashResponseType archivageMasseAvecHashResponseType = port.archivageMasseAvecHash(archivageMasseRequestType);
 
+      final Client cl = ClientProxy.getClient(port);
+      final HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
+      final HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+  
+      httpClientPolicy.setConnectionTimeout(1200000); // Time in milliseconds
+      httpClientPolicy.setReceiveTimeout(1200000); // Time in milliseconds
+      httpConduit.setClient(httpClientPolicy);
+      
       return archivageMasseAvecHashResponseType.getUuid();
    }
 
@@ -62,6 +75,14 @@ public class CaptureMasseServiceImpl implements ICaptureMasseService {
 
       final SuppressionMasseResponseType suppressionMasseResponseType = port.suppressionMasse(suppressionMasseRequestType);
 
+      final Client cl = ClientProxy.getClient(port);
+      final HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
+      final HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+  
+      httpClientPolicy.setConnectionTimeout(1200000); // Time in milliseconds
+      httpClientPolicy.setReceiveTimeout(1200000); // Time in milliseconds
+      httpConduit.setClient(httpClientPolicy);
+      
       return suppressionMasseResponseType.getUuid();
    }
 

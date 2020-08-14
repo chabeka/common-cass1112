@@ -1,7 +1,9 @@
 package fr.urssaf.image.parser_opencsv.application.constantes;
 
 public class FileConst {
-
+ 
+   public final static String GLOBAL_LOG_FILE_NAME = "bnd_ssti";
+   
    public static final String SOMMAIRE_FILE_NAME = "sommaire.xml";
 
    public static final String CSV_FILE_NAME = "users_quote.csv";
