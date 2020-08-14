@@ -140,11 +140,12 @@ public class BndMigrationComponent {
             final String extension = correspondanceService.getExtensionFromMimeType(mimeType);
             document = MetadataUtils.convertLigneArrayToDocument(nextLine, extension, bndDateFormat, gnsDateFormat);
             LOGGER.info("Meta : {}", document.getMetadonnees().getMetadonnee());
-            LOGGER.info("Le document est valide : {}", validatorService.validateRequireMetadatas(document));
 
-            // Si les métadonnées requises sont bien renseignées
-            if (validatorService.validateRequireMetadatas(document)) {
-
+            // Si regarde si les métadonnées requises sont bien renseignées
+            final List<String> missingMetadatas = validatorService.getMissingMetadatas(document);
+            if (!missingMetadatas.isEmpty()) {
+               messageError = "Certaines métadonnées requises au stockage sont manquantes : " + String.join(",", missingMetadatas);
+            } else {
                // appliquer les correspondances SSTI GED
                correspondanceService.applyCorrespondance(document);
 
@@ -180,8 +181,6 @@ public class BndMigrationComponent {
                   messageError = "Le binaire du document est manquant!";
                   LOGGER.error(messageError);
                }
-            } else {
-               messageError = "Certaines métadonnées requises au stockage sont manquantes";
             }
          }
          catch (final CorrespondanceException | CorrespondanceFormatException | ParseException | HashInexistantException | CountNbrePageFileException | UnknownHashCodeEx e) {
@@ -312,8 +311,8 @@ public class BndMigrationComponent {
       try {
          final File ecdeFile = new File(sommaireAbsolutePath);
          ResourceUtils.setFilePermissions(ecdeFile);
-         
-        final URI uri = ecdeService.convertFileToURI(ecdeFile, ecdeConfig);
+
+         final URI uri = ecdeService.convertFileToURI(ecdeFile, ecdeConfig);
          LOGGER.info("URL du sommaire {}", uri.getPath());
 
          return uri;

@@ -126,7 +126,8 @@ public class MetadataUtils {
       documentType.setNombreDePages(1);
 
       documentType.setObjetNumerique(fichierType);
-      documentType.setMetadonnees(enrichirMetadatas(csvLigne, bndDateFormat, gnsDateFormat));
+      final ListeMetadonneeType metadatas = enrichirMetadatas(csvLigne, bndDateFormat, gnsDateFormat);
+      documentType.setMetadonnees(metadatas);
 
       return documentType;
    }
@@ -145,13 +146,12 @@ public class MetadataUtils {
    private static ListeMetadonneeType enrichirMetadatas(final String[] csvLigne, final SimpleDateFormat bndDateFormat, final SimpleDateFormat gnsDateFormat)
          throws ParseException, HashInexistantException {
       final ListeMetadonneeType metadonnees = new ListeMetadonneeType();
-
       final List<MetadonneeType> metaList = metadonnees.getMetadonnee();
 
       // Meta FormatFichier
       setMetaValue(metaList, "FormatFichier", csvLigne[24]);
 
-      // Meta HashFichier
+      // Meta Hash
       final String hashValue = csvLigne[26].trim();
       if (hashValue.isEmpty()) {
          throw new HashInexistantException();
@@ -167,7 +167,7 @@ public class MetadataUtils {
       setMetaValue(metaList, "DateDebutConservation", dateCreationString);
 
       // Meta Titre
-      setOptionalMetaValue(metaList, "CodeRND", csvLigne[15]);
+      setOptionalMetaValue(metaList, "Titre", csvLigne[15]);
 
       // Meta CodeRND avec CodeObjet
       setOptionalMetaValue(metaList, "CodeRND", csvLigne[14]);
@@ -233,8 +233,8 @@ public class MetadataUtils {
 
    private static void setMetaValue(final List<MetadonneeType> metaList, final String metaCode, final String metaValue) {
       final MetadonneeType meta = new MetadonneeType();
-      meta.setCode(metaCode.trim());
-      meta.setValeur(metaValue);
+      meta.setCode(metaCode);
+      meta.setValeur(metaValue.trim());
       metaList.add(meta);
    }
 

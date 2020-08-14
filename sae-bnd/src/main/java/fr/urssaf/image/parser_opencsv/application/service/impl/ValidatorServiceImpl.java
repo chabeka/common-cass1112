@@ -21,17 +21,11 @@ import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 public class ValidatorServiceImpl implements IValidatorService {
 
    private final List<MetadataReference> metadatas;
+   private final List<String> requiredMetasCodeLongListe;
 
    @Autowired
    public ValidatorServiceImpl(final SaeMetaDataService metadataService) {
       metadatas = metadataService.findAll();
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public boolean validateRequireMetadatas(final DocumentType documentType) {
 
       // Récupère la liste des metadonnées requise au stockage
       final List<MetadataReference> requiredMetas = metadatas.stream()
@@ -39,26 +33,35 @@ public class ValidatorServiceImpl implements IValidatorService {
             .collect(Collectors.toList());
 
       // Récupère la Liste des codes long des entités MetadatReference
-      final List<String> requiredMetasCodeLongListe = requiredMetas.stream()
+      requiredMetasCodeLongListe = requiredMetas.stream()
             .map(MetadataReference::getLongCode)
             .collect(Collectors.toList());
 
-      // Récupère la liste des métadonnées obligatoires qui sont remplis automatiquementla ged ou dfce
+      // Récupère la liste des métadonnées obligatoires qui sont remplis automatiquement par la ged ou dfce
       final String[] metasAutomatiquementRenseignees = {"DocumentVirtuel", 
-                                                        "ContratDeService", 
-                                                        "DateFinConservation", 
-                                                        "DateArchivage",
-                                                        "VersionRND"
+            "ContratDeService", 
+            "DateFinConservation", 
+            "DateArchivage",
+            "VersionRND"
       };
       // Retirer ces meta
       requiredMetasCodeLongListe.removeAll(Arrays.asList(metasAutomatiquementRenseignees));
 
-      final List<MetadonneeType> metadonnees = documentType.getMetadonnees().getMetadonnee();
-      final List<String> documentMetasCodeLongListe = metadonnees.stream()
-            .map(MetadonneeType::getCode)
-            .collect(Collectors.toList());
+   }
 
-      return documentMetasCodeLongListe.containsAll(requiredMetasCodeLongListe);
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<String> getMissingMetadatas(final DocumentType documentType) {
+
+      final List<MetadonneeType> metadonnees = documentType.getMetadonnees().getMetadonnee();
+      final List<String> metaCodes = metadonnees.stream().map(MetadonneeType::getCode).collect(Collectors.toList());
+
+      final List<String> missingMetas = requiredMetasCodeLongListe.stream()
+            .filter(code -> !metaCodes.contains(code))
+            .collect(Collectors.toList());
+      return missingMetas;
    }
 
    /**

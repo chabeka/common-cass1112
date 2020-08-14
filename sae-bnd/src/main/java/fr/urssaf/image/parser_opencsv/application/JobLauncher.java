@@ -63,7 +63,7 @@ public class JobLauncher {
       final AsynchronousService executor = context.getBean(AsynchronousService.class);
       executor.setNbreDeWorker(csvs.size());
 
-      // Correpond à l'id du job commun aux traitements de masse qui seront crées
+      // Correspond à l'id du job commun aux traitements de masse qui seront crées
       final String jobUUID = UUID.randomUUID().toString();
       // Lancement des Workers
       csvs.forEach(fileName -> {
@@ -79,7 +79,7 @@ public class JobLauncher {
     * @return
     */
    public List<String> getAllCSVFileNames() {
-      try (Stream<Path> walk = Files.walk(Paths.get(sourcePath))) {
+      try (Stream<Path> walk = Files.walk(Paths.get(sourcePath), 1)) {
          final List<String> result = walk.filter(Files::isRegularFile)
                .map(x -> x.toFile().getName())
                .filter(f -> f.contains(".csv"))
