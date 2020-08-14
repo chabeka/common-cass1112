@@ -254,13 +254,15 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
 
    @Override
   public String getExtensionFromMimeType(final String mimeType) {
+
       String extensions = "";
      for(final FormatFichier format : formats) {
-       if (mimeType.equals(format.getTypeMime())) {
+      if (mimeType.equalsIgnoreCase(format.getTypeMime())) {
          extensions = format.getExtension();
          final String[] extTab = extensions.split(",");
          if(extTab.length > 1) {
            for(final String ext : extTab) {
+            // on retourne exactement l'extension contenu dans le mime type
             if (isContain(mimeType, ext)) {
                extensions = ext;
              }
