@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="fileAppender" class="ch.qos.logback.core.FileAppender">
-        <file>C:/Logs/sae-parser-opencsv/Log.log</file>
+        <file>C:/hawai/logs/bnd.log</file>
         <append>true</append>
         <encoder>
             <pattern>%d [%thread] %-5level  %logger{35} - %msg%n</pattern>
@@ -17,7 +17,7 @@
     </appender>
      
     <root level="TRACE">
-        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="fileAppender" />
     </root>
     
     
