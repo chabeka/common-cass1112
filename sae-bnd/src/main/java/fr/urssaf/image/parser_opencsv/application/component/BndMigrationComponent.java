@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
@@ -116,6 +117,9 @@ public class BndMigrationComponent {
       LOGGER.info("Récupération du reader du fichier csv : {}", csvFileName);
       csvReader = bndCsvParser.getCsvBuilder(csvFileName);
 
+      final SimpleDateFormat bndDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+      final SimpleDateFormat gnsDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
       int countError = 0;
       int countIntegrated = 0;
       int ligneNumber = 2;  
@@ -131,10 +135,10 @@ public class BndMigrationComponent {
          DocumentType document;
          String messageError = "";
          try {
-          
-           final String mimeType = nextLine[24];
-           final String extension = correspondanceService.getExtensionFromMimeType(mimeType);
-           document = MetadataUtils.convertLigneArrayToDocument(nextLine, extension);
+
+            final String mimeType = nextLine[24];
+            final String extension = correspondanceService.getExtensionFromMimeType(mimeType);
+            document = MetadataUtils.convertLigneArrayToDocument(nextLine, extension, bndDateFormat, gnsDateFormat);
             LOGGER.info("Meta : {}", document.getMetadonnees().getMetadonnee());
             LOGGER.info("Le document est valide : {}", validatorService.validateRequireMetadatas(document));
 
@@ -151,18 +155,18 @@ public class BndMigrationComponent {
                String sourceFile = sourcePath + RELATIVE_DOCUMENT_PATH + nomFichierSource;
                sourceFile = FilenameUtils.separatorsToSystem(sourceFile);
 
-               // Chemin absolu du fichier (path + nom du fichier) après application des correspodances
+               // Chemin absolu du fichier (path + nom du fichier) après application des correspondances
                String destinationFile = targetPath + RELATIVE_DOCUMENT_PATH + nomFichierDestination;
                destinationFile = FilenameUtils.separatorsToSystem(destinationFile);
 
                if (new File(sourceFile).exists()) {
 
-                 // ajout du test sur le hash du document
+                  // ajout du test sur le hash du document
                   final String hashInitial = document.getMetadonnees().getMetaValue("Hash");
                   final String hashCalculated = FileUtils.getHash(sourceFile);
                   if (!StringUtils.equalsIgnoreCase(hashCalculated, hashInitial.trim())) {
-                    throw new UnknownHashCodeEx("Le hash du document ne correspond pas");
-                 }
+                     throw new UnknownHashCodeEx("Le hash du document ne correspond pas");
+                  }
 
                   LOGGER.info("Copie du binaire du doc {} ==> {}", sourceFile, destinationFile);
                   ResourceUtils.copyResourceToFile(sourceFile, destinationFile);

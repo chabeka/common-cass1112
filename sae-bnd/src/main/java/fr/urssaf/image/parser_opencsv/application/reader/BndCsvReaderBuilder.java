@@ -42,7 +42,7 @@ public class BndCsvReaderBuilder {
    public CSVReader getCsvBuilder(final String csvFileName) throws IOException {
 
       fileInputStream = new FileInputStream(csvFilePath + csvFileName);
-      inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.UTF_8);
+      inputStreamReader = new InputStreamReader(fileInputStream, StandardCharsets.ISO_8859_1);
 
       LOGGER.info("Encoding {} ", inputStreamReader.getEncoding());
 
@@ -50,11 +50,11 @@ public class BndCsvReaderBuilder {
             .withKeepCarriageReturn(false)
             .withSkipLines(1);
       builderCSV.withCSVParser(
-                               new CSVParserBuilder()
-                               // .withQuoteChar(QUOTE_CHAR)
-                               .withSeparator(SEPARATOR)
-                               // .withStrictQuotes(true)
-                               .build());
+            new CSVParserBuilder()
+            // .withQuoteChar(QUOTE_CHAR)
+            .withSeparator(SEPARATOR)
+            // .withStrictQuotes(true)
+            .build());
 
       return builderCSV.build();
    }
