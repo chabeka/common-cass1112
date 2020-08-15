@@ -17,12 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.io.FilenameUtils;
-import org.slf4j.LoggerFactory;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.util.ContextInitializer;
-import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.StatusPrinter;
 import fr.urssaf.image.sae.ecde.modele.source.EcdeSource;
 
 /**
@@ -42,8 +37,6 @@ public final class ResourceUtils {
       InputStream stream = null;
       try {
          final File file = new File(resourcePath);
-         System.out.println(resourcePath);
-         System.out.println(outFilePath);
          stream = new FileInputStream(file);
          java.nio.file.Files.copy(
                                   stream,
@@ -51,8 +44,6 @@ public final class ResourceUtils {
                                   StandardCopyOption.REPLACE_EXISTING);
       }
       catch (final IOException e) {
-         System.out.println(e.getMessage());
-         e.printStackTrace();
          throw new RuntimeException(e);
       } finally {
          if (stream != null) {

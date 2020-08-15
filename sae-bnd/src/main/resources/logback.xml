@@ -7,7 +7,7 @@
 		<!-- We will assign a value to 'logFileName' via Java code -->
 		<discriminator>
 			<key>logFileName</key>
-			<defaultValue>C:/hawai/logs/bnd_ssti.log</defaultValue>
+			<defaultValue>/hawai/logs/bnd_ssti</defaultValue>
 		</discriminator>
 
 		<sift>

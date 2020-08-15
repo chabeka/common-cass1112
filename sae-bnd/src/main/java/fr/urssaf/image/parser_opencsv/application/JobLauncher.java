@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.log4j.MDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,10 +52,10 @@ public class JobLauncher {
 
       final GenericApplicationContext context = new AnnotationConfigApplicationContext(GlobalConfiguration.class);
       final JobLauncher jobLauncher = context.getBean(JobLauncher.class);
-      
-      MDC.put("logFileName", jobLauncher.getLogPath() + "bnd_ssti_");
+
+      // MDC.put("logFileName", jobLauncher.getLogPath() + "bnd_ssti_");
       LOGGER.info("Lancement de la generation des sommaires");
-      
+
       jobLauncher.launchScript(context);
    }
 
@@ -89,7 +88,7 @@ public class JobLauncher {
       try (Stream<Path> walk = Files.walk(Paths.get(sourcePath), 1)) {
          final List<String> result = walk.filter(Files::isRegularFile)
                .map(x -> x.toFile().getName())
-               .filter(f -> f.contains(".csv"))
+               .filter(f -> f.endsWith(".csv"))
                .collect(Collectors.toList());
 
          return result;
@@ -99,11 +98,11 @@ public class JobLauncher {
       }
    }
 
-  /**
-   * @return the logPath
-   */
-  public String getLogPath() {
-    return logPath;
-  }
+   /**
+    * @return the logPath
+    */
+   public String getLogPath() {
+      return logPath;
+   }
 
 }

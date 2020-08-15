@@ -58,13 +58,23 @@ public class FileUtils {
     */
    public static int countNbPagesPDF(final String filename) throws CountNbrePageFileException {
       int count = 0;
-      PDDocument doc;
+      PDDocument doc = null;
       try {
          doc = PDDocument.load(new File(filename));
          count = doc.getNumberOfPages();
       }
       catch (final IOException e) {
          throw new CountNbrePageFileException(e);
+      }
+      finally {
+         try {
+            if (doc != null) {
+               doc.close();
+            }
+         }
+         catch (final IOException e) {
+            throw new RuntimeException(e);
+         }
       }
 
       return count;
@@ -82,14 +92,14 @@ public class FileUtils {
       final File file = new File(filename);
       int count = 0;
 
-    try (SeekableStream s = new FileSeekableStream(file)) {
+      try (SeekableStream s = new FileSeekableStream(file)) {
          final TIFFDecodeParam param = null;
          final ImageDecoder dec = ImageCodec.createImageDecoder("tiff", s, param);
          count = dec.getNumPages();
       }
       catch (final IOException e) {
          throw new CountNbrePageFileException(e);
-    }
+      }
       return count;
    }
 

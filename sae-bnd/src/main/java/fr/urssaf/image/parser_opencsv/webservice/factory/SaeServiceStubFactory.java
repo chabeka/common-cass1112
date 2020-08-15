@@ -39,9 +39,6 @@ public class SaeServiceStubFactory {
 
       // Ajout d'un Handler pour insérer le VI dans l'entete
       saeService.setHandlerResolver(viHeaderResolver);
-      System.out.println("============================== VI");
-      System.out.println(viHeaderResolver);
-      System.out.println(endPoint);
       return saeService;
    }
 

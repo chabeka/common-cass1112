@@ -83,7 +83,7 @@ public class BndMigrationComponent {
 
    @Value("${bnd.logging.file}")
    private String logPath;
-   
+
    /**
     * Reader du fichier CSV pivot
     */
@@ -134,13 +134,17 @@ public class BndMigrationComponent {
 
          DocumentType document;
          String messageError = "";
+         final boolean shouldLog = ligneNumber % 100 == 0;
          try {
-          
-           final String mimeType = nextLine[24];
-           final String extension = correspondanceService.getExtensionFromMimeType(mimeType);
-           document = MetadataUtils.convertLigneArrayToDocument(nextLine, extension, bndDateFormat, gnsDateFormat, ligneNumber);
-            LOGGER.info("LIGNE : " + ligneNumber + " NOM FICHIER BIN : {}", MetadataUtils.getNomFichierFromPath(nextLine[22]));
-            LOGGER.info("Le document est valide : {}", validatorService.getMissingMetadatas(document));
+
+            final String mimeType = nextLine[24];
+            final String extension = correspondanceService.getExtensionFromMimeType(mimeType);
+            document = MetadataUtils.convertLigneArrayToDocument(nextLine, extension, bndDateFormat, gnsDateFormat, ligneNumber);
+
+            if (shouldLog) {
+               LOGGER.info("LIGNE : {} NOM FICHIER BIN : {}", ligneNumber, MetadataUtils.getNomFichierFromPath(nextLine[22]));
+               LOGGER.info("Intégrés : {} - Erreurs : {}", countIntegrated, countError);
+            }
 
             // Si regarde si les métadonnées requises sont bien renseignées
             final List<String> missingMetadatas = validatorService.getMissingMetadatas(document);
@@ -167,20 +171,19 @@ public class BndMigrationComponent {
                   final String hashInitial = document.getMetadonnees().getMetaValue("Hash");
                   final String hashCalculated = FileUtils.getHash(sourceFile);
                   if (!StringUtils.equalsIgnoreCase(hashCalculated, hashInitial.trim())) {
-                    throw new UnknownHashCodeEx("Le hash du document ne correspond pas");
-                 }
+                     throw new UnknownHashCodeEx("Le hash du document ne correspond pas");
+                  }
 
-                  LOGGER.info("Copie du binaire du doc {} ==> {}", sourceFile, destinationFile);
+                  LOGGER.debug("Copie du binaire du doc {} ==> {}", sourceFile, destinationFile);
                   ResourceUtils.copyResourceToFile(sourceFile, destinationFile);
                   // Calcul du nombre du binaire associé
                   correspondanceService.calculateNbPages(destinationFile, document, Boolean.valueOf(activeRTF));
-                  LOGGER.info("Ajout du Document {} au fichier sommaire.xml", document);
+                  LOGGER.debug("Ajout du Document {} au fichier sommaire.xml", document);
 
                   sommaireWriter.addDocument(document);
                   countIntegrated++;
                } else {
                   messageError = "Le binaire du document est manquant!";
-                  //LOGGER.error(messageError);
                }
             }
          }
@@ -312,8 +315,8 @@ public class BndMigrationComponent {
       try {
          final File ecdeFile = new File(sommaireAbsolutePath);
          ResourceUtils.setFilePermissions(ecdeFile);
-         
-        final URI uri = ecdeService.convertFileToURI(ecdeFile, ecdeConfig);
+
+         final URI uri = ecdeService.convertFileToURI(ecdeFile, ecdeConfig);
          LOGGER.info("URL du sommaire {}", uri.getPath());
 
          return uri;
@@ -325,18 +328,18 @@ public class BndMigrationComponent {
       }
    }
 
-  /**
-   * @return the logPath
-   */
-  public String getLogPath() {
-    return logPath;
-  }
+   /**
+    * @return the logPath
+    */
+   public String getLogPath() {
+      return logPath;
+   }
 
-  /**
-   * @return the sourcePath
-   */
-  public String getSourcePath() {
-    return sourcePath;
-  }
+   /**
+    * @return the sourcePath
+    */
+   public String getSourcePath() {
+      return sourcePath;
+   }
 
 }
