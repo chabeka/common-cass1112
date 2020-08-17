@@ -49,19 +49,13 @@ public class CaptureMasseServiceImpl implements ICaptureMasseService {
    public String lancerCaptureMasseAvecHash(final String urlEcde, final String hash) {
       final ArchivageMasseAvecHashRequestType archivageMasseRequestType = new ArchivageMasseAvecHashRequestType();
 
+      defineWSTimeouts();
+      
       archivageMasseRequestType.setUrlSommaire(urlEcde);
       archivageMasseRequestType.setTypeHash(TYPE_HASH);
       archivageMasseRequestType.setHash(hash);
       final ArchivageMasseAvecHashResponseType archivageMasseAvecHashResponseType = port.archivageMasseAvecHash(archivageMasseRequestType);
 
-      final Client cl = ClientProxy.getClient(port);
-      final HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
-      final HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-  
-      httpClientPolicy.setConnectionTimeout(1200000); // Time in milliseconds
-      httpClientPolicy.setReceiveTimeout(1200000); // Time in milliseconds
-      httpConduit.setClient(httpClientPolicy);
-      
       return archivageMasseAvecHashResponseType.getUuid();
    }
 
@@ -73,17 +67,22 @@ public class CaptureMasseServiceImpl implements ICaptureMasseService {
       final SuppressionMasseRequestType suppressionMasseRequestType = new SuppressionMasseRequestType();
       suppressionMasseRequestType.setRequete(luceneRequest);
 
+      defineWSTimeouts();
+      
       final SuppressionMasseResponseType suppressionMasseResponseType = port.suppressionMasse(suppressionMasseRequestType);
 
-      final Client cl = ClientProxy.getClient(port);
-      final HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
-      final HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
-  
-      httpClientPolicy.setConnectionTimeout(1200000); // Time in milliseconds
-      httpClientPolicy.setReceiveTimeout(1200000); // Time in milliseconds
-      httpConduit.setClient(httpClientPolicy);
       
       return suppressionMasseResponseType.getUuid();
    }
+
+  private void defineWSTimeouts() {
+    final Client cl = ClientProxy.getClient(port);
+    final HTTPConduit httpConduit = (HTTPConduit) cl.getConduit();
+    final HTTPClientPolicy httpClientPolicy = new HTTPClientPolicy();
+ 
+    httpClientPolicy.setConnectionTimeout(1200000); // Time in milliseconds
+    httpClientPolicy.setReceiveTimeout(1200000); // Time in milliseconds
+    httpConduit.setClient(httpClientPolicy);
+  }
 
 }
