@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import com.google.common.io.Files;
+
 import fr.urssaf.image.parser_opencsv.application.JobLauncher;
 import fr.urssaf.image.parser_opencsv.application.component.BndMigrationComponent;
 import fr.urssaf.image.parser_opencsv.application.constantes.FileConst;
@@ -89,7 +91,7 @@ public class Worker implements Runnable {
          final String hash = FileUtils.getHash(jobEntity.getTargetPath() + FileConst.SOMMAIRE_FILE_NAME);
          
          LOGGER.info("Lancement de la capture de masse pour le {}", jobEntity);
-         try {
+        try {
            
            final String uuid = captureService.lancerCaptureMasseAvecHash(jobEntity.getEcdeUrl(), hash);
            jobEntity.setIdTraitementMasse(uuid);
@@ -101,11 +103,7 @@ public class Worker implements Runnable {
            throw e;
          }
          
-         // renommage du fichier csv qui vient d'être traité
-         final String csvFilePath = bndComponent.getSourcePath();
-         final File csvFile = new File(csvFilePath+ csvFileName); 
-         final String fileRenamed = csvFileName.replace(".csv", ".done");
-         csvFile.renameTo(new File(csvFilePath+ fileRenamed));
+         
       }
       catch (XMLStreamException | IOException e) {
          
@@ -116,7 +114,19 @@ public class Worker implements Runnable {
       }
       finally {
          LOGGER.info("Fermeture de tous les flux de fichier ouvert!");
-         bndComponent.closeStreamWriter();
+         bndComponent.closeStreamReader();
+         bndComponent.closeStreamWriter(); 
+         
+         // renommage du fichier csv qui vient d'être traité
+         final String csvFilePath = bndComponent.getSourcePath();
+         final File csvFile = new File(csvFilePath+ csvFileName); 
+         final String fileRenamed = csvFileName.replace(".csv", ".csv.done");
+         try {
+          Files.move(csvFile, new File(csvFilePath+ fileRenamed));
+          }
+          catch (IOException e) {
+            LOGGER.error("Problème de renommage du fichier csv : " + ExceptionUtils.getStackTrace(e));
+          }
       }
       // Attendre la fin du Job
       try {
