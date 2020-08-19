@@ -40,6 +40,8 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
    private final ICorrespondanceTableSSTIGedDao matcher;
 
    private final Map<String, FormatFichier> mapFormats;
+   
+   private final Map<String, String> mapMimeExtension;
 
    Map<String, CorrespondanceMetaObject> mapsRnd;
 
@@ -54,6 +56,7 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
       this.referentielFormatService = referentielFormatService;
       this.matcher = matcher;
       mapFormats = getMapFormats();
+      mapMimeExtension = getMapMimeExtension();
       mapsRnd = matcher.getAllRNDCorresp();
       mapCorrespondancesCaisses = matcher.getAllCaisseCorresp();
    }
@@ -144,7 +147,7 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
       final String formatFichier = documentType.getMetadonnees().getMetaValue(Metadata.FORM_FICHIER);
 
       // Si le MimeType du document n'est pas géré par le GED ou n'est pas autorisé
-      if (mapFormats.containsKey(formatFichier)) {
+      if (mapFormats.containsKey(formatFichier.toLowerCase())) {
 
          // Verifier la conformité entre l'extension et le mimetype du binaire
          final FormatFichier formatFichier2 = mapFormats.get(formatFichier);
@@ -227,13 +230,21 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
     */
    private Map<String, FormatFichier> getMapFormats() {
 
-    formats = referentielFormatService.getAllFormat();
+      formats = referentielFormatService.getAllFormat();
 
-      final Map<String, FormatFichier> formatsMap = formats.stream()
+      Map<String, FormatFichier> formatsMap = formats.stream()
+            .map(format -> {
+              String mimeTOLowerCase = format.getTypeMime().toLowerCase();
+              format.setTypeMime(mimeTOLowerCase);
+              return format;
+            })
             .filter(format -> !format.getIdFormat().equals("pdf"))
             .collect(
                      Collectors.toMap(FormatFichier::getTypeMime,
                                       format -> format));
+
+      formatsMap = formatsMap.entrySet().stream()
+                           .collect(Collectors.toMap(entry -> entry.getKey().toLowerCase(), entry -> entry.getValue()));
 
       formatsMap.forEach((k, v) -> LOGGER.info("Key {} ==> value : {}, id : {}, autorisé : {}",
                                                k,
@@ -242,6 +253,26 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
                                                v.isAutoriseGED()));
 
       return formatsMap;
+   }
+   
+   /**
+    * Recupère une {@link Map} contenant Le Mime type ==> extension des fichiers
+    * 
+    * @return
+    */
+   private Map<String, String> getMapMimeExtension(){
+     
+     Map<String, String> mapMimeExtension = formats.stream()
+         .map(format -> {
+           String mimeTOLowerCase = format.getTypeMime().toLowerCase();
+           format.setTypeMime(mimeTOLowerCase);
+           return format;
+         })
+         .filter(format -> !format.getIdFormat().equals("pdf"))
+         .collect(
+                  Collectors.toMap(FormatFichier::getTypeMime,
+                                   format -> format.getExtension()));
+     return mapMimeExtension;
    }
 
    public Map<String, CorrespondanceMetaObject> getAllMatcherCodeTiToCodeOrgaPro() {
@@ -254,31 +285,7 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
 
    @Override
   public String getExtensionFromMimeType(final String mimeType) {
-
-      String extensions = "";
-     for(final FormatFichier format : formats) {
-      if (mimeType.equalsIgnoreCase(format.getTypeMime())) {
-         extensions = format.getExtension();
-         final String[] extTab = extensions.split(",");
-         if(extTab.length > 1) {
-           for(final String ext : extTab) {
-            // on retourne exactement l'extension contenu dans le mime type
-            if (isContain(mimeType, ext)) {
-               extensions = ext;
-             }
-           }  
-         }
-         break;
-       }
-     }
-     return extensions;
+      return mapMimeExtension.get(mimeType);
    }
-
-  private static boolean isContain(final String source, final String subItem) {
-    final String pattern = "\\b" + subItem + "\\b";
-    final Pattern p = Pattern.compile(pattern);
-    final Matcher m = p.matcher(source);
-    return m.find();
-  }
 
 }
