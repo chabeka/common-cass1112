@@ -2,6 +2,7 @@ package fr.urssaf.image.parser_opencsv.application.service.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -41,7 +42,7 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
 
    private final Map<String, FormatFichier> mapFormats;
    
-   private final Map<String, String> mapMimeExtension;
+   private Map<String, String> mapMimeExtension = new HashMap<>();
 
    Map<String, CorrespondanceMetaObject> mapsRnd;
 
@@ -262,16 +263,28 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
     */
    private Map<String, String> getMapMimeExtension(){
      
-     final Map<String, String> mapMimeExtension = formats.stream()
-         .map(format -> {
-           final String mimeTOLowerCase = format.getTypeMime().toLowerCase();
-           format.setTypeMime(mimeTOLowerCase);
-           return format;
-         })
-         .filter(format -> !format.getIdFormat().equals("pdf"))
-         .collect(
-                  Collectors.toMap(FormatFichier::getTypeMime,
-                                   format -> format.getExtension()));
+    for (final FormatFichier format : formats) {
+      final String mimeType = format.getTypeMime().toLowerCase();
+      String extension = "";
+      final String extensionsLit = format.getExtension();
+      final String[] extTab = extensionsLit.split(",");
+      if (extTab.length > 1) {
+        for (final String ext : extTab) {
+          // on retourne exactement l'extension contenu dans le mime type
+          if (isContain(mimeType, ext)) {
+            extension = ext;
+          }
+        }
+        // Si on ne trouve pas de correspondance entre le mime type
+        // et l'extension Exemple : application/x-gzip ==> tar.gz,gz
+        if (extension.isEmpty() && extTab.length > 1) {
+          extension = extTab[0];
+        }
+      } else {
+        extension = extensionsLit;
+      }
+       mapMimeExtension.put(mimeType, extension);
+    }
      return mapMimeExtension;
    }
 
@@ -286,22 +299,7 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
    @Override
   public String getExtensionFromMimeType(final String mimeType) {
 
-    String extensions = mapMimeExtension.get(mimeType);
-    if (extensions != null) {
-    final String[] extTab = extensions.split(",");
-    if (extTab.length > 1) {
-      for (final String ext : extTab) {
-        // on retourne exactement l'extension contenu dans le mime type
-        if (isContain(mimeType, ext)) {
-          extensions = ext;
-         }
-      }
-     }
-    } else {
-      LOGGER.info("Il n'y a pas d'extension correspondant au mime type {}", mimeType);
-      return "";
-    }
-     return extensions;
+    return mapMimeExtension.get(mimeType);
    }
 
   private static boolean isContain(final String source, final String subItem) {

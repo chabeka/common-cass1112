@@ -108,7 +108,7 @@ public class MetadataUtils {
       // nom du fichier original
       final String nomFichierFromPath = getNomFichierFromPath(path);
       
-      if(extension.isEmpty()) {
+      if(extension == null || extension.isEmpty()) {
         throw new ParseException("L'extension du fichier n'a pas été trouvée dans la base GED", lineNum);
       }
       // remplacer le .bin par la vraie extension
