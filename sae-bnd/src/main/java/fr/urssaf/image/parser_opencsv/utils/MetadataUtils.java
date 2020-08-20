@@ -99,24 +99,21 @@ public class MetadataUtils {
     * @throws ParseException
     * @throws HashInexistantException
     */
-   public static DocumentType convertLigneArrayToDocument(final String[] csvLigne, final String extension, final SimpleDateFormat bndDateFormat,
-         final SimpleDateFormat gnsDateFormat, final int lineNum)
-               throws ParseException, HashInexistantException {
+  public static DocumentType convertLigneArrayToDocument(final String[] csvLigne, final String extension, final SimpleDateFormat bndDateFormat,
+                                                         final SimpleDateFormat gnsDateFormat, final int lineNum)
+      throws ParseException, HashInexistantException {
       final DocumentType documentType = new DocumentType();
       final FichierType fichierType = new FichierType();
       final String path = csvLigne[22];
       // nom du fichier original
       final String nomFichierFromPath = getNomFichierFromPath(path);
-
-      // dans le référentiel des formats, on peut avoir plusieurs extensions
-      // correspondant à un type mime Exemple: tif,tiff ou jpg,jpeg
-      final String[] tabEx = extension.split(","); 
-      if(tabEx[0].isEmpty()) {
-         throw new ParseException("Problème d'extension du fichier", lineNum);
+      
+      if(extension.isEmpty()) {
+        throw new ParseException("L'extension du fichier n'a pas été trouvée dans la base GED", lineNum);
       }
       // remplacer le .bin par la vraie extension
-      final String nomFichier = nomFichierFromPath.replaceFirst(FileConst.Extension.BIN, "." + tabEx[0]);
-
+      final String nomFichier = nomFichierFromPath.replaceFirst(FileConst.Extension.BIN, "." + extension);
+      
       fichierType.setCheminEtNomDuFichier(nomFichier);
       fichierType.setPath(path);
 
@@ -235,7 +232,7 @@ public class MetadataUtils {
       meta.setCode(metaCode);
       meta.setValeur(metaValue.trim());
       metaList.add(meta);
-   }
+      }
 
    private static void setOptionalMetaValue(final List<MetadonneeType> metaList, final String metaCode, final String metaValue) {
       final String trimedValue = metaValue.trim();
@@ -253,7 +250,7 @@ public class MetadataUtils {
     * @param absolutePath
     * @return
     */
-   public static String getNomFichierFromPath(final String absolutePath) {
+  public static String getNomFichierFromPath(final String absolutePath) {
       final String[] splitArray = absolutePath.split("/");
       return splitArray[splitArray.length - 1];
    }

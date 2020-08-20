@@ -234,7 +234,7 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
 
       Map<String, FormatFichier> formatsMap = formats.stream()
             .map(format -> {
-              String mimeTOLowerCase = format.getTypeMime().toLowerCase();
+              final String mimeTOLowerCase = format.getTypeMime().toLowerCase();
               format.setTypeMime(mimeTOLowerCase);
               return format;
             })
@@ -262,9 +262,9 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
     */
    private Map<String, String> getMapMimeExtension(){
      
-     Map<String, String> mapMimeExtension = formats.stream()
+     final Map<String, String> mapMimeExtension = formats.stream()
          .map(format -> {
-           String mimeTOLowerCase = format.getTypeMime().toLowerCase();
+           final String mimeTOLowerCase = format.getTypeMime().toLowerCase();
            format.setTypeMime(mimeTOLowerCase);
            return format;
          })
@@ -285,7 +285,30 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
 
    @Override
   public String getExtensionFromMimeType(final String mimeType) {
-      return mapMimeExtension.get(mimeType);
+
+    String extensions = mapMimeExtension.get(mimeType);
+    if (extensions != null) {
+    final String[] extTab = extensions.split(",");
+    if (extTab.length > 1) {
+      for (final String ext : extTab) {
+        // on retourne exactement l'extension contenu dans le mime type
+        if (isContain(mimeType, ext)) {
+          extensions = ext;
+         }
+      }
+     }
+    } else {
+      LOGGER.info("Il n'y a pas d'extension correspondant au mime type {}", mimeType);
+      return "";
+    }
+     return extensions;
    }
+
+  private static boolean isContain(final String source, final String subItem) {
+    final String pattern = "\\b" + subItem + "\\b";
+    final Pattern p = Pattern.compile(pattern);
+    final Matcher m = p.matcher(source);
+    return m.find();
+  }
 
 }
