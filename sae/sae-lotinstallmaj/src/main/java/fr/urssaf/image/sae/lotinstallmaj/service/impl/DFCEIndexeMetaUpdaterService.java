@@ -65,7 +65,7 @@ public class DFCEIndexeMetaUpdaterService {
    }
 
    /**
-    * Mise à jour des Métadonnées et des indexes composites dans DFCE
+    * Mise à jour des Métadonnées et des indexes composites dans DFCE et SAE
     * 
     * @param nomOperation
     *           représente le nom du lot

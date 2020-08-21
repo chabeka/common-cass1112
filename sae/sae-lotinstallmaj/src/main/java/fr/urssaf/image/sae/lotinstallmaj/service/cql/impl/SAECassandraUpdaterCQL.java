@@ -473,10 +473,13 @@ public class SAECassandraUpdaterCQL {
 
     LOG.info("Mise à jour du keyspace SAE en version {}", versionToInstalled);
 
-    // -- On se connecte au keyspace
+    // Ajout trace WS_DEBLOCAGE|OK
     insertionDonneesCQL.addReferentielEvenementV15();
 
-    // TODO: Creation des nouveaux format
+    // Creation des nouveaux format
+    insertionDonneesCQL.addReferentielFormatV8();
+
+    // Mise à jour des métadonnées et index composite
 
     // On positionne la version à 34
     if (!isRedo) {
