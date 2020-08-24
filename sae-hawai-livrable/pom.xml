@@ -12,14 +12,14 @@
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-hawai-livrable</artifactId>
-	<version>19.10.0-SNAPSHOT</version>
+	<version>20.11.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>sae-hawai-livrable</name>
 	<description>Projet de création de livrable pour les environnements Hawaï</description>
 
 
 	<properties>
-		<sae.version>18.9.7</sae.version>
+		<sae.version>20.4.7</sae.version>
 	
 		<maven-release-plugin.version>2.2.1</maven-release-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
