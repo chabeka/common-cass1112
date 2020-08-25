@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.utils.Constantes;
+import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
 /**
  * Classe de validation des paramètres obligatoires.
@@ -67,17 +68,16 @@ public class ParamReferentiel {
   public final void validAddNewFormat(final FormatFichier refFormat) {
 
     if (refFormat == null) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     Constantes.REFERENTIEL_FORMAT));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.REFERENTIEL_FORMAT));
     } else {
       final List<String> variable = getAttributsNull(refFormat, Long.valueOf(1));
 
       if (!variable.isEmpty()) {
         throw new IllegalArgumentException(
-                                           fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                       Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                       variable.toString()));
+                                           SaeFormatMessageHandler.getMessage(
+                                                                              Constantes.PARAM_OBLIGATOIRE,
+                                                                              variable.toString()));
       }
     }
 
@@ -95,9 +95,9 @@ public class ParamReferentiel {
   public final void validDeleteFormat(final String idFormat) {
 
     if (StringUtils.isBlank(idFormat)) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     Constantes.IDFORMAT));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.IDFORMAT));
     }
 
   }
@@ -114,9 +114,9 @@ public class ParamReferentiel {
   public final void validGetFormat(final String idFormat) {
 
     if (StringUtils.isBlank(idFormat)) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     Constantes.IDFORMAT));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.IDFORMAT));
     }
   }
 
@@ -132,9 +132,9 @@ public class ParamReferentiel {
   public final void validExists(final String idFormat) {
 
     if (StringUtils.isBlank(idFormat)) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     Constantes.IDFORMAT));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.IDFORMAT));
     }
   }
 
@@ -155,9 +155,9 @@ public class ParamReferentiel {
     final List<String> param = getAttributsNull(referentielFormat, clock);
 
     if (!param.isEmpty()) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     param.toString()));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            param.toString()));
     }
   }
 
@@ -178,9 +178,9 @@ public class ParamReferentiel {
     final List<String> variable = getParamNull(idFormat, clock);
 
     if (!variable.isEmpty()) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     variable.toString()));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            variable.toString()));
     }
   }
 
@@ -197,9 +197,9 @@ public class ParamReferentiel {
     if (StringUtils.isBlank(idFormat)) {
       final List<String> param = new ArrayList<>();
       param.add(Constantes.IDFORMAT);
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     param.toString()));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            param.toString()));
     }
   }
 
@@ -264,9 +264,9 @@ public class ParamReferentiel {
   @Before(REF_FORMAT_FACADE_CREATE)
   public final void validFacadeCreate(final FormatFichier referentielFormat) {
     if (referentielFormat == null || referentielFormat.getIdFormat() == null) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     Constantes.REFERENTIEL_FORMAT));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.REFERENTIEL_FORMAT));
     }
   }
 
@@ -283,9 +283,9 @@ public class ParamReferentiel {
   public final void validFacadeDelete(final String idFormat) {
 
     if (StringUtils.isBlank(idFormat)) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     Constantes.IDFORMAT.toString()));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.IDFORMAT.toString()));
     }
   }
 
@@ -300,9 +300,9 @@ public class ParamReferentiel {
   @Before(REF_FORMAT_FACADE_FIND)
   public final void validFacadeFind(final String idFormat) {
     if (StringUtils.isBlank(idFormat)) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     Constantes.PARAM_OBLIGATOIRE,
-                                                                                                                     Constantes.IDFORMAT.toString()));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            Constantes.PARAM_OBLIGATOIRE,
+                                                                            Constantes.IDFORMAT.toString()));
     }
   }
 }

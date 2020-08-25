@@ -36,7 +36,6 @@ public class ReferentielFormatCqlSupport {
   private static final Logger LOGGER = LoggerFactory
       .getLogger(ReferentielFormatCqlSupport.class);
 
-  // private final SaeFormatSaeFormatMessageHandler SaeFormatMessageHandler;
   /**
    * Constructeur de la classe support
    * 
@@ -48,7 +47,6 @@ public class ReferentielFormatCqlSupport {
 
   public ReferentielFormatCqlSupport(final IReferentielFormatDaoCql referentielFormatDaoCql) {
     this.referentielFormatDaoCql = referentielFormatDaoCql;
-    // this.SaeFormatMessageHandler = SaeFormatMessageHandler;
   }
   /**
    * Ajoute un nouveau format de fichier {@link FormatFichier}.

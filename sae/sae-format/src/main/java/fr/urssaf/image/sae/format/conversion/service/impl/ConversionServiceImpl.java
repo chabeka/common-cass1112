@@ -80,7 +80,6 @@ public class ConversionServiceImpl implements ConversionService {
 
     this.referentielFormatService = referentielFormatService;
     this.applicationContext = applicationContext;
-    // this.saeFormatMessageHandler = saeFormatMessageHandler;
 
     // Gestion d'un cache contenant les beans d'identification
     convertisseurs = CacheBuilder.newBuilder().refreshAfterWrite(cacheDuration, TimeUnit.MINUTES).build(new CacheLoader<String, Convertisseur>() {

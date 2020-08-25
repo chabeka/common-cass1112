@@ -22,6 +22,7 @@ import fr.urssaf.image.sae.format.identification.identifiers.Identifier;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.model.EtapeEtResultat;
 import fr.urssaf.image.sae.format.utils.Constantes;
+import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
 /**
  * Implémentation des appels à l'outil d'identification pour les PDF/A-1b
@@ -99,12 +100,12 @@ public final class PdfaIdentifierImpl implements Identifier {
     try {
       puuid = formatIdentificationService.identifie(fichier);
     } catch (final RuntimeException ex) {
-      throw new IdentificationRuntimeException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new IdentificationRuntimeException(SaeFormatMessageHandler
                                                .getMessage("erreur.outil.identification"), ex);
     }
     LOGGER.debug("{} - Identifiant PRONOM détecté par DROID : {}",
                  prefixeTrc, puuid);
-    listeEtapeResult.add(new EtapeEtResultat(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+    listeEtapeResult.add(new EtapeEtResultat(SaeFormatMessageHandler
                                              .getMessage("identify.file.etape1"), String.format("%s%s", PUUID,
                                                                                                 puuid)));
 
@@ -128,7 +129,7 @@ public final class PdfaIdentifierImpl implements Identifier {
         .debug(
                "{} - L'identifiant PRONOM détecté par DROID ({}) correspond directement à {}",
                new Object[] { prefixeTrc, puuid, Constantes.FMT_354 });
-        listeEtapeResult.add(new EtapeEtResultat(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+        listeEtapeResult.add(new EtapeEtResultat(SaeFormatMessageHandler
                                                  .getMessage("identify.file.etape2"), PUUID_EGAL_IDFORMAT));
 
         // Résultat de l'identification => OK
@@ -187,9 +188,9 @@ public final class PdfaIdentifierImpl implements Identifier {
 
             listeEtapeResult
             .add(new EtapeEtResultat(
-                                                     fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+                                     SaeFormatMessageHandler
                                      .getMessage("identify.file.etape2"),
-                                                     fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+                                     SaeFormatMessageHandler
                                      .getMessage("identify.file.puuid.diff.id.format.mais.compatible")));
 
             identificationResult.setIdentified(Boolean.TRUE);
@@ -207,9 +208,9 @@ public final class PdfaIdentifierImpl implements Identifier {
 
             listeEtapeResult
             .add(new EtapeEtResultat(
-                                                     fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+                                     SaeFormatMessageHandler
                                      .getMessage("identify.file.etape2"),
-                                                     fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+                                     SaeFormatMessageHandler
                                      .getMessage("identify.file.puuid.diff.id.format.non.compatible")));
 
             identificationResult.setIdentified(Boolean.FALSE);
@@ -288,7 +289,7 @@ public final class PdfaIdentifierImpl implements Identifier {
       return identificationResult;
 
     } catch (final IOException except) {
-      throw new IdentificationRuntimeException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new IdentificationRuntimeException(SaeFormatMessageHandler
                                                .getMessage("erreur.outil.identification"), except);
     }
   }

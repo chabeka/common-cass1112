@@ -29,6 +29,7 @@ import fr.urssaf.image.sae.format.identification.service.IdentificationService;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
+import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 
 /**
  * 
@@ -268,11 +269,11 @@ public class IdentificationServiceImpl implements IdentificationService {
     try {
       identifier = identifiers.getUnchecked(nomBeanIdentifier);
     } catch (final InvalidCacheLoadException ex) {
-      throw new IdentifierInitialisationException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new IdentifierInitialisationException(SaeFormatMessageHandler
                                                   .getMessage("erreur.recup.identif"), ex);
 
     } catch (final UncheckedExecutionException ex) {
-      throw new IdentifierInitialisationException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new IdentifierInitialisationException(SaeFormatMessageHandler
                                                   .getMessage("erreur.recup.identif"), ex);
     }
 

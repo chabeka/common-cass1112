@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
+import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidationRuntimeException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
@@ -277,11 +278,11 @@ public final class ValidationServiceImpl implements ValidationService {
     try {
       validator = validators.getUnchecked(nomBeanValidator);
     } catch (final InvalidCacheLoadException ex) {
-      throw new ValidatorInitialisationException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new ValidatorInitialisationException(SaeFormatMessageHandler
                                                  .getMessage("erreur.init.validator"), ex);
 
     } catch (final UncheckedExecutionException ex) {
-      throw new ValidatorInitialisationException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new ValidatorInitialisationException(SaeFormatMessageHandler
                                                  .getMessage("erreur.init.validator"), ex);
     }
 

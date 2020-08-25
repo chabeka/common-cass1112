@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.format.referentiel.dao.ReferentielFormatDao;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.UnknownParameterException;
+import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
@@ -41,8 +42,8 @@ public class ReferentielFormatSupportBouchon {
   public final FormatFichier find(final String idFormat) {
 
     if (StringUtils.isBlank(idFormat)) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     "erreur.param.obligatoire.null", idFormat));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
+                                                                            "erreur.param.obligatoire.null", idFormat));
     }
 
     final FormatFichier refFormat = new FormatFichier();
@@ -70,19 +71,19 @@ public class ReferentielFormatSupportBouchon {
   public final void delete(final String idFormat, final Long clock) {
 
     if (idFormat == null) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new IllegalArgumentException(SaeFormatMessageHandler
                                          .getMessage("erreur.referentielformat.notnull"));
     }
 
     if (clock == null || clock <= 0) {
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new IllegalArgumentException(SaeFormatMessageHandler
                                          .getMessage("erreur.param"));
     }
 
     final FormatFichier refFormatExistant = find(idFormat);
 
     if (refFormatExistant == null) {
-      throw new UnknownParameterException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new UnknownParameterException(SaeFormatMessageHandler
                                           .getMessage("erreur.format.delete", idFormat));
     }
 
@@ -92,7 +93,7 @@ public class ReferentielFormatSupportBouchon {
                                                        clock);
       mutator.execute();
     } catch (final Exception except) {
-      throw new ReferentielRuntimeException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler
+      throw new ReferentielRuntimeException(SaeFormatMessageHandler
                                             .getMessage("erreur.impossible.delete.format"), except);
     }
   }

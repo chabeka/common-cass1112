@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.format.utils.Constantes;
+import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -104,8 +105,7 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
        *               obligatoires est nulle ou vide.</li>
        *               </ul>
        */
-      throw new IllegalArgumentException(fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler.getMessage(
-                                                                                                                     "erreur.param.obligatoire.null", variable.toString()));
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage("erreur.param.obligatoire.null", variable.toString()));
     }
 
     // écrire des colonnes
