@@ -217,8 +217,19 @@ public abstract class DFCECassandraUpdaterV2 {
 
     boolean isReady = false;
 
+    final boolean isBaseSAE = isKeyspaceSAE();
+    final long saeBdVersion = getDatabaseVersion();
+
+    // Si base SAE créé et la version de la base est >= 33 ==> version dfce = 3
+    if (isBaseSAE && saeBdVersion >= 33) {
+      setDatabaseVersionDFCE(3);
+    } else {
+      //
+    }
+
     // S'il existe une nouvelle mise à jour de la base DFCE
-    if (LAST_DFCE_AVAILABLE_VERSION > getDatabaseVersionDFCE()) {
+    final long dfceBdVersion = getDatabaseVersionDFCE();
+    if (LAST_DFCE_AVAILABLE_VERSION > dfceBdVersion) {
       if (LAST_DFCE_AVAILABLE_VERSION == VersionDFCE.DFCE_192_TO_200_SCHEMA.getNumVersion()) {
         update192ToVersion200();
       } else if (LAST_DFCE_AVAILABLE_VERSION == VersionDFCE.DFCE_200_TO_210_SCHEMA.getNumVersion()) {
@@ -230,15 +241,16 @@ public abstract class DFCECassandraUpdaterV2 {
       }
     } else {
       LOG.info("DFCE est déjà à jour...");
-      // Tester la connexion à dfce
-      try {
-        isReady = dfceConnexionTester.testerWithServiceProvider();
-      }
-      catch (final Exception e) {
-        LOG.info("Erreur de connexion à la webapp DFCE, Détails : {}", e.getMessage());
-      }
-      LOG.info("Test de connexion : {}", isReady ? "OK" : "KO");
     }
+
+    // Tester la connexion à dfce
+    try {
+      isReady = dfceConnexionTester.testerWithServiceProvider();
+    }
+    catch (final Exception e) {
+      LOG.info("Erreur de connexion à la webapp DFCE, Détails : {}", e.getMessage());
+    }
+    LOG.info("Test de connexion : {}", isReady ? "OK" : "KO");
 
     return isReady;
   }
@@ -250,5 +262,7 @@ public abstract class DFCECassandraUpdaterV2 {
   protected abstract long getDatabaseVersionDFCE();
 
   protected abstract void setDatabaseVersionDFCE(int version);
+
+  protected abstract boolean isKeyspaceSAE();
 
 }

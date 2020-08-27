@@ -53,7 +53,9 @@
 	<import resource="classpath:/applicationContext-sae-rnd.xml" />
 	
 	<!--  <import resource="classpath:/applicationContext-sae-metadata.xml" /> -->
-
+	
+	<import resource="classpath:/applicationContext-sae-format.xml" />
+	
 	<import resource="classpath:/applicationContext-sae-igcmaj.xml" />
 
 	<!-- Le componant-scan -->
