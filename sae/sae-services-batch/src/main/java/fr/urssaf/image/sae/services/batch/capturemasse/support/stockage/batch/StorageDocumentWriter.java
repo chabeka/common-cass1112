@@ -95,11 +95,8 @@ ItemWriter<StorageDocument> {
                // Reprise - Si traitement déjà réaliser par le traitement nominal, on déclare le document comme traité.
                if (isModePartielBatch()) {
                   // En mode partiel, on ajoute l'exception à la liste des exceptions et on continue le traitement des documents.
-                  getCodesErreurListe().add(Constantes.ERR_BUL002);
-                  getIndexErreurListe().add(docIndexInWriter);
-                  final String message = ex.getMessage();
-                  getErrorMessageList().add(message);
-                  LOGGER.warn(message, ex);
+                  sendExceptionInPartielMode(ex, docIndexInWriter);
+                  LOGGER.warn(ex.getMessage(), ex);
                }
                else {
                   throw ex;
@@ -135,7 +132,7 @@ ItemWriter<StorageDocument> {
       catch (Exception ex) {
          if (isModePartielBatch()) {
           if(ex.getCause() != null && ex.getCause().getCause() instanceof DFCERuntimeException) {
-              ex = new Exception("Erreur DFCE");
+              ex = new Exception("Erreur DFCE", ex);
           }
            sendExceptionInPartielMode(ex, docIndex);
            return null;

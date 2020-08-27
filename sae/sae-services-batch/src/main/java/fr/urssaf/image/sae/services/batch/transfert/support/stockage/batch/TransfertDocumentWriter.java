@@ -126,7 +126,7 @@ ItemWriter<StorageDocument> {
       catch (Exception except) {
          if (isModePartielBatch()) {
         	 if(except.getMessage().isEmpty() && except instanceof DFCERuntimeException) {
-        	      except = new Exception("Erreur DFCE");
+        	      except = new Exception("Erreur DFCE", except);
         	 }
             sendExceptionInPartielMode(except, docIndex);
             return null;

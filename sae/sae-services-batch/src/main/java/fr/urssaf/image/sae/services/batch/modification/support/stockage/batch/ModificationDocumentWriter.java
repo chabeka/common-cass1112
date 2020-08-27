@@ -116,7 +116,7 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener i
                + except.getMessage();
          if (isModePartielBatch()) {
         	 if(except.getMessage().isEmpty() && except instanceof DFCERuntimeException) {
-        	     except = new Exception("Erreur DFCE");
+        	     except = new Exception("Erreur DFCE", except);
         	 }
             sendExceptionInPartielMode(except, docIndex);
             LOGGER.warn(message, except);
