@@ -117,37 +117,6 @@ public class Initializer {
    }
 
    /**
-    * Mise à jour du referentiel des RND dans la BD SAE tables CQL
-    * Bascule du mode API pour les tables Parameters et Rnd en mode DATASTAX
-    * 
-    * @throws MajLotGeneralException
-    */
-   public void majRndCQL() throws MajLotGeneralException {
-      final String cfNameRND = "rnd";
-      final String cfNameParameters = "parameters";
-      final String modeApiDatastax = "DATASTAX";
-      final String modeApiHector = "HECTOR";
-
-      LOGGER.info("Changement du modeAPI pour les tables Parameters et Rnd");
-      modeApiCqlSupport.updateModeApi(modeApiDatastax, cfNameRND);
-      modeApiCqlSupport.updateModeApi(modeApiDatastax, cfNameParameters);
-
-      // Mise à jour RND
-      LOGGER.info("Lancement de la mise à jour des code RND CQL");
-      try {
-         majRndService.lancer();
-      }
-      catch (final MajRndException e) {
-         throw new MajLotGeneralException(ERREUR_UPDATE_RND, e);
-      }
-      LOGGER.info("Fin de la mise à jour des code RND CQL");
-
-      LOGGER.info("Rebascule du modeAPI en HECTOR");
-      modeApiCqlSupport.updateModeApi(modeApiHector, cfNameRND);
-      modeApiCqlSupport.updateModeApi(modeApiHector, cfNameParameters);
-   }
-
-   /**
     * Téléchargement des CRL
     * 
     * @throws IgcConfigException
