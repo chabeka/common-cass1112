@@ -41,7 +41,7 @@ public class DFCEReconnectionAspect {
       // On se connecte si on n'est pas encore connecté
       dfceServices.connectTheFistTime();
 
-      LOG.warn("{} - Appel DFCE : {}", new Object[] {LOG_PREFIX, joinPoint.getSignature()});
+      LOG.info("{} - Appel DFCE : {}", new Object[] {LOG_PREFIX, joinPoint.getSignature()});
       // Si jamais un des paramètres est un inputStream, on sauvegarde la position du stream
       // afin de pouvoir retenter la méthode en cas d'exception
       markInputStreams(joinPoint);
@@ -57,7 +57,7 @@ public class DFCEReconnectionAspect {
             return proceed;
          }
          catch (final HessianConnectionException | AuthenticationCredentialsNotFoundException | NullPointerException | IOException ex) {
-            LOG.warn("{} - Tentative d'établisssement d'une nouvelle connexion à DFCE suite à l'exception suivante reçue",
+            LOG.warn("{} - Tentative d'établissement d'une nouvelle connexion à DFCE suite à l'exception suivante reçue",
                   new Object[] {LOG_PREFIX},
                   ex);
             // On se reconnecte

@@ -81,7 +81,7 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    @Autowired
    public DFCEServicesImpl(final DFCEConnection dfceConnectionParameters) {
-      this.dfceConnection = dfceConnectionParameters;
+      dfceConnection = dfceConnectionParameters;
    }
 
    /**
@@ -91,11 +91,11 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    private void connect() {
       dfceService = ServiceProvider.newServiceProvider();
-      final String serverUrl = ObjectUtils.toString(this.dfceConnection.getServerUrl());
-      dfceService.connect(this.dfceConnection.getLogin(),
-                          this.dfceConnection.getPassword(),
-                          serverUrl,
-                          this.dfceConnection.getTimeout());
+      final String serverUrl = ObjectUtils.toString(dfceConnection.getServerUrl());
+      dfceService.connect(dfceConnection.getLogin(),
+            dfceConnection.getPassword(),
+            serverUrl,
+            dfceConnection.getTimeout());
 
       base = dfceService.getBaseAdministrationService().getBase(dfceConnection.getBaseName());
       if (base == null) {
@@ -120,10 +120,27 @@ public class DFCEServicesImpl implements DFCEServices {
    @Override
    public void reconnect() throws DFCEConnectionServiceException {
       synchronized (this) {
-         if (dfceService == null || !dfceService.isSessionActive()) {
+         if (!isSessionActive()) {
             final int maxTentatives = dfceConnection.getNbtentativecnx();
             openConnectionDFCe(1, maxTentatives);
          }
+      }
+   }
+
+   /**
+    * Indique si la session dfce est active
+    * 
+    * @return true si la session est active
+    */
+   private boolean isSessionActive() {
+      if (dfceService == null) {
+         return false;
+      }
+      try {
+         return dfceService.isSessionActive();
+      }
+      catch (final Exception e) {
+         return false;
       }
    }
 
@@ -140,7 +157,7 @@ public class DFCEServicesImpl implements DFCEServices {
          }
          catch (final Exception e) {
             LOG.debug("{} - La fermeture de la connexion à DFCE (url : {}) a provoqué une erreur : {}",
-                      new Object[] {LOG_PREFIX, dfceConnection.getServerUrl(), e.getMessage()});
+                  new Object[] {LOG_PREFIX, dfceConnection.getServerUrl(), e.getMessage()});
          }
          dfceService = null;
       }
@@ -161,7 +178,7 @@ public class DFCEServicesImpl implements DFCEServices {
 
       try {
          LOG.debug("{} - Tentative n°{}/{} de connexion à DFCE (url : {})",
-                   new Object[] {LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl()});
+               new Object[] {LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl()});
          connect();
          LOG.debug("{} - Réussite de la tentative n°{}/{} de connexion à DFCE", new Object[] {LOG_PREFIX, currentTentative, maxTentatives});
          LOG.info("{} - Connexion aux services DFCe réussie (url : {})", new Object[] {LOG_PREFIX, dfceConnection.getServerUrl()});
@@ -174,8 +191,8 @@ public class DFCEServicesImpl implements DFCEServices {
          } else {
             // On abandonne
             LOG.error("{} - Le nombre max de tentatives de connexion à DFCE est atteint {}/{} (url : {} - erreur : {})",
-                      new Object[] {LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl(),
-                                    connex.getMessage()});
+                  new Object[] {LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl(),
+                        connex.getMessage()});
             throw new DFCEConnectionServiceException(connex);
          }
       }
@@ -272,8 +289,8 @@ public class DFCEServicesImpl implements DFCEServices {
    @Override
    @AutoReconnectDfceServiceAnnotation
    public Document addAttachment(final UUID paramUUID, final String paramString1, final String paramString2, final boolean paramBoolean,
-                                 final String paramString3, final InputStream paramInputStream)
-         throws FrozenDocumentException, TagControlException {
+         final String paramString3, final InputStream paramInputStream)
+               throws FrozenDocumentException, TagControlException {
       return dfceService.getStoreService().addAttachment(paramUUID, paramString1, paramString2, paramBoolean, paramString3, paramInputStream);
    }
 
@@ -337,8 +354,8 @@ public class DFCEServicesImpl implements DFCEServices {
    @Override
    @AutoReconnectDfceServiceAnnotation
    public Document storeDocument(final Document paramDocument, final StoreOptions paramStoreOptions, final byte[] paramArrayOfByte,
-                                 final InputStream paramInputStream)
-         throws TagControlException {
+         final InputStream paramInputStream)
+               throws TagControlException {
       return dfceService.getStoreService().storeDocument(paramDocument, paramStoreOptions, paramArrayOfByte, paramInputStream);
    }
 
@@ -631,7 +648,7 @@ public class DFCEServicesImpl implements DFCEServices {
    @AutoReconnectDfceServiceAnnotation
    public boolean isServerUp() {
       // Ce service ne renvoie pas d'exception si DFCE est déconnecté.
-    boolean result = dfceService != null && dfceService.isServerUp();
+      boolean result = dfceService != null && dfceService.isServerUp();
       if (result == false) {
          // On se reconnecte et on retente
          reconnect();
@@ -694,7 +711,7 @@ public class DFCEServicesImpl implements DFCEServices {
    @Override
    @AutoReconnectDfceServiceAnnotation
    public Long restart(final long executionId) throws DfceJobInstanceAlreadyCompleteException, NoSuchDfceJobExecutionException, NoSuchDfceJobException,
-         DfceJobRestartException, DfceJobParametersInvalidException {
+   DfceJobRestartException, DfceJobParametersInvalidException {
       return dfceService.getJobAdministrationService().restart(executionId);
    }
 
