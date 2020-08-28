@@ -192,19 +192,17 @@ public class SAECopieServiceImpl implements SAECopieService {
     }
 
     byte[] data = null;
+    ByteArrayDataSource bads = null;
+
     try {
       data = IOUtils.toByteArray(untypedDocument.getContent()
                                  .getInputStream());
-    } catch (final IOException e) {
-      LOG.error(ExceptionUtils.getFullStackTrace(e));
-    }
 
-    ByteArrayDataSource bads = null;
-    try {
       bads = new ByteArrayDataSource(data, "typeMIME");
 
     } catch (final IOException e1) {
       LOG.error(ExceptionUtils.getFullStackTrace(e1));
+      throw new RuntimeException(e1);
     }
 
     final DataHandler dataHandler = new DataHandler(bads);

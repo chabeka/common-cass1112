@@ -833,15 +833,6 @@ SAESearchService {
         doublonMetadataErrors.add(entry.getKey());
       }
     }
-    // TODO Supprimer après test
-    /*
-     * for (final String cle : comptage.keySet()) {
-     * if (comptage.get(cle) > 1) {
-     * doublonMetadataErrors.add(cle);
-     * }
-     * }
-     */
-
     if (!doublonMetadataErrors.isEmpty()) {
       throw new DoublonFiltresMetadataEx(ResourceMessagesUtils.loadMessage(
                                                                            "search.doublon.filtre.error",
