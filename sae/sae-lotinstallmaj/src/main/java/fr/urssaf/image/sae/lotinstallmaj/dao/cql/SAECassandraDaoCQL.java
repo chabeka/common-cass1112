@@ -55,7 +55,7 @@ public class SAECassandraDaoCQL {
 
       final List<Row> rows = result.all();
       if (!rows.isEmpty()) {
-        version = (Integer) SerializerUtils.getBytesAsObject(rows.get(0).getBytes("value"));
+        version = (long) SerializerUtils.getBytesAsObject(rows.get(0).getBytes("value"));
       }
     }
     catch (final Exception e) {
