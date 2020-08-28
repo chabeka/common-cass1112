@@ -19,7 +19,7 @@
 
 
 	<properties>
-		<sae.version>20.4.7</sae.version>
+		<sae.version>20.11.0-SNAPSHOT</sae.version>
 	
 		<maven-release-plugin.version>2.2.1</maven-release-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
