@@ -64,26 +64,13 @@ public class UpdateServiceValidation {
                          "rollback.processId.action"));
 
     if (!IntegerUtils.tryParse(StorageMessageHandler
-                                                    .getMessage("max.lucene.results"))) {
+                               .getMessage("max.lucene.results"))) {
       Validate.isTrue(true,
                       StorageMessageHandler.getMessage(CODE_ERROR,
                                                        "max.lucene.results.required",
                                                        "max.lucene.results.impact",
                           "max.lucene.results.action"));
     }
-    /*
-     * try {
-     * Integer.parseInt(StorageMessageHandler
-     * .getMessage("max.lucene.results"));
-     * }
-     * catch (final NumberFormatException e) {
-     * Validate.isTrue(true,
-     * StorageMessageHandler.getMessage(CODE_ERROR,
-     * "max.lucene.results.required",
-     * "max.lucene.results.impact",
-     * "max.lucene.results.action"));
-     * }
-     */
 
   }
 }
