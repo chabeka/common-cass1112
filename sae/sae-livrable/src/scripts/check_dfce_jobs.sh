@@ -28,6 +28,12 @@ succes ()
     echo "[$d] SUCCES: $1" >&2 
 }
 
+info () 
+{
+    d=`date`
+    echo "[$d] INFO: $1" >&2 
+}
+
 if [ ! -f $CRON_AGENT_FILE ]; then
     error "Cron $CRON_AGENT_FILE inexistant"
     exit 1
@@ -43,7 +49,7 @@ fi
 #
 
 if ! grep -q "Fin de la purge des événements de type documents" "$LOG_DIR/sae_dfce_admin_exploit-clearDocEvent.log"; then
-    error "La purge des évènements de type documents n'est pas terminée"
+    info "La purge des évènements de type documents n'est pas terminée"
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-clearDocEvent.log"; then
@@ -56,7 +62,7 @@ if ! grep -q "Fin de la purge des événements de type documents" "$LOG_DIR/sae_
 fi
 
 if ! grep -q "Fin de la purge des événements de type système" "$LOG_DIR/sae_dfce_admin_exploit-clearSystemEvent.log"; then
-    error "La purge des évènements de type système n'est pas terminée"
+    info "La purge des évènements de type système n'est pas terminée"
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-clearSystemEvent.log"; then
@@ -69,7 +75,7 @@ if ! grep -q "Fin de la purge des événements de type système" "$LOG_DIR/sae_d
 fi
 
 if ! grep -q "Journalisation de type système est terminée" "$LOG_DIR/sae_dfce_admin_exploit-creatSystemEvent.log"; then
-    error "La journalisation de type système n'est pas terminée"
+    info "La journalisation de type système n'est pas terminée"
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-creatSystemEvent.log"; then
@@ -82,7 +88,7 @@ if ! grep -q "Journalisation de type système est terminée" "$LOG_DIR/sae_dfce_
 fi
 
 if ! grep -q "Journalisation de type documents est terminée" "$LOG_DIR/sae_dfce_admin_exploit-createDocEvent.log"; then
-    error "La journalisation de type documents n'est pas terminée"
+    info "La journalisation de type documents n'est pas terminée"
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-createDocEvent.log"; then
@@ -95,7 +101,7 @@ if ! grep -q "Journalisation de type documents est terminée" "$LOG_DIR/sae_dfce
 fi
 
 if ! grep -q "Réindexation DFCE terminée" "$LOG_DIR/sae_dfce_admin_exploit-reindex.log"; then
-    error "La réindexation de la base DFCE n'est pas terminée"
+    info "La réindexation de la base DFCE n'est pas terminée"
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-reindex.log"; then
@@ -108,7 +114,7 @@ if ! grep -q "Réindexation DFCE terminée" "$LOG_DIR/sae_dfce_admin_exploit-rei
 fi
 
 if ! grep -q "Mise à jour des statistiques DFCE terminée" "$LOG_DIR/sae_dfce_admin_exploit-updateDocsStats.log"; then
-    error "La mise à jour des statistiques DFCE n'est pas terminée"
+    info "La mise à jour des statistiques DFCE n'est pas terminée"
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-updateDocsStats.log"; then
