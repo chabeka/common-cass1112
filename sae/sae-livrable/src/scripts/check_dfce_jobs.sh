@@ -22,6 +22,12 @@ error ()
     echo "[$d] ERROR: $1" >&2 
 }
 
+succes () 
+{
+    d=`date`
+    echo "[$d] SUCCES: $1" >&2 
+}
+
 if [ ! -f $CRON_AGENT_FILE ]; then
     error "Cron $CRON_AGENT_FILE inexistant"
     exit 1
@@ -41,7 +47,7 @@ if ! grep -q "Fin de la purge des événements de type documents" "$LOG_DIR/sae_
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-clearDocEvent.log"; then
-			error "La purge des évènements de type documents s'est terminé en SUCCES"
+			succes "La purge des évènements de type documents s'est terminé en SUCCES"
 			ERRNO+=1
 		else
 			error "La purge des évènements de type documents s'est terminé en FAILURE"
@@ -54,7 +60,7 @@ if ! grep -q "Fin de la purge des événements de type système" "$LOG_DIR/sae_d
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-clearSystemEvent.log"; then
-			error "La purge des évènements de type système s'est terminé en SUCCES"
+			succes "La purge des évènements de type système s'est terminé en SUCCES"
 			ERRNO+=1
 		else
 			error "La purge des évènements de type système s'est terminé en FAILURE"
@@ -67,7 +73,7 @@ if ! grep -q "Journalisation de type système est terminée" "$LOG_DIR/sae_dfce_
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-creatSystemEvent.log"; then
-			error "La journalisation de type système s'est terminé en SUCCES"
+			succes "La journalisation de type système s'est terminé en SUCCES"
 			ERRNO+=1
 		else
 			error "La journalisation de type système s'est terminé en FAILURE"
@@ -80,7 +86,7 @@ if ! grep -q "Journalisation de type documents est terminée" "$LOG_DIR/sae_dfce
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-createDocEvent.log"; then
-			error "La journalisation de type documents s'est terminé en SUCCES"
+			succes "La journalisation de type documents s'est terminé en SUCCES"
 			ERRNO+=1
 		else
 			error "La journalisation de type documents s'est terminé en FAILURE"
@@ -93,7 +99,7 @@ if ! grep -q "Réindexation DFCE terminée" "$LOG_DIR/sae_dfce_admin_exploit-rei
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-reindex.log"; then
-			error "La réindexation de la base DFCE s'est terminé en SUCCES"
+			succes "La réindexation de la base DFCE s'est terminé en SUCCES"
 			ERRNO+=1
 		else
 			error "La réindexation de la base DFCE s'est terminé en FAILURE"
@@ -106,7 +112,7 @@ if ! grep -q "Mise à jour des statistiques DFCE terminée" "$LOG_DIR/sae_dfce_a
     ERRNO+=1
 	else
 		if grep -q "est terminé en succès" "$LOG_DIR/sae_dfce_admin_exploit-updateDocsStats.log"; then
-			error "La mise à jour des statistiques DFCE s'est terminé en SUCCES"
+			succes "La mise à jour des statistiques DFCE s'est terminé en SUCCES"
 			ERRNO+=1
 		else
 			error "La mise à jour des statistiques DFCE s'est terminé en FAILURE"
