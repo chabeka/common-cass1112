@@ -218,6 +218,15 @@
          <outputDirectory>sae-lotinstallmaj</outputDirectory>
          <lineEnding>unix</lineEnding>
       </fileSet>
+	  
+      <fileSet>
+         <directory>${project.build.directory}/sae-livrable/sae-lotinstallmaj</directory>
+         <includes>
+            <include>sae-lotinstallmaj.sh</include>
+         </includes>
+         <outputDirectory>sae-lotinstallmaj</outputDirectory>
+         <lineEnding>unix</lineEnding>
+      </fileSet>	  
 
       <fileSet>
          <directory>${project.build.directory}/sae-livrable/sae-ordonnanceur</directory>
