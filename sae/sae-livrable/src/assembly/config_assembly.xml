@@ -52,6 +52,14 @@
          </includes>
          <outputDirectory>sae-lotinstallmaj</outputDirectory>
       </fileSet>
+	  
+	  <fileSet>
+         <directory>src/scripts/</directory>
+         <includes>
+            <include>sae-lotinstallmaj.sh</include>
+         </includes>
+         <outputDirectory>sae-lotinstallmaj</outputDirectory>
+      </fileSet>
 
       <fileSet>
          <directory>src/config/</directory>
