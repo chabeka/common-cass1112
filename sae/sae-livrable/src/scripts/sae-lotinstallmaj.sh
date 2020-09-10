@@ -36,7 +36,7 @@ case "$1" in
 	--info)
 		start
 		;;
-	--detail)
+	--details)
 		if [ -z "$2" ]; then
 			echo "Le parametre 2 est manquant. Saisir le numéro de la version"
 			exit 1
@@ -81,7 +81,7 @@ case "$1" in
    		display_help
    		;;		
    *)
-    echo $"Usage: $0 {--changeToVersion --redo --verify --updateToVersion --detail NUM_VERSION|--info|--update|--create|--createcql|--rattrapagecql|-h,--help}"
+    echo $"Usage: $0 {--changeToVersion --redo --verify --updateToVersion --details NUM_VERSION|--info|--update|--create|--createcql|--rattrapagecql|-h,--help}"
     exit 1
 esac
 
