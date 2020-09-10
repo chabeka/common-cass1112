@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.docubase.dfce.commons.metadata.MetadataType;
+
 import fr.urssaf.image.sae.lotinstallmaj.component.DFCEConnexionComponent;
 import fr.urssaf.image.sae.lotinstallmaj.constantes.LotVersion;
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
@@ -23,6 +25,7 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.BaseCategory;
 import net.docubase.toolkit.model.reference.Category;
 import net.docubase.toolkit.model.reference.CompositeIndex;
+import net.docubase.toolkit.model.reference.Metadata;
 import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
@@ -151,8 +154,12 @@ public class DFCEIndexeMetaUpdaterService {
 
                // -- Mise à jour de la catégory
 
-               final BaseCategory baseCategory = base.getBaseCategory(catFound.getName());
-
+               BaseCategory baseCategory = base.getBaseCategory(catFound.getName());
+               
+               if(baseCategory == null) {
+                 baseCategory = toolkit.createBaseCategory(catFound, category.isIndex());
+               }
+               
                baseCategory.setEnableDictionary(category.isEnableDictionary());
                baseCategory.setMaximumValues(category.getMaximumValues());
                baseCategory.setMinimumValues(category.getMinimumValues());
@@ -163,7 +170,7 @@ public class DFCEIndexeMetaUpdaterService {
             }
          }
          serviceProvider.getBaseAdministrationService().updateBase(base);
-      }
+      } 
       finally {
          // -- Fermeture connexion DFCE
          dfceConnexionComponent.disconnectDfce();

@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -11,20 +10,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
-import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
 import fr.urssaf.image.sae.lotinstallmaj.component.DFCEConnexionComponent;
 import fr.urssaf.image.sae.lotinstallmaj.constantes.LotVersion;
 import fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotServiceVerificator;
-import fr.urssaf.image.sae.metadata.referential.model.SaeIndexComposite;
-import fr.urssaf.image.sae.metadata.referential.support.SaeIndexCompositeSupport;
 
 @Service
-@Qualifier("MajLotServiceVerificatorImpl")
-public class MajLotServiceVerificatorImpl implements MajLotServiceVerificator {
+@Qualifier("MajLotServiceVerificatorThriftImpl")
+public class MajLotServiceVerificatorThriftImpl implements MajLotServiceVerificator{
 
-   private static final Logger LOG = LoggerFactory.getLogger(MajLotServiceVerificatorImpl.class);
+   private static final Logger LOG = LoggerFactory.getLogger(MajLotServiceVerificatorThriftImpl.class);
 
    @Autowired
    private RefMetaInitialisationService refMetaInitService;
@@ -40,9 +36,7 @@ public class MajLotServiceVerificatorImpl implements MajLotServiceVerificator {
 
    @Autowired
    ReferentielFormatService referentielFormatService;
-   /**
-    * {@inheritDoc}
-    */
+
    @Override
    public boolean verify(final int version) {
       boolean isOK = false;
@@ -63,50 +57,7 @@ public class MajLotServiceVerificatorImpl implements MajLotServiceVerificator {
    }
 
 
-   /**
-    * Vérifie que les formats de fichiers sont listés sont bien présents dans le référentiel des formats
-    * 
-    * @return
-    */
-   private boolean verifyFormatFichier(final List<String> formatsToCheck) {
-
-      final List<FormatFichier> listFormat = referentielFormatService.getAllFormat();
-      final List<String> extensions = new ArrayList<>();
-      for (final FormatFichier format : listFormat) {
-         extensions.add(format.getExtension());
-      }
-
-      return extensions.containsAll(formatsToCheck);
-   }
-
-   /**
-    * Vérifie que les index composites sont bien à jour dans dfce
-    * 
-    * @return
-    */
-   private boolean verifyIndexesComposites(final String indexCodeCourt) {
-
-      boolean isOK = false;
-
-      // -- dcfe connect
-      try {
-         dfceConnexionComponent.setCnxParameter(dfceConfig);
-         dfceConnexionComponent.openConnection();
-      }
-      catch (final Exception e) {
-         throw new RuntimeException(e);
-      }
-
-      final SaeIndexCompositeSupport serviceSupport = new SaeIndexCompositeSupport(dfceConnexionComponent.getDFCEServices());
-      final List<SaeIndexComposite> listIndex = serviceSupport.getListeCompositeIndex();
-
-      for (final SaeIndexComposite index : listIndex) {
-         if (index.getName().equals(indexCodeCourt)) {
-            isOK = true;
-         }
-      }
-      return isOK;
-   }
+  
 
    /**
     * Affiche le status d'installation d'une version
@@ -203,5 +154,30 @@ public class MajLotServiceVerificatorImpl implements MajLotServiceVerificator {
 
       return isOK;
    }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ReferentielFormatService getReferentielFormatService() {
+    return referentielFormatService;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public DFCEConnexionComponent openConnection() {
+
+    // -- dcfe connect
+    try {
+      dfceConnexionComponent.setCnxParameter(dfceConfig);
+      dfceConnexionComponent.openConnection();
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
+    return dfceConnexionComponent;
+  }
 
 }

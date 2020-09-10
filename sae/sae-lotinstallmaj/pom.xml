@@ -204,6 +204,12 @@
 			</exclusions>
 		</dependency>
 
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-storage</artifactId>
+         <version>${sae.version}</version>
+      </dependency>
+      
 		<!-- commons-cassandra -->
 		<dependency>
 			<groupId>fr.urssaf.image.commons</groupId>

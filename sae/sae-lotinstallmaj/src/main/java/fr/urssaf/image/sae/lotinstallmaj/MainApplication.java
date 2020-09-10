@@ -50,6 +50,9 @@ public class MainApplication {
             MajLotAlreadyInstallUpdateException e) {
          LOG.info(e.getMessage());
       }
+      catch (Exception e){
+        throw e;
+      }
       finally {
          System.exit(0);
       }

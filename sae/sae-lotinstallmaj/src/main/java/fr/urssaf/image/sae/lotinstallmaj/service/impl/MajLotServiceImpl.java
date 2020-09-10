@@ -822,8 +822,14 @@ public final class MajLotServiceImpl implements MajLotService {
    */
   @Override
   public void info() {
+    long versionDB = 0;
+    if (modeApiCqlSupport.isModeCql(PARAMETERS_CF_NAME)) {
+      versionDB = updaterCQL.getDatabaseVersion();
+    } else {
+      versionDB = updater.getDatabaseVersion();
+    }
     LOG.info("\n*************************** Informations courantes de la base *******************************\n");
-    LOG.info("La version actuelle de la base de données est : {} \n", updater.getDatabaseVersion());
+    LOG.info("La version actuelle de la base de données est : {} \n", versionDB);
     LOG.info("La dernière version disponible de la base de données est : {} \n", LotVersion.getLastAvailableVersion());
     LOG.info("*************************** Fin ***************************************\n");
   }
@@ -841,14 +847,30 @@ public final class MajLotServiceImpl implements MajLotService {
     return info;
   }
 
-
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void info(final int version, final long versionInstalled) {
+    // info sur la version
+    LOG.info("La base est déjà à une version supperieure ou égale à la version " + version);
+    LOG.info("\n*************************** Informations courantes de la base *******************************\n");
+    LOG.info("La version actuelle de la base de données est : {} \n", versionInstalled);
+    LOG.info("La dernière version disponible de la base de données est : {} \n", LotVersion.getLastAvailableVersion());
+    LOG.info("*************************** Fin ***************************************\n");
+  }
 
   /**
    * {@inheritDoc}
    */
   @Override
   public void forceVersion(final int version) {
-    updater.updateDatabaseVersion(version);
+
+    if (modeApiCqlSupport.isModeCql(PARAMETERS_CF_NAME)) {
+      updaterCQL.updateDatabaseVersion(version);
+    } else {
+      updater.updateDatabaseVersion(version);
+    }
     LOG.info("La base a bien été mise en version {}", version);
   }
 
@@ -1011,6 +1033,14 @@ public final class MajLotServiceImpl implements MajLotService {
   @Override
   public void beforeCreate() {
 
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public long getDatabaseVersion() {
+    return dfceCassandraUpdater.getDatabaseVersion();
   }
 
 }

@@ -52,7 +52,11 @@
 
 	<import resource="classpath:/applicationContext-sae-rnd.xml" />
 	
-	<!--  <import resource="classpath:/applicationContext-sae-metadata.xml" /> -->
+	<import resource="applicationContext-sae-storage-dfce.xml" />
+	
+	<import resource="applicationContext-sae-droit.xml" />
+	
+	<import resource="classpath:/applicationContext-sae-metadata.xml" />
 	
 	<import resource="classpath:/applicationContext-sae-format.xml" />
 	

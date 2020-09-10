@@ -16,7 +16,7 @@ public class DFCECassandraUpdaterCQL extends DFCECassandraUpdaterV2 {
    * {@inheritDoc}
    */
   @Override
-  protected long getDatabaseVersion() {
+  public long getDatabaseVersion() {
     return saeDao.getDatabaseVersion();
   }
 
@@ -32,7 +32,7 @@ public class DFCECassandraUpdaterCQL extends DFCECassandraUpdaterV2 {
    * {@inheritDoc}
    */
   @Override
-  protected long getDatabaseVersionDFCE() {
+  public long getDatabaseVersionDFCE() {
     return saeDao.getDatabaseVersionDFCE();
   }
 

@@ -32,8 +32,6 @@ import fr.urssaf.image.sae.lotinstallmaj.modele.metadata.ReferentielMeta;
 import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.SAEKeyspaceConnecter;
 import fr.urssaf.image.sae.lotinstallmaj.service.utils.XmlUtils;
 import fr.urssaf.image.sae.metadata.referential.dao.SaeMetadataDao;
-import fr.urssaf.image.sae.metadata.referential.dao.cql.IMetadataDaoCql;
-import fr.urssaf.image.sae.metadata.referential.dao.cql.impl.MetadataCqlDaoImpl;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
 import fr.urssaf.image.sae.metadata.referential.support.cql.SaeMetadataCqlSupport;
@@ -76,6 +74,9 @@ public final class RefMetaInitialisationService {
 
    @Autowired
    private ModeApiCqlSupport modeApiCqlSupport;
+   
+   @Autowired
+   SaeMetadataCqlSupport metadataCqlSupport;
 
    private final String cfName = Constantes.CF_METADATA;
 
@@ -664,12 +665,6 @@ public final class RefMetaInitialisationService {
 
       LOG.info("Persistence des métadonnées CQL");
 
-      // -- Instantiation de la DAO, de son support, et du support des clock Cassandra
-      final  IMetadataDaoCql metadataDaoCql = new MetadataCqlDaoImpl(saecf.getCcf());
-      final SaeMetadataCqlSupport metadataCqlSupport = new SaeMetadataCqlSupport(metadataDaoCql);
-
-
-
       //-- Création des métadonnées en base Cassandra uniquement (pas dans DFCE)
       for (final MetadataReference metadonnee : metadonnees) {
          if (metadataCqlSupport.find(metadonnee.getLongCode()) != null) {
@@ -716,6 +711,15 @@ public final class RefMetaInitialisationService {
       return isOK;
    }
 
+   public boolean findListMeta(final Keyspace keyspace, final List<String> codesLong) {
+     boolean trouvee = false;
+     if (modeApiCqlSupport.isModeThrift(cfName)) {
+       trouvee = findListMetaThrift(keyspace, codesLong);
+      } else if (modeApiCqlSupport.isModeCql(cfName)) {
+        trouvee = findListMetaCQL(codesLong);
+      }
+     return trouvee;
+   }
    /**
     * Vérifier l'existence d'une liste de métadonnées
     * 
@@ -723,7 +727,34 @@ public final class RefMetaInitialisationService {
     * @param codesLong
     * @return
     */
-   public boolean findListMeta(final Keyspace keyspace, final List<String> codesLong) {
+   private boolean findListMetaCQL(final List<String> codesLong) {
+      boolean trouvee = false;
+
+      int count = 0;
+      // -- Création des métadonnées en base Cassandra uniquement (pas dans DFCE)
+      for (final String codeLong : codesLong) {
+         if (metadataCqlSupport.find(codeLong) != null) {
+            count++;
+         } else {
+            return false;
+         }
+      }
+
+      if (count == codesLong.size()) {
+         trouvee = true;
+      }
+
+      return trouvee;
+   }
+   
+   /**
+    * Vérifier l'existence d'une liste de métadonnées
+    * 
+    * @param keyspace
+    * @param codesLong
+    * @return
+    */
+   private boolean findListMetaThrift(final Keyspace keyspace, final List<String> codesLong) {
       boolean trouvee = false;
 
       // -- Instantiation de la DAO, de son support, et du support des clock Cassandra

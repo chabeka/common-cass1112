@@ -21,7 +21,7 @@ public class DFCECassandraUpdaterThriftImpl extends DFCECassandraUpdaterV2 {
    * {@inheritDoc}
    */
   @Override
-  protected long getDatabaseVersion() {
+  public long getDatabaseVersion() {
     return saeDao.getDatabaseVersion();
   }
 
@@ -37,7 +37,7 @@ public class DFCECassandraUpdaterThriftImpl extends DFCECassandraUpdaterV2 {
    * {@inheritDoc}
    */
   @Override
-  protected long getDatabaseVersionDFCE() {
+  public long getDatabaseVersionDFCE() {
     return saeDao.getDatabaseVersionDFCE();
   }
 

@@ -259,11 +259,11 @@ public abstract class DFCECassandraUpdaterV2 {
       return isReady;
    }
 
-   protected abstract long getDatabaseVersion();
+   public abstract long getDatabaseVersion();
 
    protected abstract void setDatabaseVersion(int version);
 
-   protected abstract long getDatabaseVersionDFCE();
+   public abstract long getDatabaseVersionDFCE();
 
    protected abstract void setDatabaseVersionDFCE(int version);
 

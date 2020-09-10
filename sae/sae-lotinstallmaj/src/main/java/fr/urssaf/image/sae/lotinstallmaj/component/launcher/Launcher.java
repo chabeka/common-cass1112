@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotUnknownDFCEVersion;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotService;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotServiceVerificator;
+import fr.urssaf.image.sae.lotinstallmaj.service.MajLotServiceVerificatorRouter;
 import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.SAECassandraUpdaterCQL;
 
 @Component
@@ -35,8 +36,7 @@ public class Launcher {
    private MajLotService majLotService;
 
    @Autowired
-   @Qualifier("MajLotServiceVerificatorImpl")
-   private MajLotServiceVerificator majLotServiceVerificator;
+   private MajLotServiceVerificatorRouter serviceVerificatorRouter;
 
    /**
     * @param args
@@ -154,7 +154,7 @@ public class Launcher {
    }
 
    private void verify(final int numVersion) {
-      majLotServiceVerificator.verify(numVersion);
+      serviceVerificatorRouter.verify(numVersion);
    }
 
    private void getVersionInfo(final int numVersion) throws MajLotInexistantUpdateException {
