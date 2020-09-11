@@ -12,7 +12,7 @@ public enum Commandes {
    DETAILS("--details", true),
    UPDATE_TO("--updateToVersion", true),
    VERIFY("--verify", true),
-   CHANGE_VERSION_TO("--changeVersionTo", true),
+   CHANGE_VERSION_TO("--changeToVersion", true),
    RATTRAPAGE_CQL("--rattrapagecql");
 
 

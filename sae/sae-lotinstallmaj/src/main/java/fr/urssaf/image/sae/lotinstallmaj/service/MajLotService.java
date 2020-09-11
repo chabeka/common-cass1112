@@ -103,8 +103,7 @@ public interface MajLotService {
 
     // la version installé en base
     final long versionInstalled = getDatabaseVersion();
-
-    if (isRedo || versionInstalled < version) {
+    if (isRedo || versionInstalled <= version) {
       selectUpdate(version, isRedo);
       afterUpdate(version);
     } else {

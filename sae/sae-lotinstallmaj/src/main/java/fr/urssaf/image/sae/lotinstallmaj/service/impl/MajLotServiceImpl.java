@@ -853,7 +853,7 @@ public final class MajLotServiceImpl implements MajLotService {
   @Override
   public void info(final int version, final long versionInstalled) {
     // info sur la version
-    LOG.info("La base est déjà à une version supperieure ou égale à la version " + version);
+    LOG.info("La base est déjà à une version supérieure ou égale à la version " + version);
     LOG.info("\n*************************** Informations courantes de la base *******************************\n");
     LOG.info("La version actuelle de la base de données est : {} \n", versionInstalled);
     LOG.info("La dernière version disponible de la base de données est : {} \n", LotVersion.getLastAvailableVersion());
