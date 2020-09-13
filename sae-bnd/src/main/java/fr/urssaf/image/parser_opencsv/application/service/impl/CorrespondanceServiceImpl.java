@@ -186,11 +186,11 @@ public class CorrespondanceServiceImpl implements ICorrespondanceService {
         final String reelCodeOrgaPro = mapCorrespondancesCaisses.get(String.valueOf(keyInt)).getValue();
         document.getMetadonnees().updateMeta(Metadata.CODE_ORGA_PROPRIETAIRE, reelCodeOrgaPro);
       } else {
-        throw new CorrespondanceException("Aucune Correspondance CodeOrgaProp trouvée pour le Code", key);
+        throw new CorrespondanceException("Aucune Correspondance CodeOrgaProp trouvée pour le Code ", key);
       }
     }
     catch (final Exception e) {
-      throw new CorrespondanceException("Aucune Correspondance CodeOrgaProp trouvée pour le Code", key);
+      throw new CorrespondanceException("Aucune Correspondance CodeOrgaProp trouvée pour le Code ", key);
     }
   }
 
