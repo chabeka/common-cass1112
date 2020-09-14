@@ -559,3 +559,14 @@ Met la base Cassandra du SAE en version 33 :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_200500
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNS_CASSANDRA_DFCE_200500
 
+
+// ------------------------------------------
+// 23) Lot 201100GED
+// ------------------------------------------
+Met la base Cassandra du SAE en version 34 :
+- Ajout du Paramètre de trace de Déblocage OK [WS_DEBLOCAGE|OK]
+- Ajout de la métadonnée DateNaissanceCotisant
+- Ajout de l'index composite DomaineCotisant-CodeOrganismeProprietaire-DateNaissanceCotisant-DateArchivage
+- Ajout des formats rtf et eml
+
+sudo ./hawai/data/sae/sae-lotinstallmaj.sh --update
