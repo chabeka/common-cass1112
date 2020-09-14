@@ -5,7 +5,7 @@
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-cassandra</artifactId>
 
-	<version>2.1.1</version>
+	<version>2.1.2-SNAPSHOT</version>
 
 	<name>commons-cassandra</name>
 
@@ -56,13 +56,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        	scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-cassandra-2.1.1
+        	scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
      	</url>
 		<developerConnection>
-        	scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-cassandra-2.1.1
+        	scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
       	</developerConnection>
 		<connection>
-        	scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-cassandra-2.1.1
+        	scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
       	</connection>
 	</scm>
 
