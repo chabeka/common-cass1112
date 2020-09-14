@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>fr.urssaf.image.sae</groupId>
 		<artifactId>sae</artifactId>
-		<version>20.11.0</version>
+		<version>20.11.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sae-lotinstallmaj</artifactId>
@@ -87,7 +87,7 @@
 		<opencsv.version>2.3</opencsv.version>
 		<maven-jaxb2-plugin.version>0.8.2</maven-jaxb2-plugin.version>
 		<maven-replacer-plugin.version>1.3.6</maven-replacer-plugin.version>
-		<sae.version>20.11.0</sae.version>
+		<sae.version>20.11.1-SNAPSHOT</sae.version>
 	</properties>
 
 	<profiles>
