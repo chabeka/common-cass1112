@@ -32,7 +32,7 @@ public class SAECassandraDaoCQL {
    * 
    * @param version
    */
-  public void updateDatabaseVersion(final int version) {
+  public void updateDatabaseVersion(final long version) {
     saeKeyspaceConnecter.connectToKeyspace();
     final ParameterCql parameterCql = new ParameterCql();
     parameterCql.setName(ParameterType.versionBDD);
@@ -55,9 +55,16 @@ public class SAECassandraDaoCQL {
 
       final List<Row> rows = result.all();
       if (!rows.isEmpty()) {
-        final Integer dbVersionInt = (Integer) SerializerUtils.getBytesAsObject(rows.get(0).getBytes("value"));
-        if (dbVersionInt != null) {
-          version = dbVersionInt.longValue();
+        final Object obj = SerializerUtils.getBytesAsObject(rows.get(0).getBytes("value"));
+        if (obj != null && obj instanceof Long) {
+          version = ((Long) obj).longValue();
+        } else if (obj instanceof Integer) {
+          final Integer dbVersionInt = (Integer) SerializerUtils.getBytesAsObject(rows.get(0).getBytes("value"));
+          if (dbVersionInt != null) {
+            version = dbVersionInt.longValue();
+          }
+        } else {
+          throw new MajLotRuntimeException("Erreur survenue lors de la recupération de la version de la bdd SAE");
         }
       }
     }
