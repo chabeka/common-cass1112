@@ -5,7 +5,7 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>20.11.2-SNAPSHOT</version>
+      <version>20.11.2</version>
    </parent>
 
    <artifactId>sae-mapping</artifactId>
@@ -19,17 +19,17 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
-         <version>20.11.2-SNAPSHOT</version>
+         <version>20.11.2</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>20.11.2-SNAPSHOT</version>
+         <version>20.11.2</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>20.11.2-SNAPSHOT</version>
+         <version>20.11.2</version>
       </dependency>
 
 
