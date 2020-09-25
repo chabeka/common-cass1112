@@ -129,8 +129,7 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
                     try {
                       crlToDelete.delete();
                     } catch (final Exception e) {
-                      System.out.println("exception");
-                      System.out.println(e.getMessage());
+                      LOG.error("exception suppression:{}", e.getMessage());
                     }
                   }
                 }
