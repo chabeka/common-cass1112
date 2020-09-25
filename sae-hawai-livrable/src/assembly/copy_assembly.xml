@@ -159,6 +159,13 @@
       <fileSet>
          <directory>${project.build.directory}/sae-livrable</directory>
          <includes>
+            <include>ACOSS_Reseau_des_URSSAF_V3.crt</include>
+         </includes>
+         <outputDirectory />
+      </fileSet>	  
+      <fileSet>
+         <directory>${project.build.directory}/sae-livrable</directory>
+         <includes>
             <include>sae-cassandra-config.properties</include>
          </includes>
          <outputDirectory />
