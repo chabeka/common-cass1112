@@ -132,6 +132,14 @@
          </includes>
          <outputDirectory />
       </fileSet>
+	  
+      <fileSet>
+         <directory>src/pki/</directory>
+         <includes>
+            <include>ACOSS_Reseau_des_URSSAF_V3.crt</include>
+         </includes>
+         <outputDirectory />
+      </fileSet>	  
       
       <fileSet>
          <directory>src/scripts/</directory>
