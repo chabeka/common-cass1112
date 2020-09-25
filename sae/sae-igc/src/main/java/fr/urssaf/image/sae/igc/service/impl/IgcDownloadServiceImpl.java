@@ -132,8 +132,6 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
                       System.out.println("exception");
                       System.out.println(e.getMessage());
                     }
-                  } else {
-                    LOG.error("Répertoire invalide");
                   }
                 }
               } else {
