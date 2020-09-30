@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.dfcetools;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
+import java.util.Set;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 
@@ -12,6 +14,7 @@ import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.commons.dfce.service.impl.DFCEServicesImpl;
 import fr.urssaf.image.sae.dfcetools.dao.CassandraSessionFactory;
+import net.docubase.toolkit.model.reference.LifeCycleRule;
 
 public class Main {
 
@@ -20,6 +23,17 @@ public class Main {
     * @throws Exception
     */
    public static void main(final String[] args) throws Exception {
+      final DFCEServices dfceServices = getDfceServices("localhost", "SAE-PROD", 8080);
+
+      final Set<LifeCycleRule> rules = dfceServices.getAllLifeCycleRules();
+      for (final Iterator iterator = rules.iterator(); iterator.hasNext();) {
+         final LifeCycleRule lifeCycleRule = (LifeCycleRule) iterator.next();
+         System.out.println(lifeCycleRule.getDocumentType());
+      }
+
+   }
+
+   public static void main_old(final String[] args) throws Exception {
       final DFCEServices dfceServices = getDfceServices("hwi7gntcveappli1.cve.recouv", "GNT-PROD", 8080);
       final String servers = "cnp7gntcvecas1.cve.recouv,cnp7gntcvecas2.cve.recouv"; // Charge GNT
       final String cassandraLocalDC = "DC7";
@@ -35,7 +49,7 @@ public class Main {
          System.out.println("La date semble invalide");
          return;
       }
-      final DocumentDeleter deleter = new DocumentDeleter(session);
+      final DocumentsDeleter deleter = new DocumentsDeleter(session);
       deleter.deleteDocumentsAfterDate(dfceServices, date);
 
    }
@@ -49,11 +63,11 @@ public class Main {
       params.setHostName(server);
       params.setHostPort(port);
       params.setBaseName(base);
-      params.setContextRoot("/dfce-webapp/toolkit/");
+      params.setContextRoot("/dfce-webapp/");
       params.setSecure(true);
       params.setLogin("_ADMIN");
       params.setPassword("DOCUBASE");
-      params.setTimeout(3000);
+      params.setTimeout(10000);
       final String url = "http://" + params.getHostName() + ":" + params.getHostPort() + params.getContextRoot();
       params.setUrlToolkit(url);
       params.setServerUrl(new URL(url));

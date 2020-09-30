@@ -26,22 +26,19 @@ import net.docubase.toolkit.model.search.SearchQuery;
 /**
  * Classe permettant de purger des documents, sur critères de date
  */
-public class DocumentDeleter {
+public class DocumentsDeleter {
 
    private PreparedStatement deleteStatement;
 
    private final CqlSession session;
 
-   private final String baseName;
-
    private final IndexReference indexReference;
 
    private final UUID baseId;
 
-   public DocumentDeleter(final CqlSession session) throws Exception {
+   public DocumentsDeleter(final CqlSession session) {
       this.session = session;
       prepareDeleteStatement(session);
-      baseName = BaseDAO.getBaseName(session);
       baseId = BaseDAO.getBaseUUID(session);
       indexReference = new IndexReference();
       indexReference.readIndexReference(session, baseId, "SM_ARCHIVAGE_DATE", "NOMINAL");
@@ -51,8 +48,8 @@ public class DocumentDeleter {
       final SimpleStatement simpleStatement = SimpleStatement.builder("DELETE FROM dfce.term_info_range_datetime"
             + " WHERE index_code=? AND metadata_name='SM_ARCHIVAGE_DATE' AND base_uuid=? AND range_index_id=?"
             + " AND metadata_value= ? AND document_uuid= ? AND document_version='0.0.0'")
-                                                             .setConsistencyLevel(DefaultConsistencyLevel.QUORUM)
-                                                             .build();
+            .setConsistencyLevel(DefaultConsistencyLevel.QUORUM)
+            .build();
       deleteStatement = session.prepare(simpleStatement);
    }
 
@@ -80,7 +77,7 @@ public class DocumentDeleter {
             dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
             final String metaValue = dateFormat.format(archivageDate);
             if (e.getMessage().contains("doesn't exist in DEFAULT index")) {
-               // Le document est déja supprimé ou dans la corbeille, mais l'index n'est pas à jour.
+               // Le document est déjà supprimé ou dans la corbeille, mais l'index n'est pas à jour.
                // 1) on tente la suppression de la corbeille
                try {
                   dfceServices.deleteDocumentFromRecycleBin(uuid);
@@ -100,7 +97,7 @@ public class DocumentDeleter {
                System.out.println("UUID=" + doc.getUuid());
                System.out.println("MetaValue=" + metaValue);
                System.out.println("Erreur=" + e.getMessage());
-               throw new Exception("Fini en erreur");
+               throw new RuntimeException("Fini en erreur");
             }
          }
          counter++;
@@ -112,15 +109,14 @@ public class DocumentDeleter {
       System.out.println("Nombre d'entrées d'index supprimées =" + cleanCounter);
    }
 
-   private void removeOneIndexEntry(final String indexCode, final String metaValue, final UUID docUUID)
-         throws Exception {
+   private void removeOneIndexEntry(final String indexCode, final String metaValue, final UUID docUUID) {
       final int rangeId = indexReference.metaToRangeId(metaValue);
       final BoundStatement bound = deleteStatement.bind()
-                                                  .setString(0, indexCode)
-                                                  .setUuid(1, baseId)
-                                                  .setBigInteger(2, BigInteger.valueOf(rangeId))
-                                                  .setString(3, metaValue)
-                                                  .setUuid(4, docUUID);
+            .setString(0, indexCode)
+            .setUuid(1, baseId)
+            .setBigInteger(2, BigInteger.valueOf(rangeId))
+            .setString(3, metaValue)
+            .setUuid(4, docUUID);
       final ResultSet result = session.execute(bound);
    }
 }

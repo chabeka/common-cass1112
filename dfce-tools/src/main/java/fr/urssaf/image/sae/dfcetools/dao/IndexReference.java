@@ -31,18 +31,18 @@ public class IndexReference {
 
    Map<Integer, Integer> rangeIdToIndex = new HashMap<>();
 
-   public void readIndexReference(final CqlSession session, final UUID baseUUID, final String meta, final String state) throws Exception {
+   public void readIndexReference(final CqlSession session, final UUID baseUUID, final String meta, final String state) {
       readIndexReference(session, baseUUID, meta, new String[] {state});
    }
 
-   public void readIndexReference(final CqlSession session, final UUID baseUUID, final String meta, final String[] states) throws Exception {
+   public void readIndexReference(final CqlSession session, final UUID baseUUID, final String meta, final String[] states) {
 
       final Select query = QueryBuilder.selectFrom("dfce", "index_reference")
-                                       .all()
-                                       .whereColumn("index_name")
-                                       .isEqualTo(literal(meta))
-                                       .whereColumn("base_id")
-                                       .isEqualTo(literal(baseUUID));
+            .all()
+            .whereColumn("index_name")
+            .isEqualTo(literal(meta))
+            .whereColumn("base_id")
+            .isEqualTo(literal(baseUUID));
       final Row row = session.execute(query.build()).one();
       final Map<Integer, String> ranges = row.getMap("index_ranges", Integer.class, String.class);
       int rangeIndex = 0;
@@ -78,19 +78,19 @@ public class IndexReference {
          // System.out.println(entity.getLOWER_BOUND() + " - " + entity.getUPPER_BOUND());
          if (previousEntity == null) {
             if (!"".equals(entity.getLOWER_BOUND())) {
-               throw new Exception("Première borne min pas bonne : " + entity.getLOWER_BOUND());
+               throw new RuntimeException("Première borne min pas bonne : " + entity.getLOWER_BOUND());
             }
          } else {
             // on vérifie que les bornes sont contiguës
             if (!previousEntity.getUPPER_BOUND().equals(entity.getLOWER_BOUND())) {
-               throw new Exception("Bornes non contiguës : " + previousEntity.getUPPER_BOUND() + " et " + entity.getLOWER_BOUND());
+               throw new RuntimeException("Bornes non contiguës : " + previousEntity.getUPPER_BOUND() + " et " + entity.getLOWER_BOUND());
             }
          }
          previousEntity = entity;
          lastEntity = entity;
       }
       if (!"max_upper_bound".equals(lastEntity.getUPPER_BOUND())) {
-         throw new Exception("Dernière borne max pas bonne : " + lastEntity.getUPPER_BOUND());
+         throw new RuntimeException("Dernière borne max pas bonne : " + lastEntity.getUPPER_BOUND());
       }
 
       // Création des bornes

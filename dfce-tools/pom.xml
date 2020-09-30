@@ -24,7 +24,7 @@
       <java-driver.version>4.0.1</java-driver.version>
       <jackson-version>2.9.8</jackson-version>
       <junit.version>4.12</junit.version>
-      <commons.dfce>1.9.16-SNAPSHOT</commons.dfce>
+      <commons.dfce>2.1.1-SNAPSHOT</commons.dfce>
       
    </properties>
    
@@ -65,6 +65,9 @@
                      <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                            <mainClass>fr.urssaf.image.sae.dfcetools.Main</mainClass>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                          <resource>META-INF/cxf/bus-extensions.txt</resource>
                         </transformer>
                      </transformers>
                   </configuration>
@@ -182,5 +185,12 @@
          <version>${junit.version}</version>
          <scope>test</scope>
       </dependency>
+      
+      <dependency>
+         <groupId>com.rainerhahnekamp</groupId>
+         <artifactId>sneakythrow</artifactId>
+         <version>1.2.0</version>
+      </dependency>
+
    </dependencies>
 </project>

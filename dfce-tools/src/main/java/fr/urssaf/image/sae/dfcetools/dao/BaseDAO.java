@@ -20,13 +20,13 @@ public class BaseDAO {
 
    public static UUID getBaseUUID(final CqlSession session, final String baseName) throws Exception {
       final SimpleStatement statement = SimpleStatement.builder("select base_uuid from dfce.base where id = :baseName")
-                                                       .addNamedValue("baseName", baseName)
-                                                       .build();
+            .addNamedValue("baseName", baseName)
+            .build();
       final Row row = session.execute(statement).one();
       return row.getUuid("base_uuid");
    }
 
-   public static UUID getBaseUUID(final CqlSession session) throws Exception {
+   public static UUID getBaseUUID(final CqlSession session) {
       final ResultSet rs = session.execute("select id, base_uuid from dfce.base");
       for (final Row row : rs) {
          final String baseName = row.getString("id");
@@ -38,7 +38,7 @@ public class BaseDAO {
       return null;
    }
 
-   public static String getBaseName(final CqlSession session) throws Exception {
+   public static String getBaseName(final CqlSession session) {
       final ResultSet rs = session.execute("select id from dfce.base");
       for (final Row row : rs) {
          final String baseName = row.getString("id");
@@ -46,13 +46,13 @@ public class BaseDAO {
             return baseName;
          }
       }
-      throw new Exception("Base non trouvée");
+      throw new RuntimeException("Base non trouvée");
    }
 
    private static String getNonSystemMetaType(final CqlSession session, final String baseName, final String metaName) {
       final SimpleStatement statement = SimpleStatement.builder("select metadata_constraints from dfce.base where id = :baseName")
-                                                       .addNamedValue("baseName", baseName)
-                                                       .build();
+            .addNamedValue("baseName", baseName)
+            .build();
       final Row row = session.execute(statement).one();
       final Map<String, String> map = row.getMap("metadata_constraints", String.class, String.class);
       final String json = map.get(metaName);
@@ -93,8 +93,8 @@ public class BaseDAO {
    }
 
    public static String getIndexTable(final CqlSession session,
-                                      final String baseName,
-                                      final String indexName) {
+         final String baseName,
+         final String indexName) {
       final String indexType = getIndexType(session, baseName, indexName);
       switch (indexType) {
       case "INTEGER":
