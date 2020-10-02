@@ -3,14 +3,14 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-rnd-executable</artifactId>
-   <version>20.11.4</version>
+   <version>20.11.5-SNAPSHOT</version>
    <name>sae-rnd-executable</name>
    <description>Lancement des services de mise à jour du RND</description>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>20.11.4</version>
+      <version>20.11.5-SNAPSHOT</version>
    </parent>
 
    <dependencies>
@@ -19,7 +19,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-rnd</artifactId>
-         <version>20.11.4</version>
+         <version>20.11.5-SNAPSHOT</version>
       </dependency>
 
       <!-- AspectJ -->
