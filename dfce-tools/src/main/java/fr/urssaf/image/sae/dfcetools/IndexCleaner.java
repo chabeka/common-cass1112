@@ -20,7 +20,8 @@ import fr.urssaf.image.sae.dfcetools.dao.IndexReference;
 import fr.urssaf.image.sae.dfcetools.helper.ObjectHelper;
 
 /**
- * Classe permettant de nettoyer un index de type String
+ * Classe permettant de vérifier ou nettoyer des entrées d'index, dans les tables
+ * term_info et term_info_range_xxx
  */
 public class IndexCleaner {
 
@@ -43,6 +44,16 @@ public class IndexCleaner {
 
    private final String rangeTableName;
 
+   /**
+    * Constructeur
+    * 
+    * @param session
+    *           : session CQL, permettant l'accès aux données dans cassandra
+    * @param indexName
+    *           : nom de l'index (nom de la méta dans le cas d'un index non composite)
+    * @param dataType
+    *           : type de données de la méta : STRING, DATE, DATETIME, ...
+    */
    public IndexCleaner(final CqlSession session, final String indexName, final String dataType) {
       this.session = session;
       this.indexName = indexName;
@@ -86,16 +97,40 @@ public class IndexCleaner {
       selectStatement = session.prepare(cql2);
    }
 
+   /**
+    * Vérifie la présence des entrées d'index pour un document
+    * 
+    * @param indexValue
+    *           : valeur de l'entrée d'index
+    * @param docUUID
+    *           : UUID du document
+    */
    public void verifyOneEntry(final String indexValue, final UUID docUUID) {
       verifyOneRangeIndexEntry("", indexValue, docUUID);
       verifyOneIndexEntry("", indexValue, docUUID);
    }
 
+   /**
+    * Supprime les entrées d'index pour un document
+    * 
+    * @param indexValue
+    *           : valeur de l'entrée d'index
+    * @param docUUID
+    *           : UUID du document
+    */
    public void cleanOneEntry(final String indexValue, final UUID docUUID) {
       final boolean result1 = removeOneRangeIndexEntry("", indexValue, docUUID);
       LOGGER.info("Résultat de la suppression term_info_range : {}", result1);
       final boolean result2 = removeOneIndexEntry("", indexValue, docUUID);
       LOGGER.info("Résultat de la suppression term_info : {}", result2);
+   }
+
+   public void verifyOrCleanOneEntry(final String indexValue, final UUID docUUID, final boolean shouldClean) {
+      if (shouldClean) {
+         cleanOneEntry(indexValue, docUUID);
+      } else {
+         verifyOneEntry(indexValue, docUUID);
+      }
    }
 
    private boolean removeOneRangeIndexEntry(final String indexCode, final String metaValue, final UUID docUUID) {

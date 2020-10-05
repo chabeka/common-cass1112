@@ -46,25 +46,56 @@ public class DocumentIndexChecker {
    private void initIndexedMeta() {
       final List<IndexInformation> indexes = dfceServices.getIndexesInBase(baseId);
       for (final IndexInformation indexInformation : indexes) {
-         // LOGGER.info("Index {}", indexInformation.getIndexKey());
          indexedMeta.put(indexInformation.getIndexKey(), true);
       }
    }
 
+   /**
+    * Vérifie l'indexation d'un document
+    * 
+    * @param doc
+    */
    public void checkDocument(final Document doc) {
-      final Set<CompositeIndex> compositeIndexes = dfceServices.fetchAllCompositeIndex();
-      for (final CompositeIndex compositeIndex : compositeIndexes) {
-         if (compositeIndex.isComputed()) {
-            checkCompositeIndex(compositeIndex, doc);
-         }
-      }
-      checkIndexedMetadatas(dfceServices, doc);
+      checkOrCleanDocument(doc, false);
    }
 
    /**
+    * Supprime les indexation d'un document
+    * 
     * @param doc
     */
-   private void checkIndexedMetadatas(final DFCEServices dfceServices, final Document doc) {
+   public void cleanDocument(final Document doc) {
+      checkOrCleanDocument(doc, true);
+   }
+
+   /**
+    * Teste si le document est existant.
+    * S'il n'existe pas, on nettoie ses index
+    * 
+    * @param doc
+    *           le document à nettoyer
+    * @return true si le document a nécessité un nettoyage
+    */
+   public boolean cleanDocumentIfNeeded(final Document doc) {
+      final Document foundDoc = dfceServices.getDocumentByUUID(doc.getUuid());
+      if (foundDoc == null) {
+         cleanDocument(doc);
+         return true;
+      }
+      return false;
+   }
+
+   private void checkOrCleanDocument(final Document doc, final boolean shouldClean) {
+      final Set<CompositeIndex> compositeIndexes = dfceServices.fetchAllCompositeIndex();
+      for (final CompositeIndex compositeIndex : compositeIndexes) {
+         if (compositeIndex.isComputed()) {
+            checkOrCleanCompositeIndex(compositeIndex, doc, shouldClean);
+         }
+      }
+      checkOrCleanIndexedMetadatas(doc, shouldClean);
+   }
+
+   private void checkOrCleanIndexedMetadatas(final Document doc, final boolean shouldClean) {
       final List<Criterion> criterions = doc.getAllCriterions();
       for (final Criterion criterion : criterions) {
          final String metaName = criterion.getCategoryName();
@@ -73,7 +104,7 @@ public class DocumentIndexChecker {
             LOGGER.info("Check {}", metaName);
             LOGGER.info("metaValue = {}", metaValue);
             final IndexCleaner cleaner = new IndexCleaner(session, metaName, criterion.getWordType());
-            cleaner.verifyOneEntry(metaValue, doc.getUuid());
+            cleaner.verifyOrCleanOneEntry(metaValue, doc.getUuid(), shouldClean);
          }
       }
       // Catégories systèmes indexées
@@ -85,20 +116,20 @@ public class DocumentIndexChecker {
             LOGGER.info("metaValue = {}", metaValue);
             final String dataType = metaName.equals("SM_UUID") ? "UUID" : "DATETIME";
             final IndexCleaner cleaner1 = new IndexCleaner(session, metaName, dataType);
-            cleaner1.verifyOneEntry(metaValue, doc.getUuid());
+            cleaner1.verifyOrCleanOneEntry(metaValue, doc.getUuid(), shouldClean);
          }
       }
 
    }
 
-   private void checkCompositeIndex(final CompositeIndex compositeIndex, final Document doc) {
+   private void checkOrCleanCompositeIndex(final CompositeIndex compositeIndex, final Document doc, final boolean shouldClean) {
       final String metaValue = CompositeIndexHelper.getMetaValue(compositeIndex, doc);
       if (!metaValue.isEmpty()) {
          LOGGER.info("Check {}", CompositeIndexHelper.getIndexName(compositeIndex));
          LOGGER.info("metaValue = {}", metaValue);
          final String indexName = CompositeIndexHelper.getIndexName(compositeIndex);
          final IndexCleaner cleaner = new IndexCleaner(session, indexName, "STRING");
-         cleaner.verifyOneEntry(metaValue, doc.getUuid());
+         cleaner.verifyOrCleanOneEntry(metaValue, doc.getUuid(), shouldClean);
       }
    }
 
