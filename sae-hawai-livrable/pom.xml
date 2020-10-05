@@ -195,7 +195,7 @@
 							<fedex>true</fedex>
 							<applicationName>sae-hawai-livrable</applicationName>
 							<applicationBinFileName>pom.xml</applicationBinFileName>
-							<ignoreDownloadFedexFile>true</ignoreDownloadFedexFile>
+							
 							<onlyUpdateProjectVersionLastDigit>true</onlyUpdateProjectVersionLastDigit>
 						</configuration>
 						<executions>
