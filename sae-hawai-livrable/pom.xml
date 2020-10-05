@@ -22,7 +22,7 @@
 		<sae.version>20.11.5</sae.version>
 	
 		<maven-release-plugin.version>2.2.1</maven-release-plugin.version>
-		<hawai-maven-plugin.version>6.0.0</hawai-maven-plugin.version>
+		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 		<ged-hawai-maven-plugin.version>1.0.0-SNAPSHOT</ged-hawai-maven-plugin.version>
 	</properties>
 
