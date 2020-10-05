@@ -27,6 +27,7 @@
 		<maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<hawai-maven-plugin.version>6.0.0</hawai-maven-plugin.version>
+		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 	</properties>
    
    <!-- Configuration SVN pour le plug-in maven-release -->
@@ -149,7 +150,15 @@
 	<build>
 		<finalName>${project.name}</finalName>
 		
+		
 		<plugins>
+
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-deploy-plugin</artifactId>
+			<version>${maven-deploy-plugin.version}</version>
+		</plugin>
+
 		<!-- COMPILATION ASPECT -->
 			<plugin>
 				<inherited>true</inherited>
