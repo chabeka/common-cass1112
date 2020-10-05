@@ -3,7 +3,7 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>20.11.5-SNAPSHOT</version>
+      <version>20.11.5</version>
    </parent>
 
    <modelVersion>4.0.0</modelVersion>
