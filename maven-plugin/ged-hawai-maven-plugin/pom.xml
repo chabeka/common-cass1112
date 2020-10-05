@@ -320,17 +320,5 @@
 		<developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/plugin-maven/ged-hawai-maven-plugin</developerConnection>
 		<url>http://svn.altair.recouv/svn/gns/java/trunk/plugin-maven/ged-hawai-maven-plugin</url>
 	</scm>
-	<distributionManagement>
-		<repository>
-			<id>releases</id>
-			<name>Altair Nexus Repository</name>
-			<url>http://nexus.altair.recouv/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<id>snapshots</id>
-			<name>Altair Nexus Repository</name>
-			<url>http://nexus.altair.recouv/nexus/content/repositories/snapshots/</url>
-			<uniqueVersion>false</uniqueVersion>
-		</snapshotRepository>
-	</distributionManagement>
+
 </project>
