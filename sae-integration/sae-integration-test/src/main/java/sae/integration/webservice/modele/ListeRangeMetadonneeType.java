@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Une liste de range de métadonnées
+ *          
  * 
  * <p>Classe Java pour listeRangeMetadonneeType complex type.
  * 

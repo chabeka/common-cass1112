@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Un résultat de la recherche de documents
  *             (avec retour du nombre de résultats)
+ *          
  * 
  * <p>Classe Java pour resultatRechercheNbResType complex type.
  * 

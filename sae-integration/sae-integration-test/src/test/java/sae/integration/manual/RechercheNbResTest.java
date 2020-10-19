@@ -32,7 +32,10 @@ public class RechercheNbResTest {
     */
    public void rechercheSiretTest() throws Exception {
       // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
-      final SaeServicePortType service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_CSPP.getUrl());
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_PAJE.getUrl());
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNS(Environments.GNS_INT_CESU.getUrl());
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_CSPP.getUrl());
+      final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNS(Environments.FRONTAL_INT_CLIENT.getUrl());
 
       final RechercheNbResRequestType request = new RechercheNbResRequestType();
       final ListeMetadonneeCodeType metasToGet = new ListeMetadonneeCodeType();
@@ -40,8 +43,9 @@ public class RechercheNbResTest {
       metasToGet.getMetadonneeCode().add("DateArchivage");
       request.setMetadonnees(metasToGet);
       // request.setRequete("Siret:33005008900029");
-      request.setRequete("Siret:33005008* AND DateCreation:[20131001 TO 20181201]");
-      // request.setRequete("NumeroCompteExterne:3170000010108095*");
+      // request.setRequete("Siret:33005008* AND DateCreation:[20131001 TO 20181201]");
+      // request.setRequete("RUM:042077CEW20200402A000050644");
+      request.setRequete("NumeroCompteExterne:537000000502080752");
       try {
          LOGGER.info("Lancement de la recherche");
          final RechercheNbResResponseType response = service.rechercheNbRes(request);

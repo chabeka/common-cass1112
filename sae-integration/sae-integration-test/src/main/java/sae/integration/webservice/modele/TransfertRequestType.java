@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Paramètre d'entrée de l'opération
  *             'transfert'
+ *          
  * 
  * <p>Classe Java pour transfertRequestType complex type.
  * 

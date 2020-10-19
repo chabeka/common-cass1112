@@ -59,8 +59,8 @@ public class ConsultationGNTGNSResponseType {
      *     allowed object is
      *     byte[]
      */
-    public void setContenu(byte[] value) {
-        this.contenu = value;
+    public void setContenu(final byte[] value) {
+        contenu = value;
     }
 
     /**
@@ -83,8 +83,8 @@ public class ConsultationGNTGNSResponseType {
      *     {@link ListeMetadonneeType }
      *     
      */
-    public void setMetadonnees(ListeMetadonneeType value) {
-        this.metadonnees = value;
+    public void setMetadonnees(final ListeMetadonneeType value) {
+        metadonnees = value;
     }
 
 }

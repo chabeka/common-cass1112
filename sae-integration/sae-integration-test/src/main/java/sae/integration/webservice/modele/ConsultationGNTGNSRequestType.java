@@ -60,8 +60,8 @@ public class ConsultationGNTGNSRequestType {
      *     {@link String }
      *     
      */
-    public void setIdArchive(String value) {
-        this.idArchive = value;
+    public void setIdArchive(final String value) {
+        idArchive = value;
     }
 
     /**
@@ -84,8 +84,8 @@ public class ConsultationGNTGNSRequestType {
      *     {@link ListeMetadonneeCodeType }
      *     
      */
-    public void setMetadonnees(ListeMetadonneeCodeType value) {
-        this.metadonnees = value;
+    public void setMetadonnees(final ListeMetadonneeCodeType value) {
+        metadonnees = value;
     }
 
 }

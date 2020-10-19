@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="nbDocumentsParPage" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
  *         &lt;element name="identifiantPage" type="{http://www.cirtil.fr/saeService}identifiantPageType" minOccurs="0"/&gt;
  *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType"/&gt;
+ *         &lt;element name="delai" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -36,7 +37,8 @@ import javax.xml.bind.annotation.XmlType;
     "filtres",
     "nbDocumentsParPage",
     "identifiantPage",
-    "metadonnees"
+    "metadonnees",
+    "delai"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
@@ -49,6 +51,8 @@ public class RechercheParIterateurRequestType {
     protected IdentifiantPageType identifiantPage;
     @XmlElement(required = true)
     protected ListeMetadonneeCodeType metadonnees;
+    @XmlElement(defaultValue = "-1")
+    protected Integer delai;
 
     /**
      * Obtient la valeur de la propriété requetePrincipale.
@@ -160,6 +164,30 @@ public class RechercheParIterateurRequestType {
      */
     public void setMetadonnees(ListeMetadonneeCodeType value) {
         this.metadonnees = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété delai.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getDelai() {
+        return delai;
+    }
+
+    /**
+     * Définit la valeur de la propriété delai.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setDelai(Integer value) {
+        this.delai = value;
     }
 
 }

@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Retour de l'opération
  *             de copie.
+ *          
  * 
  * <p>Classe Java pour copieResponseType complex type.
  * 

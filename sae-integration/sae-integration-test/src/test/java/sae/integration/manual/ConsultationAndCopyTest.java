@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.xml.ws.soap.SOAPFaultException;
 
+import org.apache.cxf.helpers.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -103,7 +104,7 @@ public class ConsultationAndCopyTest {
       try {
          LOGGER.info("Lancement de la consultation du document");
          response = sourceService.consultationMTOM(request);
-         LOGGER.info("Taille du document : {}", response.getContenu().length);
+         LOGGER.info("Taille du document : {}", IOUtils.readBytesFromStream(response.getContenu().getInputStream()).length);
       }
       catch (final SOAPFaultException e) {
          LOGGER.info("Exception reçue : {}", e.getMessage());

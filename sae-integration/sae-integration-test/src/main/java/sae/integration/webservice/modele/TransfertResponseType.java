@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Retour de l'opération
  *             'transfert'.
+ *          
  * 
  * <p>Classe Java pour transfertResponseType complex type.
  * 

@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Paramètre d'entrée de l'opération 'archivage
  *             Unitaire PJ'
+ *          
  * 
  * <p>Classe Java pour archivageUnitairePJRequestType complex type.
  * 

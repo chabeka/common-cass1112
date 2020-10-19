@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Paramètres d'entrées de l'opération
  *             'modificationMasse'
+ *          
  * 
  * <p>Classe Java pour modificationMasseRequestType complex type.
  * 

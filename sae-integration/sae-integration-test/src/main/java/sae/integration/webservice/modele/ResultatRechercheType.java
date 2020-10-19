@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Un résultat de la recherche de documents
+ *          
  * 
  * <p>Classe Java pour resultatRechercheType complex type.
  * 

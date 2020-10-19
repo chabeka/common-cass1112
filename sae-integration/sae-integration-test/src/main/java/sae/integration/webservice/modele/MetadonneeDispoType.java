@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlType;
  *             formatage, spécifiable à l'archivage, obligatoire à
  *             l'archivage, taille max, critère de recherche, indexation,
  *             modifiable)
+ *          
  * 
  * <p>Classe Java pour metadonneeDispoType complex type.
  * 

@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Valeur de retour de l'opération 'archivage
  *             Unitaire PJ'
+ *          
  * 
  * <p>Classe Java pour archivageUnitairePJResponseType complex type.
  * 

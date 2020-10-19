@@ -50,8 +50,8 @@ public class DocumentExistantResponseType {
      * Définit la valeur de la propriété isDocExist.
      * 
      */
-    public void setIsDocExist(boolean value) {
-        this.isDocExist = value;
+    public void setIsDocExist(final boolean value) {
+        isDocExist = value;
     }
 
 }

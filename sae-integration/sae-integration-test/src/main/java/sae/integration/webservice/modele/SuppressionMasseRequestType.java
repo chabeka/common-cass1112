@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Paramètre d'entrée de l'opération
  *             'suppressionMasse'
+ *          
  * 
  * <p>Classe Java pour suppressionMasseRequestType complex type.
  * 

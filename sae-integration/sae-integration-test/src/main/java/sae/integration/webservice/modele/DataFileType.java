@@ -1,9 +1,11 @@
 
 package sae.integration.webservice.modele;
 
+import javax.activation.DataHandler;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -37,7 +39,8 @@ import javax.xml.bind.annotation.XmlType;
 public class DataFileType {
 
     @XmlElement(required = true)
-    protected byte[] file;
+    @XmlMimeType("*/*")
+    protected DataHandler file;
     @XmlElement(required = true)
     protected String fileName;
 
@@ -46,9 +49,10 @@ public class DataFileType {
      * 
      * @return
      *     possible object is
-     *     byte[]
+     *     {@link DataHandler }
+     *     
      */
-    public byte[] getFile() {
+    public DataHandler getFile() {
         return file;
     }
 
@@ -57,9 +61,10 @@ public class DataFileType {
      * 
      * @param value
      *     allowed object is
-     *     byte[]
+     *     {@link DataHandler }
+     *     
      */
-    public void setFile(byte[] value) {
+    public void setFile(DataHandler value) {
         this.file = value;
     }
 

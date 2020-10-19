@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
  * Un identifiant de la page renvoyé par la
  *             recherche par iterateur. Il est composé d’une valeur, et
  *             d’un uuid de document
+ *          
  * 
  * <p>Classe Java pour identifiantPageType complex type.
  * 

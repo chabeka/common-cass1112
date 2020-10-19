@@ -40,6 +40,6 @@ public class ArchivageUnitairePJFault extends Exception {
    }
 
    public java.lang.String getFaultInfo() {
-      return this.archivageUnitairePJFault;
+      return archivageUnitairePJFault;
    }
 }

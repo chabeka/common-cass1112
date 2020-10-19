@@ -60,8 +60,8 @@ public class ArchivageUnitaireResponseType {
      *     {@link String }
      *     
      */
-    public void setIdArchive(String value) {
-        this.idArchive = value;
+    public void setIdArchive(final String value) {
+        idArchive = value;
     }
 
 }

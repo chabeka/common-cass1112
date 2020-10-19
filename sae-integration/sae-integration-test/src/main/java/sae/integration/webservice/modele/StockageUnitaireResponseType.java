@@ -8,8 +8,10 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Valeur de retour de l'opération 'stockage
+ * 
+ *             Valeur de retour de l'opération 'stockage
  *             Unitaire Doc'
+ *          
  * 
  * <p>Classe Java pour stockageUnitaireResponseType complex type.
  * 

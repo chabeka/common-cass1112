@@ -28,6 +28,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="dateDebut" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="dateFin" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="toCheckFlag" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="toCheckFlagRaison" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -46,7 +48,9 @@ import javax.xml.bind.annotation.XmlType;
     "dateReservation",
     "dateDebut",
     "dateFin",
-    "message"
+    "message",
+    "toCheckFlag",
+    "toCheckFlagRaison"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
@@ -70,6 +74,9 @@ public class TraitementMasseType {
     protected String dateFin;
     @XmlElement(required = true)
     protected String message;
+    protected boolean toCheckFlag;
+    @XmlElement(required = true)
+    protected String toCheckFlagRaison;
 
     /**
      * Obtient la valeur de la propriété idJob.
@@ -285,6 +292,46 @@ public class TraitementMasseType {
      */
     public void setMessage(String value) {
         this.message = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété toCheckFlag.
+     * 
+     */
+    public boolean isToCheckFlag() {
+        return toCheckFlag;
+    }
+
+    /**
+     * Définit la valeur de la propriété toCheckFlag.
+     * 
+     */
+    public void setToCheckFlag(boolean value) {
+        this.toCheckFlag = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété toCheckFlagRaison.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getToCheckFlagRaison() {
+        return toCheckFlagRaison;
+    }
+
+    /**
+     * Définit la valeur de la propriété toCheckFlagRaison.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setToCheckFlagRaison(String value) {
+        this.toCheckFlagRaison = value;
     }
 
 }

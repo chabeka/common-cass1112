@@ -36,7 +36,7 @@ public class SuppressionMasseTest {
     * Suppression de masse
     */
    public void suppressionOK() throws Exception {
-      final Environment environnementGNT = Environments.GNT_INT_PAJE;
+      final Environment environnementGNT = Environments.FRONTAL_DEV;
       final SaeServicePortType gntService = SaeServiceStubFactory.getServiceForDevToutesActions(environnementGNT.getUrl());
 
       // Archivage de 3 documents en GNT

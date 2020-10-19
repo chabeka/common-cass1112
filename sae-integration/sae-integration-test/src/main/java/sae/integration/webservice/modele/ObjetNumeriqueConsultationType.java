@@ -1,8 +1,10 @@
 
 package sae.integration.webservice.modele;
 
+import javax.activation.DataHandler;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -11,6 +13,7 @@ import javax.xml.bind.annotation.XmlType;
  * Un objet numérique représenté soit un flux
  *             binaire encodé en base 64, soit par une URL de consultation
  *             directe
+ *          
  * 
  * <p>Classe Java pour objetNumeriqueConsultationType complex type.
  * 
@@ -44,7 +47,8 @@ public class ObjetNumeriqueConsultationType {
 
     @XmlSchemaType(name = "anyURI")
     protected String url;
-    protected byte[] contenu;
+    @XmlMimeType("*/*")
+    protected DataHandler contenu;
 
     /**
      * Obtient la valeur de la propriété url.
@@ -75,9 +79,10 @@ public class ObjetNumeriqueConsultationType {
      * 
      * @return
      *     possible object is
-     *     byte[]
+     *     {@link DataHandler }
+     *     
      */
-    public byte[] getContenu() {
+    public DataHandler getContenu() {
         return contenu;
     }
 
@@ -86,9 +91,10 @@ public class ObjetNumeriqueConsultationType {
      * 
      * @param value
      *     allowed object is
-     *     byte[]
+     *     {@link DataHandler }
+     *     
      */
-    public void setContenu(byte[] value) {
+    public void setContenu(DataHandler value) {
         this.contenu = value;
     }
 

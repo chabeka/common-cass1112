@@ -6,208 +6,215 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 /**
- * <p>
- * Java class for rechercheParIterateurV2RequestType complex type.
- * <p>
- * The following schema fragment specifies the expected content contained within this class.
- *
+ * <p>Classe Java pour rechercheParIterateurV2RequestType complex type.
+ * 
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * 
  * <pre>
- * &lt;complexType name="rechercheParIterateurV2RequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="requetePrincipale" type="{http://www.cirtil.fr/saeService}requetePrincipaleType"/>
- *         &lt;element name="filtres" type="{http://www.cirtil.fr/saeService}filtreType" minOccurs="0"/>
- *         &lt;element name="nbDocumentsParPage" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="identifiantPage" type="{http://www.cirtil.fr/saeService}identifiantPageType" minOccurs="0"/>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType"/>
- *         &lt;element name="delai" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
- *         &lt;element name="codeOrgaProprietaire" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="rechercheParIterateurV2RequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="requetePrincipale" type="{http://www.cirtil.fr/saeService}requetePrincipaleType"/&gt;
+ *         &lt;element name="filtres" type="{http://www.cirtil.fr/saeService}filtreType" minOccurs="0"/&gt;
+ *         &lt;element name="nbDocumentsParPage" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="identifiantPage" type="{http://www.cirtil.fr/saeService}identifiantPageType" minOccurs="0"/&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType"/&gt;
+ *         &lt;element name="delai" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
+ *         &lt;element name="codeOrgaProprietaire" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
+ * 
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "rechercheParIterateurV2RequestType",
-         propOrder = {
-                      "requetePrincipale",
-                      "filtres",
-                      "nbDocumentsParPage",
-                      "identifiantPage",
-                      "metadonnees",
-                      "delai",
-                      "codeOrgaProprietaire"
-         })
-
+@XmlType(name = "rechercheParIterateurV2RequestType", propOrder = {
+    "requetePrincipale",
+    "filtres",
+    "nbDocumentsParPage",
+    "identifiantPage",
+    "metadonnees",
+    "delai",
+    "codeOrgaProprietaire"
+})
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-// CHECKSTYLE:OFF
 public class RechercheParIterateurV2RequestType {
 
-   @XmlElement(required = true)
-   protected RequetePrincipaleType requetePrincipale;
+    @XmlElement(required = true)
+    protected RequetePrincipaleType requetePrincipale;
+    protected FiltreType filtres;
+    protected int nbDocumentsParPage;
+    protected IdentifiantPageType identifiantPage;
+    @XmlElement(required = true)
+    protected ListeMetadonneeCodeType metadonnees;
+    @XmlElement(defaultValue = "-1")
+    protected Integer delai;
+    protected String codeOrgaProprietaire;
 
-   protected FiltreType filtres;
+    /**
+     * Obtient la valeur de la propriété requetePrincipale.
+     * 
+     * @return
+     *     possible object is
+     *     {@link RequetePrincipaleType }
+     *     
+     */
+    public RequetePrincipaleType getRequetePrincipale() {
+        return requetePrincipale;
+    }
 
-   protected int nbDocumentsParPage;
+    /**
+     * Définit la valeur de la propriété requetePrincipale.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link RequetePrincipaleType }
+     *     
+     */
+    public void setRequetePrincipale(RequetePrincipaleType value) {
+        this.requetePrincipale = value;
+    }
 
-   protected IdentifiantPageType identifiantPage;
+    /**
+     * Obtient la valeur de la propriété filtres.
+     * 
+     * @return
+     *     possible object is
+     *     {@link FiltreType }
+     *     
+     */
+    public FiltreType getFiltres() {
+        return filtres;
+    }
 
-   @XmlElement(required = true)
-   protected ListeMetadonneeCodeType metadonnees;
+    /**
+     * Définit la valeur de la propriété filtres.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link FiltreType }
+     *     
+     */
+    public void setFiltres(FiltreType value) {
+        this.filtres = value;
+    }
 
-   @XmlElement(defaultValue = "-1")
-   protected Integer delai;
+    /**
+     * Obtient la valeur de la propriété nbDocumentsParPage.
+     * 
+     */
+    public int getNbDocumentsParPage() {
+        return nbDocumentsParPage;
+    }
 
-   protected String codeOrgaProprietaire;
+    /**
+     * Définit la valeur de la propriété nbDocumentsParPage.
+     * 
+     */
+    public void setNbDocumentsParPage(int value) {
+        this.nbDocumentsParPage = value;
+    }
 
-   /**
-    * Gets the value of the requetePrincipale property.
-    *
-    * @return
-    *         possible object is
-    *         {@link RequetePrincipaleType }
-    */
-   public RequetePrincipaleType getRequetePrincipale() {
-      return requetePrincipale;
-   }
+    /**
+     * Obtient la valeur de la propriété identifiantPage.
+     * 
+     * @return
+     *     possible object is
+     *     {@link IdentifiantPageType }
+     *     
+     */
+    public IdentifiantPageType getIdentifiantPage() {
+        return identifiantPage;
+    }
 
-   /**
-    * Sets the value of the requetePrincipale property.
-    *
-    * @param value
-    *           allowed object is
-    *           {@link RequetePrincipaleType }
-    */
-   public void setRequetePrincipale(final RequetePrincipaleType value) {
-      this.requetePrincipale = value;
-   }
+    /**
+     * Définit la valeur de la propriété identifiantPage.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link IdentifiantPageType }
+     *     
+     */
+    public void setIdentifiantPage(IdentifiantPageType value) {
+        this.identifiantPage = value;
+    }
 
-   /**
-    * Gets the value of the filtres property.
-    *
-    * @return
-    *         possible object is
-    *         {@link FiltreType }
-    */
-   public FiltreType getFiltres() {
-      return filtres;
-   }
+    /**
+     * Obtient la valeur de la propriété metadonnees.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ListeMetadonneeCodeType }
+     *     
+     */
+    public ListeMetadonneeCodeType getMetadonnees() {
+        return metadonnees;
+    }
 
-   /**
-    * Sets the value of the filtres property.
-    *
-    * @param value
-    *           allowed object is
-    *           {@link FiltreType }
-    */
-   public void setFiltres(final FiltreType value) {
-      this.filtres = value;
-   }
+    /**
+     * Définit la valeur de la propriété metadonnees.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ListeMetadonneeCodeType }
+     *     
+     */
+    public void setMetadonnees(ListeMetadonneeCodeType value) {
+        this.metadonnees = value;
+    }
 
-   /**
-    * Gets the value of the nbDocumentsParPage property.
-    */
-   public int getNbDocumentsParPage() {
-      return nbDocumentsParPage;
-   }
+    /**
+     * Obtient la valeur de la propriété delai.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getDelai() {
+        return delai;
+    }
 
-   /**
-    * Sets the value of the nbDocumentsParPage property.
-    */
-   public void setNbDocumentsParPage(final int value) {
-      this.nbDocumentsParPage = value;
-   }
+    /**
+     * Définit la valeur de la propriété delai.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setDelai(Integer value) {
+        this.delai = value;
+    }
 
-   /**
-    * Gets the value of the identifiantPage property.
-    *
-    * @return
-    *         possible object is
-    *         {@link IdentifiantPageType }
-    */
-   public IdentifiantPageType getIdentifiantPage() {
-      return identifiantPage;
-   }
+    /**
+     * Obtient la valeur de la propriété codeOrgaProprietaire.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCodeOrgaProprietaire() {
+        return codeOrgaProprietaire;
+    }
 
-   /**
-    * Sets the value of the identifiantPage property.
-    *
-    * @param value
-    *           allowed object is
-    *           {@link IdentifiantPageType }
-    */
-   public void setIdentifiantPage(final IdentifiantPageType value) {
-      this.identifiantPage = value;
-   }
-
-   /**
-    * Gets the value of the metadonnees property.
-    *
-    * @return
-    *         possible object is
-    *         {@link ListeMetadonneeCodeType }
-    */
-   public ListeMetadonneeCodeType getMetadonnees() {
-      return metadonnees;
-   }
-
-   /**
-    * Sets the value of the metadonnees property.
-    *
-    * @param value
-    *           allowed object is
-    *           {@link ListeMetadonneeCodeType }
-    */
-   public void setMetadonnees(final ListeMetadonneeCodeType value) {
-      this.metadonnees = value;
-   }
-
-   /**
-    * Gets the value of the delai property.
-    *
-    * @return
-    *         possible object is
-    *         {@link Integer }
-    */
-   public Integer getDelai() {
-      return delai;
-   }
-
-   /**
-    * Sets the value of the delai property.
-    *
-    * @param value
-    *           allowed object is
-    *           {@link Integer }
-    */
-   public void setDelai(final Integer value) {
-      this.delai = value;
-   }
-
-   /**
-    * Gets the value of the codeOrgaProprietaire property.
-    *
-    * @return
-    *         possible object is
-    *         {@link String }
-    */
-   public String getCodeOrgaProprietaire() {
-      return codeOrgaProprietaire;
-   }
-
-   /**
-    * Sets the value of the codeOrgaProprietaire property.
-    *
-    * @param value
-    *           allowed object is
-    *           {@link String }
-    */
-   public void setCodeOrgaProprietaire(final String value) {
-      this.codeOrgaProprietaire = value;
-   }
+    /**
+     * Définit la valeur de la propriété codeOrgaProprietaire.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCodeOrgaProprietaire(String value) {
+        this.codeOrgaProprietaire = value;
+    }
 
 }

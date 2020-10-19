@@ -3,6 +3,10 @@
  */
 package sae.integration.util;
 
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
+
+import java.io.InputStream;
+
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -44,7 +48,13 @@ public final class ArchivageValidationUtils {
       LOGGER.info("Récupération du document");
       final ConsultationMTOMResponseType response = service.consultationMTOM(request);
       final ListeMetadonneeType metaFromConsultation = response.getMetadonnees();
-      final String sha1FromConsultation = DigestUtils.sha1Hex(response.getContenu());
+      final String sha1FromConsultation = sneak(() -> {
+         final InputStream stream = response.getContenu().getInputStream();
+         stream.mark(Integer.MAX_VALUE);
+         final String sha1 = DigestUtils.sha1Hex(stream);
+         stream.reset();
+         return sha1;
+      });
       LOGGER.info("Vérification du hash du document récupéré");
       Assert.assertEquals("Vérification du hash", SoapHelper.getMetaValue(expectedMetas, "Hash"), sha1FromConsultation);
       LOGGER.info("Vérification des métadonnées du document récupéré");
@@ -76,7 +86,7 @@ public final class ArchivageValidationUtils {
          final ConsultationMTOMRequestType request = new ConsultationMTOMRequestType();
          request.setIdArchive(docId);
          final ConsultationMTOMResponseType response = service.consultationMTOM(request);
-         return response.getContenu().length > 0;
+         return sneak(() -> response.getContenu().getInputStream().available() > 0);
       }
       catch (final SOAPFaultException e) {
          if (e.getMessage().contains("Il n'existe aucun document pour l'identifiant d'archivage")) {

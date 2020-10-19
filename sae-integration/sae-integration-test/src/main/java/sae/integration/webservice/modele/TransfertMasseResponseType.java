@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
  * Valeur de retour de l'opération
  *             'transfertMasse'. Le type est un UUID, il sert à
  *             identifier la tâche dans la pile des travaux
+ *          
  * 
  * <p>Classe Java pour transfertMasseResponseType complex type.
  * 

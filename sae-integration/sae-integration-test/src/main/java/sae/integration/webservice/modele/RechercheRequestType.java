@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence&gt;
  *         &lt;element name="requete" type="{http://www.cirtil.fr/saeService}requeteRechercheType"/&gt;
  *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType"/&gt;
+ *         &lt;element name="delai" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -30,7 +31,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "rechercheRequestType", propOrder = {
     "requete",
-    "metadonnees"
+    "metadonnees",
+    "delai"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
@@ -40,6 +42,8 @@ public class RechercheRequestType {
     protected String requete;
     @XmlElement(required = true)
     protected ListeMetadonneeCodeType metadonnees;
+    @XmlElement(defaultValue = "-1")
+    protected Integer delai;
 
     /**
      * Obtient la valeur de la propriété requete.
@@ -87,6 +91,30 @@ public class RechercheRequestType {
      */
     public void setMetadonnees(ListeMetadonneeCodeType value) {
         this.metadonnees = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété delai.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    public Integer getDelai() {
+        return delai;
+    }
+
+    /**
+     * Définit la valeur de la propriété delai.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    public void setDelai(Integer value) {
+        this.delai = value;
     }
 
 }

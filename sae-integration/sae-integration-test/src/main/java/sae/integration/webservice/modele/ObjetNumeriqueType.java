@@ -1,8 +1,10 @@
 
 package sae.integration.webservice.modele;
 
+import javax.activation.DataHandler;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
@@ -10,6 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Un objet numérique peut être représenté soit
  *             par son URL ECDE, soit par un flux binaire encodé en base64
+ *          
  * 
  * <p>Classe Java pour objetNumeriqueType complex type.
  * 
@@ -43,7 +46,8 @@ public class ObjetNumeriqueType {
 
     @XmlSchemaType(name = "anyURI")
     protected String url;
-    protected byte[] contenu;
+    @XmlMimeType("*/*")
+    protected DataHandler contenu;
 
     /**
      * Obtient la valeur de la propriété url.
@@ -74,9 +78,10 @@ public class ObjetNumeriqueType {
      * 
      * @return
      *     possible object is
-     *     byte[]
+     *     {@link DataHandler }
+     *     
      */
-    public byte[] getContenu() {
+    public DataHandler getContenu() {
         return contenu;
     }
 
@@ -85,9 +90,10 @@ public class ObjetNumeriqueType {
      * 
      * @param value
      *     allowed object is
-     *     byte[]
+     *     {@link DataHandler }
+     *     
      */
-    public void setContenu(byte[] value) {
+    public void setContenu(DataHandler value) {
         this.contenu = value;
     }
 

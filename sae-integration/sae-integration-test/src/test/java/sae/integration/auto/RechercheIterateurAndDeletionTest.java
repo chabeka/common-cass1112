@@ -57,7 +57,9 @@ public class RechercheIterateurAndDeletionTest {
    public static void setup() {
       // service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_CLIENT.getUrl());
       // service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_PAJE.getUrl());
-      service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_CESU.getUrl());
+      // service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_CESU.getUrl());
+      // service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.FRONTAL_LOCAL.getUrl());
+      service = SaeServiceStubFactory.getServiceForFrontalAllGNT(Environments.FRONTAL_INT_INTERNE.getUrl());
    }
 
    @Before
@@ -88,7 +90,7 @@ public class RechercheIterateurAndDeletionTest {
          request.setMetadonnees(metaList);
          request.setDataFile(TestData.getTxtFile(metaList));
 
-         SoapBuilder.setMetaValue(metaList, "CodeOrganismeProprietaire", "UR827");
+         SoapBuilder.setMetaValue(metaList, "CodeOrganismeProprietaire", "UR747");
          SoapBuilder.setMetaValue(metaList, "ApplicationProductrice", "SCRIBE");
          SoapBuilder.setMetaValue(metaList, "ATransfererScribe", "true");
          SoapBuilder.setMetaValue(metaList, "CodeProduitV2", codeProduitV2);
@@ -113,7 +115,7 @@ public class RechercheIterateurAndDeletionTest {
       final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
       final ListeMetadonneeType fixedMetadatas = new ListeMetadonneeType();
       SoapBuilder.addMeta(fixedMetadatas, "DomaineCotisant", "true");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", "UR827");
+      SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", "UR747");
       SoapBuilder.addMeta(fixedMetadatas, "ApplicationProductrice", "SCRIBE");
       SoapBuilder.addMeta(fixedMetadatas, "ATransfererScribe", "true");
       SoapBuilder.addMeta(fixedMetadatas, "CodeProduitV2", codeProduitV2);

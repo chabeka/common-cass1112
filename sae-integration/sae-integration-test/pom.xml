@@ -297,6 +297,13 @@
          <artifactId>jcabi-xml</artifactId>
          <version>0.22.1</version>
       </dependency>
+      
+      <dependency>
+         <groupId>com.rainerhahnekamp</groupId>
+         <artifactId>sneakythrow</artifactId>
+         <version>1.2.0</version>
+      </dependency>
+
    </dependencies>
 
 </project>

@@ -7,7 +7,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Retour de l'opération 'ajoutNote'.
+ * 
+ *             Retour de l'opération 'ajoutNote'.
+ *          
  * 
  * <p>Classe Java pour ajoutNoteResponseType complex type.
  * 

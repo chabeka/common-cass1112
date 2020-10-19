@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Paramètre d’entrée de l’opération 'stockage
  *             Unitaire'
+ *          
  * 
  * <p>Classe Java pour stockageUnitaireRequestType complex type.
  * 

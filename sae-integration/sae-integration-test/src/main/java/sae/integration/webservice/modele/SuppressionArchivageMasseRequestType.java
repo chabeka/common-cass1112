@@ -6,59 +6,63 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+
 /**
  * Paramètre d'entrée de l'opération
- * 'suppressionArcihvageMasse'
- * <p>
- * Java class for suppressionArchivageMasseRequestType complex type.
- * <p>
- * The following schema fragment specifies the expected content contained within this class.
- *
+ *             'suppressionArcihvageMasse'
+ *          
+ * 
+ * <p>Classe Java pour suppressionArchivageMasseRequestType complex type.
+ * 
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
+ * 
  * <pre>
- * &lt;complexType name="suppressionArchivageMasseRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="suppressionArchivageMasseRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
+ * 
+ * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "suppressionArchivageMasseRequestType",
-         propOrder = {
-                      "uuid"
-         })
+@XmlType(name = "suppressionArchivageMasseRequestType", propOrder = {
+    "uuid"
+})
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
-// CHECKSTYLE:OFF
 public class SuppressionArchivageMasseRequestType {
 
-   @XmlElement(required = true)
-   protected String uuid;
+    @XmlElement(required = true)
+    protected String uuid;
 
-   /**
-    * Gets the value of the uuid property.
-    *
-    * @return
-    *         possible object is
-    *         {@link String }
-    */
-   public String getUuid() {
-      return uuid;
-   }
+    /**
+     * Obtient la valeur de la propriété uuid.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getUuid() {
+        return uuid;
+    }
 
-   /**
-    * Sets the value of the uuid property.
-    *
-    * @param value
-    *           allowed object is
-    *           {@link String }
-    */
-   public void setUuid(final String value) {
-      this.uuid = value;
-   }
+    /**
+     * Définit la valeur de la propriété uuid.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setUuid(String value) {
+        this.uuid = value;
+    }
 
 }

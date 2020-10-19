@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Une liste de métadonnées disponible pour le
  *             client
+ *          
  * 
  * <p>Classe Java pour listeMetadonneeDispoType complex type.
  * 

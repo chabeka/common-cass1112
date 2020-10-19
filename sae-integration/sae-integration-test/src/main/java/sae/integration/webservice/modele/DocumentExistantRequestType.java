@@ -59,8 +59,8 @@ public class DocumentExistantRequestType {
      *     {@link String }
      *     
      */
-    public void setIdGed(String value) {
-        this.idGed = value;
+    public void setIdGed(final String value) {
+        idGed = value;
     }
 
 }

@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlType;
  *             'suppessionMasse'. Le type est un UUID, il sert à
  *             identifier
  *             la tâche dans la pile des travaux
+ *          
  * 
  * <p>Classe Java pour suppressionMasseResponseType complex type.
  * 

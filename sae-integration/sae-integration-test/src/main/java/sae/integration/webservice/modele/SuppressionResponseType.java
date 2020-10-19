@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Retour de l'opération
  *             'suppression'.
+ *          
  * 
  * <p>Classe Java pour suppressionResponseType complex type.
  * 

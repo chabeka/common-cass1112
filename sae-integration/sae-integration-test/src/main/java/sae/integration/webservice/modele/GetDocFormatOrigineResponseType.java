@@ -1,9 +1,11 @@
 
 package sae.integration.webservice.modele;
 
+import javax.activation.DataHandler;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -37,7 +39,8 @@ import javax.xml.bind.annotation.XmlType;
 public class GetDocFormatOrigineResponseType {
 
     @XmlElement(required = true)
-    protected byte[] contenu;
+    @XmlMimeType("*/*")
+    protected DataHandler contenu;
     @XmlElement(required = true)
     protected ListeMetadonneeType metadonnees;
 
@@ -46,9 +49,10 @@ public class GetDocFormatOrigineResponseType {
      * 
      * @return
      *     possible object is
-     *     byte[]
+     *     {@link DataHandler }
+     *     
      */
-    public byte[] getContenu() {
+    public DataHandler getContenu() {
         return contenu;
     }
 
@@ -57,9 +61,10 @@ public class GetDocFormatOrigineResponseType {
      * 
      * @param value
      *     allowed object is
-     *     byte[]
+     *     {@link DataHandler }
+     *     
      */
-    public void setContenu(byte[] value) {
+    public void setContenu(DataHandler value) {
         this.contenu = value;
     }
 

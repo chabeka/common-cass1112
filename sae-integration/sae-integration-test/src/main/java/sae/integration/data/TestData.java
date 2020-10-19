@@ -1,14 +1,17 @@
 package sae.integration.data;
 
+import static com.rainerhahnekamp.sneakythrow.Sneaky.sneak;
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 
+import javax.activation.DataHandler;
+
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.io.IOUtils;
+import org.apache.cxf.helpers.IOUtils;
+import org.apache.cxf.jaxrs.ext.multipart.InputStreamDataSource;
 
 import sae.integration.util.SoapBuilder;
 import sae.integration.webservice.modele.DataFileType;
@@ -76,6 +79,12 @@ public class TestData {
       return getFileFromResource("documents/testDoc.tif", "fmt/353", "1", listMetasType);
    }
 
+   public static byte[] getTiffFileContent() {
+      final String resourcePath = "documents/testDoc.tif";
+      final InputStream stream = TestData.class.getClassLoader().getResourceAsStream(resourcePath);
+      return sneak(() -> IOUtils.readBytesFromStream(stream));
+   }
+
    /**
     * Récupère un fichier TXT de test, pour archivage
     * Alimente les métadonnées relatives à ce fichier
@@ -113,13 +122,7 @@ public class TestData {
     */
    public static DataFileType getFileFromPath(final String filePath, final String formatPronom, final String nbPages, final ListeMetadonneeType metaList) {
       final File f = new File(filePath);
-      InputStream contenu;
-      try {
-         contenu = new FileInputStream(f);
-      }
-      catch (final FileNotFoundException e) {
-         throw new RuntimeException(e);
-      }
+      final InputStream contenu = sneak(() -> new FileInputStream(f));
       final String nomFichier = f.getName();
       return getFileFromStream(nomFichier, contenu, formatPronom, nbPages, metaList);
    }
@@ -128,19 +131,18 @@ public class TestData {
          final InputStream contenu, final String formatPronom, final String nbPages, final ListeMetadonneeType metaList) {
       final DataFileType dataFile = new DataFileType();
       dataFile.setFileName(nomFichier);
-      byte[] contenuBytes;
-      try {
-         contenuBytes = IOUtils.toByteArray(contenu);
-         dataFile.setFile(contenuBytes);
-         dataFile.setFileName(nomFichier);
-      }
-      catch (final IOException e) {
-         throw new RuntimeException(e);
-      }
+      dataFile.setFile(new DataHandler(new InputStreamDataSource(contenu, "*/*")));
+      dataFile.setFileName(nomFichier);
 
       // Alimentation des métadonnées associées au fichier
       SoapBuilder.setMetaValue(metaList, "FormatFichier", formatPronom);
-      SoapBuilder.setMetaValue(metaList, "Hash", DigestUtils.sha1Hex(contenuBytes));
+      sneak(() -> {
+         contenu.mark(Integer.MAX_VALUE);
+         SoapBuilder.setMetaValue(metaList, "Hash", DigestUtils.sha1Hex(contenu));
+         contenu.reset();
+         return null;
+      });
+
       SoapBuilder.setMetaValue(metaList, "TypeHash", "SHA-1");
       SoapBuilder.setMetaValue(metaList, "NbPages", nbPages);
       return dataFile;

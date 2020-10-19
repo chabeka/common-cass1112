@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Paramètres d'entrées de l'opération
  *             'archivageMasseAvecHash'
+ *          
  * 
  * <p>Classe Java pour archivageMasseAvecHashRequestType complex type.
  * 

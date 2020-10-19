@@ -3,6 +3,8 @@ package sae.integration.manual;
 
 import java.io.PrintStream;
 
+import javax.xml.ws.soap.SOAPFaultException;
+
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +56,7 @@ public class RechercheIterateurScribeTest {
       SoapBuilder.addMeta(fixedMetadatas, "ATransfererScribe", "true");
 
       mainRequest.setFixedMetadatas(fixedMetadatas);
-      final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeMetadata("DateArchivage", "20190901", "20251212");
+      final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeMetadata("DateArchivage", "20200419", "20200421235959");
       mainRequest.setVaryingMetadata(varyingMetadata);
       request.setRequetePrincipale(mainRequest);
       final ListeMetadonneeCodeType metadataToReturn = new ListeMetadonneeCodeType();
@@ -68,22 +70,30 @@ public class RechercheIterateurScribeTest {
       int totalCounter = 0;
       int pageCounter = 0;
       while (true) {
-         final RechercheParIterateurResponseType response = service.rechercheParIterateur(request);
-         final IdentifiantPageType nextPageId = response.getIdentifiantPageSuivante();
-         String dateArchivage = "";
-         for (final ResultatRechercheType doc : response.getResultats().getResultat()) {
-            final String UUID = doc.getIdArchive();
-            final ListeMetadonneeType meta = doc.getMetadonnees();
-            dateArchivage = SoapHelper.getMetaValue(meta, "DateArchivage");
-            final String codeOrga = SoapHelper.getMetaValue(meta, "CodeOrganismeProprietaire");
-            totalCounter++;
+         try {
+            final RechercheParIterateurResponseType response = service.rechercheParIterateur(request);
+            final IdentifiantPageType nextPageId = response.getIdentifiantPageSuivante();
+            String dateArchivage = "";
+            for (final ResultatRechercheType doc : response.getResultats().getResultat()) {
+               final String UUID = doc.getIdArchive();
+               System.out.println("UUID=" + UUID);
+               final ListeMetadonneeType meta = doc.getMetadonnees();
+               dateArchivage = SoapHelper.getMetaValue(meta, "DateArchivage");
+               final String codeOrga = SoapHelper.getMetaValue(meta, "CodeOrganismeProprietaire");
+               totalCounter++;
+            }
+            if (response.isDernierePage()) {
+               break;
+            }
+            request.setIdentifiantPage(nextPageId);
+            pageCounter++;
+            System.out.println("Page n°" + pageCounter + " - dateArchivage=" + dateArchivage + " - totalCounter=" + totalCounter);
          }
-         if (response.isDernierePage()) {
-            break;
+         catch (final SOAPFaultException e) {
+            LOGGER.info("Exception reçue : {}", e.getMessage());
+            LOGGER.info("Détail de l'exception : {}", SoapHelper.getSoapFaultDetail(e));
+            throw e;
          }
-         request.setIdentifiantPage(nextPageId);
-         pageCounter++;
-         System.out.println("Page n°" + pageCounter + " - dateArchivage=" + dateArchivage + " - totalCounter=" + totalCounter);
       }
       System.out.println("Nombre total de doc trouvés : " + totalCounter);
    }

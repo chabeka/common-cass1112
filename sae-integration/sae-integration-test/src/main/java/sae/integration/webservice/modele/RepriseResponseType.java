@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
  * Valeur de retour de l'opération
  *             'reprise'. Le type est un UUID, il sert à
  *             identifier le job dans la pile des travaux
+ *          
  * 
  * <p>Classe Java pour repriseResponseType complex type.
  * 

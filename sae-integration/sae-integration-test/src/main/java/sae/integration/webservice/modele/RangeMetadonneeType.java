@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Un range de métadonnée définie par un code,
  *             une valeur minimum et une valeur maximum
+ *          
  * 
  * <p>Classe Java pour rangeMetadonneeType complex type.
  * 

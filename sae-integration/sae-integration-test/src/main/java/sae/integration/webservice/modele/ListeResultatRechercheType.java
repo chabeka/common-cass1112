@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Liste de résultat d'une recherche de
  *             documents
+ *          
  * 
  * <p>Classe Java pour listeResultatRechercheType complex type.
  * 

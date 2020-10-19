@@ -26,8 +26,6 @@ import javax.xml.namespace.QName;
 @SuppressWarnings("all")
 public class ObjectFactory {
 
-    private final static QName _ArchivageUnitaire_QNAME = new QName("http://www.cirtil.fr/saeService", "archivageUnitaire");
-    private final static QName _ArchivageUnitaireResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "archivageUnitaireResponse");
     private final static QName _ArchivageUnitairePJ_QNAME = new QName("http://www.cirtil.fr/saeService", "archivageUnitairePJ");
     private final static QName _ArchivageUnitairePJResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "archivageUnitairePJResponse");
     private final static QName _StockageUnitaire_QNAME = new QName("http://www.cirtil.fr/saeService", "stockageUnitaire");
@@ -35,10 +33,10 @@ public class ObjectFactory {
     private final static QName _GetDocFormatOrigine_QNAME = new QName("http://www.cirtil.fr/saeService", "getDocFormatOrigine");
     private final static QName _GetDocFormatOrigineResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "getDocFormatOrigineResponse");
     private final static QName _SuppressionMasse_QNAME = new QName("http://www.cirtil.fr/saeService", "suppressionMasse");
+    private final static QName _SuppressionMasseV2_QNAME = new QName("http://www.cirtil.fr/saeService", "suppressionMasseV2");
     private final static QName _RestoreMasse_QNAME = new QName("http://www.cirtil.fr/saeService", "restoreMasse");
     private final static QName _EtatTraitementsMasse_QNAME = new QName("http://www.cirtil.fr/saeService", "etatTraitementsMasse");
-    private final static QName _ArchivageMasse_QNAME = new QName("http://www.cirtil.fr/saeService", "archivageMasse");
-    private final static QName _ArchivageMasseResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "archivageMasseResponse");
+    private final static QName _SuppressionArchivageMasse_QNAME = new QName("http://www.cirtil.fr/saeService", "suppressionArchivageMasse");
     private final static QName _ArchivageMasseAvecHash_QNAME = new QName("http://www.cirtil.fr/saeService", "archivageMasseAvecHash");
     private final static QName _ArchivageMasseAvecHashResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "archivageMasseAvecHashResponse");
     private final static QName _Recherche_QNAME = new QName("http://www.cirtil.fr/saeService", "recherche");
@@ -59,6 +57,7 @@ public class ObjectFactory {
     private final static QName _RechercheNbRes_QNAME = new QName("http://www.cirtil.fr/saeService", "rechercheNbRes");
     private final static QName _RechercheNbResResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "rechercheNbResResponse");
     private final static QName _RechercheParIterateur_QNAME = new QName("http://www.cirtil.fr/saeService", "rechercheParIterateur");
+    private final static QName _RechercheParIterateurV2_QNAME = new QName("http://www.cirtil.fr/saeService", "rechercheParIterateurV2");
     private final static QName _RechercheParIterateurResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "rechercheParIterateurResponse");
     private final static QName _AjoutNote_QNAME = new QName("http://www.cirtil.fr/saeService", "ajoutNote");
     private final static QName _AjoutNoteResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "ajoutNoteResponse");
@@ -67,10 +66,6 @@ public class ObjectFactory {
     private final static QName _EtatTraitementsMasseResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "etatTraitementsMasseResponse");
     private final static QName _Copie_QNAME = new QName("http://www.cirtil.fr/saeService", "copie");
     private final static QName _CopieResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "copieResponse");
-    private final static QName _DocumentExistant_QNAME = new QName("http://www.cirtil.fr/saeService", "documentExistant");
-    private final static QName _DocumentExistantResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "documentExistantResponse");
-    private final static QName _ConsultationGNTGNS_QNAME = new QName("http://www.cirtil.fr/saeService", "consultationGNTGNS");
-    private final static QName _ConsultationGNTGNSResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "consultationGNTGNSResponse");
     private final static QName _ModificationMasse_QNAME = new QName("http://www.cirtil.fr/saeService", "modificationMasse");
     private final static QName _ModificationMasseResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "modificationMasseResponse");
     private final static QName _TransfertMasse_QNAME = new QName("http://www.cirtil.fr/saeService", "transfertMasse");
@@ -79,6 +74,7 @@ public class ObjectFactory {
     private final static QName _DeblocageResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "deblocageResponse");
     private final static QName _Reprise_QNAME = new QName("http://www.cirtil.fr/saeService", "reprise");
     private final static QName _RepriseResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "repriseResponse");
+    private final static QName _SuppressionArchivageMasseResponse_QNAME = new QName("http://www.cirtil.fr/saeService", "suppressionArchivageMasseResponse");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: sae.integration.webservice.modele
@@ -125,22 +121,6 @@ public class ObjectFactory {
      */
     public RecuperationMetadonnees createRecuperationMetadonnees() {
         return new RecuperationMetadonnees();
-    }
-
-    /**
-     * Create an instance of {@link ArchivageUnitaireRequestType }
-     * 
-     */
-    public ArchivageUnitaireRequestType createArchivageUnitaireRequestType() {
-        return new ArchivageUnitaireRequestType();
-    }
-
-    /**
-     * Create an instance of {@link ArchivageUnitaireResponseType }
-     * 
-     */
-    public ArchivageUnitaireResponseType createArchivageUnitaireResponseType() {
-        return new ArchivageUnitaireResponseType();
     }
 
     /**
@@ -200,6 +180,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SuppressionMasseV2RequestType }
+     * 
+     */
+    public SuppressionMasseV2RequestType createSuppressionMasseV2RequestType() {
+        return new SuppressionMasseV2RequestType();
+    }
+
+    /**
      * Create an instance of {@link RestoreMasseRequestType }
      * 
      */
@@ -216,19 +204,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ArchivageMasseRequestType }
+     * Create an instance of {@link SuppressionArchivageMasseRequestType }
      * 
      */
-    public ArchivageMasseRequestType createArchivageMasseRequestType() {
-        return new ArchivageMasseRequestType();
-    }
-
-    /**
-     * Create an instance of {@link ArchivageMasseResponseType }
-     * 
-     */
-    public ArchivageMasseResponseType createArchivageMasseResponseType() {
-        return new ArchivageMasseResponseType();
+    public SuppressionArchivageMasseRequestType createSuppressionArchivageMasseRequestType() {
+        return new SuppressionArchivageMasseRequestType();
     }
 
     /**
@@ -392,6 +372,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RechercheParIterateurV2RequestType }
+     * 
+     */
+    public RechercheParIterateurV2RequestType createRechercheParIterateurV2RequestType() {
+        return new RechercheParIterateurV2RequestType();
+    }
+
+    /**
      * Create an instance of {@link RechercheParIterateurResponseType }
      * 
      */
@@ -456,38 +444,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DocumentExistantRequestType }
-     * 
-     */
-    public DocumentExistantRequestType createDocumentExistantRequestType() {
-        return new DocumentExistantRequestType();
-    }
-
-    /**
-     * Create an instance of {@link DocumentExistantResponseType }
-     * 
-     */
-    public DocumentExistantResponseType createDocumentExistantResponseType() {
-        return new DocumentExistantResponseType();
-    }
-
-    /**
-     * Create an instance of {@link ConsultationGNTGNSRequestType }
-     * 
-     */
-    public ConsultationGNTGNSRequestType createConsultationGNTGNSRequestType() {
-        return new ConsultationGNTGNSRequestType();
-    }
-
-    /**
-     * Create an instance of {@link ConsultationGNTGNSResponseType }
-     * 
-     */
-    public ConsultationGNTGNSResponseType createConsultationGNTGNSResponseType() {
-        return new ConsultationGNTGNSResponseType();
-    }
-
-    /**
      * Create an instance of {@link ModificationMasseRequestType }
      * 
      */
@@ -549,6 +505,14 @@ public class ObjectFactory {
      */
     public RepriseResponseType createRepriseResponseType() {
         return new RepriseResponseType();
+    }
+
+    /**
+     * Create an instance of {@link SuppressionArchivageMasseResponseType }
+     * 
+     */
+    public SuppressionArchivageMasseResponseType createSuppressionArchivageMasseResponseType() {
+        return new SuppressionArchivageMasseResponseType();
     }
 
     /**
@@ -712,32 +676,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ArchivageUnitaireRequestType }{@code >}
-     * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link ArchivageUnitaireRequestType }{@code >}
-     */
-    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "archivageUnitaire")
-    public JAXBElement<ArchivageUnitaireRequestType> createArchivageUnitaire(ArchivageUnitaireRequestType value) {
-        return new JAXBElement<ArchivageUnitaireRequestType>(_ArchivageUnitaire_QNAME, ArchivageUnitaireRequestType.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ArchivageUnitaireResponseType }{@code >}
-     * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link ArchivageUnitaireResponseType }{@code >}
-     */
-    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "archivageUnitaireResponse")
-    public JAXBElement<ArchivageUnitaireResponseType> createArchivageUnitaireResponse(ArchivageUnitaireResponseType value) {
-        return new JAXBElement<ArchivageUnitaireResponseType>(_ArchivageUnitaireResponse_QNAME, ArchivageUnitaireResponseType.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ArchivageUnitairePJRequestType }{@code >}
      * 
      * @param value
@@ -829,6 +767,19 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link SuppressionMasseV2RequestType }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link SuppressionMasseV2RequestType }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "suppressionMasseV2")
+    public JAXBElement<SuppressionMasseV2RequestType> createSuppressionMasseV2(SuppressionMasseV2RequestType value) {
+        return new JAXBElement<SuppressionMasseV2RequestType>(_SuppressionMasseV2_QNAME, SuppressionMasseV2RequestType.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link RestoreMasseRequestType }{@code >}
      * 
      * @param value
@@ -855,29 +806,16 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ArchivageMasseRequestType }{@code >}
+     * Create an instance of {@link JAXBElement }{@code <}{@link SuppressionArchivageMasseRequestType }{@code >}
      * 
      * @param value
      *     Java instance representing xml element's value.
      * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link ArchivageMasseRequestType }{@code >}
+     *     the new instance of {@link JAXBElement }{@code <}{@link SuppressionArchivageMasseRequestType }{@code >}
      */
-    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "archivageMasse")
-    public JAXBElement<ArchivageMasseRequestType> createArchivageMasse(ArchivageMasseRequestType value) {
-        return new JAXBElement<ArchivageMasseRequestType>(_ArchivageMasse_QNAME, ArchivageMasseRequestType.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ArchivageMasseResponseType }{@code >}
-     * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link ArchivageMasseResponseType }{@code >}
-     */
-    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "archivageMasseResponse")
-    public JAXBElement<ArchivageMasseResponseType> createArchivageMasseResponse(ArchivageMasseResponseType value) {
-        return new JAXBElement<ArchivageMasseResponseType>(_ArchivageMasseResponse_QNAME, ArchivageMasseResponseType.class, null, value);
+    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "suppressionArchivageMasse")
+    public JAXBElement<SuppressionArchivageMasseRequestType> createSuppressionArchivageMasse(SuppressionArchivageMasseRequestType value) {
+        return new JAXBElement<SuppressionArchivageMasseRequestType>(_SuppressionArchivageMasse_QNAME, SuppressionArchivageMasseRequestType.class, null, value);
     }
 
     /**
@@ -1141,6 +1079,19 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link RechercheParIterateurV2RequestType }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link RechercheParIterateurV2RequestType }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "rechercheParIterateurV2")
+    public JAXBElement<RechercheParIterateurV2RequestType> createRechercheParIterateurV2(RechercheParIterateurV2RequestType value) {
+        return new JAXBElement<RechercheParIterateurV2RequestType>(_RechercheParIterateurV2_QNAME, RechercheParIterateurV2RequestType.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link RechercheParIterateurResponseType }{@code >}
      * 
      * @param value
@@ -1245,58 +1196,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link DocumentExistantRequestType }{@code >}
-     * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link DocumentExistantRequestType }{@code >}
-     */
-    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "documentExistant")
-    public JAXBElement<DocumentExistantRequestType> createDocumentExistant(DocumentExistantRequestType value) {
-        return new JAXBElement<DocumentExistantRequestType>(_DocumentExistant_QNAME, DocumentExistantRequestType.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link DocumentExistantResponseType }{@code >}
-     * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link DocumentExistantResponseType }{@code >}
-     */
-    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "documentExistantResponse")
-    public JAXBElement<DocumentExistantResponseType> createDocumentExistantResponse(DocumentExistantResponseType value) {
-        return new JAXBElement<DocumentExistantResponseType>(_DocumentExistantResponse_QNAME, DocumentExistantResponseType.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ConsultationGNTGNSRequestType }{@code >}
-     * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link ConsultationGNTGNSRequestType }{@code >}
-     */
-    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "consultationGNTGNS")
-    public JAXBElement<ConsultationGNTGNSRequestType> createConsultationGNTGNS(ConsultationGNTGNSRequestType value) {
-        return new JAXBElement<ConsultationGNTGNSRequestType>(_ConsultationGNTGNS_QNAME, ConsultationGNTGNSRequestType.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ConsultationGNTGNSResponseType }{@code >}
-     * 
-     * @param value
-     *     Java instance representing xml element's value.
-     * @return
-     *     the new instance of {@link JAXBElement }{@code <}{@link ConsultationGNTGNSResponseType }{@code >}
-     */
-    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "consultationGNTGNSResponse")
-    public JAXBElement<ConsultationGNTGNSResponseType> createConsultationGNTGNSResponse(ConsultationGNTGNSResponseType value) {
-        return new JAXBElement<ConsultationGNTGNSResponseType>(_ConsultationGNTGNSResponse_QNAME, ConsultationGNTGNSResponseType.class, null, value);
-    }
-
-    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ModificationMasseRequestType }{@code >}
      * 
      * @param value
@@ -1398,6 +1297,19 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "repriseResponse")
     public JAXBElement<RepriseResponseType> createRepriseResponse(RepriseResponseType value) {
         return new JAXBElement<RepriseResponseType>(_RepriseResponse_QNAME, RepriseResponseType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link SuppressionArchivageMasseResponseType }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link SuppressionArchivageMasseResponseType }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://www.cirtil.fr/saeService", name = "suppressionArchivageMasseResponse")
+    public JAXBElement<SuppressionArchivageMasseResponseType> createSuppressionArchivageMasseResponse(SuppressionArchivageMasseResponseType value) {
+        return new JAXBElement<SuppressionArchivageMasseResponseType>(_SuppressionArchivageMasseResponse_QNAME, SuppressionArchivageMasseResponseType.class, null, value);
     }
 
 }

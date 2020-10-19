@@ -45,10 +45,11 @@ public class ArchivageUnitairePJTest {
       // environment = Environments.GNT_INT_PAJE;
       // environment = Environments.GNS_INT_INTERNE;
       // environment = Environments.GNT_INT_INTERNE;
-      environment = Environments.MIG_GNT;
+      environment = Environments.FRONTAL_DEV;
       // environment = Environments.GNT_INT_CLIENT;
       // environment = Environments.GNS_INT_CLIENT;
       service = SaeServiceStubFactory.getServiceForDevToutesActions(environment.getUrl());
+      // service = SaeServiceStubFactory.getServiceForCimeGNSCotisant(environment.getUrl());
    }
 
    /**
@@ -77,7 +78,10 @@ public class ArchivageUnitairePJTest {
 
       // Requête
       final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
-      request.setMetadonnees(RandomData.getRandomMetadatas());
+      final ListeMetadonneeType metas = RandomData.getRandomMetadatas();
+      SoapBuilder.setMetaValue(metas, "ApplicationTraitement", "CIME");
+      SoapBuilder.setMetaValue(metas, "ApplicationProductrice", "ALADIN");
+      request.setMetadonnees(metas);
       request.setDataFile(TestData.getTiffFile(request.getMetadonnees()));
 
       // Activation de l'optimisation MTOM si demandée
@@ -171,7 +175,7 @@ public class ArchivageUnitairePJTest {
       request.setDataFile(TestData.getTiffFile(request.getMetadonnees()));
 
       // On spécifie le HASH en SHA-256
-      final byte[] contenu = request.getDataFile().getFile();
+      final byte[] contenu = TestData.getTiffFileContent();
       final ListeMetadonneeType metaList = request.getMetadonnees();
       SoapBuilder.setMetaValue(metaList, "Hash", DigestUtils.sha256Hex(contenu));
       SoapBuilder.setMetaValue(metaList, "TypeHash", "SHA-256");
@@ -191,7 +195,7 @@ public class ArchivageUnitairePJTest {
       final String idDoc = response.getIdArchive();
       LOGGER.info("Archivage en succès. UUID reçu : {}", idDoc);
       // Validation
-      ArchivageValidationUtils.validateDocument(service, idDoc, request.getMetadonnees());
+      // ArchivageValidationUtils.validateDocument(service, idDoc, request.getMetadonnees());
 
       // Nettoyage
       CleanHelper.deleteOneDocument(service, idDoc);

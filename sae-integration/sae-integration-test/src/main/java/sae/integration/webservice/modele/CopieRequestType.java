@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Paramètre d'entrée de l'opération de copie
+ *          
  * 
  * <p>Classe Java pour copieRequestType complex type.
  * 

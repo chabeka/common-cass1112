@@ -62,8 +62,8 @@ public class ArchivageMasseRequestType {
      *     {@link String }
      *     
      */
-    public void setUrlSommaire(String value) {
-        this.urlSommaire = value;
+    public void setUrlSommaire(final String value) {
+        urlSommaire = value;
     }
 
 }

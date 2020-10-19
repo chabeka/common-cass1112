@@ -66,8 +66,8 @@ public class ArchivageUnitaireRequestType {
      *     {@link String }
      *     
      */
-    public void setEcdeUrl(String value) {
-        this.ecdeUrl = value;
+    public void setEcdeUrl(final String value) {
+        ecdeUrl = value;
     }
 
     /**
@@ -90,8 +90,8 @@ public class ArchivageUnitaireRequestType {
      *     {@link ListeMetadonneeType }
      *     
      */
-    public void setMetadonnees(ListeMetadonneeType value) {
-        this.metadonnees = value;
+    public void setMetadonnees(final ListeMetadonneeType value) {
+        metadonnees = value;
     }
 
 }

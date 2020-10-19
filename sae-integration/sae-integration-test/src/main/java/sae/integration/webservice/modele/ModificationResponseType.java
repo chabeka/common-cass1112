@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Retour de l'opération
  *             'modification'.
+ *          
  * 
  * <p>Classe Java pour modificationResponseType complex type.
  * 

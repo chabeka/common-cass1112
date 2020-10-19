@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Paramètre d'entrée de l'opération
  *             'restoreMasse'
+ *          
  * 
  * <p>Classe Java pour restoreMasseRequestType complex type.
  * 
@@ -20,7 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
- *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}listeUuidType"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -38,17 +39,17 @@ import javax.xml.bind.annotation.XmlType;
 public class RestoreMasseRequestType {
 
     @XmlElement(required = true)
-    protected String uuid;
+    protected ListeUuidType uuid;
 
     /**
      * Obtient la valeur de la propriété uuid.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ListeUuidType }
      *     
      */
-    public String getUuid() {
+    public ListeUuidType getUuid() {
         return uuid;
     }
 
@@ -57,10 +58,10 @@ public class RestoreMasseRequestType {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ListeUuidType }
      *     
      */
-    public void setUuid(String value) {
+    public void setUuid(ListeUuidType value) {
         this.uuid = value;
     }
 

@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Requête principale de la recherche par
  *             iterateur.
+ *          
  * 
  * <p>Classe Java pour requetePrincipaleType complex type.
  * 

@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * Filtre de la recherche par iterateur.
+ *          
  * 
  * <p>Classe Java pour filtreType complex type.
  * 

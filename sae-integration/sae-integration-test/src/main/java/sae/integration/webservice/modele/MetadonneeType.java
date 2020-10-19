@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Une métadonnée définie par un code et une
  *             valeur
+ *          
  * 
  * <p>Classe Java pour metadonneeType complex type.
  * 

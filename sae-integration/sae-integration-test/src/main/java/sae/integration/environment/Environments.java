@@ -11,7 +11,11 @@ public class Environments {
 
    public static final Environment FRONTAL_INT_CLIENT;
 
+   public static final Environment FRONTAL_INT_CLIENT_APPLI;
+
    public static final Environment FRONTAL_INT_INTERNE;
+
+   public static final Environment FRONTAL_DEV;
 
    public static final Environment GNT_INT_PAJE;
 
@@ -37,7 +41,11 @@ public class Environments {
 
    public static final Environment GNS_CSPP;
 
+   public static final Environment GNS_PREPROD;
+
    public static final Environment FRONTAL_CSPP;
+
+   public static final Environment FRONTAL_PREPROD;
 
    public static final Environment FRONTAL_LOCAL;
 
@@ -77,6 +85,15 @@ public class Environments {
             .build();
 
       FRONTAL_INT_CLIENT = new EnvironmentBuilder()
+            .setUrl("http://hwi69int2pgedboint.gidn.recouv/frontalged_be/services/saeService/")
+            .setEnvCode("TODO")
+            .setAppliServer("TODO")
+            .setEcdeMountPoint("/hawai/data/frontalged/ecde")
+            .setEcdeName("cnp69-evsgidn.cer69.recouv")
+            .setCassandraServers("TODO")
+            .build();
+
+      FRONTAL_INT_CLIENT_APPLI = new EnvironmentBuilder()
             .setUrl("http://hwi69int2pgedboint2.gidn.recouv:8080/frontalged_be/services/saeService/")
             .setEnvCode("TODO")
             .setAppliServer("TODO")
@@ -87,6 +104,15 @@ public class Environments {
 
       FRONTAL_INT_INTERNE = new EnvironmentBuilder()
             .setUrl("http://hwi69intpgedboint1.gidn.recouv:8080/frontalged_be/services/saeService/")
+            .setEnvCode("TODO")
+            .setAppliServer("TODO")
+            .setEcdeMountPoint("/hawai/data/frontalged/ecde")
+            .setEcdeName("cnp69-evsgidn.cer69.recouv")
+            .setCassandraServers("TODO")
+            .build();
+
+      FRONTAL_DEV = new EnvironmentBuilder()
+            .setUrl("http://hwi69devpgedboint1.gidn.recouv:8080/frontalged_be/services/saeService/")
             .setEnvCode("TODO")
             .setAppliServer("TODO")
             .setEcdeMountPoint("/hawai/data/frontalged/ecde")
@@ -197,12 +223,28 @@ public class Environments {
             .setEcdeName("cnp6gns-evsgivn.urdom.ad.recouv")
             .setCassandraServers("cnp6gnscvecas01.cve.recouv")
             .build();
+      GNS_PREPROD = new EnvironmentBuilder()
+            .setUrl("http://hwi69pregednatgnscot1boweb1.cer69.recouv/ged/services/SaeService/")
+            .setEnvCode("TODO")
+            .setAppliServer("hwi69pregednatgnscot1boappli1.cer69.recouv")
+            .setEcdeMountPoint("/hawai/data/nas_cnp_cer69")
+            .setEcdeName("cnp69-evsgippn.cer69.recouv")
+            .setCassandraServers("cnp69pregednatgnscot1bocas1.cer69.recouv")
+            .build();
       FRONTAL_CSPP = new EnvironmentBuilder()
             .setUrl("http://hwi3pgedcveboappli1.cve.recouv:8080/frontalged_be/services/saeService/")
             .setEnvCode("TODO")
             .setAppliServer("TODO")
             .setEcdeMountPoint("/hawai/data/frontalged/ecde")
             .setEcdeName("cnp69-evsgivn.urdom.ad.recouv")
+            .setCassandraServers("TODO")
+            .build();
+      FRONTAL_PREPROD = new EnvironmentBuilder()
+            .setUrl("http://frontalged.preprod.recouv/frontalged_be/services/saeService/")
+            .setEnvCode("TODO")
+            .setAppliServer("TODO")
+            .setEcdeMountPoint("/hawai/data/frontalged/ecde")
+            .setEcdeName("cnp69-evsgippn.cer69.recouv")
             .setCassandraServers("TODO")
             .build();
       FRONTAL_LOCAL = new EnvironmentBuilder()
