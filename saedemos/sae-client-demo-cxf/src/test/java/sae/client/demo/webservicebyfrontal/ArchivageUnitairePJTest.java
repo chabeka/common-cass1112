@@ -104,13 +104,13 @@ public class ArchivageUnitairePJTest {
       metaType = new MetadonneeType();
       // Métadonnées obligatoires
       metaType.setCode("CodeOrganismeGestionnaire");
-      metaType.setValeur("CER69");
+      metaType.setValeur("UR827");
       listMetasType.getMetadonnee().add(metaType);
 
       metaType = new MetadonneeType();
       // Métadonnées obligatoires
       metaType.setCode("CodeOrganismeProprietaire");
-      metaType.setValeur("CER69");
+      metaType.setValeur("UR827");
       listMetasType.getMetadonnee().add(metaType);
 
       metaType = new MetadonneeType();
