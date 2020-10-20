@@ -33,8 +33,8 @@ public class RechercheParIterateurTestV2 {
       final HashMap<String, String> listeMetasFixes = new HashMap<String, String>();
       ;
       listeMetasFixes.put("ApplicationProductrice", "ADELAIDE");
-      listeMetasFixes.put("CodeOrganismeGestionnaire", "CER69");
-      listeMetasFixes.put("CodeOrganismeProprietaire", "CER69");
+      listeMetasFixes.put("CodeOrganismeGestionnaire", "UR827");
+      listeMetasFixes.put("CodeOrganismeProprietaire", "UR827");
 
       // Métadonnée variable (obligatoire)
       String codeMetaVariable = "DateArchivage";

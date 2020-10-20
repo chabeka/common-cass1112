@@ -32,8 +32,8 @@ public final class ArchivageUtils {
       final HashMap<String, String> metadonnees = new HashMap<String, String>();
       // Métadonnées obligatoires
       metadonnees.put("ApplicationProductrice", "ADELAIDE");
-      metadonnees.put("CodeOrganismeGestionnaire", "CER69");
-      metadonnees.put("CodeOrganismeProprietaire", "CER69");
+      metadonnees.put("CodeOrganismeGestionnaire", "UR827");
+      metadonnees.put("CodeOrganismeProprietaire", "UR827");
       metadonnees.put("CodeRND", "2.3.1.1.12");
       metadonnees.put("DateCreation", "2011-09-01");
       metadonnees.put("FormatFichier", "fmt/354");
