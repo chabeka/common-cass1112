@@ -1,0 +1,715 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Type REGENT XML copyright CIPAM de Marseille pour EDICFE -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" xmlns="http://cfe.recouv/2008-11/TypeRegent"
+	targetNamespace="http://cfe.recouv/2008-11/TypeRegent"
+	attributeFormDefault="unqualified">
+	<xs:simpleType name="Activite40_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="40" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Activite70_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="70" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Activite140_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="140" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Activite420_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="420" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_CodePostal_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 8 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="9" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_Commune_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 13 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:minLength value="1" />
+			<xs:maxLength value="32" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_Complement_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 10 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="38" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_DistribSpeciale_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 7 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="8" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_IndiceRepetition_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 6 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:length value="1" />
+			<xs:enumeration value="B" />
+			<xs:enumeration value="T" />
+			<xs:enumeration value="Q" />
+			<xs:enumeration value="C" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_LocaliteBureau_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 9 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="32" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_NumVoie_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 5 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type :tous les chiffres, espace, A, a, à et -
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="9" />
+			<xs:pattern value="[\d\sAaà\-]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_Pays_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 14 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="38" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_Rivoli_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 4 - Adresse (fiche 23)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="((\p{L}{1})|(\d{1}))(\d{3})" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_TypeVoie_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 11 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="4" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Adr_VoieLieuDit_Type">
+		<xs:annotation>
+			<xs:documentation>sous rubrique 12 - Adresse (fiche 21) / dérivé de
+				AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="32" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Alpha_Type">
+		<xs:annotation>
+			<xs:documentation>type A : toutes les lettres, espace, point,
+				virgule, \[ \] \{ \} € @ # \- \( \) / = ' \+ : \? ! &quot; % &amp;
+				\* ; &lt; &gt;> </xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern
+				value="[\p{L}\s\.,\[\]\{\}€@#\-\(\)/='\+:\?!%&amp;\*;&lt;&gt;]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AlphaNum_Type">
+		<xs:annotation>
+			<xs:documentation>type A : toutes les lettres, tous les chiffres,
+				espace, point, virgule, \[ \] \{ \} € @ # \- \( \) / = ' \+ : \? !
+				&quot; % &amp; \* ; &lt; &gt;</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern
+				value="[\p{L}\d\s\.,\[\]\{\}€@#\-\(\)/='\+:\?!%&amp;\*;&lt;&gt;]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Categorie_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 61) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+			<xs:enumeration value="4" />
+			<xs:enumeration value="5" />
+			<xs:enumeration value="6" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CodeCJ_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 31) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="4" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CodeDestination_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 63) / dérivé de AlphaNum_Type
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:enumeration value="3" />
+			<xs:enumeration value="7" />
+			<xs:enumeration value="8" />
+			<xs:enumeration value="9" />
+			<xs:enumeration value="A" />
+			<xs:enumeration value="B" />
+			<xs:enumeration value="C" />
+			<xs:enumeration value="D" />
+			<xs:enumeration value="E" />
+			<xs:enumeration value="F" />
+			<xs:enumeration value="G" />
+			<xs:enumeration value="H" />
+			<xs:enumeration value="I" />
+			<xs:enumeration value="J" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CodeGeoINSEE_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 22)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern
+				value="((2A|2B|[0-2]{1}[1-9]{1}|10|[3-8]{1}\d{1}|[9]{1}[0-5]{1})\d{3})|(97[1-8]{1}\d{2})|(98[4-9]\d{2})|(99[1-5]\d{2})|99998" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CodeOrigine_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 62) / dérivé de AlphaNum_Type
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:enumeration value="1" />
+			<xs:enumeration value="3" />
+			<xs:enumeration value="4" />
+			<xs:enumeration value="6" />
+			<xs:enumeration value="7" />
+			<xs:enumeration value="8" />
+			<xs:enumeration value="9" />
+			<xs:enumeration value="F" />
+			<xs:enumeration value="A" />
+			<xs:enumeration value="B" />
+			<xs:enumeration value="C" />
+			<xs:enumeration value="D" />
+			<xs:enumeration value="E" />
+			<xs:enumeration value="F" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Commune_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="32" />
+			<xs:minLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Completude_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:enumeration value="0" />
+			<xs:enumeration value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Date_Type">
+		<xs:annotation>
+			<xs:documentation>type simple format date YYYY-MM-DD
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:date">
+			<xs:pattern value="....-..-.." />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="DateHeure_Type">
+		<xs:annotation>
+			<xs:documentation>format YYYY-MM-DDTHH:MM:SS</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:dateTime">
+			<xs:pattern value="....-..-..T..:..:.." />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Denomination_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="120" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Departement_Type">
+		<xs:annotation>
+			<xs:documentation>code département</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3" />
+			<xs:pattern
+				value="2A|2B|[0-2]{1}[1-9]{1}|10|[3-8]{1}\d{1}|[9]{1}[0-5]{1}|(97[1-8]{1})|98[4-9]{1}|99" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Dirigeant_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 42) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:maxLength value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Evenement_Type">
+		<xs:annotation>
+			<xs:documentation>Structure de l'événement déclaré</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(([0]{1}[1-9]{1})|([1-9]{1}\d{1}))(P|M|F)" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="FormatPoint_Type">
+		<xs:annotation>
+			<xs:documentation>type simple string fixé à '.'</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="1" />
+			<xs:pattern value="\." />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="IdentifiantCFE_Type">
+		<xs:annotation>
+			<xs:documentation>Structure de l'identifiant (fiche 1)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\p{Lu}{1}[\d\p{Lu}]{4}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Justification_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 80)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="J(\d{2})" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LienParente_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 43) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+			<xs:enumeration value="4" />
+			<xs:enumeration value="5" />
+			<xs:enumeration value="6" />
+			<xs:enumeration value="7" />
+			<xs:enumeration value="8" />
+			<xs:enumeration value="9" />
+			<xs:enumeration value="10" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LieuActivite_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 72) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:enumeration value="02" />
+			<xs:enumeration value="04" />
+			<xs:enumeration value="05" />
+			<xs:enumeration value="07" />
+			<xs:enumeration value="08" />
+			<xs:enumeration value="09" />
+			<xs:enumeration value="91" />
+			<xs:enumeration value="92" />
+			<xs:enumeration value="93" />
+			<xs:enumeration value="99" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="LieuImmat_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="35" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Mail_Type">
+		<xs:annotation>
+			<xs:documentation>adresse électronique</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="80" />
+			<xs:pattern
+				value="[\p{L}\p{N}_\-]+(\.[\p{L}\p{N}_\-]+)*@[\p{L}\p{N}_\-]+(\.[\p{L}\p{N}_\-]+)+" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="MoisJour_Type">
+		<xs:annotation>
+			<xs:documentation>Format --MM-DD</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:gMonthDay" />
+	</xs:simpleType>
+	<xs:simpleType name="MontantCapital_Type">
+		<xs:annotation>
+			<xs:documentation> tous les chiffres, virgule \-, \+ /
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="17" />
+			<xs:pattern value="[\d,\-\+/]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Nationalite_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="26" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NatureActivite_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 71) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:enumeration value="03" />
+			<xs:enumeration value="04" />
+			<xs:enumeration value="05" />
+			<xs:enumeration value="06" />
+			<xs:enumeration value="07" />
+			<xs:enumeration value="08" />
+			<xs:enumeration value="09" />
+			<xs:enumeration value="10" />
+			<xs:enumeration value="11" />
+			<xs:enumeration value="12" />
+			<xs:enumeration value="13" />
+			<xs:enumeration value="14" />
+			<xs:enumeration value="15" />
+			<xs:enumeration value="99" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NatureCapital_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NatureGerance_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="1" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="3" />
+			<xs:enumeration value="4" />
+			<xs:enumeration value="5" />
+			<xs:enumeration value="6" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NIC_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NIRCle_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NIRNumero_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de Num_Type - 2A et 2B inclus
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="13" />
+			<xs:pattern value="\d{5}(\d{2}|2A|2B)\d{6}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Nom_Type">
+		<xs:annotation>
+			<xs:documentation>toutes les lettres, espace, \-, '
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100" />
+			<xs:pattern value="[\p{L}\s\-']*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NomCommercial_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="100" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NomPrenom_Type">
+		<xs:annotation>
+			<xs:documentation>toutes les lettres, espace, \-, '
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="120" />
+			<xs:pattern value="[\p{L}\s\-']*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Num_Type">
+		<xs:annotation>
+			<xs:documentation>type N : tous les chiffres</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[\d]*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NumImmat_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="17" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NumIPG_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="12" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NumLiasse_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 2)</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\p{Lu}{1}[\d\p{Lu}]{11}" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NumTel_Type">
+		<xs:annotation>
+			<xs:documentation>Format 1122334455 / dérivé de Num_Type
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:maxLength value="14" />
+			<xs:minLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Organisme_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="40" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OrigineModifActivite_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 74) / dérivé de AlphaNum_Type
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:enumeration value="A" />
+			<xs:enumeration value="D" />
+			<xs:enumeration value="V" />
+			<xs:enumeration value="R" />
+			<xs:enumeration value="L" />
+			<xs:enumeration value="C" />
+			<xs:enumeration value="M" />
+			<xs:enumeration value="E" />
+			<xs:enumeration value="W" />
+			<xs:enumeration value="T" />
+			<xs:enumeration value="X" />
+			<xs:enumeration value="U" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Oui_Type">
+		<xs:annotation>
+			<xs:documentation>O</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="1" />
+			<xs:enumeration value="O" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OuiNon_Type">
+		<xs:annotation>
+			<xs:documentation>O N</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="1" />
+			<xs:enumeration value="O" />
+			<xs:enumeration value="N" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="OuiNonDemande_Type">
+		<xs:annotation>
+			<xs:documentation>O N D</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="1" />
+			<xs:enumeration value="O" />
+			<xs:enumeration value="N" />
+			<xs:enumeration value="D" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Pays_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="38" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Prenom_Type">
+		<xs:annotation>
+			<xs:documentation>toutes les lettres, espace, \-, '
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="20" />
+			<xs:pattern value="[\p{L}\s\-']*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="RegimeFiscal_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 50) / dérivé de AlphaNum_Type
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Sigle_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="AlphaNum_Type">
+			<xs:maxLength value="20" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SIREN_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 11) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="9" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SIRET_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 11) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="14" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SituationEtab_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="1" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+			<xs:enumeration value="4" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SituationMatrimoniale_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 44) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+			<xs:enumeration value="4" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="SituationPersEtab_Type">
+		<xs:annotation>
+			<xs:documentation>dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="1" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Titre_Type">
+		<xs:annotation>
+			<xs:documentation>(fiche 41) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="Num_Type">
+			<xs:length value="1" />
+			<xs:enumeration value="0" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="Version_Type">
+		<xs:annotation>
+			<xs:documentation>VXXXX.YY (XXXX=année et YY=num de version)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="V[2-9]{1}\d{3}\.\d{2}" />
+		</xs:restriction>
+	</xs:simpleType>
+	</xs:schema>

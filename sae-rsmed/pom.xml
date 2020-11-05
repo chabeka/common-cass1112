@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<cxf.version>3.3.7</cxf.version>
+		<project.version>1.0.0</project.version>
+	</properties>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.2.10.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>fr.urssaf.image</groupId>
+	<artifactId>sae-rsmed</artifactId>
+	<version>${project.version}</version>
+	<name>sae-rsmed</name>
+	<description>Migration des documents CONOT et RSMED vers la GED nationale</description>
+
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<!-- En cas de crash à cause de conflit entre spring boot logging et commons logging
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>-->
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-oxm</artifactId>
+			<version>5.2.9.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>com.documents4j</groupId>
+			<artifactId>documents4j-api</artifactId>
+			<version>0.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.14</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/stax-utils/stax-utils -->
+		<dependency>
+			<groupId>stax-utils</groupId>
+			<artifactId>stax-utils</artifactId>
+			<version>snapshot-20040917</version>
+		</dependency>
+	</dependencies>
+
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<activatedProperties>dev</activatedProperties>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>prod</id>
+			<properties>
+				<activatedProperties>prod</activatedProperties>
+			</properties>
+		</profile>
+	</profiles>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-codegen-plugin</artifactId>
+				<version>${cxf.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>wsdl2java</goal>
+						</goals>
+						<configuration>
+							<sourceRoot>${basedir}/src/main/java</sourceRoot>
+							<wsdlOptions>
+								<wsdlOption>
+									<wsdl>${basedir}\src\main\resources\ws\OpsService.wsdl</wsdl>
+									<bindingFiles>
+										<bindingFile>${basedir}\src\main\resources\ws\bindings.xml</bindingFile>
+									</bindingFiles>
+									<packagenames>
+										<!-- Package Mappings -->
+										<packagename>http://www.recouv.fr/services/backend/REI/v2.0/wsdl=fr.urssaf.image.rsmed.service.generated.cxf.fr.recouv.services.backend.rei.v2_0.wsdl</packagename>
+										<packagename>http://cfe.recouv/2008-11/TypeRegent=fr.urssaf.image.rsmed.service.generated.cxf.recouv.cfe._2008_11.typeregent</packagename>
+										<packagename>http://pivot.datamodel.esb.cirso.fr/1.0=fr.urssaf.image.rsmed.service.generated.cxf.fr.cirso.esb.datamodel.pivot._1</packagename>
+										<packagename>http://www.recouv.fr/datamodel/REI/v2.0/xsd=fr.urssaf.image.rsmed.service.generated.cxf.fr.recouv.datamodel.rei.v2_0.xsd</packagename>
+									</packagenames>
+									<extraargs>
+										<extraarg>-verbose</extraarg>
+										<extraarg>-nexclude</extraarg>
+										<extraarg>fr.urssaf.image.rsmed.service.modele</extraarg>
+									</extraargs>
+								</wsdlOption>
+							</wsdlOptions>
+
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

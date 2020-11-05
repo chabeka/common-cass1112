@@ -1,0 +1,2205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0"
+	targetNamespace="http://www.recouv.fr/datamodel/REI/v2.0/xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:pivotReferentiel="http://www.recouv.fr/datamodel/REI/v2.0/xsd"
+	xmlns:cfe="http://cfe.recouv/2008-11/TypeRegent" xmlns:datamodelPivot="http://pivot.datamodel.esb.cirso.fr/1.0">
+
+	<xs:import schemaLocation="Type_REGENT_V2008-11.xsd"
+		namespace="http://cfe.recouv/2008-11/TypeRegent" />
+	<xs:import namespace="http://pivot.datamodel.esb.cirso.fr/1.0"
+		schemaLocation="datamodel_pivot_cirso.xsd" />
+
+	<xs:complexType name="EtablissementComplet_Type">
+		<xs:annotation><xs:documentation>Etablissement avec ses objects connexes (son entreprise, l'adresse, et l'ensemble des redevabilites)</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:Etablissement_Type">
+				<xs:sequence>
+					<xs:element name="entreprise" type="pivotReferentiel:Entreprise_Type" minOccurs="0" maxOccurs="1" />
+					<xs:element name="adresse" type="pivotReferentiel:Adresse_Type" minOccurs="0" maxOccurs="1" />
+					<xs:element name="redevabilites" type="pivotReferentiel:Redevabilite_Type" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="lienCompte" type="pivotReferentiel:LienCompte_Type" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="Etablissement_Type">
+		<xs:annotation><xs:documentation>L'etablissement est la plus petite unite de production, localisee geographiquement, individualisee. Il depend juridiquement d'une entreprise. Sa production est relativement homogene. Le siege est l'etablissement principal, lorsqu'une entreprise n'exerce pas ses activites dans un seul etablissement.</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:EtablissementResume_Type">
+				<xs:sequence>
+					<xs:element name="codeNaf"
+						type="pivotReferentiel:CodeNAFCertification_Type" minOccurs="0" />
+					<xs:element name="dateCreation" type="xs:dateTime"
+						minOccurs="0" />
+					<xs:element name="dateDebutActivite" type="xs:dateTime"
+						maxOccurs="1" minOccurs="0"></xs:element>
+					<xs:element name="dateFinActivite" type="xs:dateTime"
+						minOccurs="0" />
+					<xs:element name="dateMiseEnLocGerance" type="xs:dateTime"
+						minOccurs="0" />					<xs:element name="presencePersonnel" type="xs:boolean"
+						minOccurs="0" />					<xs:element name="activitePlusImportante"
+						type="pivotReferentiel:ActivitePlusImportante_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="ensActivitesExercees"
+						type="pivotReferentiel:EnsActivitesExercees_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="etablissementSuccesseur"
+						type="pivotReferentiel:IdREI_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="etablissementPredecesseur"
+						type="pivotReferentiel:IdREI_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="dateDebutEmbauche" type="xs:dateTime"
+						minOccurs="0" />
+					<xs:element name="dateFinEmbauche" type="xs:dateTime"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="EtablissementResume_Type">
+		<xs:annotation><xs:documentation>EtablissementResume contient une sous partie des informations propres a un etablissement</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:EntiteCotisante_Type">
+				<xs:sequence>
+					<xs:element name="urGestionnaire"
+						type="datamodelPivot:CODE-ORGANISME" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="siret" type="pivotReferentiel:SIRETCertification_Type"
+						minOccurs="0" maxOccurs="1"/>
+					<xs:element name="enseigne" type="xs:string" minOccurs="0" />
+					<xs:element name="categorieEtablissement" type="pivotReferentiel:CategorieEtablissement_Type"
+						maxOccurs="1" minOccurs="0"></xs:element>
+					<xs:element name="dateFermeture" type="xs:dateTime"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="EntiteCotisante_Type" abstract="true">
+		<xs:annotation><xs:documentation>Une entite cotisante peut etre soit un individu, une entreprise ou un etablissement.</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="id" type="pivotReferentiel:IdREI_Type"
+				minOccurs="1" maxOccurs="1" />
+			<xs:element name="typeEntite" type="xs:int" minOccurs="0" />
+			<xs:element name="codeOrigine" type="xs:int" maxOccurs="1"
+				minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="EntrepriseComplete_Type">
+		<xs:annotation><xs:documentation>Entreprise avec ses objets connexes (adresse, ensemble des etablissements, des redevabilites, des dirigeants)</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:Entreprise_Type">
+				<xs:sequence>
+					<xs:element name="adresseSiege" type="pivotReferentiel:Adresse_Type" minOccurs="0" maxOccurs="1" />
+					<xs:element name="etablissements" type="pivotReferentiel:EtablissementComplet_Type" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="redevabilites" type="pivotReferentiel:Redevabilite_Type" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="dirigeants" type="pivotReferentiel:DirigeantPersPhysique_Type" minOccurs="0" maxOccurs="unbounded" />
+					<xs:element name="nbEtablissements" type="xs:int" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Entreprise_Type">
+		<xs:annotation><xs:documentation>Au sens INSEE du terme une entreprise est une unite legale identifiee par son numero SIREN.</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:EntrepriseResume_Type">
+				<xs:sequence>
+					<xs:element name="activitePrincipaleDeclaree"
+						type="cfe:Activite420_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="urResponsable"
+						type="datamodelPivot:CODE-ORGANISME" maxOccurs="1"
+						minOccurs="1" />
+					<xs:element name="dateCreation" type="xs:date"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dateDebutActivite" type="xs:date"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="natureGerance"
+						type="pivotReferentiel:NatureGerance_Type" maxOccurs="1" minOccurs="0">
+					</xs:element>
+					<xs:element name="nomCommercial" type="xs:string"
+						minOccurs="0" />
+					<xs:element name="dateCessation" type="xs:date"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dateDisparition" type="xs:date"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="codeGreffeImmatRCS"
+						type="pivotReferentiel:CodeGreffeImmatRCSCertification_Type"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="codeDptImmatRM"
+						type="pivotReferentiel:CodeDptImmatRMCertification_Type"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="codeSigle"
+						type="pivotReferentiel:CodeSigle_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="noRCS"
+						type="pivotReferentiel:NoRCS_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="noRM"
+						type="pivotReferentiel:NoRM_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="idAgessa"
+						type="pivotReferentiel:NoAGESSA_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="idMdArtiste"
+						type="pivotReferentiel:NoMDArtiste_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="codeSRC" type="pivotReferentiel:CodeSRC_Type" maxOccurs="1" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="EntrepriseResume_Type">
+		<xs:annotation><xs:documentation>EntrepriseResume contient une sous partie des informations propres a une entreprise</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:EntiteCotisante_Type">
+				<xs:sequence>
+					<xs:element name="siren" type="pivotReferentiel:SIRENCertification_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="denomination" type="cfe:Denomination_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="formeJuridiqueINSEE" type="pivotReferentiel:CodeCJCertification_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="codeNAF" type="pivotReferentiel:CodeNAFCertification_Type" maxOccurs="1" minOccurs="0" />
+                    <xs:element name="type" type="pivotReferentiel:TypeEntreprise_Type" maxOccurs="1" minOccurs="1" />
+                </xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="DirigeantPersMorale_Type">
+		<xs:annotation><xs:documentation>Lien entre une entreprise dirigeante et une entreprise dirigée.</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="qualiteDirigeant" type="pivotReferentiel:QualiteDirigeant_Type" maxOccurs="1" minOccurs="1" />
+			<xs:element name="dateEffet" type="xs:date" maxOccurs="1" minOccurs="0" />
+			<xs:element name="entrepriseDirigee" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="entrepriseDirigeante" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="IndividuComplet_Type">
+		<xs:annotation><xs:documentation>Individu et ses objets connexes (adresse, redevabilites, collaborateurs, entreprise personne physique dirigee ou autre lien de gerance)</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:Individu_Type">
+				<xs:sequence>
+					<xs:element name="adresseDomicile"
+						type="pivotReferentiel:Adresse_Type" minOccurs="0" maxOccurs="1" />
+					<xs:element name="redevabilites"
+						type="pivotReferentiel:Redevabilite_Type" minOccurs="0"
+						maxOccurs="unbounded" />
+					<xs:element name="collaborateurs"
+						type="pivotReferentiel:CollaborateurComplet_Type" minOccurs="0"
+						maxOccurs="unbounded" />
+					<xs:element name="dirigeants"
+						type="pivotReferentiel:CollaborateurComplet_Type" minOccurs="0"
+						maxOccurs="unbounded" />
+					<xs:element name="entreprisesPP" type="pivotReferentiel:Entreprise_Type" maxOccurs="unbounded" minOccurs="0">
+					</xs:element>
+					<xs:element name="estPAM" type="xs:boolean" maxOccurs="1" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Individu_Type">
+		<xs:annotation><xs:documentation>Un individu est une personne physique redevable ou potentiellement redevable de cotisations sociales a quelque titre que ce soit professionnellement ou personnellement	</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:IndividuResume_Type">
+				<xs:sequence>
+					<xs:element name="pseudonyme" type="cfe:Prenom_Type"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="cleNir"
+						type="pivotReferentiel:NIRCleCertification_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="validiteNir"
+						type="xs:string" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="certificatNirRsi"
+						type="xs:string" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="idAgessa"
+						type="pivotReferentiel:NoAGESSA_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="idMdArtiste"
+						type="pivotReferentiel:NoMDArtiste_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="pseudoSiret" type="pivotReferentiel:SIRETAlphanumerique_Type"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="sirenPersonnel"
+						type="pivotReferentiel:SIRENAlphanumeriqueCertification_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="noCpam" type="xs:string"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="libelleCommuneNaissance"
+						type="pivotReferentiel:CommuneCertification_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="codeSituationFamille"
+						type="pivotReferentiel:CodeSituationMatrimoniale_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="codeNationalite"
+						type="pivotReferentiel:CodeNationaliteCertification_Type"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="nationalite"
+						type="cfe:Nationalite_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="dateDeces"
+						type="pivotReferentiel:DateCertification_Type" maxOccurs="1"
+						minOccurs="0" />
+					<xs:element name="certificatDeces"
+						type="pivotReferentiel:CertificatDecesCertification_Type"
+						maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="CodeSituationMatrimoniale_Type">
+		<xs:annotation>
+			<xs:documentation>
+			Code matrimonial :
+				01	Célibataire
+				02	Marié
+				03	Divorcé
+				04	Séparé
+				05	Veuf/Veuve
+				06	Vie maritale
+				07	PACS
+				90	Non connue  
+			</xs:documentation>			
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:length value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="IndividuResume_Type">
+		<xs:annotation><xs:documentation>IndividuResume contient une sous partie des informations propres a un individu</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:EntiteCotisante_Type">
+				<xs:sequence>
+					<xs:element name="nir" type="pivotReferentiel:NIRNumeroCertification_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="civilite" type="pivotReferentiel:Civilite_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="nomPatronymique" type="pivotReferentiel:NomCertification_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="nomMarital" type="cfe:Nom_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="nomUsage" type="cfe:Nom_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="prenomsPatronymiques" type="pivotReferentiel:PrenomsPatronymiquesCertification_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="prenomUsuel" type="pivotReferentiel:PrenomCertification_Type" maxOccurs="1" minOccurs="0"></xs:element>
+					<xs:element name="dateNaissance" type="pivotReferentiel:DateCertification_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="codeCommuneInseeNaissance" type="pivotReferentiel:CodeGeoINSEECertification_Type" maxOccurs="1" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Pour la France uniquement
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="codePaysNaissance" type="pivotReferentiel:CodeGeoINSEECertification_Type" maxOccurs="1" minOccurs="0">
+						<xs:annotation>
+							<xs:documentation>
+								Si hors France
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+					<xs:element name="noRiba" type="pivotReferentiel:NoRIBACertification_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="numeroMarin" type="xs:string" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="Adr_TypeVoie_Type">
+	<xs:restriction base="cfe:Adr_TypeVoie_Type">
+		<xs:enumeration value="ALL">
+			<xs:annotation>
+				<xs:documentation>Allée</xs:documentation>
+				</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="AV">
+			<xs:annotation>
+				<xs:documentation>Avenue</xs:documentation>
+				</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="BD">
+			<xs:annotation>
+				<xs:documentation>Boulevard</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="CAR">
+			<xs:annotation>
+				<xs:documentation>Carrefour</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="CHE">
+			<xs:annotation>
+				<xs:documentation>Chemin</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="CHS">
+			<xs:annotation>
+				<xs:documentation>Chaussée</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="CITE">
+			<xs:annotation>
+				<xs:documentation>Cité</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="COR">
+			<xs:annotation>
+				<xs:documentation>Corniche</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="CRS">
+			<xs:annotation>
+				<xs:documentation>Cours</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="CTRE">
+			<xs:annotation>
+				<xs:documentation>Centre</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="DOM">
+			<xs:annotation>
+				<xs:documentation>Domaine</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="DSC">
+			<xs:annotation>
+				<xs:documentation>Descente</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="ECA">
+			<xs:annotation>
+				<xs:documentation>Ecart</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="ESP">
+			<xs:annotation>
+				<xs:documentation>Esplanade</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="FG">
+			<xs:annotation>
+				<xs:documentation>Faubourg</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="GR">
+			<xs:annotation>
+				<xs:documentation>Grand Rue</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="HAM">
+			<xs:annotation>
+				<xs:documentation>Hameau</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="HLE">
+			<xs:annotation>
+				<xs:documentation>Halle</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="IMM">
+			<xs:annotation>
+				<xs:documentation>Immeuble</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="IMP">
+			<xs:annotation>
+				<xs:documentation>Impasse</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="LD">
+			<xs:annotation>
+				<xs:documentation>Lieu-dit</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="LOT">
+			<xs:annotation>
+				<xs:documentation>Lotissement</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="MAR">
+			<xs:annotation>
+				<xs:documentation>Marché</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="MTE">
+			<xs:annotation>
+				<xs:documentation>Montée</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="PAS">
+			<xs:annotation>
+				<xs:documentation>Passage</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="PL">
+			<xs:annotation>
+				<xs:documentation>Place</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="PLN">
+			<xs:annotation>
+				<xs:documentation>Plaine</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="PLT">
+			<xs:annotation>
+				<xs:documentation>Plateau</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="PRO">
+			<xs:annotation>
+				<xs:documentation>Promenade</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="PRV">
+			<xs:annotation>
+				<xs:documentation>Parvis</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="QUA">
+			<xs:annotation>
+				<xs:documentation>Quartier</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="QUAI">
+			<xs:annotation>
+				<xs:documentation>Quai</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="RES">
+			<xs:annotation>
+				<xs:documentation>Résidence</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="RLE">
+			<xs:annotation>
+				<xs:documentation>Ruelle</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="ROC">
+			<xs:annotation>
+				<xs:documentation>Rocade</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="RPT">
+			<xs:annotation>
+				<xs:documentation>Rond-point</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="RTE">
+			<xs:annotation>
+				<xs:documentation>Route</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="RUE">
+			<xs:annotation>
+				<xs:documentation>Rue</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="SEN">
+			<xs:annotation>
+				<xs:documentation>Sente et sentier</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="SQ">
+			<xs:annotation>
+				<xs:documentation>Square</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="TPL">
+			<xs:annotation>
+				<xs:documentation>Terre-Plein</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="TRA">
+			<xs:annotation>
+				<xs:documentation>Traverse</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="VLA">
+			<xs:annotation>
+				<xs:documentation>Villa</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="VLGE">
+			<xs:annotation>
+				<xs:documentation>Village</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="ZAC">
+			<xs:annotation>
+				<xs:documentation>Zone d’aménagement concerté</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+		<xs:enumeration value="ZI">
+			<xs:annotation>
+				<xs:documentation>Zone industrielle</xs:documentation>
+			</xs:annotation>
+		</xs:enumeration>
+	</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="CriteresRechercheAdresse_Type">
+		<xs:annotation><xs:documentation>Une adresse peut etre trouvee a partir de differents criteres : code postal et code commune sont des criteres principaux (obligatroires) et les autres champs de l'adresse sont des criteres secondaires</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeTypeVoie" type="pivotReferentiel:Adr_TypeVoie_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="numVoie" type="cfe:Adr_NumVoie_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="libelleVoie"
+				type="cfe:Adr_VoieLieuDit_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="codePostal" type="cfe:Adr_CodePostal_Type"
+				maxOccurs="1" minOccurs="1" />
+			<xs:element name="pays" type="cfe:Adr_Pays_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="codeCommuneINSEE"
+				type="pivotReferentiel:REICodeGeoINSEE_Type" maxOccurs="1" minOccurs="1" />
+			<xs:element name="indiceRepetition"
+				type="cfe:Adr_IndiceRepetition_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="libelleCommuneEtranger" type="cfe:Commune_Type" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Adresse_Type">
+		<xs:annotation><xs:documentation>Adresse postale, geographique ou geopostale</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="dateEffet" type="xs:date" maxOccurs="1" minOccurs="0" />
+			<xs:element name="codeOrigine" type="pivotReferentiel:CodeOrigine_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="codeTypeVoie" type="cfe:Adr_TypeVoie_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="numVoie" type="cfe:Adr_NumVoie_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="libelleVoie"
+				type="cfe:Adr_VoieLieuDit_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="codePostal" type="cfe:Adr_CodePostal_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="localiteBureauDistrib"
+				type="cfe:Adr_Commune_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="pays" type="cfe:Adr_Pays_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="codeCommuneINSEE"
+				type="pivotReferentiel:REICodeGeoINSEE_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="libelleCommuneEtranger" type="cfe:Commune_Type" maxOccurs="1" minOccurs="0"></xs:element>
+			<xs:element name="complementAdresse"
+				type="cfe:Adr_Complement_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="indiceRepetition"
+				type="cfe:Adr_IndiceRepetition_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="distributionSpeciale"
+				type="cfe:Adr_DistribSpeciale_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="validite"
+				type="pivotReferentiel:ValiditeAdresse_Type" maxOccurs="1"
+				minOccurs="0" />
+			<xs:element name="destinataire" type="cfe:AlphaNum_Type" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:sequence>
+
+	</xs:complexType>
+
+
+	
+	
+	<xs:simpleType name="PrenomsPatronymiques_Type">
+		<xs:annotation>
+			<xs:documentation>Liste des prenoms : toutes les lettres, espace, \-, '
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="80" />
+			<xs:pattern value="[\p{L}\s\-']*" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CodeNationalite_Type">
+		<xs:annotation>
+			<xs:documentation>
+				Code pour RSI et SNV2.
+				alphanumérique sur 3 lettres
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CodeCertificatDeces_Type">
+		<xs:annotation>
+			<xs:documentation>
+				Code pour RSI et SNV2.
+				alphanumérique sur 3 lettres
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:Num_Type">
+			<xs:maxLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NoRIBA_Type">
+		<xs:annotation>
+			<xs:documentation>
+				Identifiant RSI
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="20" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NoMDArtiste_Type">
+		<xs:annotation>
+			<xs:documentation>
+				Identifiant MDA
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="20" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="NoAGESSA_Type">
+		<xs:annotation>
+			<xs:documentation>
+				Identifiant AGESSA
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="20" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="ValiditeAdresse_Type">
+		<xs:annotation><xs:documentation>Validite de l'adresse : code et libelle en toute lettre</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeValidite"
+				type="pivotReferentiel:CodeValiditeAdresse_Type" maxOccurs="1"
+				minOccurs="1" />
+			<xs:element name="libelle" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="CodeValiditeAdresse_Type">
+		<xs:annotation><xs:documentation>code de validite de l'adresse en toute lettre</xs:documentation></xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="4" />
+			<xs:enumeration value="1">
+				<xs:annotation>
+					<xs:documentation>1	N'habite pas à l'adresse indiquée</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="2">
+				<xs:annotation>
+					<xs:documentation>2	Parti sans laisser d'adresse</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="3">
+				<xs:annotation>
+					<xs:documentation>3	Valide</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="DonneesContact_Type">
+		<xs:annotation><xs:documentation>Correspond aux donnees de contact (telephone, mail, fax, mobile).	</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeTypeContact"
+				type="pivotReferentiel:CodeTypeContact_Type" maxOccurs="1"
+				minOccurs="0" />
+			<xs:choice>
+				<xs:element name="telFixeFax" type="cfe:NumTel_Type"
+					maxOccurs="1" minOccurs="0" />
+				<xs:element name="courriel" type="cfe:Mail_Type"
+					maxOccurs="1" minOccurs="0" />
+				<xs:element name="telMobile" type="cfe:NumTel_Type"
+					maxOccurs="1" minOccurs="0" />
+				<xs:element name="telecopie" type="cfe:NumTel_Type"
+					maxOccurs="1" minOccurs="0" />
+				<xs:element name="autres" type="cfe:AlphaNum_Type"
+					maxOccurs="1" minOccurs="0" />
+			</xs:choice>
+			<xs:element name="criticite" type="xs:string" maxOccurs="1"
+				minOccurs="0">
+			</xs:element>
+			<xs:element name="niveauFiabilite" type="xs:string"
+				maxOccurs="1" minOccurs="0"/>
+			<xs:element name="dateEffet" type="xs:date" maxOccurs="1"
+				minOccurs="0">
+			</xs:element>
+			<xs:element name="codeOrigine"
+				type="pivotReferentiel:CodeOrigine_Type" maxOccurs="1"
+				minOccurs="0">
+			</xs:element>
+			<xs:element name="idREI" type="pivotReferentiel:IdREI_Type"
+				maxOccurs="1" minOccurs="0">
+			</xs:element>
+			<xs:element name="entiteCotisanteId"
+				type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="0">
+			</xs:element>
+			<xs:element name="correspondantId" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	
+	<xs:complexType name="Contact_Type">
+		<xs:annotation><xs:documentation>Contact sans lien avec le correspondant</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="typeContact"
+				type="pivotReferentiel:TypeContact_Type" maxOccurs="1"
+				minOccurs="0" />
+			<xs:choice>
+				<xs:element name="telFixeFax" type="cfe:NumTel_Type"
+					maxOccurs="1" minOccurs="0" />
+				<xs:element name="courriel" type="cfe:Mail_Type"
+					maxOccurs="1" minOccurs="0" />
+				<xs:element name="telMobile" type="cfe:NumTel_Type"
+					maxOccurs="1" minOccurs="0" />
+				<xs:element name="telecopie" type="cfe:NumTel_Type"
+					maxOccurs="1" minOccurs="0" />
+				<xs:element name="autres" type="cfe:AlphaNum_Type"
+					maxOccurs="1" minOccurs="0" />
+			</xs:choice>
+			<xs:element name="criticite" type="xs:string" maxOccurs="1"
+				minOccurs="0">
+			</xs:element>
+			<xs:element name="niveauFiabilite" type="xs:string"
+				maxOccurs="1" minOccurs="0">
+				<xs:annotation>
+					<xs:documentation>
+					En sortie, on retourne directement les valeurs
+					Ce fonctionnement pourra être changé suite à accord Télédep car modification de l'interface
+						1	Indéterminée
+						2	Vérifiée
+						3	Incorrecte 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="dateEffet" type="xs:date" maxOccurs="1"
+				minOccurs="0">
+			</xs:element>
+			<xs:element name="codeOrigine"
+				type="pivotReferentiel:CodeOrigine_Type" maxOccurs="1"
+				minOccurs="0">
+			</xs:element>
+			<xs:element name="idREI" type="pivotReferentiel:IdREI_Type"
+				maxOccurs="1" minOccurs="0">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="Correspondant_Type">
+		<xs:annotation><xs:documentation>Les correspondants sont des personnes physiques employees par une entreprise. Les correspondants peuvent etre habilites ( des habilitations internes) sur la totalite ou partie des comptes l'entreprise a laquelle ils appartiennent ou  bien sur la totalite ou partie des comptes qui dependent de l'entreprise a laquelle ils appartiennent. Un correspondant employe par une entreprise tiers-declarante herite des habilitations de son entreprise.</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:CorrespondantResume_Type">
+				<xs:sequence>
+					<xs:element name="habilitations" type="pivotReferentiel:HabilitationInterne_Type" maxOccurs="unbounded" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Habilitation_Type">
+		<xs:annotation><xs:documentation>Une habilitation concerne soit un compte, soit un cotisant (seulement une entreprise au palier 1). Une habilitation est delivree a un correspondant (habilitation interne) ou a une entreprise (habilitation tiers-declarant). Si l'habilitation est delivree a un correspondant, alors l'entite concernee doit etre l'entreprise du correspondant ou appartenir a l'entreprise du correspondant (s'il s'agit d'un compte) ...	</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:choice>
+				<xs:element name="sirenEntrepriseConcernee" type="cfe:SIREN_Type" />
+				<xs:sequence>
+					<xs:element name="compteConcerne" type="datamodelPivot:NO-EXT-CPT" />
+					<xs:element name="habilitationSoustractive" type="xs:boolean" />
+				</xs:sequence>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Redevabilite_Type">
+		<xs:annotation><xs:documentation>La redevabilite correspond aux comptes de recouvrement (geres historiquement par le SNV2).	</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="idREI" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="1"></xs:element>
+			<xs:element name="numeroCompteInterne" type="datamodelPivot:NO-INT-CPT" maxOccurs="1" minOccurs="1" />
+			<xs:element name="urssafGestionnaire" type="datamodelPivot:CODE-ORGANISME" maxOccurs="1" minOccurs="1" />
+			<xs:element name="categorie" type="datamodelPivot:CD-CAT" maxOccurs="1" minOccurs="1" />
+			<xs:element name="sousCategorie" type="datamodelPivot:CD-SS-CAT" maxOccurs="1" minOccurs="0" />
+			<xs:element name="numeroCompteExterne" type="datamodelPivot:NO-EXT-CPT" maxOccurs="1" minOccurs="1" />
+			<xs:element name="codeCSU" type="pivotReferentiel:CodeCSU_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="etatCompte" type="pivotReferentiel:EtatCompte_Type" maxOccurs="1" minOccurs="1" />
+			<xs:element name="codeMotifEtat" type="pivotReferentiel:CodeMotifEtat_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="numeroNationalCompte" type="pivotReferentiel:NumeroNationalCompte_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="pseudoSIRET" type="pivotReferentiel:SIRETCertification_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="dateEtat" type="xs:date" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="EtatCompte_Type">
+		<xs:annotation>
+			<xs:documentation>
+				1	Actif
+				2	Suspendu
+				3	Radié
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeEtat" type="datamodelPivot:CD-ETA-CPT" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="HabilitationInterne_Type">
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:Habilitation_Type">
+				<xs:sequence>
+					<xs:element name="idTeledepCorrespondantInterne" type="pivotReferentiel:IdTeledep_Type" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="HabilitationTiersDeclarant_Type">
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:Habilitation_Type">
+				<xs:sequence>
+					<xs:element name="sirenEntrepriseTiersDeclarant" type="cfe:SIREN_Type" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="TiersDeclarant_Type">
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:EntrepriseResume_Type">
+				<xs:sequence>
+					<xs:element name="codeRole" type="xs:int" maxOccurs="1" minOccurs="0"/>
+					<xs:element name="correspondant" type="pivotReferentiel:CorrespondantResume_Type" maxOccurs="unbounded" minOccurs="0" />
+					<xs:element name="habilitations" type="pivotReferentiel:HabilitationTiersDeclarant_Type" maxOccurs="unbounded" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="CorrespondantResume_Type">
+		<xs:annotation><xs:documentation>Ne contient que les informations identifiantes du correspondant</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeCivilite" type="cfe:Titre_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="nom" type="cfe:Nom_Type" maxOccurs="1" minOccurs="1" />
+			<xs:element name="prenom" type="cfe:Prenom_Type" maxOccurs="1" minOccurs="1" />
+			<xs:element name="idTeledep" type="pivotReferentiel:IdTeledep_Type" maxOccurs="1" minOccurs="1" />
+			<xs:element name="entrepriseEmployante" type="cfe:SIREN_Type" maxOccurs="1" minOccurs="1" />
+			<xs:element name="donneesContact" type="pivotReferentiel:DonneesContact_Type" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="id" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="codeOrigine" type="pivotReferentiel:CodeOrigine_Type" maxOccurs="1" minOccurs="1" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="IdTeledep_Type">
+		<xs:annotation><xs:documentation>Format de l'identifiant teledep</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="24" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="TypeEntreprise_Type">
+		<xs:annotation><xs:documentation>Type d'entreprise : code et libelle </xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeType" type="pivotReferentiel:CodeTypeEntreprise_Type" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="CodeTypeEntreprise_Type">
+		<xs:annotation>
+			<xs:documentation>Code type de l'entreprise</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:length value="1" />
+			<xs:enumeration value="M" >
+				<xs:annotation><xs:documentation>Morale</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="P" >
+				<xs:annotation><xs:documentation>Physique</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="F" >
+				<xs:annotation><xs:documentation>Exploitation En Commun</xs:documentation></xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="TypeContact_Type">
+		<xs:annotation><xs:documentation>Type de contact : code et libelle </xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeType" type="pivotReferentiel:CodeTypeContact_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" maxOccurs="1" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="CodeTypeContact_Type">
+		<xs:annotation>
+			<xs:documentation>
+				Code type du contact :
+				1 : EMAIL
+				2 : TEL_FIXE
+				3 : TEL_MOBILE
+				4 : TELECOPIE
+				5 : AUTRES
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:Num_Type">
+			<xs:maxLength value="1" />
+			<xs:enumeration value="1">
+				<xs:annotation>
+					<xs:documentation>EMAIL</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="2">
+				<xs:annotation>
+					<xs:documentation>TEL_FIXE</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="3">
+				<xs:annotation>
+					<xs:documentation>TEL_MOBILE</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="4">
+				<xs:annotation>
+					<xs:documentation>TELECOPIE</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="5">
+				<xs:annotation>
+					<xs:documentation>AUTRES</xs:documentation>
+				</xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeSigle_Type">
+		<xs:annotation>
+			<xs:documentation>Sigle : dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="4" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="NoRCS_Type">
+		<xs:annotation>
+			<xs:documentation>Numero registre du commerce : dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="NoRM_Type">
+		<xs:annotation>
+			<xs:documentation>Numero registre des metiers : dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeGreffeImmatRCS_Type">
+		<xs:annotation>
+			<xs:documentation>greffe d'immatriculation au registre : dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeDptImmatRM_Type">
+		<xs:annotation>
+			<xs:documentation>Departement d'immatriculation au registre : dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="CodeGreffeImmatRCSCertification_Type">
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:CodeGreffeImmatRCS_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CodeDptImmatRMCertification_Type">
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:CodeDptImmatRM_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="NoEIRL_Type">
+		<xs:annotation>
+			<xs:documentation>Entrepreneur Individuel a Responsabilite Limite : dérivé de AlphaNum_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="GroupeProfessionnel_Type">
+		<xs:annotation><xs:documentation>Groupe pro : code et libelle </xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeGroupeProfessionel" type="pivotReferentiel:CodeGroupeProfessionel_Type" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="CodeGroupeProfessionel_Type">
+		<xs:annotation>
+			<xs:documentation>
+				1 : artisan
+				2 : Commerçant
+				3 : Profession libérale
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:Num_Type">
+			<xs:maxLength value="1" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeTypeProfessionLiberale_Type">
+		<xs:annotation>
+			<xs:documentation>
+				PAM Conventionné [typePL=1]
+				Avocat [typePL=2]
+				Profession Libérale : Cas Général [typePL=3]
+				Profession Libérale
+				assimilée attachée au RSI [typePL=4]
+				Gérant Kiosque, Superette, Prop.
+				d’immeuble [typePL=5]
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:Num_Type">
+			<xs:maxLength value="1" />
+			<xs:enumeration value="1" />
+			<xs:enumeration value="2" />
+			<xs:enumeration value="3" />
+			<xs:enumeration value="4" />
+			<xs:enumeration value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeTypeEtablissement_Type">
+		<xs:annotation>
+			<xs:documentation>Code type de l'établissement</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:length value="2" />
+			<xs:enumeration value="1A" />
+			<xs:enumeration value="1B" />
+			<xs:enumeration value="1C" />
+			<xs:enumeration value="1D" />
+			<xs:enumeration value="1E" />
+			<xs:enumeration value="1F" />
+			<xs:enumeration value="1G" />
+			<xs:enumeration value="1H" />
+			<xs:enumeration value="1J" />
+			<xs:enumeration value="1K" />
+			<xs:enumeration value="1L" />
+			<xs:enumeration value="1M" />
+			<xs:enumeration value="1N" />
+			<xs:enumeration value="2A" />
+			<xs:enumeration value="2B" />
+			<xs:enumeration value="2C" />
+			<xs:enumeration value="2D" />
+			<xs:enumeration value="2E" />
+			<xs:enumeration value="2F" />
+			<xs:enumeration value="2G" />
+			<xs:enumeration value="2H" />
+			<xs:enumeration value="2J" />
+			<xs:enumeration value="2K" />
+			<xs:enumeration value="2L" />
+			<xs:enumeration value="2M" />
+			<xs:enumeration value="2N" />
+			<xs:enumeration value="3A" />
+			<xs:enumeration value="3B" />
+			<xs:enumeration value="4A" />
+			<xs:enumeration value="4B" />
+			<xs:enumeration value="5A" />
+			<xs:enumeration value="5B" />
+			<xs:enumeration value="5C" />
+			<xs:enumeration value="5D" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="IdREI_Type">
+		<xs:annotation><xs:documentation>identifiant REI ou identifiant d'entite cotisante</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:long"></xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="DirigeantPersPhysiqueComplet_Type">
+		<xs:annotation><xs:documentation>Identique au DirigeantPersPhysique_Type avec les objets lies complets</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DirigeantPersPhysique_Type">
+				<xs:sequence>
+					<xs:element name="entreprise" type="pivotReferentiel:EntrepriseComplete_Type" minOccurs="0" maxOccurs="1" />
+					<xs:element name="individu" type="pivotReferentiel:IndividuComplet_Type" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="DirigeantPersPhysique_Type">
+		<xs:annotation><xs:documentation>Relation entre Individu et l'entreprise en qualite de dirigeant.</xs:documentation></xs:annotation>
+		<xs:sequence>
+            <xs:element name="idEntreprise" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="1"></xs:element>
+            <xs:element name="idIndividu" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="1">
+			</xs:element>
+            <xs:element name="groupeProfessionel"
+				type="pivotReferentiel:GroupeProfessionelCertification_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="typeProfessionLiberale"
+				type="pivotReferentiel:CodeTypeProfessionLiberale_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="estForain" type="xs:boolean" maxOccurs="1"
+				minOccurs="0" />
+			<xs:element name="codeCommuneRattachement"
+				type="cfe:Adr_CodePostal_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="estAutoEntrepreneur" type="xs:boolean"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="qualiteDirigeant"
+				type="pivotReferentiel:QualiteDirigeant_Type" maxOccurs="1" minOccurs="1" />
+			<xs:element name="siretDirigeant" type="pivotReferentiel:SIRETCertification_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="cpamRattachement"
+				type="pivotReferentiel:CPAMRattachementCertification_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="noInscriptionPAM"
+				type="pivotReferentiel:NoInscriptionPAMCertification_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="codeSpecialite"
+				type="pivotReferentiel:CodeSpecialiteCertification_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="regimeConventionnel"
+				type="pivotReferentiel:RegimeConventionnelCertification_Type"
+				maxOccurs="1" minOccurs="0" />
+			<xs:element name="noRPPS"
+				type="pivotReferentiel:NoRPPS_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="estGerantMajoritaire" type="xs:boolean"
+				maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="CollaborateurComplet_Type">
+		<xs:annotation><xs:documentation>Identique au Collaborateur_Type avec des individus complet</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:Collaborateur_Type">
+				<xs:sequence>
+					<xs:element name="individu" type="pivotReferentiel:IndividuComplet_Type" minOccurs="0" maxOccurs="1" />
+					<xs:element name="individuDirigeant" type="pivotReferentiel:IndividuComplet_Type" minOccurs="0" maxOccurs="1" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="Collaborateur_Type">
+		<xs:annotation><xs:documentation>lien de collaboration entre 2 individus defini par le role</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="idIndividu" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="idIndividuDirigeant" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="roleCollaborateur" type="pivotReferentiel:RoleCollaboration_Type" maxOccurs="1" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+
+	<xs:simpleType name="CodeRoleCollaboration_Type">
+		<xs:restriction base="cfe:Num_Type">
+			<xs:maxLength value="2" />
+			<xs:enumeration value="7" >
+				<xs:annotation>
+					<xs:documentation>Volontaire participant</xs:documentation>
+				</xs:annotation>	
+			</xs:enumeration>
+			<xs:enumeration value="12">
+				<xs:annotation>
+					<xs:documentation>Ordinaire Conjoint Collaborateur</xs:documentation>
+				</xs:annotation>	
+			</xs:enumeration>
+			<xs:enumeration value="13">
+				<xs:annotation>
+					<xs:documentation>Ordinaire Conjoint Collaborateur Outre-Mer</xs:documentation>
+				</xs:annotation>	
+			</xs:enumeration>
+			<xs:enumeration value="14" >
+				<xs:annotation>
+					<xs:documentation>Ordinaire Aide familiale</xs:documentation>
+				</xs:annotation>	
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="EIRL_Type">
+		<xs:annotation><xs:documentation>Entrepreneur Individuel a Responsabilite Limitee</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="noRegistreEIRL" type="pivotReferentiel:NoEIRLCertification_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="codeActivite" maxOccurs="1" minOccurs="0">
+				<xs:simpleType>
+					<xs:restriction base="cfe:Num_Type">
+						<xs:maxLength value="4" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="CodeNAF_Type">
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="5"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="AdresseValidite_Type">
+		<xs:annotation>
+			<xs:documentation>
+				PSA (Parti sans laisser d'adresse),
+				NPAI (N'habite
+				pas à  l'adresse indiquée),
+				VAL (Valide)
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="4" />
+			<xs:enumeration value="PSA" />
+			<xs:enumeration value="NPAI" />
+			<xs:enumeration value="VAL" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="DonneeSoumiseACertification_Type">
+		<xs:annotation><xs:documentation>Pour indiquer le niveau de certification d'une donnee soumise a certification</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeStatut" type="pivotReferentiel:CodeStatut_Type" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="NIRNumeroCertification_Type">
+		<xs:annotation><xs:documentation>NIR soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="cfe:NIRNumero_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NIRCleCertification_Type">
+		<xs:annotation><xs:documentation>Cle du NIR soumise a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="cfe:NIRCle_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="PrenomsPatronymiquesCertification_Type">
+		<xs:annotation><xs:documentation>Liste des prenoms soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:PrenomsPatronymiques_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NomCertification_Type">
+		<xs:annotation><xs:documentation>Nom soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="cfe:Nom_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="PrenomCertification_Type">
+		<xs:annotation><xs:documentation>Prenom soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="cfe:Prenom_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="DateCertification_Type">
+		<xs:annotation><xs:documentation>Date soumise a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="xs:date" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CodeNationaliteCertification_Type">
+		<xs:annotation><xs:documentation>Nationalite soumise a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:CodeNationalite_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CodeGeoINSEECertification_Type">
+		<xs:annotation><xs:documentation>Code geo soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:REICodeGeoINSEE_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CertificatDecesCertification_Type">
+		<xs:annotation><xs:documentation>Deces soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="xs:string" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NoRIBACertification_Type">
+		<xs:annotation><xs:documentation>RIBA soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:NoRIBA_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="SIRENCertification_Type">
+		<xs:annotation><xs:documentation>SIREN soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="cfe:SIREN_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="SIRENAlphanumeriqueCertification_Type">
+		<xs:annotation><xs:documentation>SIREN (ou pseudo) soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:SIRENAlphanumerique_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="SIRENAlphanumerique_Type">
+		<xs:annotation><xs:documentation>SIREN (ou pseudo)</xs:documentation></xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:length value="9" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="CommuneCertification_Type">
+		<xs:annotation><xs:documentation>Commune soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="cfe:Commune_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="GroupeProfessionelCertification_Type">
+		<xs:annotation><xs:documentation>Groupe pro soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur"
+						type="pivotReferentiel:GroupeProfessionnel_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="SIRETAlphanumerique_Type">
+		<xs:annotation>
+			<xs:documentation>SIRET ou pseudo ou fictif : (fiche 11) / dérivé de Num_Type</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="14" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="SIRETCertification_Type">
+		<xs:annotation><xs:documentation>SIRET (ou pseudo ou fictif) soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:SIRETAlphanumerique_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CodeNAFCertification_Type">
+		<xs:annotation><xs:documentation>Code NAF soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:CodeNAF_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="CodeCJCertification_Type">
+		<xs:annotation><xs:documentation>Categorie juridique soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="cfe:CodeCJ_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NoRCSCertification_Type">
+		<xs:annotation><xs:documentation>Numero registre commerce soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:NoRCS_Type" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NoRMCertification_Type">
+		<xs:annotation><xs:documentation>Numero registre metier soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:NoRM_Type" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:complexType name="NoEIRLCertification_Type">
+		<xs:annotation><xs:documentation>Numero EIRL commerce soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:NoEIRL_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="CPAMRattachement_Type">
+		<xs:annotation><xs:documentation>CPAM de rattachement</xs:documentation></xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="3" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="CPAMRattachementCertification_Type">
+		<xs:annotation><xs:documentation>CPAM de rattachement soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:CPAMRattachement_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="NoInscriptionPAM_Type">
+		<xs:annotation><xs:documentation>Numero d'inscription du PAM</xs:documentation></xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="9" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="NoInscriptionPAMCertification_Type">
+		<xs:annotation><xs:documentation>Numero d'inscription du PAM soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:NoInscriptionPAM_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="CodeSpecialite_Type">
+		<xs:annotation><xs:documentation>Code specialite sur 5 caracteres</xs:documentation></xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="5" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="CodeSpecialiteCertification_Type">
+		<xs:annotation><xs:documentation>Code specialite soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:CodeSpecialite_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="RegimeConventionnel_Type">
+		<xs:annotation><xs:documentation>Regime de convention sur 10 caractères</xs:documentation></xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="10" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="RegimeConventionnelCertification_Type">
+		<xs:annotation><xs:documentation>Regime de convention soumis a certification</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:DonneeSoumiseACertification_Type">
+				<xs:sequence>
+					<xs:element name="valeur" type="pivotReferentiel:RegimeConventionnel_Type" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<xs:simpleType name="NoRPPS_Type">
+		<xs:annotation><xs:documentation>Regime des professionnels de santé</xs:documentation></xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="11" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="Coherence_Type">
+		<xs:annotation><xs:documentation>coherence entre V2 et REI qui permet de maintenir le lien entre l'entite cotisante (etablissement)  et la personne V2. ou l'entite cotisante (entreprise) et la personne V2.</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="idREI" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="idV2" type="pivotReferentiel:IdV2_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="noUrGestionnaire" type="datamodelPivot:CODE-ORGANISME" maxOccurs="1" minOccurs="1" />
+			<xs:element name="noLiasse" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="CodeStatut_Type">
+		<xs:restriction base="xs:int"></xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="DNUtilisateur_Type">
+		<xs:annotation><xs:documentation>N/A : user anais</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ProfilUtilisateur_Type">
+		<xs:annotation><xs:documentation>N/A : profil metier du user</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string"></xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeAgentV2_Type">
+		<xs:annotation><xs:documentation>N/A : identifiant V2 du user</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="6"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="IdV2_Type">
+		<xs:annotation><xs:documentation>Identifiant V2 de la personne V2</xs:documentation></xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="7"></xs:maxLength>
+		</xs:restriction>
+	</xs:simpleType>
+
+
+	<xs:simpleType name="CodeOrigine_Type">
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="0">
+				<xs:annotation><xs:documentation> 0 Migration </xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="1">
+				<xs:annotation><xs:documentation> 1 CFE </xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="2">
+				<xs:annotation><xs:documentation> 2 RSI </xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="3">
+				<xs:annotation><xs:documentation> 3 INSEE </xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="4">
+				<xs:annotation><xs:documentation> 4 Saisie </xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="5">
+				<xs:annotation><xs:documentation> 5 Télédep </xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="6">
+				<xs:annotation><xs:documentation> 6 V2</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="7">
+				<xs:annotation><xs:documentation> 7 DSN</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="8">
+				<xs:annotation><xs:documentation> 8 CNAM</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="9">
+				<xs:annotation><xs:documentation> 9 CNAV</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="10">
+				<xs:annotation><xs:documentation> 10 Controle</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="11">
+				<xs:annotation><xs:documentation> 11 CMAF</xs:documentation></xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeSystemesImpactes_Type">
+		<xs:annotation>
+			<xs:documentation>Définit les systèmes impactes par l'orchestration 
+				de mise en cohérence</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<!-- 0 REI -->
+			<xs:enumeration value="0"></xs:enumeration>
+			<!-- 1 V2 -->
+			<xs:enumeration value="1"></xs:enumeration>
+			<!-- 2 REI + V2 -->
+			<xs:enumeration value="2"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="EvenementTransactionnel_Type">
+		<xs:annotation><xs:documentation>Transaction metier legacy</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="nomTransaction" type="xs:string"></xs:element>
+			<xs:element name="numeroEvenement" type="xs:string"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="CategorieEtablissement_Type">
+		<xs:annotation><xs:documentation>Categorie de l'etablissement : code et libelle</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name = "codeCategorie" type = "pivotReferentiel:CodeCategorie_Type" minOccurs="1" maxOccurs="1"/>
+			<xs:element name = "libelle" type = "xs:string" minOccurs="0" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:simpleType name="CodeCategorie_Type">
+		<xs:annotation>
+			<xs:documentation>Définit l'activité la plus importante d'un établissement</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:enumeration value="1">
+				<xs:annotation><xs:documentation>SIEGE</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="2">
+				<xs:annotation><xs:documentation>SIEGE_ET_ETAB_PRINCIPAL</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="3">
+				<xs:annotation><xs:documentation>ETABLISSEMENT_PRINCIPAL</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="4">
+				<xs:annotation><xs:documentation>ETABLISSEMENT_SECONDAIRE</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="5">
+				<xs:annotation><xs:documentation>PREMIER_ETAB_FRANCE</xs:documentation></xs:annotation>
+			</xs:enumeration>
+			<xs:enumeration value="6">
+				<xs:annotation><xs:documentation>FIRME_ETRANGERE_SANS_ETAB_FRANCE</xs:documentation></xs:annotation>
+			</xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ActivitePlusImportante_Type">
+		<xs:annotation>
+			<xs:documentation>Définit l'activité la plus importante d'un établissement</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="140" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="EnsActivitesExercees_Type">
+		<xs:annotation>
+			<xs:documentation>Définit l'ensemble des activités exercées par un établissement</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeCSU_Type">
+		<xs:annotation>
+			<xs:documentation>Définit le CSU d'une redevabilité</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="Enseigne_Type">
+		<xs:annotation>
+			<xs:documentation>Définit le type de l'enseigne d'un établissement</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="DGME_Type">
+		<xs:annotation>
+			<xs:documentation>Définit si une entreprise est de type DGME</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="Notification_Type">
+		<xs:annotation><xs:documentation>Une notification correspond a un message asynchrone transmis par la V2 pour signaler un evenement</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="noLiasse" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="dateEffet" type="xs:date" maxOccurs="1" minOccurs="0" />
+			<xs:element name="evenement" type="xs:string" maxOccurs="1" minOccurs="1" />
+			<xs:element name="codeOrganisme" type="datamodelPivot:CODE-ORGANISME" maxOccurs="1" minOccurs="0" />
+			<xs:element name="noCompteV2" type="datamodelPivot:NO-EXT-CPT" minOccurs="0" maxOccurs="1" />
+			<xs:element name="siret" type="pivotReferentiel:SIRETAlphanumerique_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="siret1" type="pivotReferentiel:SIRETAlphanumerique_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="siret2" type="pivotReferentiel:SIRETAlphanumerique_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="idPersonneV2" type="pivotReferentiel:IdV2_Type" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>	
+	
+	<xs:simpleType name="CaracteristiqueEntiteCotisante_Type">
+	<xs:annotation>
+			<xs:documentation>Définit les caractéristiques (VLU, LABO, etc), codes à récupérer dans RPA</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="CodeMotifEtat_Type">
+		<xs:annotation><xs:documentation>Motif etat du compte V2</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="ChampCertifiableHistorise_Type">
+		<xs:annotation><xs:documentation>Valeur pour un champ soumis a certification historise</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="valeur" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="dateMiseAJour" type="xs:date" maxOccurs="1" minOccurs="1" />
+			<xs:element name="statut" type="pivotReferentiel:CodeStatut_Type" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="Entite_Type">
+		<xs:annotation><xs:documentation>Type d'entite cotisante</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Individu" />
+			<xs:enumeration value="Etablissement" />
+			<xs:enumeration value="Entreprise" />		
+		</xs:restriction>
+	</xs:simpleType>
+		
+	<xs:simpleType name="EntiteHistorisee_Type">
+		<xs:annotation><xs:documentation>Type d'entite historisee</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Individu" />
+			<xs:enumeration value="Dirigeant" />
+			<xs:enumeration value="Etablissement" />
+			<xs:enumeration value="Entreprise" />
+			<xs:enumeration value="EIRL" />	
+			<xs:enumeration value="Redevabilite" />			
+		</xs:restriction>
+	</xs:simpleType>	
+		
+	<xs:simpleType name="NomFlux_Type">
+		<xs:annotation><xs:documentation>Type de flux d'entree</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CFE" />
+			<xs:enumeration value="RSI" />
+			<xs:enumeration value="INSEE" />
+			<xs:enumeration value="COHERENCE" />
+			<xs:enumeration value="TELEDEP" />
+			<xs:enumeration value="DEBRAYAGE" />
+			<xs:enumeration value="TRANSACTIONNEL" />
+			<xs:enumeration value="AUTRES" />
+		</xs:restriction>
+	</xs:simpleType>	
+		
+	<xs:simpleType name="TypeErreur_Type">
+		<xs:annotation><xs:documentation>Type d'erreur de flux</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="TOUS" />
+			<xs:enumeration value="TECHNIQUE" />
+			<xs:enumeration value="FONCTIONNELLE" />
+			<xs:enumeration value="NIVEAU_3" />
+			<xs:enumeration value="LIASSES_EN_ATTENTE" />
+		</xs:restriction>
+	</xs:simpleType>		
+	
+
+	<xs:simpleType name="NumeroNationalCompte_Type">
+		<xs:annotation><xs:documentation>Numero de compte V2</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="30" />
+		</xs:restriction>	
+	</xs:simpleType>
+	
+	<xs:simpleType name="ETType_Type">
+		<xs:annotation>
+			<xs:documentation>type d'établissement</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="00"/>
+			<xs:enumeration value="08"/>
+			<xs:enumeration value="09"/>
+			<xs:enumeration value="10"/>
+			<xs:enumeration value="11"/>
+			<xs:enumeration value="12"/>
+			<xs:enumeration value="13"/>
+			<xs:enumeration value="14"/>
+			<xs:enumeration value="15"/>
+			<xs:enumeration value="16"/>
+			<xs:enumeration value="17"/>
+			<xs:enumeration value="18"/>
+			<xs:enumeration value="19"/>
+			<xs:enumeration value="20"/>
+			<xs:enumeration value="21"/>
+			<xs:enumeration value="22"/>
+			<xs:enumeration value="23"/>
+			<xs:enumeration value="24"/>
+			<xs:enumeration value="25"/>
+			<xs:enumeration value="26"/>
+			<xs:enumeration value="27"/>
+			<xs:enumeration value="28"/>
+			<xs:enumeration value="29"/>
+			<xs:enumeration value="30"/>
+			<xs:enumeration value="31"/>
+			<xs:enumeration value="32"/>
+			<xs:enumeration value=""/>
+			<xs:enumeration value="."/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="REICodeGeoINSEE_Type">
+		<xs:annotation><xs:documentation>Code geo (avec indication si le pays n'est pas connu de RPA)</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeGeoINSEE" type="cfe:CodeGeoINSEE_Type" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="paysInconnu" type="xs:boolean" default="false" maxOccurs="1" minOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Civilite_Type">
+		<xs:annotation><xs:documentation>Civilite : code et libelle</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeCivilite" type="cfe:Titre_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" maxOccurs="1" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="NatureGerance_Type">
+		<xs:annotation><xs:documentation>Gerance : code et libelle</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeNature" type="cfe:NatureGerance_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" maxOccurs="1" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="RoleCollaboration_Type">
+		<xs:annotation><xs:documentation>Role collaboration : code et libelle</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeRole" type="pivotReferentiel:CodeRoleCollaboration_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" maxOccurs="1" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="QualiteDirigeant_Type">
+		<xs:annotation><xs:documentation>Qualite dirigeant : code et libelle</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeQualiteDirigeant" type="cfe:Dirigeant_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" maxOccurs= "1" minOccurs="0">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="MotifEtat_Type">
+		<xs:annotation><xs:documentation>Motif etat : code et libelle</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="codeMotifEtat" type="pivotReferentiel:CodeMotifEtat_Type" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="libelle" type="xs:string" maxOccurs= "1" minOccurs="0">
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="CodeSRC_Type">
+		<xs:annotation><xs:documentation>Structure regionale de controle</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:length value="4" />
+			<xs:pattern value="S\d*" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="Anomalie_Type">
+		<xs:annotation><xs:documentation>Anomalie</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="Code" type="cfe:AlphaNum_Type">
+				<xs:annotation>
+					<xs:documentation>Code technique de l'anomalie</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Message" type="cfe:AlphaNum_Type">
+				<xs:annotation>
+					<xs:documentation>Libellé en clair de l'anomalie</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Gravite" type="cfe:AlphaNum_Type">
+				<xs:annotation>
+					<xs:documentation>Niveau de gravité de l'anomalie
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="NoRole_Type">
+		<xs:annotation>
+			<xs:documentation>Identifiant CMAF pour un role</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="8" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="NomRole_Type">
+		<xs:annotation>
+			<xs:documentation>nom role CMAF</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="cfe:AlphaNum_Type">
+			<xs:maxLength value="120" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="RoleResume_Type">
+		<xs:annotation><xs:documentation>RoleResume contient une sous partie des informations propres a un role</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:EntiteCotisante_Type">
+				<xs:sequence>
+					<xs:element name="noRole" type="pivotReferentiel:NoRole_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="nomRole" type="pivotReferentiel:NomRole_Type" maxOccurs="1" minOccurs="0" />
+					<xs:element name="dateCreation" type="xs:date" maxOccurs="1" minOccurs="0" />
+
+					<xs:element name="codeTypeNavigation" type="xs:string" maxOccurs="1" minOccurs="0" />
+					<xs:element name="codePortArmement" type="xs:string" maxOccurs="1" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="codeMotifEtat_Type">
+		<xs:annotation><xs:documentation>code du motif de l'etat du compte</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="RedevabiliteResume_Type">
+		<xs:annotation><xs:documentation>RedevabiliteResume contient une sous partie des informations propres a une redevabilite</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="idREI" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="0"></xs:element>
+			<xs:element name="numeroCompteInterne" type="datamodelPivot:NO-INT-CPT" maxOccurs="1" minOccurs="0" />
+			<xs:element name="urssafGestionnaire" type="datamodelPivot:CODE-ORGANISME" maxOccurs="1" minOccurs="0" />
+			<xs:element name="categorie" type="datamodelPivot:CD-CAT" maxOccurs="1" minOccurs="0" />
+			<xs:element name="sousCategorie" type="datamodelPivot:CD-SS-CAT" maxOccurs="1" minOccurs="0" />
+			<xs:element name="numeroCompteExterne" type="datamodelPivot:NO-EXT-CPT" maxOccurs="1" minOccurs="1" />
+			<xs:element name="codeCSU" type="pivotReferentiel:CodeCSU_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="etatCompte" type="datamodelPivot:CD-ETA-CPT" maxOccurs="1" minOccurs="0" />
+			<xs:element name="codeMotifEtat" type="pivotReferentiel:codeMotifEtat_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="numeroNationalCompte" type="pivotReferentiel:NumeroNationalCompte_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="pseudoSIRET" type="pivotReferentiel:SIRETCertification_Type" maxOccurs="1" minOccurs="0" />
+			<xs:element name="archiveSnv2" type="xs:boolean" default="false" maxOccurs="1" minOccurs="1"/>
+			<xs:element name="dateMaj" type="xs:dateTime" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="EntrepriseLieeAuRole_Type">
+		<xs:annotation><xs:documentation>Entreprise pour la CMAF</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="entreprise" type="pivotReferentiel:EntrepriseResume_Type" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="presencePersonnel" type="xs:boolean" maxOccurs="1" minOccurs="0" />
+			<xs:element name="armateurPrincipal" type="xs:boolean" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="IndividuLieAuRole_Type">
+		<xs:annotation><xs:documentation>Individu pour la CMAF</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="individu" type="pivotReferentiel:IndividuResume_Type" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="estEmbarque" type="xs:boolean" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="Role_Type">
+		<xs:annotation><xs:documentation>Role pour la CMAF</xs:documentation></xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="pivotReferentiel:RoleResume_Type">
+				<xs:sequence>
+
+					<xs:element name="jauge" type="xs:float"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="longueur" type="xs:float"
+						maxOccurs="1" minOccurs="0" />
+
+					<xs:element name="dateArmement" type="xs:date"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dateDesarmement" type="xs:date"
+						maxOccurs="1" minOccurs="0" />
+					<xs:element name="dateMiseLocationGerance"
+						type="xs:date" maxOccurs="1" minOccurs="0" />
+					<xs:element name="codeGenreNavigation"
+						type="xs:string" maxOccurs="1" minOccurs="0" />
+
+					<xs:element name="codePortImmatriculation"
+						type="xs:string" maxOccurs="1" minOccurs="0" />
+
+
+					<xs:element name="adresseRole"
+						type="pivotReferentiel:Adresse_Type" maxOccurs="1" minOccurs="0" />
+
+
+					<xs:element name="redevabilites"
+						type="pivotReferentiel:RedevabiliteResume_Type"
+						maxOccurs="unbounded" minOccurs="0">
+					</xs:element>
+
+					<xs:element name="donneesContact"
+						type="pivotReferentiel:DonneesContact_Type" maxOccurs="unbounded"
+						minOccurs="0">
+					</xs:element>
+					<xs:element name="coherences"
+						type="pivotReferentiel:Coherence_Type" maxOccurs="unbounded"
+						minOccurs="0">
+					</xs:element>
+					<xs:element name="entreprisesLieesAuRole" type="pivotReferentiel:EntrepriseLieeAuRole_Type" maxOccurs="unbounded" minOccurs="0" />
+					<xs:element name="individusLiesAuRole" type="pivotReferentiel:IndividuLieAuRole_Type" maxOccurs="unbounded" minOccurs="0" />
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="RoleLieAEntiteCotisante_Type">
+		<xs:annotation><xs:documentation>Role resume et presence personnel embarque pour la CMAF</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="role" type="pivotReferentiel:RoleResume_Type" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="presencePersonnel" type="xs:boolean" maxOccurs="1" minOccurs="0" />
+			<xs:element name="estEmbarque" type="xs:boolean" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="LienCompte_Type">
+		<xs:annotation><xs:documentation>Lien entre compte et etablissement</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="nbComptesActifs" type="xs:int" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="numeroCompteExterne" type="datamodelPivot:NO-EXT-CPT" maxOccurs="1" minOccurs="0" />
+			<xs:element name="idEtablissement" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="LienComptesRadies_Type">
+		<xs:annotation><xs:documentation>Lien entre comptes radiés et etablissement</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="nbComptesRadies" type="xs:int" maxOccurs="1" minOccurs="0"/>
+			<xs:element name="LienCompteRadie" type="pivotReferentiel:LienCompteRadie_Type" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="LienCompteRadie_Type">
+		<xs:annotation><xs:documentation>Lien entre compte radié et etablissement</xs:documentation></xs:annotation>
+		<xs:sequence>
+			<xs:element name="numeroCompteExterne" type="datamodelPivot:NO-EXT-CPT" maxOccurs="1" minOccurs="0" />
+			<xs:element name="idEtablissement" type="pivotReferentiel:IdREI_Type" maxOccurs="1" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="IndividuDSI_Type">
+		<xs:annotation>
+			<xs:documentation>IndividuDSI contient une sous partie des
+				informations propres a un individu dans le cadre de la
+				Reprise DSI</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="civilite" type="xs:string"/>
+			<xs:element minOccurs="0" name="cleNir" type="cfe:NIRCle_Type"/>
+			<xs:element minOccurs="0" name="dateNaissance" type="cfe:Date_Type"/>
+			<xs:element minOccurs="0" name="elegibiliteDSI" type="xs:boolean"/>
+			<xs:element minOccurs="0" name="nir" type="cfe:NIRNumero_Type"/>
+			<xs:element minOccurs="0" name="nomUsuel" type="xs:string"/>
+			<xs:element minOccurs="0" name="prenomUsuel" type="xs:string"/>
+			<xs:element minOccurs="0" name="siren" type="pivotReferentiel:SIRENAlphanumerique_Type"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="CompteDSI_Type">
+		<xs:annotation>
+			<xs:documentation>CompteEligibleDSI contient des informations du
+				compte eligible a la dsi dans le cadre de la Reprise DSI
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="codeUR" type="datamodelPivot:CODE-ORGANISME"/>
+			<xs:element minOccurs="0" name="groupePro" type="datamodelPivot:GRP-PRO"/>
+			<xs:element minOccurs="0" name="noCompteExterne" type="datamodelPivot:NO-EXT-CPT"/>
+			<xs:element minOccurs="0" name="noRiba" type="pivotReferentiel:NoRIBA_Type"/>
+			<xs:element minOccurs="0" name="siret" type="datamodelPivot:NO-ETAB"/>
+			<xs:element minOccurs="0" name="statut" type="datamodelPivot:LIB-CD-ETA-TI"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="AdresseDSI_Type">
+		<xs:annotation>
+			<xs:documentation>AdresseDSI contient des informations de l'adresse
+				de l'individu eligible a la dsi dans le cadre de la Reprise DSI
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element minOccurs="0" name="adresse1" type="datamodelPivot:ADR-COR-LGN1"/>
+			<xs:element minOccurs="0" name="adresse2" type="datamodelPivot:ADR-COR-LGN2"/>
+			<xs:element minOccurs="0" name="adresse3" type="datamodelPivot:ADR-COR-LGN3"/>
+			<xs:element minOccurs="0" name="adresse4" type="datamodelPivot:ADR-COR-LGN4"/>
+			<xs:element minOccurs="0" name="adresse5" type="datamodelPivot:ADR-COR-LGN5"/>
+			<xs:element minOccurs="0" name="adresse6" type="datamodelPivot:ADR-COR-LGN6"/>
+			<xs:element minOccurs="0" name="codeInsee" type="cfe:CodeGeoINSEE_Type"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:simpleType name="ChaineLongueur1a32_Type">
+		<xs:annotation>
+			<xs:documentation>
+				Chaine de caracteres de longueur 1 a 32
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="32"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ChaineLongueur1a20_Type">
+		<xs:annotation>
+			<xs:documentation>
+				Chaine de caracteres de longueur 1 a 32
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="1"/>
+			<xs:maxLength value="20"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>

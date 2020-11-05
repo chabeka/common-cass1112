@@ -1,0 +1,3531 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<xsd:schema targetNamespace="http://pivot.datamodel.esb.cirso.fr/1.0"
+	xmlns:pivot="http://pivot.datamodel.esb.cirso.fr/1.0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified">
+
+
+
+
+	<!-- 
+		**************************************************************************
+		TYPES SIMPLES ABSTRAITS, COMMUNS A CERTAINS TYPES SIMPLES SXML
+		Principes :
+		- TypeAbstrait_xxxx definit un type abstrait non enuméré
+		- Enum_EEEEE_YYYY definit un type enuméré dont le code principal est EEEEE
+		(ce nom EEEEE peut etre ensuite repris pour générer les codifications)
+		- autres conventions ... ? maj / min, mix des 2 pour les Enum et Abstrait ?
+		**************************************************************************
+	-->
+
+
+	<xsd:simpleType name="TypeAbstrait_Annee">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="9999" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+
+	<xsd:simpleType name="TypeAbstrait_LigneAdresse">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+
+
+	<xsd:simpleType name="TypeAbstrait_Solde">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+
+	<xsd:simpleType name="TYP-RECH">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="0000" />
+			<xsd:enumeration value="0100" />
+			<xsd:enumeration value="1000" />
+			<xsd:enumeration value="1100" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="TypeRecherche" type="pivot:TYP-RECH" />
+
+	<xsd:simpleType name="Enum_TYP-IDF_COMMUN">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SIREN" />
+			<xsd:enumeration value="numeroEtablissement" />
+			<xsd:enumeration value="numeroPersonne" />
+			<xsd:enumeration value="NNI" />
+			<xsd:enumeration value="RIB" />
+			<xsd:enumeration value="telephone" />
+			<xsd:enumeration value="fax" />
+			<xsd:enumeration value="numeroStructure" />
+			<xsd:enumeration value="numeroChambreMetier" />
+			<xsd:enumeration value="numeroEcartNegatif" />
+			<xsd:enumeration value="numeroPraticien" />
+			<xsd:enumeration value="AGESSA_MDA" />
+			<xsd:enumeration value="numeroCAF" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="Enum_TYP-IDF_E-ONLY">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="numeroCompteExterne" />
+			<xsd:enumeration value="numeroCompteInterne" />
+			<xsd:enumeration value="numeroCompteExterneRg" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="Enum_TYP-IDF_S-ONLY">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="numeroPartenaire" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="Enum_CD-TYP-REV">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="cotisationSociale" />
+			<xsd:enumeration value="revenusAgricoles" />
+			<xsd:enumeration value="revenusActivite" />
+			<xsd:enumeration value="revenusRemplacement" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+
+
+	<xsd:simpleType name="Enum_CD-ORI-DBT">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="debitNul" />
+			<xsd:enumeration value="debitCalculeDeclare" />
+			<xsd:enumeration value="gestionTO" />
+			<xsd:enumeration value="modificationTauxAT" />
+			<xsd:enumeration value="modificationTauxTransport" />
+			<xsd:enumeration value="controle" />
+			<xsd:enumeration value="inutilise" />
+			<xsd:enumeration value="sanctionsVirement" />
+			<xsd:enumeration value="trRegularises" />
+			<xsd:enumeration value="ETI" />
+			<xsd:enumeration value="travailDissumule" />
+			<xsd:enumeration value="redressementContratExoneration" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<xsd:simpleType name="Enum_CD-EXST-CPT">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="0" />
+			<xsd:enumeration value="1" />
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<!-- 
+		**************************************************************************
+		ELEMENTS SIMPLES ET TYPES SIMPLES ASSOCIES
+		LIEN PIVOT vers SXML 1 pour 1, FORTE COHESION
+		AUTOMATISABLE
+		SEULE LA RESTRICTION DU TYPE SIMPLE PEUT ETRE MODIFIEE APRES COUP
+		(ex : restreindre ou fixer la longueur d'un type string ...)
+		**************************************************************************
+	-->
+
+	<xsd:simpleType name="TYP-REQ">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="0.{1,7}" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="TypeRequete" type="pivot:TYP-REQ" />
+
+	<xsd:simpleType name="PRE-PERS">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="PrenomPersonne" type="pivot:PRE-PERS" />
+
+	<xsd:simpleType name="DT-NAIS">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateNaissance" type="pivot:DT-NAIS" />
+
+	<xsd:simpleType name="DT-EFT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateEffet" type="pivot:DT-EFT" />
+
+	<xsd:simpleType name="DT-EFT-ETA">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateEffetEtat" type="pivot:DT-EFT-ETA" />
+
+	<xsd:simpleType name="NO-PERS">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroPersonne" type="pivot:NO-PERS" />
+
+	<xsd:simpleType name="NO-ETAB">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroEtablissement" type="pivot:NO-ETAB" />
+
+	<xsd:simpleType name="NO-ACTI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroActivite" type="pivot:NO-ACTI" />
+
+	<xsd:simpleType name="DT-ASSJ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateAssujettissement" type="pivot:DT-ASSJ" />
+
+	<xsd:simpleType name="MTF-ECT-ASSJ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MotifEcartAssujettissement"
+		type="pivot:MTF-ECT-ASSJ" />
+
+	<xsd:simpleType name="MTF-ETA-CPT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MotifEtatCompte" type="pivot:MTF-ETA-CPT" />
+
+	<xsd:simpleType name="DENO-PERS-1">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DenominationPersonne1" type="pivot:DENO-PERS-1" />
+
+	<xsd:simpleType name="DENO-PERS-2">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DenominationPersonne2" type="pivot:DENO-PERS-2" />
+
+	<xsd:simpleType name="CD-AGT">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="4"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CodeAgent" type="pivot:CD-AGT" />
+
+	<xsd:simpleType name="NIR">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="13" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroNationalIdentification" type="pivot:NIR" />
+
+	<xsd:simpleType name="NO-EXT-CPT">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="18"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroExterneCompte" type="pivot:NO-EXT-CPT" />
+
+	<xsd:simpleType name="NO-EXT-CPT-FMT">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="30"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroExterneComptePreformate"
+		type="pivot:NO-EXT-CPT-FMT" />
+
+	<xsd:simpleType name="NO-INT-CPT">
+		<xsd:annotation>
+			<xsd:documentation>
+				Type définissant le "Numéro de compte interne"
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="8" />
+			<xsd:pattern value="\d*" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroInterneCompte" type="pivot:NO-INT-CPT">
+		<xsd:annotation>
+			<xsd:documentation>
+				Numéro de compte interne
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<xsd:simpleType name="CODE-ORGANISME">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="3" />
+			<xsd:pattern value="\d*" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CodeOrganisme" type="pivot:CODE-ORGANISME" />
+
+	<xsd:simpleType name="OBSN">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Observation" type="pivot:OBSN" />
+
+	<xsd:simpleType name="CD-TYP-PRSL">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="999" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CodeTypePersonnel" type="pivot:CD-TYP-PRSL" />
+
+	<xsd:simpleType name="CD-TYP-PRSL-TI">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="999" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CodeTypePersonnelTravailleurIndependant"
+		type="pivot:CD-TYP-PRSL-TI" />
+
+	<xsd:simpleType name="LIB-CD-TYP-PRSL-TI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeTypePersonnelTravailleurIndependant"
+		type="pivot:LIB-CD-TYP-PRSL-TI" />
+
+
+	<xsd:simpleType name="CD-CTRL-PCE-PLC">
+		<xsd:restriction base="xsd:string">
+			<xsd:length value="1" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CodeControlePiecePlace"
+		type="pivot:CD-CTRL-PCE-PLC" />
+
+	<xsd:simpleType name="LIB-CD-CTRL-PCE-PLC">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeControlePiecePlace"
+		type="pivot:LIB-CD-CTRL-PCE-PLC" />
+
+
+	<xsd:simpleType name="NO-CTRL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroControle" type="pivot:NO-CTRL" />
+
+
+	<xsd:simpleType name="CD-MTF-REDR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeMotifRedressement" type="pivot:CD-MTF-REDR" />
+
+	<xsd:simpleType name="LIB-CD-MTF-REDR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeMotifRedressement"
+		type="pivot:LIB-CD-MTF-REDR" />
+
+
+	<xsd:simpleType name="CD-MTF-ECNG">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeMotifECNG" type="pivot:CD-MTF-ECNG" />
+
+	<xsd:simpleType name="LIB-MTF-ECNG">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleMotifECNG" type="pivot:LIB-MTF-ECNG" />
+
+
+	<xsd:simpleType name="CD-PRTC-CSG">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeParticulariteCsgCrds"
+		type="pivot:CD-PRTC-CSG" />
+
+	<xsd:simpleType name="LIB-CD-PRTC-CSG">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeParticulariteCsgCrds"
+		type="pivot:LIB-CD-PRTC-CSG" />
+
+
+	<xsd:simpleType name="DT-RCPN-REV">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateReceptionRevenu" type="pivot:DT-RCPN-REV" />
+
+
+	<xsd:simpleType name="CD-ECH">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeEcheance" type="pivot:CD-ECH" />
+
+	<xsd:simpleType name="LIB-CD-ECH">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeEcheance" type="pivot:LIB-CD-ECH" />
+
+	<xsd:simpleType name="DT-DEB-ECH">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateEffetEcheance" type="pivot:DT-DEB-ECH" />
+
+	<xsd:simpleType name="CD-NAF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeNAF" type="pivot:CD-NAF" />
+
+	<xsd:simpleType name="ORI-NAF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OrigineCodeNAF" type="pivot:ORI-NAF" />
+
+	<xsd:simpleType name="DT-DEB-NAF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateEffetCodeNAF" type="pivot:DT-DEB-NAF" />
+
+	<xsd:simpleType name="EFF-CPTE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="EffectifCompte" type="pivot:EFF-CPTE" />
+
+	<xsd:simpleType name="ORI-EFF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OrigineEffectif" type="pivot:ORI-EFF" />
+
+	<xsd:simpleType name="DT-DEB-EFF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateEffetEffectif" type="pivot:DT-DEB-EFF" />
+
+	<xsd:simpleType name="NO-DER-CTRL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroDernierControlePlan"
+		type="pivot:NO-DER-CTRL" />
+
+	<xsd:simpleType name="NO-PJC">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroPieceDeCredit" type="pivot:NO-PJC" />
+
+	<xsd:simpleType name="MDE-VRS">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ModeVersement" type="pivot:MDE-VRS" />
+
+	<xsd:simpleType name="DT-VRS">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateVersement" type="pivot:DT-VRS" />
+
+	<xsd:simpleType name="CD-ETP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeEntreprise" type="pivot:CD-ETP" />
+
+	<xsd:simpleType name="CD-MAJO">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeMajoration" type="pivot:CD-MAJO" />
+
+	<xsd:simpleType name="NO-PCE">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="999999" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroPiece" type="pivot:NO-PCE" />
+
+	<xsd:simpleType name="NO-PJD">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="9999999" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroPieceJustificativeDebit"
+		type="pivot:NO-PJD" />
+
+	<xsd:simpleType name="CLE-NO-PJD">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CleNumeroPieceJustificativeDebit"
+		type="pivot:CLE-NO-PJD" />
+
+	<xsd:simpleType name="NO-PJD-DBT">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="999999" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroPieceDebit" type="pivot:NO-PJD-DBT" />
+
+	<xsd:simpleType name="MT-CDT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantCredit" type="pivot:MT-CDT" />
+
+	<xsd:simpleType name="MT-PO">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantPO" type="pivot:MT-PO" />
+
+	<xsd:simpleType name="MT-PP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantPP" type="pivot:MT-PP" />
+
+	<xsd:simpleType name="MT-TR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantTransp" type="pivot:MT-TR" />
+
+	<xsd:simpleType name="MT-COT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantCotisations" type="pivot:MT-COT" />
+
+	<xsd:simpleType name="MT-IR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantIRCEM" type="pivot:MT-IR" />
+
+	<xsd:simpleType name="MT-FI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantFauteInexcusable" type="pivot:MT-FI" />
+
+	<xsd:simpleType name="MT-MR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantMR" type="pivot:MT-MR" />
+
+	<xsd:simpleType name="MT-PE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantPenalites" type="pivot:MT-PE" />
+
+	<xsd:simpleType name="MT-FJ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantFraisDeJustice" type="pivot:MT-FJ" />
+
+	<xsd:simpleType name="CD-CDT-JUST">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeJustificationCredit"
+		type="pivot:CD-CDT-JUST" />
+
+	<xsd:simpleType name="CD-PRTC-REV">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeParticulariteRevenu"
+		type="pivot:CD-PRTC-REV" />
+
+	<xsd:simpleType name="LIB-CD-PRTC-REV">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeParticulariteRevenu"
+		type="pivot:LIB-CD-PRTC-REV" />
+
+
+	<xsd:simpleType name="MT-REV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantRevenu" type="pivot:MT-REV" />
+
+	<xsd:simpleType name="LIB-REV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleRevenu" type="pivot:LIB-REV" />
+
+	<xsd:simpleType name="CD-RGM">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<!-- ATTENTION ERREUR !!!!! -->
+	<xsd:element name="CodeRegime" type="pivot:CD-RGM" />
+
+	<xsd:simpleType name="LIB-CD-RGM">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeRegime" type="pivot:LIB-CD-RGM" />
+
+	<xsd:simpleType name="CD-ORI-REV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OrigineRevenu" type="pivot:CD-ORI-REV" />
+
+	<xsd:simpleType name="LIB-ORI-REV">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleOrigineRevenu" type="pivot:LIB-ORI-REV" />
+
+	<xsd:simpleType name="CD-BLC-RMBT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeBlocageRemboursement"
+		type="pivot:CD-BLC-RMBT" />
+
+	<xsd:simpleType name="LIB-CD-BLC-RMBT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeBlocageRemboursement"
+		type="pivot:LIB-CD-BLC-RMBT" />
+
+
+	<xsd:simpleType name="CD-RPT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeReport" type="pivot:CD-RPT" />
+
+	<xsd:simpleType name="LIB-CD-RPT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeReport" type="pivot:LIB-CD-RPT" />
+
+
+	<xsd:simpleType name="CD-REG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeRegularisationTravailleurIndependant"
+		type="pivot:CD-REG" />
+
+	<xsd:simpleType name="LIB-CD-REG">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeRegularisationTravailleurIndependant"
+		type="pivot:LIB-CD-REG" />
+
+
+	<xsd:simpleType name="CD-CFP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeContributionCFP" type="pivot:CD-CFP" />
+
+	<xsd:simpleType name="LIB-CD-CFP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeContributionCFP"
+		type="pivot:LIB-CD-CFP" />
+
+
+	<xsd:simpleType name="CD-CNJT-COL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeConjointCollaborateur"
+		type="pivot:CD-CNJT-COL" />
+
+	<xsd:simpleType name="LIB-CD-CNJT-COL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeConjointCollaborateur"
+		type="pivot:LIB-CD-CNJT-COL" />
+
+
+	<xsd:simpleType name="CD-PRLT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodePrelevement" type="pivot:CD-PRLT" />
+
+	<xsd:simpleType name="LIB-CD-PRLT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodePrelevement" type="pivot:LIB-CD-PRLT" />
+
+
+	<xsd:simpleType name="CD-ETA-TI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeEtatPeriode" type="pivot:CD-ETA-TI" />
+
+	<xsd:simpleType name="LIB-CD-ETA-TI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeEtatPeriode"
+		type="pivot:LIB-CD-ETA-TI" />
+
+
+	<xsd:simpleType name="CD-PER">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="\d*"></xsd:pattern>
+			<xsd:maxLength value="4"></xsd:maxLength>
+			<xsd:minLength value="0"></xsd:minLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CodePeriode" type="pivot:CD-PER" />
+
+	<xsd:simpleType name="LIB-CD-PER">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodePeriode" type="pivot:LIB-CD-PER" />
+
+
+	<xsd:simpleType name="CD-APP-COT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeAppelCotisation" type="pivot:CD-APP-COT" />
+
+	<xsd:simpleType name="LIB-CD-APP-COT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeAppelCotisation"
+		type="pivot:LIB-CD-APP-COT" />
+
+
+	<xsd:simpleType name="ORI-TRM">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OrigineTerme" type="pivot:ORI-TRM" />
+
+	<xsd:simpleType name="LIB-ORI-TRM">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleOrigineTerme" type="pivot:LIB-ORI-TRM" />
+
+	<xsd:simpleType name="DT-TRM">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateTerme" type="pivot:DT-TRM" />
+
+	<xsd:simpleType name="DT-TRM-TLR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateTermeTolere" type="pivot:DT-TRM-TLR" />
+
+	<xsd:simpleType name="DT-TRM-LEG">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateTermeLegal" type="pivot:DT-TRM-LEG" />
+
+	<xsd:simpleType name="DT-TRT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateTraitement" type="pivot:DT-TRT" />
+
+	<xsd:simpleType name="DT-RCPN-PJD">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateReceptionPieceJustificativeDebit"
+		type="pivot:DT-RCPN-PJD" />
+
+	<xsd:simpleType name="EFF-REM">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ValeurEffectifRemunere" type="pivot:EFF-REM" />
+
+	<xsd:simpleType name="CD-EFF-REM">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeEffectifRemunere" type="pivot:CD-EFF-REM" />
+
+	<xsd:simpleType name="CD-EFF-INSC">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeEffectifInscrit" type="pivot:CD-EFF-INSC" />
+
+	<xsd:simpleType name="EFF-INSC">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ValeurEffectifInscrit" type="pivot:EFF-INSC" />
+
+	<xsd:simpleType name="EFF-PEN">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ValeurEffectifPenalite" type="pivot:EFF-PEN" />
+
+	<xsd:simpleType name="NB-PEN">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombrePenalites" type="pivot:NB-PEN" />
+
+	<xsd:simpleType name="NB-HR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreHeures" type="pivot:NB-HR" />
+
+	<xsd:simpleType name="TX-HOR-NET">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TauxHoraireNet" type="pivot:TX-HOR-NET" />
+
+	<xsd:simpleType name="SAL-REEL-NET">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="SalaireReelNet" type="pivot:SAL-REEL-NET" />
+
+	<xsd:simpleType name="MT-COT-CSG">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantCotisationsCSG" type="pivot:MT-COT-CSG" />
+
+	<xsd:simpleType name="MT-COT-SEC-SOC">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantCotisationsSecuriteSociale"
+		type="pivot:MT-COT-SEC-SOC" />
+
+	<xsd:simpleType name="MT-COT-IRC-ACDC">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantCotisationsIrcemAssedic"
+		type="pivot:MT-COT-IRC-ACDC" />
+
+	<xsd:simpleType name="NB-SP1">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreSousPeriodeTotal" type="pivot:NB-SP1" />
+
+	<xsd:simpleType name="NB-MVT1">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreMouvementsSousPeriode"
+		type="pivot:NB-MVT1" />
+
+	<xsd:simpleType name="NB-LGN-PJ1">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreLignesDansLeMouvement"
+		type="pivot:NB-LGN-PJ1" />
+
+	<xsd:simpleType name="DBT-DCL-COT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantDebitDeclare" type="pivot:DBT-DCL-COT" />
+
+	<xsd:simpleType name="DBT-CAL-COT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantDebitCalcule" type="pivot:DBT-CAL-COT" />
+
+	<xsd:simpleType name="CD-TYP-COT">
+		<xsd:restriction base="xsd:string">
+			<xsd:length value="3" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CodeTypeCotisation" type="pivot:CD-TYP-COT" />
+
+	<xsd:simpleType name="MT-FCT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantFictive" type="pivot:MT-FCT" />
+
+	<xsd:simpleType name="LIB-FCT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleFictive" type="pivot:LIB-FCT" />
+
+	<xsd:simpleType name="MT-PROV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantProvision" type="pivot:MT-PROV" />
+
+	<xsd:simpleType name="LIB-PROV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleProvision" type="pivot:LIB-PROV" />
+
+	<xsd:simpleType name="MT-REG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantRegularisation" type="pivot:MT-REG" />
+
+	<xsd:simpleType name="LIB-REG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleRegularisation" type="pivot:LIB-REG" />
+
+	<xsd:simpleType name="MT-PROV-RMBT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantProvisionnelleRemboursee"
+		type="pivot:MT-PROV-RMBT" />
+
+	<xsd:simpleType name="LIB-PROV-RMBT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleProvisionnelleRemboursee"
+		type="pivot:LIB-PROV-RMBT" />
+
+	<xsd:simpleType name="TOT-PER">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalPeriode" type="pivot:TOT-PER" />
+
+	<xsd:simpleType name="TOT-AVR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalAvoirs" type="pivot:TOT-AVR" />
+
+	<xsd:simpleType name="TOT-CAF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalCAF" type="pivot:TOT-CAF" />
+
+	<xsd:simpleType name="TOT-FJ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalFraisDeJustice" type="pivot:TOT-FJ" />
+
+	<xsd:simpleType name="TOT-PO">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalPO" type="pivot:TOT-PO" />
+
+	<xsd:simpleType name="TOT-PP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalPP" type="pivot:TOT-PP" />
+
+	<xsd:simpleType name="TOT-MR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalMR" type="pivot:TOT-MR" />
+
+	<xsd:simpleType name="TOT-TR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalTransp" type="pivot:TOT-TR" />
+
+	<xsd:simpleType name="TOT-COT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalCotisations" type="pivot:TOT-COT" />
+
+	<xsd:simpleType name="TOT-IR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalIRCEM" type="pivot:TOT-IR" />
+
+	<xsd:simpleType name="TOT-FI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalFauteInexcusable" type="pivot:TOT-FI" />
+
+	<xsd:simpleType name="TOT-PE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalPenalites" type="pivot:TOT-PE" />
+
+	<xsd:simpleType name="MT-TOT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantTotal" type="pivot:MT-TOT" />
+
+	<xsd:simpleType name="LIB-TOT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleTotal" type="pivot:LIB-TOT" />
+
+	<xsd:simpleType name="MT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Montant" type="pivot:MT" />
+
+	<xsd:simpleType name="LIB">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Libelle" type="pivot:LIB" />
+
+	<xsd:simpleType name="CD-ETAL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeEtalement" type="pivot:CD-ETAL" />
+
+	<xsd:simpleType name="LIB-CD-ETAL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCodeEtalement" type="pivot:LIB-CD-ETAL" />
+
+	<xsd:simpleType name="IDF-E">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="21"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantEntree" type="pivot:IDF-E" />
+
+	<xsd:simpleType name="IDF-S">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="21"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantSortie" type="pivot:IDF-S" />
+
+	<xsd:simpleType name="CD-ETA-CPT">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="\d*"></xsd:pattern>
+			<xsd:maxLength value="2"></xsd:maxLength>
+			<xsd:minLength value="0"></xsd:minLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="CodeEtatCompte" type="pivot:CD-ETA-CPT" />
+
+	<xsd:simpleType name="DT-DEB">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateDebut" type="pivot:DT-DEB" />
+
+	<xsd:simpleType name="DT-FIN">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateFin" type="pivot:DT-FIN" />
+
+	<xsd:simpleType name="NO-STRU">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="\d*"></xsd:pattern>
+			<xsd:maxLength value="10"></xsd:maxLength>
+			<xsd:minLength value="0"></xsd:minLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroStructure" type="pivot:NO-STRU" />
+
+	<xsd:simpleType name="CD-EXT-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeExterneActx" type="pivot:CD-EXT-ACTX" />
+	
+	<xsd:simpleType name="TYPE-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TypeAction" type="pivot:TYPE-ACTX" />
+
+	<xsd:simpleType name="CD-EXT-STD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeExterneStade" type="pivot:CD-EXT-STD" />
+
+	<xsd:simpleType name="DT-PCOL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateProcedureCollective" type="pivot:DT-PCOL" />
+	
+	<xsd:simpleType name="NO-PJD-ECNG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroEcartNegatif" type="pivot:NO-PJD-ECNG" />
+
+	<xsd:simpleType name="PER">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CdPeriode" type="pivot:PER" />
+
+	<xsd:simpleType name="PER-DEB">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DebutPeriode" type="pivot:PER-DEB" />
+
+	<xsd:simpleType name="PER-FIN">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="FinPeriode" type="pivot:PER-FIN" />
+
+	<xsd:simpleType name="LIB-PER">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibellePeriode" type="pivot:LIB-PER" />
+
+	<xsd:simpleType name="ORI-OPE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OrigineOperation" type="pivot:ORI-OPE" />
+
+	<xsd:simpleType name="ORI-OPE-FORF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OrigineOperationForf" type="pivot:ORI-OPE-FORF" />
+
+	<xsd:simpleType name="ORI-OPE-LGN">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OrigineOperationDeLaLigne"
+		type="pivot:ORI-OPE-LGN" />
+
+	<xsd:simpleType name="CD-ETA-ACTI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeModificationActivite"
+		type="pivot:CD-ETA-ACTI" />
+
+	<xsd:simpleType name="NO-SEQ-ACTI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroSequentielActivite"
+		type="pivot:NO-SEQ-ACTI" />
+
+	<xsd:simpleType name="NO-INT-ACTI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroActiviteReelACTI" type="pivot:NO-INT-ACTI" />
+
+	<xsd:simpleType name="NO-SAL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroSalarie" type="pivot:NO-SAL" />
+
+	<xsd:simpleType name="CD-LGN">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeLigne" type="pivot:CD-LGN" />
+
+	<xsd:simpleType name="CD-RSQ-AT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeRisqueAT" type="pivot:CD-RSQ-AT" />
+
+	<xsd:simpleType name="CD-ORI-DCL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeOrigineDeclaration" type="pivot:CD-ORI-DCL" />
+
+	<xsd:simpleType name="LIB-ORI-DBT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleOrigineDebit" type="pivot:LIB-ORI-DBT" />
+
+	<xsd:simpleType name="CD-QUAL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="QualiteOuTitreDePersonne" type="pivot:CD-QUAL" />
+
+	<xsd:simpleType name="LIB-QUAL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleQualiteOuTitreDePersonne"
+		type="pivot:LIB-QUAL" />
+
+	<xsd:simpleType name="CD-CAT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CategorieCompte" type="pivot:CD-CAT" />
+
+	<xsd:simpleType name="LIB-CAT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleCategorieCompte" type="pivot:LIB-CAT" />
+
+	<xsd:simpleType name="CD-SS-CAT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeSousCategorie" type="pivot:CD-SS-CAT" />
+
+	<xsd:simpleType name="DT-IMA">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateImmatriculation" type="pivot:DT-IMA" />
+
+	<xsd:simpleType name="DT-SUSP">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateSuspension" type="pivot:DT-SUSP" />
+
+	<xsd:simpleType name="DT-RAD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateRadiation" type="pivot:DT-RAD" />
+
+	<xsd:simpleType name="NO-ADR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroAdresse" type="pivot:NO-ADR" />
+
+	<xsd:simpleType name="CPL-ADR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ComplementAdresse" type="pivot:CPL-ADR" />
+
+	<xsd:simpleType name="NO-VOI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroVoie" type="pivot:NO-VOI" />
+
+	<xsd:simpleType name="LTR-NO-ADR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LettreAssocieeNumeroVoie"
+		type="pivot:LTR-NO-ADR" />
+
+	<xsd:simpleType name="CD-NAT-VOI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NatureVoie" type="pivot:CD-NAT-VOI" />
+
+	<xsd:simpleType name="NOM-VOI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NomVoie" type="pivot:NOM-VOI" />
+
+	<xsd:simpleType name="CMN">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Localite" type="pivot:CMN" />
+
+	<xsd:simpleType name="NO-DPT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Partie1CodePostal" type="pivot:NO-DPT" />
+
+	<xsd:simpleType name="NO-CMN">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Partie2CodePostal" type="pivot:NO-CMN" />
+
+	<xsd:simpleType name="NO-CMN-2">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Commune" type="pivot:NO-CMN-2" />
+
+	<xsd:simpleType name="NO-CPG">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroCompostage" type="pivot:NO-CPG" />
+
+	<xsd:simpleType name="BUR-DST">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="BureauDistributeur" type="pivot:BUR-DST" />
+
+
+	<xsd:simpleType name="NO-ADR-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroAdresseCorrespondance"
+		type="pivot:NO-ADR-COR" />
+
+	<xsd:simpleType name="CPL-ADR-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ComplementAdresseCorrespondance"
+		type="pivot:CPL-ADR-COR" />
+
+	<xsd:simpleType name="NO-VOI-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroVoieCorrespondance"
+		type="pivot:NO-VOI-COR" />
+
+	<xsd:simpleType name="LTR-NO-ADR-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LettreAssocieeNumeroVoieCorrespondance"
+		type="pivot:LTR-NO-ADR-COR" />
+
+	<xsd:simpleType name="CD-NAT-VOI-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NatureVoieCorrespondance"
+		type="pivot:CD-NAT-VOI-COR" />
+
+	<xsd:simpleType name="NOM-VOI-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NomVoieCorrespondance" type="pivot:NOM-VOI-COR" />
+
+	<xsd:simpleType name="CMN-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LocaliteCorrespondance" type="pivot:CMN-COR" />
+
+	<xsd:simpleType name="NO-DPT-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Partie1CodePostalCorrespondance"
+		type="pivot:NO-DPT-COR" />
+
+	<xsd:simpleType name="NO-CMN-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Partie2CodePostalCorrespondance"
+		type="pivot:NO-CMN-COR" />
+
+	<xsd:simpleType name="BUR-DST-COR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="BureauDistributeurCorrespondance"
+		type="pivot:BUR-DST-COR" />
+
+	<xsd:simpleType name="NO-ADR-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroAdresseRisque" type="pivot:NO-ADR-RSQ" />
+
+	<xsd:simpleType name="CPL-ADR-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ComplementAdresseRisque"
+		type="pivot:CPL-ADR-RSQ" />
+
+	<xsd:simpleType name="NO-VOI-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroVoieRisque" type="pivot:NO-VOI-RSQ" />
+
+	<xsd:simpleType name="LTR-NO-ADR-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LettreAssocieeNumeroVoieRisque"
+		type="pivot:LTR-NO-ADR-RSQ" />
+
+	<xsd:simpleType name="CD-NAT-VOI-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NatureVoieRisque" type="pivot:CD-NAT-VOI-RSQ" />
+
+	<xsd:simpleType name="NOM-VOI-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NomVoieRisque" type="pivot:NOM-VOI-RSQ" />
+
+	<xsd:simpleType name="CMN-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LocaliteRisque" type="pivot:CMN-RSQ" />
+
+	<xsd:simpleType name="NO-DPT-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Partie1CodePostalRisque" type="pivot:NO-DPT-RSQ" />
+
+	<xsd:simpleType name="NO-CMN-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Partie2CodePostalRisque" type="pivot:NO-CMN-RSQ" />
+
+	<xsd:simpleType name="BUR-DST-RSQ">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="BureauDistributeurRisque"
+		type="pivot:BUR-DST-RSQ" />
+
+	<xsd:simpleType name="NO-ADR-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroAdresseSiegeSocial"
+		type="pivot:NO-ADR-STE" />
+
+	<xsd:simpleType name="CPL-ADR-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ComplementAdresseSiegeSocial"
+		type="pivot:CPL-ADR-STE" />
+
+	<xsd:simpleType name="NO-VOI-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroVoieSiegeSocial" type="pivot:NO-VOI-STE" />
+
+	<xsd:simpleType name="LTR-NO-ADR-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LettreAssocieeNumeroVoieSiegeSocial"
+		type="pivot:LTR-NO-ADR-STE" />
+
+	<xsd:simpleType name="CD-NAT-VOI-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NatureVoieSiegeSocial"
+		type="pivot:CD-NAT-VOI-STE" />
+
+	<xsd:simpleType name="NOM-VOI-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NomVoieSiegeSocial" type="pivot:NOM-VOI-STE" />
+
+	<xsd:simpleType name="CMN-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LocaliteSiegeSocial" type="pivot:CMN-STE" />
+
+	<xsd:simpleType name="NO-DPT-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Partie1CodePostalSiegeSocial"
+		type="pivot:NO-DPT-STE" />
+
+	<xsd:simpleType name="NO-CMN-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Partie2CodePostalSiegeSocial"
+		type="pivot:NO-CMN-STE" />
+
+	<xsd:simpleType name="BUR-DST-STE">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="BureauDistributeurSiegeSocial"
+		type="pivot:BUR-DST-STE" />
+
+
+	<xsd:simpleType name="CD-TELM">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTelematique" type="pivot:CD-TELM" />
+
+	<xsd:simpleType name="CD-PCOL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeProcedureCollective" type="pivot:CD-PCOL" />
+
+	<xsd:simpleType name="CD-CONT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeContestation" type="pivot:CD-CONT" />
+
+
+	<xsd:simpleType name="CD-TRT-SPEC">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTraitementSpecifique"
+		type="pivot:CD-TRT-SPEC" />
+
+	<xsd:simpleType name="CD-BUL-SAL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeBulletinDeSalaire" type="pivot:CD-BUL-SAL" />
+
+	<xsd:simpleType name="CD-CHQ-SAL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TypeCheque" type="pivot:CD-CHQ-SAL" />
+
+	<xsd:simpleType name="CD-TRP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTransport" type="pivot:CD-TRP" />
+
+	<xsd:simpleType name="NO-PART-TRP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroPartenaireTransport"
+		type="pivot:NO-PART-TRP" />
+
+	<xsd:simpleType name="CD-VLU">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeVersementLieuUnique" type="pivot:CD-VLU" />
+
+	<xsd:simpleType name="NO-INT-PAYR">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroInterneDePayeur" type="pivot:NO-INT-PAYR" />
+
+	<xsd:simpleType name="CD-PAI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeVersementSalaires" type="pivot:CD-PAI" />
+
+	<xsd:simpleType name="DT-DEB-PAI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateEffetCodeVersementSalaires"
+		type="pivot:DT-DEB-PAI" />
+
+	<xsd:simpleType name="CD-TDS">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTransmissionDonneesSociales"
+		type="pivot:CD-TDS" />
+
+	<xsd:simpleType name="CD-EXO-TI">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeExonerationTiPam" type="pivot:CD-EXO-TI" />
+
+	<xsd:simpleType name="CD-EXO-EGM">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeExonerationEGM" type="pivot:CD-EXO-EGM" />
+
+	<xsd:simpleType name="ORI-EXO">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OrigineExoneration" type="pivot:ORI-EXO" />
+
+	<xsd:simpleType name="DT-DEB-EXO">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateEffetExoneration" type="pivot:DT-DEB-EXO" />
+
+	<xsd:simpleType name="DT-FIN-EXO">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateFinExoneration" type="pivot:DT-FIN-EXO" />
+
+	<xsd:simpleType name="DT-DEB-LGN-PJ1">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateDebutLigne" type="pivot:DT-DEB-LGN-PJ1" />
+
+	<xsd:simpleType name="DT-FIN-LGN-PJ1">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateFinLigne" type="pivot:DT-FIN-LGN-PJ1" />
+
+	<xsd:simpleType name="NO-LGN-SAL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroLigne" type="pivot:NO-LGN-SAL" />
+
+	<xsd:simpleType name="ASS-SAL-DPLF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="AssietteDeplafonnee" type="pivot:ASS-SAL-DPLF" />
+
+	<xsd:simpleType name="TX-DPLF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TauxDeplafonne" type="pivot:TX-DPLF" />
+
+	<xsd:simpleType name="TX-DPLF-PP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TauxDeplafonnePartPatronale"
+		type="pivot:TX-DPLF-PP" />
+
+	<xsd:simpleType name="ASS-SAL-PLF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="AssiettePlafonnee" type="pivot:ASS-SAL-PLF" />
+
+	<xsd:simpleType name="TX-PLF">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TauxPlafonne" type="pivot:TX-PLF" />
+
+	<xsd:simpleType name="TX-PLF-PP">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TauxPlafonnePartPatronale"
+		type="pivot:TX-PLF-PP" />
+
+	<xsd:simpleType name="CD-AGE-LMT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeAgeLimite" type="pivot:CD-AGE-LMT" />
+
+	<xsd:simpleType name="TX-AT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TauxATDepassementAssedic" type="pivot:TX-AT" />
+
+	<xsd:simpleType name="EFF-EXO">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="EffectifsMesurePourLEmploi" type="pivot:EFF-EXO" />
+
+	<xsd:simpleType name="LIB-NAF">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleNAF" type="pivot:LIB-NAF" />
+
+	<xsd:simpleType name="REF-GRP-TRA">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="GroupeDeTravail" type="pivot:REF-GRP-TRA" />
+
+	<xsd:simpleType name="CD-TRA-DSM">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTravailDissimule" type="pivot:CD-TRA-DSM" />
+
+	<xsd:simpleType name="DT-TRA-DSM">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateTravailDissimule" type="pivot:DT-TRA-DSM" />
+
+	<xsd:simpleType name="CD-ABO-DCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeAbonnementDCL" type="pivot:CD-ABO-DCL" />
+
+	<xsd:simpleType name="DENO-CORR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DenominationCorrespondant"
+		type="pivot:DENO-CORR" />
+
+	<xsd:simpleType name="NO-TEL">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroTelephone" type="pivot:NO-TEL" />
+
+	<xsd:simpleType name="NO-TEL-CORR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TelephoneCorrespondant" type="pivot:NO-TEL-CORR" />
+
+	<xsd:simpleType name="DENO-PART">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DenominationPartenaire" type="pivot:DENO-PART" />
+	
+	<xsd:simpleType name="DENO-PART-2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DenominationPartenaire2" type="pivot:DENO-PART-2" />
+
+	<xsd:simpleType name="DENO-PERS1">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DenominationPremiereLigne"
+		type="pivot:DENO-PERS1" />
+
+	<xsd:simpleType name="DENO-PERS2">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DenominationDeuxiemeLigne"
+		type="pivot:DENO-PERS2" />
+
+	<xsd:simpleType name="NO-TEL-PART">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TelephonePartenaire" type="pivot:NO-TEL-PART" />
+
+	<xsd:simpleType name="NO-RIB">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="21"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NumeroRIB" type="pivot:NO-RIB" />
+
+	<xsd:simpleType name="CLE-RIB">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CleRIB" type="pivot:CLE-RIB" />
+
+	<xsd:simpleType name="CD-NAT-RIB">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="2"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NatureUtilisationRIB" type="pivot:CD-NAT-RIB" />
+
+	<xsd:simpleType name="CD-NAT-MON">
+		<xsd:restriction base="xsd:int">
+			<xsd:minInclusive value="0" />
+			<xsd:maxInclusive value="9" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NatureMonnaieDeclaration"
+		type="pivot:CD-NAT-MON" />
+
+	<xsd:simpleType name="NOM-TIRE">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="19"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="NomDuTire" type="pivot:NOM-TIRE" />
+
+
+
+
+	<xsd:simpleType name="ANNEE">
+		<xsd:restriction base="pivot:TypeAbstrait_Annee" />
+	</xsd:simpleType>
+	<xsd:element name="Annee" type="pivot:ANNEE" />
+
+
+	<xsd:simpleType name="PJD-AA">
+		<xsd:restriction base="pivot:TypeAbstrait_Annee" />
+	</xsd:simpleType>
+	<xsd:element name="PieceJustificativeDebitAnnee"
+		type="pivot:PJD-AA" />
+
+
+	<xsd:simpleType name="AA-BSE-CAL-PROV">
+		<xsd:restriction base="pivot:TypeAbstrait_Annee" />
+	</xsd:simpleType>
+	<xsd:element name="AnneeBaseCalculProvisionnel"
+		type="pivot:AA-BSE-CAL-PROV" />
+
+
+	<xsd:simpleType name="TYP-IDF-E">
+		<xsd:union
+			memberTypes="pivot:Enum_TYP-IDF_COMMUN pivot:Enum_TYP-IDF_E-ONLY" />
+	</xsd:simpleType>
+	<xsd:element name="TypeIdentifiantEntree" type="pivot:TYP-IDF-E" />
+
+	<xsd:simpleType name="TYP-IDF-S">
+		<xsd:union
+			memberTypes="pivot:Enum_TYP-IDF_COMMUN pivot:Enum_TYP-IDF_S-ONLY" />
+	</xsd:simpleType>
+	<xsd:element name="TypeIdentifiantSortie" type="pivot:TYP-IDF-S" />
+
+
+
+
+
+
+	<xsd:simpleType name="ADR-LGN1">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="Adresse1" type="pivot:ADR-LGN1" />
+
+	<xsd:simpleType name="ADR-LGN2">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="Adresse2" type="pivot:ADR-LGN2" />
+
+	<xsd:simpleType name="ADR-LGN3">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="Adresse3" type="pivot:ADR-LGN3" />
+
+	<xsd:simpleType name="ADR-LGN4">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="Adresse4" type="pivot:ADR-LGN4" />
+
+	<xsd:simpleType name="ADR-LGN5">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="Adresse5" type="pivot:ADR-LGN5" />
+
+	<xsd:simpleType name="ADR-LGN6">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="Adresse6" type="pivot:ADR-LGN6" />
+
+
+
+
+	<xsd:simpleType name="ADR-RSQ-LGN1">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseRisque1" type="pivot:ADR-RSQ-LGN1" />
+
+	<xsd:simpleType name="ADR-RSQ-LGN2">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseRisque2" type="pivot:ADR-RSQ-LGN2" />
+
+	<xsd:simpleType name="ADR-RSQ-LGN3">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseRisque3" type="pivot:ADR-RSQ-LGN3" />
+
+	<xsd:simpleType name="ADR-RSQ-LGN4">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseRisque4" type="pivot:ADR-RSQ-LGN4" />
+
+	<xsd:simpleType name="ADR-RSQ-LGN5">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseRisque5" type="pivot:ADR-RSQ-LGN5" />
+
+	<xsd:simpleType name="ADR-RSQ-LGN6">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseRisque6" type="pivot:ADR-RSQ-LGN6" />
+
+
+
+	<xsd:simpleType name="ADR-COR-LGN1">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseCorrespondance1"
+		type="pivot:ADR-COR-LGN1" />
+
+	<xsd:simpleType name="ADR-COR-LGN2">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseCorrespondance2"
+		type="pivot:ADR-COR-LGN2" />
+
+	<xsd:simpleType name="ADR-COR-LGN3">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseCorrespondance3"
+		type="pivot:ADR-COR-LGN3" />
+
+	<xsd:simpleType name="ADR-COR-LGN4">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseCorrespondance4"
+		type="pivot:ADR-COR-LGN4" />
+
+	<xsd:simpleType name="ADR-COR-LGN5">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseCorrespondance5"
+		type="pivot:ADR-COR-LGN5" />
+
+	<xsd:simpleType name="ADR-COR-LGN6">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseCorrespondance6"
+		type="pivot:ADR-COR-LGN6" />
+
+
+
+	<xsd:simpleType name="ADR-STE-LGN1">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseSiegeSocial1" type="pivot:ADR-STE-LGN1" />
+
+	<xsd:simpleType name="ADR-STE-LGN2">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseSiegeSocial2" type="pivot:ADR-STE-LGN2" />
+
+	<xsd:simpleType name="ADR-STE-LGN3">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseSiegeSocial3" type="pivot:ADR-STE-LGN3" />
+
+	<xsd:simpleType name="ADR-STE-LGN4">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseSiegeSocial4" type="pivot:ADR-STE-LGN4" />
+
+	<xsd:simpleType name="ADR-STE-LGN5">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseSiegeSocial5" type="pivot:ADR-STE-LGN5" />
+
+	<xsd:simpleType name="ADR-STE-LGN6">
+		<xsd:restriction base="pivot:TypeAbstrait_LigneAdresse" />
+	</xsd:simpleType>
+	<xsd:element name="AdresseSiegeSocial6" type="pivot:ADR-STE-LGN6" />
+
+
+
+
+	<xsd:simpleType name="SLD-PO">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldePo" type="pivot:SLD-PO" />
+
+	<xsd:simpleType name="SLD-PP">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldePp" type="pivot:SLD-PP" />
+
+	<xsd:simpleType name="SLD-TR">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeTrsp" type="pivot:SLD-TR" />
+
+	<xsd:simpleType name="SLD-IR">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeIrcem" type="pivot:SLD-IR" />
+
+	<xsd:simpleType name="SLD-COT">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeCotisations" type="pivot:SLD-COT" />
+	
+	<xsd:simpleType name="SLD-COT-SAISIE">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeCotisationsSaisie" type="pivot:SLD-COT-SAISIE" />
+
+	<xsd:simpleType name="SLD-MR">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeMajorationsDeRetard" type="pivot:SLD-MR" />
+
+	<xsd:simpleType name="SLD-PEN">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldePenalites" type="pivot:SLD-PEN" />
+
+	<xsd:simpleType name="SLD-FI">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeFauteInexcusable" type="pivot:SLD-FI" />
+
+	<xsd:simpleType name="SLD-FJ">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeFraisDeJustice" type="pivot:SLD-FJ" />
+
+	<xsd:simpleType name="SLD-TOT-HFJ">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeTotalHorsFraisDeJustice"
+		type="pivot:SLD-TOT-HFJ" />
+
+	<xsd:simpleType name="SLD-TOT">
+		<xsd:restriction base="pivot:TypeAbstrait_Solde" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeTotalAvecFraisDeJustice"
+		type="pivot:SLD-TOT" />
+
+	<xsd:simpleType name="CD-TYP-REV">
+		<xsd:restriction base="pivot:Enum_CD-TYP-REV" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTypeRevenu" type="pivot:CD-TYP-REV" />
+
+	<xsd:simpleType name="CD-ORI-DBT">
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeOrigineDebit" type="pivot:CD-ORI-DBT" />
+
+	<xsd:simpleType name="CD-EXST-CPT">
+		<xsd:restriction base="pivot:Enum_CD-EXST-CPT" />
+	</xsd:simpleType>
+	<xsd:element name="CodeExistenceDuCompte" type="pivot:CD-EXST-CPT" />
+
+
+	<!-- 
+		**************************************************************************
+		AJOUTS CIRSO
+		**************************************************************************
+	-->
+
+
+
+
+	<!-- XC01 -->
+
+	<xsd:simpleType name="TOP-INFO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TopInfo" type="pivot:TOP-INFO" />
+
+	<xsd:simpleType name="CD-EXT-ACT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeExterneAction" type="pivot:CD-EXT-ACT" />
+
+
+	<!-- XC02 -->
+
+	<xsd:simpleType name="CD-PRFL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Profil" type="pivot:CD-PRFL" />
+
+	<xsd:simpleType name="DT-TRT-PRFL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateTraitementProfil" type="pivot:DT-TRT-PRFL" />
+
+	<xsd:simpleType name="CD-TERM-ENTITE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTerminalisteEntite"
+		type="pivot:CD-TERM-ENTITE" />
+
+	<xsd:simpleType name="CD-MTF-TRSF-CMPTCE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeMotifTransfertCompetence"
+		type="pivot:CD-MTF-TRSF-CMPTCE" />
+
+	<xsd:simpleType name="CD-DBTR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeDebiteurRSA" type="pivot:CD-DBTR" />
+
+	<xsd:simpleType name="CD-DBTR-URA">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeDebiteurURA" type="pivot:CD-DBTR-URA" />
+
+	<xsd:simpleType name="CD-DBTR-EXT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeDebiteurExterieur" type="pivot:CD-DBTR-EXT" />
+
+	<xsd:simpleType name="NO-TEL-RSI1">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TelephoneRSI1" type="pivot:NO-TEL-RSI1" />
+
+	<xsd:simpleType name="NO-TEL-RSI2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TelephoneRSI2" type="pivot:NO-TEL-RSI2" />
+
+	<xsd:simpleType name="CD-TEL1">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTelephoneRSI1" type="pivot:CD-TEL1" />
+
+	<xsd:simpleType name="CD-TEL2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTelephoneRSI2" type="pivot:CD-TEL2" />
+
+	<xsd:simpleType name="LIB-PRFL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleProfil" type="pivot:LIB-PRFL" />
+
+	<xsd:simpleType name="LIB-MTF-TRSF-CMPTCE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleMotifTransfertCompetence"
+		type="pivot:LIB-MTF-TRSF-CMPTCE" />
+
+	<xsd:simpleType name="SLD-URS-AV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeUrssafAvant" type="pivot:SLD-URS-AV" />
+
+	<xsd:simpleType name="SLD-RSI">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeRSI" type="pivot:SLD-RSI" />
+
+	<xsd:simpleType name="CDT-AAFCT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CreditAAffecter" type="pivot:CDT-AAFCT" />
+
+   <xsd:simpleType name="LIB-CONT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="LibelleContestation" type="pivot:LIB-CONT"/>
+    
+    <xsd:simpleType name="NO-EXT-CPT-ASS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="CompteRGAssocie" type="pivot:NO-EXT-CPT-ASS"/>
+
+	<xsd:simpleType name="LIB-ALERTE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="LibelleAlerteCpteDeb" type="pivot:LIB-ALERTE"/>	
+
+	<!-- XC03 -->
+
+	<xsd:simpleType name="IDF-TERM-ENTITE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantEntite" type="pivot:IDF-TERM-ENTITE" />
+
+	<xsd:simpleType name="IDF-PER1">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantPeriode1" type="pivot:IDF-PER1" />
+
+	<xsd:simpleType name="IDF-PER2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantPeriode2" type="pivot:IDF-PER2" />
+
+	<xsd:simpleType name="IDF-SOLDE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantStructureSolde"
+		type="pivot:IDF-SOLDE" />
+
+	<xsd:simpleType name="IDF-TYPE-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantTypeAction" type="pivot:IDF-TYPE-ACTX" />
+	
+	<xsd:simpleType name="MT-SLD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantSolde" type="pivot:MT-SLD" />
+
+	<xsd:simpleType name="MT-ORI">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantOrigine" type="pivot:MT-ORI" />
+
+	<xsd:simpleType name="CD-MTF-ACT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MotifAction" type="pivot:CD-MTF-ACT" />
+
+	<xsd:simpleType name="DER-STD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DernierStade" type="pivot:DER-STD" />
+	
+	<xsd:simpleType name="LIB-ANV-RSI">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleAnvRSI" type="pivot:LIB-ANV-RSI" />
+	
+	<xsd:simpleType name="LIB-ANV-RSS">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleAnvRSS" type="pivot:LIB-ANV-RSS" />
+	
+	<xsd:simpleType name="LIB-ANV-RSR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleAnvRSR" type="pivot:LIB-ANV-RSR" />
+
+
+	<!-- XC04 -->
+
+	<xsd:simpleType name="CD-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CdAction" type="pivot:CD-ACTX" />
+
+	<xsd:simpleType name="LIB-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibAction" type="pivot:LIB-ACTX" />
+
+	<xsd:simpleType name="CD-STD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CdStade" type="pivot:CD-STD" />
+
+	<xsd:simpleType name="LIB-ACT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleAction" type="pivot:LIB-ACT" />
+
+	<xsd:simpleType name="LIB-STD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleStade" type="pivot:LIB-STD" />
+
+	<xsd:simpleType name="CD-TYP-STRU">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTypeStructure" type="pivot:CD-TYP-STRU" />
+
+	<xsd:simpleType name="DT-DEB-LIEN">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateDebutLien" type="pivot:DT-DEB-LIEN" />
+
+	<xsd:simpleType name="CD-INT-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeAction" type="pivot:CD-INT-ACTX" />
+
+	<xsd:simpleType name="CD-STDX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeStade" type="pivot:CD-STDX" />
+
+	<xsd:simpleType name="NO-PART-1">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroPartenaire1" type="pivot:NO-PART-1" />
+
+	<xsd:simpleType name="NO-PART-2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroPartenaire2" type="pivot:NO-PART-2" />
+	
+	<xsd:simpleType name="TYP-GEST">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TypeGestion" type="pivot:TYP-GEST" />
+	
+	<xsd:simpleType name="TYP-GEST-2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TypeGestion2" type="pivot:TYP-GEST-2" />
+	
+	<xsd:simpleType name="LIB-FORC">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleForcage" type="pivot:LIB-FORC" />
+	
+	<xsd:simpleType name="CD-FORC">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeForcage" type="pivot:CD-FORC" />
+
+	<xsd:simpleType name="CD-MTF-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeMotifAction"
+		type="pivot:CD-MTF-ACTX" />
+
+	<xsd:simpleType name="LIB-MTF-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleMotifAction"
+		type="pivot:LIB-MTF-ACTX" />
+
+	<xsd:simpleType name="CD-NOTI">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeNotification" type="pivot:CD-NOTI" />
+
+	<xsd:simpleType name="CD-TERM">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTerminaliste" type="pivot:CD-TERM" />
+
+	<xsd:simpleType name="SENS-FLUX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="SensFlux" type="pivot:SENS-FLUX" />
+
+	<xsd:simpleType name="CD-EDIFACT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeEDIFACT" type="pivot:CD-EDIFACT" />
+	
+	<xsd:simpleType name="LIB-EDIFACT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleEDIFACT" type="pivot:LIB-EDIFACT" />
+
+	<xsd:simpleType name="CD-TRT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTraitement" type="pivot:CD-TRT" />
+
+	<xsd:simpleType name="CMD-PRD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CommandeProduit" type="pivot:CMD-PRD" />
+
+	<xsd:simpleType name="CD-TYP-ENV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTypeEnvoi" type="pivot:CD-TYP-ENV" />
+
+	<xsd:simpleType name="LIB-TYP-ENV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleTypeEnvoi" type="pivot:LIB-TYP-ENV" />
+
+	<xsd:simpleType name="CD-ANO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeAnomalie" type="pivot:CD-ANO" />
+
+	<xsd:simpleType name="LIB-ANO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleAnomalie" type="pivot:LIB-ANO" />
+
+
+	<xsd:simpleType name="TYP-IDF-CPT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:union memberTypes="pivot:Enum_TYP-IDF_E-ONLY" />
+	</xsd:simpleType>
+	<xsd:element name="TypeIdentifiantCompte" type="pivot:TYP-IDF-CPT" />
+
+	<xsd:simpleType name="IDF-CPT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="21"></xsd:maxLength>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantCompte" type="pivot:IDF-CPT" />
+
+	<xsd:simpleType name="SLD-STRU">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="SoldeStructure" type="pivot:SLD-STRU" />
+
+	<xsd:simpleType name="TYP-EVT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TypeEvenement" type="pivot:TYP-EVT" />
+
+
+
+
+	<!-- XC05 -->
+
+	<xsd:simpleType name="CD-MOD-DBT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeModeDebit" type="pivot:CD-MOD-DBT" />
+
+	<xsd:simpleType name="NO-PART">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroPartenaire" type="pivot:NO-PART" />
+
+	<xsd:simpleType name="NO-HIST">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroHistorique" type="pivot:NO-HIST" />
+
+	<xsd:simpleType name="DT-MOD-ECNG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateModificationECNG" type="pivot:DT-MOD-ECNG" />
+
+	<xsd:simpleType name="CD-OPE-HECN">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeOperation" type="pivot:CD-OPE-HECN" />
+
+	<xsd:simpleType name="TOP-INFO-HUI">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TopInfoHuissier" type="pivot:TOP-INFO-HUI" />
+
+	<xsd:simpleType name="IDF-ECNG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantEcartNegatif" type="pivot:IDF-ECNG" />
+
+	<xsd:simpleType name="MT-TOT-HFJ">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantHorsFraisDeJustice"
+		type="pivot:MT-TOT-HFJ" />
+
+	<xsd:simpleType name="LIB-INFO-HUI">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleInfoHuissier" type="pivot:LIB-INFO-HUI" />
+
+
+
+	<!-- XC09 -->
+
+	<xsd:simpleType name="IDF-STRU">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantStructure" type="pivot:IDF-STRU" />
+
+	<xsd:simpleType name="LIB-INFO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleInformation" type="pivot:LIB-INFO" />
+
+	<xsd:simpleType name="TOT-ACPT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalAcompte" type="pivot:TOT-ACPT" />
+
+	<xsd:simpleType name="NB-APP-TOT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreAppelsTotal" type="pivot:NB-APP-TOT" />
+
+	<xsd:simpleType name="NB-APP-NJOINT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreAppelsNonJoints"
+		type="pivot:NB-APP-NJOINT" />
+
+	<xsd:simpleType name="CD-MTF">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeMotif" type="pivot:CD-MTF" />
+
+	<xsd:simpleType name="MT-TRP">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantTransport" type="pivot:MT-TRP" />
+
+	<xsd:simpleType name="IND-TO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IndiceTO" type="pivot:IND-TO" />
+
+
+
+
+	<!-- XC06 -->
+
+	<xsd:simpleType name="NO-STRU-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroStructureInclusion"
+		type="pivot:NO-STRU-INCL" />
+
+	<xsd:simpleType name="CD-ACT-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeActionInclusion" type="pivot:CD-ACT-INCL" />
+
+	<xsd:simpleType name="CD-STD-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeStadeInclusion" type="pivot:CD-STD-INCL" />
+
+	<xsd:simpleType name="DT-TRT-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateTraitementInclusion"
+		type="pivot:DT-TRT-INCL" />
+
+	<xsd:simpleType name="MT-STRU-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantStructureInclusion"
+		type="pivot:MT-STRU-INCL" />
+
+	<xsd:simpleType name="CD-ACT-AVT-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeActionAvantInclusion"
+		type="pivot:CD-ACT-AVT-INCL" />
+
+
+	<!-- XCM3 -->
+
+	<xsd:simpleType name="TYP-MAJ">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TypeMiseAJour" type="pivot:TYP-MAJ" />
+
+	<xsd:simpleType name="IDF-APLT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantAppelant" type="pivot:IDF-APLT" />
+
+	<xsd:simpleType name="IDF-TERMID">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantTerminal" type="pivot:IDF-TERMID" />
+
+
+	<xsd:simpleType name="IDF-ACTX">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantAction" type="pivot:IDF-ACTX" />
+
+	<xsd:simpleType name="IDF-DT-EFT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantDateEffet" type="pivot:IDF-DT-EFT" />
+
+	<xsd:simpleType name="IDF-STD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantStade" type="pivot:IDF-STD" />
+
+	<xsd:simpleType name="IDF-PER">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantPeriode" type="pivot:IDF-PER" />
+
+	<xsd:simpleType name="IDF-PART">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantPartenaire" type="pivot:IDF-PART" />
+
+	<xsd:simpleType name="IDF-CD-MTF">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantCodeMotif" type="pivot:IDF-CD-MTF" />
+
+	<xsd:simpleType name="IND-CIBL-ECNG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IndiceCiblageECNG" type="pivot:IND-CIBL-ECNG" />
+
+	<xsd:simpleType name="NB-TOT-ECNG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreTotalECNG" type="pivot:NB-TOT-ECNG" />
+
+	<xsd:simpleType name="DSPO-ECNG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DisponibiliteECNG" type="pivot:DSPO-ECNG" />
+
+	<xsd:simpleType name="ECNG-CIBL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ECNGCible" type="pivot:ECNG-CIBL" />
+
+	<xsd:simpleType name="NB-STRU-ASSO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreStructureAssocie"
+		type="pivot:NB-STRU-ASSO" />
+
+	<xsd:simpleType name="NO-STRU-ASSO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroStructureAssocie"
+		type="pivot:NO-STRU-ASSO" />
+
+	<xsd:simpleType name="TYP-REJ-ECNG">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TypeRejetECNG" type="pivot:TYP-REJ-ECNG" />
+
+	<xsd:simpleType name="TYP-EVO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TypeEvolution" type="pivot:TYP-EVO" />
+
+	<xsd:simpleType name="NO-STRU-EVO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroStructureEvolution"
+		type="pivot:NO-STRU-EVO" />
+
+	<xsd:simpleType name="ACTX-CRTE-STRU">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ActionCouranteStructure"
+		type="pivot:ACTX-CRTE-STRU" />
+
+	<xsd:simpleType name="STD-CRTE-STRU">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="StadeCourantStructure"
+		type="pivot:STD-CRTE-STRU" />
+
+	<xsd:simpleType name="IND-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IndiceInclusion" type="pivot:IND-INCL" />
+
+	<xsd:simpleType name="NB-STRU-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreStructureIncluse"
+		type="pivot:NB-STRU-INCL" />
+
+	<xsd:simpleType name="NO-STRU-A-INCL-1ER">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroStructureAInclure1"
+		type="pivot:NO-STRU-A-INCL-1ER" />
+
+	<xsd:simpleType name="ACTX-STRU-A-INCL-1ER">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ActionStructureAInclure1"
+		type="pivot:ACTX-STRU-A-INCL-1ER" />
+
+	<xsd:simpleType name="STD-STRU-A-INCL-1ER">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="StadeStructureAInclure1"
+		type="pivot:STD-STRU-A-INCL-1ER" />
+
+	<xsd:simpleType name="NO-STRU-A-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroStructureAInclure"
+		type="pivot:NO-STRU-A-INCL" />
+
+	<xsd:simpleType name="ACTX-STRU-A-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ActionStructureAInclure"
+		type="pivot:ACTX-STRU-A-INCL" />
+
+	<xsd:simpleType name="STD-STRU-A-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="StadeStructureAInclure"
+		type="pivot:STD-STRU-A-INCL" />
+
+	<xsd:simpleType name="IND-STRU-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IndiceInclusionStructure"
+		type="pivot:IND-STRU-INCL" />
+
+	<xsd:simpleType name="IND-ECNG-CIBL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IndiceCibleECNG" type="pivot:IND-ECNG-CIBL" />
+
+	<xsd:simpleType name="IND-CHX-INCL">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IndiceChoixInclusion" type="pivot:IND-CHX-INCL" />
+
+	<xsd:simpleType name="NB-STRU-A-BLQE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreStructureBloquee"
+		type="pivot:NB-STRU-A-BLQE" />
+
+	<xsd:simpleType name="NO-STRU-BLQE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="StructureABloquer" type="pivot:NO-STRU-BLQE" />
+
+	<xsd:simpleType name="NO-STRU-BLOQ">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="StuctureBloquante" type="pivot:NO-STRU-BLOQ" />
+
+	<xsd:simpleType name="NO-STRU-DBLQE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="StructureADebloquer" type="pivot:NO-STRU-DBLQE" />
+
+	<xsd:simpleType name="NO-STRU-DBLOQ">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="StructureASupprimerBloquante"
+		type="pivot:NO-STRU-DBLOQ" />
+
+
+
+	<!-- XC10 -->
+
+	<xsd:simpleType name="CD-MVT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeMouvement" type="pivot:CD-MVT" />
+
+	<xsd:simpleType name="LIB-MVT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleMouvement" type="pivot:LIB-MVT" />
+
+	<xsd:simpleType name="TRN">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Transmission" type="pivot:TRN" />
+
+	<xsd:simpleType name="LIB-TRN">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleTransmission" type="pivot:LIB-TRN" />
+	
+	<!-- XC08 -->
+
+	<xsd:simpleType name="CD-CLE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeCle" type="pivot:CD-CLE" />
+
+	<xsd:simpleType name="TRANS">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="Transaction" type="pivot:TRANS" />
+
+	<xsd:simpleType name="TERM-SUPPR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TerminalisteSuppression" type="pivot:TERM-SUPPR" />
+
+	<xsd:simpleType name="DT-SUPPR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateSuppression" type="pivot:DT-SUPPR" />
+
+	<xsd:simpleType name="ENTITE-CMPTCE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	
+	<xsd:element name="EntiteCompetence" type="pivot:ENTITE-CMPTCE" />
+	<xsd:simpleType name="ENTITE-TERM">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="EntiteTerminaliste" type="pivot:ENTITE-TERM"/>
+	
+
+
+	<!-- XC11 -->
+
+	<xsd:simpleType name="DT-DEB-RTCM">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateDebutRattachement" type="pivot:DT-DEB-RTCM" />
+
+	<xsd:simpleType name="DT-FIN-RTCM">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateFinRattachement" type="pivot:DT-FIN-RTCM" />
+
+	<xsd:simpleType name="MTF-MSE-RCVT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MotifMiseEnRecouvrement"
+		type="pivot:MTF-MSE-RCVT" />
+
+
+	<!-- XC13 -->
+
+	<xsd:simpleType name="ENTITE-CMPTTE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="EntiteCompetente" type="pivot:ENTITE-CMPTTE" />
+	
+	<xsd:simpleType name="POST-IT-LGN-1">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="PostIt1" type="pivot:POST-IT-LGN-1" />
+
+	<xsd:simpleType name="POST-IT-LGN-2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="PostIt2" type="pivot:POST-IT-LGN-2" />
+	
+	<xsd:simpleType name="INDC-SLD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdndicateurStructureSolde" type="pivot:INDC-SLD" />
+
+	<!-- XC07 -->
+
+	<xsd:simpleType name="SP">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="SousPeriode" type="pivot:SP" />
+
+	<!-- XC15 -->
+
+	<xsd:simpleType name="IDF-MTF">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantMotif" type="pivot:IDF-MTF" />
+
+	<xsd:simpleType name="LIB-MTF">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleMotif" type="pivot:LIB-MTF" />
+
+	<!-- XC12 -->
+
+	<xsd:simpleType name="CD-INFO">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeInformation" type="pivot:CD-INFO" />
+
+
+	<!-- XD02 -->
+
+	<xsd:simpleType name="TOT-DBT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="TotalDebit" type="pivot:TOT-DBT" />
+
+	<xsd:simpleType name="DT-DBT-INST">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateDebitInstance" type="pivot:DT-DBT-INST" />
+
+	<!-- XC17 -->
+
+	<xsd:simpleType name="NB-ECHE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NombreEcheance" type="pivot:NB-ECHE" />
+
+	<xsd:simpleType name="MT-ECHE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantEcheance" type="pivot:MT-ECHE" />
+
+	<xsd:simpleType name="MT-VRS">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="MontantVersement" type="pivot:MT-VRS" />
+
+	<xsd:simpleType name="OPT-PMT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="OptionPaiement" type="pivot:OPT-PMT" />
+
+	<xsd:simpleType name="LIB-TEL1">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleTelephoneRSI1" type="pivot:LIB-TEL1" />
+
+	<xsd:simpleType name="LIB-TEL2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleTelephoneRSI2" type="pivot:LIB-TEL2" />
+
+	<!-- XC18 -->
+
+	<xsd:simpleType name="LIB-PRES-MR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibellePresenceMR" type="pivot:LIB-PRES-MR" />
+
+	<xsd:simpleType name="NO-ECHE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="NumeroEcheance" type="pivot:NO-ECHE" />
+
+	<xsd:simpleType name="DT-PREV-PMT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DatePrevuePaiement" type="pivot:DT-PREV-PMT" />
+
+	<xsd:simpleType name="DT-SURV">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="DateSurveillance" type="pivot:DT-SURV" />
+
+	<xsd:simpleType name="CD-ETA-PMT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeEtatPaiement" type="pivot:CD-ETA-PMT" />
+
+	<xsd:simpleType name="CD-TYP-PMT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeTypePaiement" type="pivot:CD-TYP-PMT" />
+
+	<xsd:simpleType name="VERS-ATT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="VersementAttendu" type="pivot:VERS-ATT" />
+
+	<!-- XC21 -->
+	<xsd:simpleType name="LIB-DBTR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleDebiteurRSA" type="pivot:LIB-DBTR" />
+
+	<xsd:simpleType name="LIB-DBTR-URA">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleDebiteurURA" type="pivot:LIB-DBTR-URA" />
+
+	<xsd:simpleType name="LIB-DBTR-EXT">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="LibelleDebiteurExterieur"
+		type="pivot:LIB-DBTR-EXT" />
+
+	<!-- XCM5 -->
+
+	<xsd:simpleType name="IDF-ENTITE-CMPTTE">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantEntiteCompetente"
+		type="pivot:IDF-ENTITE-CMPTTE" />
+
+	<!-- XCM6 -->
+
+	<xsd:simpleType name="IND-FJ">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IndicateurFraisJustice" type="pivot:IND-FJ" />
+
+	<!-- XC14 -->
+	<xsd:simpleType name="IDF-PART1">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantPartenaire1" type="pivot:IDF-PART1" />
+
+	<xsd:simpleType name="IDF-PART2">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantPartenaire2" type="pivot:IDF-PART2" />
+
+	<xsd:simpleType name="CD-INT-STD">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="CodeInterneStade" type="pivot:CD-INT-STD" />
+	
+	<!-- XCM3 -->
+	
+	<xsd:simpleType name="IDF-IND-ECNG">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantIndicateurEcartNegatif" type="pivot:IDF-IND-ECNG"/>
+    
+    <!-- XCM1 -->
+    
+    <xsd:simpleType name="IDF-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantMajorationsDeRetard" type="pivot:IDF-MR"/>
+
+    <xsd:simpleType name="IDF-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantPenalites" type="pivot:IDF-PE"/>
+
+    <xsd:simpleType name="IDF-VTTN">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantVentilation" type="pivot:IDF-VTTN"/>
+
+    <xsd:simpleType name="MT-ECH">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantTotalEcheance" type="pivot:MT-ECH"/>
+
+    <xsd:simpleType name="IDF-PRDT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantPeriodicite" type="pivot:IDF-PRDT"/>
+
+    <xsd:simpleType name="DT-ECHE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="DateEcheance" type="pivot:DT-ECHE"/>
+
+    <xsd:simpleType name="IND-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IndicateurMajorationsDeRetard" type="pivot:IND-MR"/>
+
+    <xsd:simpleType name="IND-MAJ">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IndicateurMiseAJour" type="pivot:IND-MAJ"/>
+
+    <xsd:simpleType name="LIB-PRES-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="LibellePresencePenalites" type="pivot:LIB-PRES-PE"/>
+
+    <xsd:simpleType name="LIB-TYP-PMT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="LibelleTypePaiement" type="pivot:LIB-TYP-PMT"/>
+
+    <xsd:simpleType name="SLD-A-VTL">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="SoldeAVentiler" type="pivot:SLD-A-VTL"/>
+
+    <xsd:simpleType name="SLD-MR-PROVIS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="SoldeMRProvisoires" type="pivot:SLD-MR-PROVIS"/>
+
+    <xsd:simpleType name="SLD-MR-COMP">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="SoldeMRComplementaires" type="pivot:SLD-MR-COMP"/>
+
+    <xsd:simpleType name="SLD-MR-TOT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="SoldeMRTotales" type="pivot:SLD-MR-TOT"/>
+
+    <xsd:simpleType name="SLD-ECHE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="SoldeEcheances" type="pivot:SLD-ECHE"/>
+
+    <xsd:simpleType name="SLD-RSTE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="SoldeReste" type="pivot:SLD-RSTE"/>
+     
+    <!-- XCM7 -->    
+    
+       <xsd:simpleType name="POURC-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="PourcentageMR" type="pivot:POURC-MR"/>
+
+    <xsd:simpleType name="POURC-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="PourcentagePenalites" type="pivot:POURC-PE"/>
+
+    <xsd:simpleType name="MT-MR-AREM">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantMRARemettre" type="pivot:MT-MR-AREM"/>
+
+    <xsd:simpleType name="MT-PE-AREM">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantPenalitesARemettre" type="pivot:MT-PE-AREM"/>
+
+    <xsd:simpleType name="TOT-REMIS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="TotalDebitRemissible" type="pivot:TOT-REMIS"/>
+
+    <xsd:simpleType name="MT-DBT-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="DebitMR" type="pivot:MT-DBT-MR"/>
+
+    <xsd:simpleType name="MT-DBT-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="DebitPenalites" type="pivot:MT-DBT-PE"/>
+
+    <xsd:simpleType name="TOT-DBT-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="TotalDebitMR" type="pivot:TOT-DBT-MR"/>
+
+    <xsd:simpleType name="TOT-MR-AREM">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="TotalMRARemettre" type="pivot:TOT-MR-AREM"/>
+
+    <xsd:simpleType name="TOT-DBT-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="TotalDebitPenalites" type="pivot:TOT-DBT-PE"/>
+
+    <xsd:simpleType name="TOT-PE-AREM">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="TotalPenalitesARemettre" type="pivot:TOT-PE-AREM"/>
+    
+     <!-- XC16 -->
+     
+     <xsd:simpleType name="LIB-TYP-COT-1">
+     <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+     <xsd:restriction base="xsd:string" />
+     </xsd:simpleType>
+     <xsd:element name="LibelleTypeCotisation1" type="pivot:LIB-TYP-COT-1" />
+
+
+     <xsd:simpleType name="LIB-TYP-COT-2">
+     <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+     <xsd:restriction base="xsd:string" />
+     </xsd:simpleType>
+     <xsd:element name="LibelleTypeCotisation2" type="pivot:LIB-TYP-COT-2" />
+
+
+     <xsd:simpleType name="LIB-TYP-COT-3">
+     <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+     <xsd:restriction base="xsd:string" />
+     </xsd:simpleType>
+     <xsd:element name="LibelleTypeCotisation3" type="pivot:LIB-TYP-COT-3" />  
+     
+  <!-- XC24 -->
+     
+     <xsd:simpleType name="NB-ECHE-IMPA">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NombreEcheanceImpaye" type="pivot:NB-ECHE-IMPA"/>
+
+    <xsd:simpleType name="NB-DMD">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NombreDemande" type="pivot:NB-DMD"/>
+
+    <xsd:simpleType name="NB-ACCRD">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NombreAccord" type="pivot:NB-ACCRD"/>
+
+    <xsd:simpleType name="NB-REFUS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NombreRefus" type="pivot:NB-REFUS"/>
+
+    <xsd:simpleType name="NB-REJ">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NombreRejet" type="pivot:NB-REJ"/>
+
+    <xsd:simpleType name="NB-RUPT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NombreRupture" type="pivot:NB-RUPT"/>
+
+	<!-- XC20 -->
+	<xsd:simpleType name="IDF-FIN-BLQ">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantFinBlocage" type="pivot:IDF-FIN-BLQ" />
+	
+	<!-- XCM9 -->
+	<xsd:simpleType name="IDF-RETOUR">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="IdentifiantTitreRetourne" type="pivot:IDF-RETOUR" />
+	
+	<xsd:simpleType name="REF-HUISSIER">
+		<!-- @@@@@@@@@@@@@@@@@@@@@ -->
+		<xsd:restriction base="xsd:string" />
+	</xsd:simpleType>
+	<xsd:element name="ReferenceHuissier" type="pivot:REF-HUISSIER" />
+	
+	<!-- XCM0 -->
+	
+	<xsd:simpleType name="IDF-RECOURS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantRecours" type="pivot:IDF-RECOURS"/>
+
+    <xsd:simpleType name="IDF-CD-NAT-LTG">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantCodeNatureLitige" type="pivot:IDF-CD-NAT-LTG"/>
+
+    <xsd:simpleType name="IDF-CD-ORI-RCRS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantCodeOrigineRecours" type="pivot:IDF-CD-ORI-RCRS"/>
+
+    <xsd:simpleType name="IDF-NB-POST-IT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantNbPostIt" type="pivot:IDF-NB-POST-IT"/>
+
+    <xsd:simpleType name="IDF-TYP-POST-IT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantTypePostIt" type="pivot:IDF-TYP-POST-IT"/>
+
+    <xsd:simpleType name="NO-POSTIT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NumeroPostit" type="pivot:NO-POSTIT"/>
+
+    <xsd:simpleType name="IDF-NB-THEME">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantNbTheme" type="pivot:IDF-NB-THEME"/>
+
+    <xsd:simpleType name="IDF-TYP-THEME">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentifiantTypeTheme" type="pivot:IDF-TYP-THEME"/>
+
+    <xsd:simpleType name="NO-THM">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NumeroTheme" type="pivot:NO-THM"/>
+
+    <xsd:simpleType name="CD-THM">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="CodeTheme" type="pivot:CD-THM"/>
+
+    <xsd:simpleType name="MT-CONT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantConteste" type="pivot:MT-CONT"/>
+
+    <xsd:simpleType name="MT-REGLE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantRegle" type="pivot:MT-REGLE"/>
+
+    <xsd:simpleType name="MT-RSTE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantRestantDu" type="pivot:MT-RSTE"/>
+
+    <xsd:simpleType name="CD-TYPE-THM">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="CodeTypeTheme" type="pivot:CD-TYPE-THM"/>
+
+    <xsd:simpleType name="CD-RESU-TH">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="CodeResultatTheme" type="pivot:CD-RESU-TH"/>
+
+    <xsd:simpleType name="MT-EJ-COT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantEnjeuCotisations" type="pivot:MT-EJ-COT"/>
+    <xsd:simpleType name="MT-REGLE-COT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantRegleCotisations" type="pivot:MT-REGLE-COT"/>
+
+    <xsd:simpleType name="MT-GAIN-COT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantGainCotisations" type="pivot:MT-GAIN-COT"/>
+
+    <xsd:simpleType name="MT-PERTE-COT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantPerteCotisations" type="pivot:MT-PERTE-COT"/>
+
+    <xsd:simpleType name="MT-GAIN">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantGain" type="pivot:MT-GAIN"/>
+
+    <xsd:simpleType name="MT-PERTE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantPerte" type="pivot:MT-PERTE"/>
+
+    <xsd:simpleType name="MT-EJ-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantEnjeuMajorations" type="pivot:MT-EJ-MR"/>
+
+    <xsd:simpleType name="MT-REGLE-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantRegleMajorations" type="pivot:MT-REGLE-MR"/>
+
+    <xsd:simpleType name="MT-GAIN-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantGainMajorations" type="pivot:MT-GAIN-MR"/>
+
+    <xsd:simpleType name="MT-PERTE-MR">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantPerteMajorations" type="pivot:MT-PERTE-MR"/>
+
+    <xsd:simpleType name="MT-EJ-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantEnjeuPenalites" type="pivot:MT-EJ-PE"/>
+
+    <xsd:simpleType name="MT-REGLE-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantReglePenalites" type="pivot:MT-REGLE-PE"/>
+
+    <xsd:simpleType name="MT-GAIN-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantGainPenalites" type="pivot:MT-GAIN-PE"/>
+
+    <xsd:simpleType name="MT-PERTE-PE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantPertePenalites" type="pivot:MT-PERTE-PE"/>
+
+    <xsd:simpleType name="MT-EJ-FJ">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantEnjeuFraisDeJustice" type="pivot:MT-EJ-FJ"/>
+
+    <xsd:simpleType name="MT-REGLE-FJ">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantRegleFraisDeJustice" type="pivot:MT-REGLE-FJ"/>
+
+    <xsd:simpleType name="MT-GAIN-FJ">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantGainFraisDeJustice" type="pivot:MT-GAIN-FJ"/>
+
+    <xsd:simpleType name="MT-PERTE-FJ">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="MontantPerteFraisDeJustice" type="pivot:MT-PERTE-FJ"/>
+
+    <xsd:simpleType name="NO-RECOURS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NumeroRecours" type="pivot:NO-RECOURS"/>
+
+    <xsd:simpleType name="CD-NAT-LTG">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="CodeNatureLitige" type="pivot:CD-NAT-LTG"/>
+
+    <xsd:simpleType name="CD-ORI-RCRS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="CodeOrigineRecours" type="pivot:CD-ORI-RCRS"/>
+
+    <xsd:simpleType name="CD-RESU-RCRS">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="CodeResultatRecours" type="pivot:CD-RESU-RCRS"/>
+	
+	<!-- XC27 -->
+	
+	<xsd:simpleType name="IDF-CLOTURE">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="IdentificationCloture" type="pivot:IDF-CLOTURE"/>
+	
+	<!-- XC29 -->
+	
+	<xsd:simpleType name="NO-SIRET">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="NumeroSiret" type="pivot:NO-SIRET"/>
+
+    <xsd:simpleType name="LIB-ETA-CPT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="LibelleCodeEtatCompte" type="pivot:LIB-ETA-CPT"/>
+
+    <xsd:simpleType name="EFF-NAT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="EffectifNational" type="pivot:EFF-NAT"/>
+
+    <xsd:simpleType name="LIB-SS-CAT">
+        <!-- @@@@@@@@@@@@@@@@@@@@@ -->
+        <xsd:restriction base="xsd:string"/>
+    </xsd:simpleType>
+    <xsd:element name="LibelleCodeSousCategorie" type="pivot:LIB-SS-CAT"/>
+	
+	<xsd:simpleType name="GRP-PRO">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="2"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	<xsd:element name="GroupeProfessionel" type="pivot:GRP-PRO" />
+</xsd:schema>

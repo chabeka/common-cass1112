@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<bindings xmlns="http://java.sun.com/xml/ns/jaxb" if-exists="true" version="2.1">
+  <!--
+
+Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.0 
+Voir <a href="https://javaee.github.io/jaxb-v2/">https://javaee.github.io/jaxb-v2/</a> 
+Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
+Généré le : 2020.10.27 à 11:48:04 AM CET 
+
+  -->
+  <bindings xmlns:tns="http://www.cirtil.fr/sae/commun_sommaire_et_resultat" if-exists="true" scd="x-schema::tns">
+    <schemaBindings map="false">
+      <package name="fr.urssaf.image.rsmed.bean.xsd.generated"/>
+    </schemaBindings>
+    <bindings if-exists="true" scd="~tns:integratedDocumentVirtuelType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.IntegratedDocumentVirtuelType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:documentVirtuelType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.DocumentVirtuelType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:nonIntegratedVirtualDocumentType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.NonIntegratedVirtualDocumentType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:documentType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.DocumentType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:documentTypeMultiAction">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.DocumentTypeMultiAction"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:nonIntegratedDocumentType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.NonIntegratedDocumentType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeDocumentsTypeMultiAction">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeDocumentsTypeMultiAction"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeDocumentsType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeDocumentsType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeNonIntegratedDocumentsType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeNonIntegratedDocumentsType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeNonIntegratedVirtualDocumentsType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeNonIntegratedVirtualDocumentsType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeDocumentsVirtuelsType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeDocumentsVirtuelsType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:metadonneeType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.MetadonneeType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeMetadonneeType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeMetadonneeType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:erreurType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ErreurType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeErreurType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeErreurType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:fichierType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.FichierType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:composantDocumentVirtuelType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:nonIntegratedComposantDocumentVirtuelType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.NonIntegratedComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeIntegratedDocumentsType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeIntegratedDocumentsType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:integratedDocumentType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.IntegratedDocumentType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:listeIntegratedDocumentsVirtuelsType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ListeIntegratedDocumentsVirtuelsType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:integratedComposantDocumentVirtuelType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.IntegratedComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:batchModeType">
+      <typesafeEnumClass ref="fr.urssaf.image.rsmed.bean.xsd.generated.BatchModeType"/>
+    </bindings>
+    <bindings if-exists="true" scd="~tns:batchActionType">
+      <typesafeEnumClass ref="fr.urssaf.image.rsmed.bean.xsd.generated.BatchActionType"/>
+    </bindings>
+  </bindings>
+  <bindings xmlns:tns="http://www.cirtil.fr/sae/resultatsXml" if-exists="true" scd="x-schema::tns">
+    <schemaBindings map="false">
+      <package name="fr.urssaf.image.rsmed.bean.xsd.generated"/>
+    </schemaBindings>
+    <bindings if-exists="true" scd="~tns:resultatsType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.ResultatsType"/>
+    </bindings>
+  </bindings>
+  <bindings xmlns:tns="http://www.cirtil.fr/sae/sommaireXml" if-exists="true" scd="x-schema::tns">
+    <schemaBindings map="false">
+      <package name="fr.urssaf.image.rsmed.bean.xsd.generated"/>
+    </schemaBindings>
+    <bindings if-exists="true" scd="~tns:sommaireType">
+      <class ref="fr.urssaf.image.rsmed.bean.xsd.generated.SommaireType"/>
+    </bindings>
+  </bindings>
+</bindings>
