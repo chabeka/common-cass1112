@@ -1,8 +1,8 @@
 package fr.urssaf.image.rsmed.job;
 
-import fr.urssaf.image.rsmed.exception.FunctionalException;
 import fr.urssaf.image.rsmed.bean.xsd.generated.ListeMetadonneeType;
 import fr.urssaf.image.rsmed.bean.xsd.generated.MetadonneeType;
+import fr.urssaf.image.rsmed.exception.FunctionalException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
@@ -38,7 +38,7 @@ public class Validation {
     }
 
     public static void validateNumeroCompteExterne(String idV2) {
-        if (StringUtils.isEmpty(idV2)) {
+        if (StringUtils.isEmpty(idV2) || idV2.length() != 28) {
             LOGGER.error("Le champ ID_V2 n'est pas valide");
             throw new FunctionalException(new RuntimeException("Le champ ID_V2 n'est pas valide"));
         }

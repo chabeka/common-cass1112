@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -53,6 +52,7 @@ public class EnrichissementDocumentServiceImpl implements DocumentConstructorSer
         MetadonneeType metadonnee = new MetadonneeType();
         metadonnee.setCode(code);
         metadonnee.setValeur(value);
+        LOGGER.debug("Ajout metadonnee: code={}, value={}", code, value);
         listeMetadonneeType.getMetadonnee().add(metadonnee);
     }
 
@@ -76,11 +76,11 @@ public class EnrichissementDocumentServiceImpl implements DocumentConstructorSer
         // metadonnée IdGed
         addNewMetadonnee("IdGed", UUID.randomUUID().toString(), listeMetadonneeType);
 
-        // metadonnée Titre TODO
-        addNewMetadonnee("Titre", "TO BE DEFINED", listeMetadonneeType);
+        // metadonnée Titre
+        addNewMetadonnee("Titre", currentDocumentBean.getTitre(), listeMetadonneeType);
 
-        // metadonnée DateCreation TODO
-        addNewMetadonnee("DateCreation", "TO BE DEFINED", listeMetadonneeType);
+        // metadonnée DateCreation
+        addNewMetadonnee("DateCreation", currentDocumentBean.getDateSaisie(), listeMetadonneeType);
 
         // metadonnée ApplicationProductrice
         addNewMetadonnee("ApplicationProductrice", ApplicationProductrice, listeMetadonneeType);
@@ -98,12 +98,12 @@ public class EnrichissementDocumentServiceImpl implements DocumentConstructorSer
         // metadonnée CodeOrganismeGestionnaire
         addNewMetadonnee("CodeOrganismeGestionnaire", "UR" + codeUrssaf, listeMetadonneeType);
 
-        // metadonnée CodeRND TODO
-        addNewMetadonnee("CodeRND", "TO BE DEFINED", listeMetadonneeType);
+        // metadonnée CodeRND
+        addNewMetadonnee("CodeRND", currentDocumentBean.getCodeRND(), listeMetadonneeType);
 
         // metadonnée Hash
-        addNewMetadonnee("Hash", FileUtils.getHash(
-                propertiesBean.getXmlFileInputDirectory() + File.separator + currentDocumentBean.getPdfName()), listeMetadonneeType);
+        String pdf = currentDocumentBean.getPdf();
+        addNewMetadonnee("Hash", FileUtils.getHash(pdf), listeMetadonneeType);
 
         // metadonnée TypeHash
         addNewMetadonnee("TypeHash", "SHA-1", listeMetadonneeType);
@@ -114,28 +114,29 @@ public class EnrichissementDocumentServiceImpl implements DocumentConstructorSer
         // metadonnée FormatFichier
         addNewMetadonnee("FormatFichier", "pdf", listeMetadonneeType);
 
-        // metadonnée SIREN
-        addNewMetadonnee("SIREN", individu.getSirenPersonnel().getValeur(), listeMetadonneeType);
+        if (individu != null) {
+            // metadonnée SIREN
+            addNewMetadonnee("SIREN", individu.getSirenPersonnel().getValeur(), listeMetadonneeType);
 
-        // metadonnée NniEmployeur
-        addNewMetadonnee("NniEmployeur", individu.getNir().getValeur() + individu.getCleNir().getValeur(), listeMetadonneeType);
+            // metadonnée NniEmployeur
+            addNewMetadonnee("NniEmployeur", individu.getNir().getValeur() + individu.getCleNir().getValeur(), listeMetadonneeType);
 
-        // metadonnée Denomination
-        addNewMetadonnee("Denomination", individu.getNomPatronymique().getValeur() + " " + individu.getPrenomsPatronymiques().getValeur(), listeMetadonneeType);
+            // metadonnée Denomination
+            addNewMetadonnee("Denomination", individu.getNomPatronymique().getValeur() + " " + individu.getPrenomsPatronymiques().getValeur(), listeMetadonneeType);
 
-        // metadonnée DateNaissanceCotisant
-        StringBuilder dateNaissanceCotisant = new StringBuilder()
-                .append(individu.getDateNaissance().getValeur().getYear())
-                .append('-')
-                .append(individu.getDateNaissance().getValeur().getMonth())
-                .append('-')
-                .append(individu.getDateNaissance().getValeur().getDay());
-        addNewMetadonnee("DateNaissanceCotisant", dateNaissanceCotisant.toString(), listeMetadonneeType);
+            // metadonnée DateNaissanceCotisant
+            StringBuilder dateNaissanceCotisant = new StringBuilder()
+                    .append(individu.getDateNaissance().getValeur().getYear())
+                    .append('-')
+                    .append(individu.getDateNaissance().getValeur().getMonth())
+                    .append('-')
+                    .append(individu.getDateNaissance().getValeur().getDay());
+            addNewMetadonnee("DateNaissanceCotisant", dateNaissanceCotisant.toString(), listeMetadonneeType);
 
 
-        // metadonnée RIBA
-        addNewMetadonnee("RIBA", individu.getNoRiba().getValeur(), listeMetadonneeType);
-
+            // metadonnée RIBA
+            addNewMetadonnee("RIBA", individu.getNoRiba().getValeur(), listeMetadonneeType);
+        }
         // metadonnée NumeroCompteExterne
         addNewMetadonnee("NumeroCompteExterne", currentDocumentBean.getIdV2().substring(0, 18), listeMetadonneeType);
 

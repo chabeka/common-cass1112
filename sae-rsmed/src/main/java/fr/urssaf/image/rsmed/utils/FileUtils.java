@@ -2,31 +2,26 @@ package fr.urssaf.image.rsmed.utils;
 
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class FileUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FileUtils.class);
+    public static final String EXTENSION_XML = ".xml";
+    public static final String EXTENSION_ZIP = ".zip";
 
-    private FileUtils() {
+    public static String getHash(String filePath) throws IOException {
 
-    }
+        final File f = new File(filePath);
+        final InputStream contenu = new FileInputStream(f);
 
-    public static final String getHash(final String filePath) throws IOException {
-        try {
-            final File f = new File(filePath);
-            final InputStream contenu = new FileInputStream(f);
-
-            final String hash = DigestUtils.sha1Hex(contenu);
-            LOGGER.debug("File: {}, Hash: {}", filePath, hash);
+        final String hash = DigestUtils.sha1Hex(contenu);
 
         return hash;
-        }catch (IOException e){
-            throw new IOException(e);
-        }
+
     }
 
 

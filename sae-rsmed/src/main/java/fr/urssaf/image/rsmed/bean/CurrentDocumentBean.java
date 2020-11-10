@@ -13,8 +13,11 @@ public class CurrentDocumentBean {
     @NonNull
     private String idV2;
     private String dateSaisie;
-    private String pdfName;
+    private String pdf;
     private Integer nbPage;
+    private String titre;
+    private String codeRND;
+
 
     //
     ListeMetadonneeType listeMetadonneeType = new ListeMetadonneeType();
@@ -22,9 +25,10 @@ public class CurrentDocumentBean {
     public void reset() {
         this.idV2 = null;
         this.dateSaisie = null;
-        this.pdfName = null;
+        this.pdf = null;
         this.nbPage = null;
         this.listeMetadonneeType = null;
+        this.titre = null;
     }
 
     @NonNull
@@ -44,12 +48,12 @@ public class CurrentDocumentBean {
         this.dateSaisie = dateSaisie;
     }
 
-    public String getPdfName() {
-        return pdfName;
+    public String getPdf() {
+        return pdf;
     }
 
-    public void setPdfName(String pdfName) {
-        this.pdfName = pdfName;
+    public void setPdf(String pdf) {
+        this.pdf = pdf;
     }
 
     public Integer getNbPage() {
@@ -70,5 +74,21 @@ public class CurrentDocumentBean {
 
     public void setListeMetadonneeType(CurrentDocumentBean currentDocumentBean, ListeMetadonneeType listeMetadonneeType) {
         this.listeMetadonneeType = listeMetadonneeType;
+    }
+
+    public String getTitre() {
+        return titre;
+    }
+
+    public void setTitre(String titre) {
+        this.titre = titre;
+    }
+
+    public String getCodeRND() {
+        return codeRND;
+    }
+
+    public void setCodeRND(String codeRND) {
+        this.codeRND = codeRND;
     }
 }

@@ -176,7 +176,7 @@ public class SommaireWriterUtils {
             writerUtils.addEndElement(TAG_CODE, PREFIX_SOMRES, NAMESPACE_SOMRES);
 
             writerUtils.addStartElement(TAG_VALEUR, PREFIX_SOMRES, NAMESPACE_SOMRES);
-            writerUtils.addValue(meta.getValeur());
+            writerUtils.addValue(meta.getValeur().replace("&", "&amp;"));
             writerUtils.addEndElement(TAG_VALEUR, PREFIX_SOMRES, NAMESPACE_SOMRES);
 
             writerUtils.addEndElement(TAG_METADONNEE, PREFIX_SOMRES, NAMESPACE_SOMRES);

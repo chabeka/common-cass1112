@@ -30,24 +30,26 @@ public class SommaireWriterServiceImpl implements SommaireWriterServiceInterface
 
     public SommaireWriterUtils initSommaire() throws IOException, XMLStreamException {
         LOGGER.info("Initialisation du sommaire et ecriture de l'entete");
-        sommaireWriterUtils = new SommaireWriterUtils(propertiesBean.getXmlSommaireOutputDirectory() + File.separator);
+        sommaireWriterUtils = new SommaireWriterUtils(propertiesBean.getWorkdirDirectory() + File.separator);
         sommaireWriterUtils.startSommaire();
         sommaireWriterUtils.addSommaireHeaders();
         return sommaireWriterUtils;
     }
 
     public void closeSommaire() throws XMLStreamException {
-        LOGGER.info("Ecriture de la fin du sommaire");
-        sommaireWriterUtils.endSommaire();
+        if (sommaireWriterUtils != null) {
+            LOGGER.info("Ecriture de la fin du sommaire");
+            sommaireWriterUtils.endSommaire();
+        }
     }
 
     public void writeNewDocument(CurrentDocumentBean currentDocumentBean) throws XMLStreamException {
 
-        LOGGER.info("Ecriture d'un nouveau document dans le sommaire. (objetNumérique: {})", currentDocumentBean.getPdfName());
+        LOGGER.info("Ecriture d'un nouveau document dans le sommaire. (objetNumérique: {})", currentDocumentBean.getPdf());
         DocumentType documentType = new DocumentType();
         // objet numerique:
         FichierType fichierType = new FichierType();
-        fichierType.setCheminEtNomDuFichier(currentDocumentBean.getPdfName());
+        fichierType.setCheminEtNomDuFichier(new File(currentDocumentBean.getPdf()).getName());
         documentType.setObjetNumerique(fichierType);
 
         documentType.setNumeroPageDebut(1);

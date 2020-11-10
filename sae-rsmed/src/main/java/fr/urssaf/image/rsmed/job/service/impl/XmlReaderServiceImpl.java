@@ -2,6 +2,7 @@ package fr.urssaf.image.rsmed.job.service.impl;
 
 
 import fr.urssaf.image.rsmed.bean.CurrentDocumentBean;
+import fr.urssaf.image.rsmed.bean.PropertiesBean;
 import fr.urssaf.image.rsmed.job.service.XmlReaderServiceInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
+import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 
 @Service
@@ -22,7 +26,10 @@ public class XmlReaderServiceImpl implements XmlReaderServiceInterface {
 
 
     @Autowired
-    CurrentDocumentBean currentDocumentBean;
+    private CurrentDocumentBean currentDocumentBean;
+
+    @Autowired
+    private PropertiesBean propertiesBean;
 
     public static XMLEventReader reader;
 
@@ -45,10 +52,11 @@ public class XmlReaderServiceImpl implements XmlReaderServiceInterface {
                         nextEvent = reader.nextEvent();
                         currentDocumentBean.setIdV2(nextEvent.asCharacters().getData());
                         break;
-                    case "DATE_R1":
-                    case "DATE_R2":
+                    case "DATE_SAISIE":
                         nextEvent = reader.nextEvent();
-                        //dateCreation = nextEvent.asCharacters().getData();
+                        LocalDate dateCreation = LocalDate.parse(nextEvent.asCharacters().getData(), DateTimeFormatter.ofPattern("yyyyMMdd"));
+                        currentDocumentBean.setDateSaisie(dateCreation.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+
                         break;
                     case "NB_PAGES":
                         nextEvent = reader.nextEvent();
@@ -61,7 +69,7 @@ public class XmlReaderServiceImpl implements XmlReaderServiceInterface {
                     case "PDF_MED":
                     case "PDF_AR_PND":
                         nextEvent = reader.nextEvent();
-                        currentDocumentBean.setPdfName(nextEvent.asCharacters().getData());
+                        currentDocumentBean.setPdf(propertiesBean.getWorkdirDirectory() + File.separator + nextEvent.asCharacters().getData());
                         break;
                 }
             }

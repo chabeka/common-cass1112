@@ -3,29 +3,19 @@ package fr.urssaf.image.rsmed.bean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties(prefix = "directory")
+@ConfigurationProperties
 
 public class PropertiesBean {
 
-    @Value("${directory.xml.input}")
-    private String xmlFileInputDirectory;
+    @Value("${directory.workdir}")
+    private String workdirDirectory;
 
-    @Value("${directory.sommaire.output}")
-    private String xmlSommaireOutputDirectory;
-
-    public String getXmlFileInputDirectory() {
-        return xmlFileInputDirectory;
+    public String getWorkdirDirectory() {
+        return workdirDirectory;
     }
 
-    public void setXmlFileInputDirectory(String xmlFileInputDirectory) {
-        this.xmlFileInputDirectory = xmlFileInputDirectory;
+    public void setWorkdirDirectory(String workdirDirectory) {
+        this.workdirDirectory = workdirDirectory;
     }
 
-    public String getXmlSommaireOutputDirectory() {
-        return xmlSommaireOutputDirectory;
-    }
-
-    public void setXmlSommaireOutputDirectory(String xmlSommaireOutputDirectory) {
-        this.xmlSommaireOutputDirectory = xmlSommaireOutputDirectory;
-    }
 }
