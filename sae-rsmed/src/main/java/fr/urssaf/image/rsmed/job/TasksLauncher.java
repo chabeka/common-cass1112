@@ -92,6 +92,7 @@ public class TasksLauncher {
                 sommaireWriterService.writeNewDocument(currentDocumentBean);
 
             } while (true);
+            sommaireWriterService.closeSommaire();
 
         } catch (FunctionalException exception) {
             LOGGER.error("Une erreur fonctionnelle est survenue: ", exception);
@@ -105,14 +106,8 @@ public class TasksLauncher {
         } catch (TechnicalFaultMessage | BusinessFaultMessage exception) {
             LOGGER.error("Une erreur est survenue au moment de l'appel des WS rei: ", exception);
             throw new RuntimeException("Une erreur est survenue au moment de l'appel des WS rei", exception);
-        } finally {
-            try {
-                sommaireWriterService.closeSommaire();
-            } catch (XMLStreamException xmlStreamException) {
-                LOGGER.error("Une erreur est survenue au moment de la fermeture du sommaire: ", xmlStreamException);
-                throw new RuntimeException("Une erreur est survenue au moment de la fermeture du sommaire: ", xmlStreamException);
-            }
         }
+
 
     }
 

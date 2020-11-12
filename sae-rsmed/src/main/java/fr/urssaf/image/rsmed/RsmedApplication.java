@@ -4,7 +4,6 @@ import fr.urssaf.image.rsmed.bean.PropertiesBean;
 import fr.urssaf.image.rsmed.job.TasksLauncher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -22,7 +21,6 @@ public class RsmedApplication {
     private static ApplicationContext applicationContext;
     private static Logger LOGGER = LoggerFactory.getLogger(RsmedApplication.class);
 
-    @Autowired
     private static TasksLauncher tasksLauncher;
 
 

@@ -30,8 +30,12 @@ public class Validation {
 
     public static File validateAndGetXmlInputFile(List<File> xmlInputFiles) {
         LOGGER.info("Récupération et validation du fichier Xml en entrée");
-        if (xmlInputFiles == null || xmlInputFiles.size() != 1) {
+        if (xmlInputFiles == null) {
             LOGGER.error("Erreur de récuperation du fichier xml");
+            throw new FunctionalException(new RuntimeException("Erreur de récuperation du fichier xml"));
+        }
+        if (xmlInputFiles.size() != 1) {
+            LOGGER.error("Plusieurs fichiers xml ont été trouvé. Un seul fichier devait être présent dans le dossier");
             throw new FunctionalException(new RuntimeException("Erreur de récuperation du fichier xml"));
         }
         return xmlInputFiles.get(0);

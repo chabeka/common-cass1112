@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 @Service
@@ -125,13 +126,10 @@ public class EnrichissementDocumentServiceImpl implements DocumentConstructorSer
             addNewMetadonnee("Denomination", individu.getNomPatronymique().getValeur() + " " + individu.getPrenomsPatronymiques().getValeur(), listeMetadonneeType);
 
             // metadonnée DateNaissanceCotisant
-            StringBuilder dateNaissanceCotisant = new StringBuilder()
-                    .append(individu.getDateNaissance().getValeur().getYear())
-                    .append('-')
-                    .append(individu.getDateNaissance().getValeur().getMonth())
-                    .append('-')
-                    .append(individu.getDateNaissance().getValeur().getDay());
-            addNewMetadonnee("DateNaissanceCotisant", dateNaissanceCotisant.toString(), listeMetadonneeType);
+            String dateNaissanceCotisant = DateTimeFormatter
+                    .ofPattern("YYYY-MM-dd")
+                    .format(individu.getDateNaissance().getValeur().toGregorianCalendar().toZonedDateTime());
+            addNewMetadonnee("DateNaissanceCotisant", dateNaissanceCotisant, listeMetadonneeType);
 
 
             // metadonnée RIBA
