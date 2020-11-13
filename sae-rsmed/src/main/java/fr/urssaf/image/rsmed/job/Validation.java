@@ -36,7 +36,7 @@ public class Validation {
         }
         if (xmlInputFiles.size() != 1) {
             LOGGER.error("Plusieurs fichiers xml ont été trouvé. Un seul fichier devait être présent dans le dossier");
-            throw new FunctionalException(new RuntimeException("Erreur de récuperation du fichier xml"));
+            throw new FunctionalException(new RuntimeException("Plusieurs fichiers xml ont été trouvé. Un seul fichier devait être présent dans le dossier"));
         }
         return xmlInputFiles.get(0);
     }

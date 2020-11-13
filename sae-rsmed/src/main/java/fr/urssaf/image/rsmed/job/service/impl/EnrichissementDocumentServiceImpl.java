@@ -1,7 +1,6 @@
 package fr.urssaf.image.rsmed.job.service.impl;
 
 import fr.urssaf.image.rsmed.bean.CurrentDocumentBean;
-import fr.urssaf.image.rsmed.bean.PropertiesBean;
 import fr.urssaf.image.rsmed.bean.xsd.generated.ListeMetadonneeType;
 import fr.urssaf.image.rsmed.bean.xsd.generated.MetadonneeType;
 import fr.urssaf.image.rsmed.job.Validation;
@@ -34,9 +33,6 @@ public class EnrichissementDocumentServiceImpl implements DocumentConstructorSer
 
     @Autowired
     RedevabiliteServiceInterface redevabiliteService;
-
-    @Autowired
-    PropertiesBean propertiesBean;
 
 
     @Override
